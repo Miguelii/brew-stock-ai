@@ -10,7 +10,19 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     experimental: {
         viewTransition: true,
-        optimizePackageImports: ['jiti'],
+        optimizePackageImports: [
+            '@base-ui/react',
+            '@hookform/resolvers',
+            '@tanstack/react-query',
+            '@trpc/client',
+            'class-variance-authority',
+            'lucide-react',
+            'zod',
+            'react-hook-form',
+            'shadcn',
+            'tailwind-merge',
+            'tw-animate-css',
+        ],
     },
     images: {
         localPatterns: [

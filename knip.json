@@ -1,7 +1,11 @@
 {
     "$schema": "https://unpkg.com/knip@5/schema.json",
     "tags": ["-lintignore"],
-    "entry": ["src/env/server.ts"],
-    "ignoreDependencies": ["server-only"],
-    "ignore": []
+    "entry": [
+        "src/env/server.ts",
+        "src/env/client.ts",
+        "src/features/reports/reports-table/table-filters.tsx",
+        "src/features/reports/reports-table/table-pagination.tsx"
+    ],
+    "ignore": ["src/components/ui/**"]
 }

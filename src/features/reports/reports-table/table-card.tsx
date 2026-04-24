@@ -117,14 +117,14 @@ function ReportsTableHeader() {
 function StatusBadge({ status }: { status: ReportStatus }) {
     if (status === ReportStatus.COMPLETED) {
         return (
-            <Badge className="py-3 border border-accent-green/25 bg-accent-green/10 text-accent-green font-bold hover:bg-accent-green/10">
+            <Badge className="py-3 border border-accent-green/25 bg-accent-green-light text-accent-green font-bold hover:bg-accent-green/10">
                 Completed
             </Badge>
         )
     }
     if (status === ReportStatus.GENERATING) {
         return (
-            <Badge className="py-3 gap-1.5 border border-accent-blue/25 bg-accent-blue/10 text-accent-blue font-bold hover:bg-accent-blue/10">
+            <Badge className="py-3 gap-1.5 border border-accent-blue/25 bg-accent-blue-light text-accent-blue font-bold hover:bg-accent-blue/10">
                 <Loader2 className="size-3 animate-spin" />
                 AI is working...
             </Badge>

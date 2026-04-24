@@ -79,7 +79,7 @@ export function SentimentGauge({ score }: Props) {
             <div className="mt-6 flex w-full max-w-60 justify-between px-3 text-xs font-semibold tracking-wide">
                 <span className="text-red-500">BEARISH</span>
                 <span className="text-yellow-500">NEUTRAL</span>
-                <span className="text-green-500">BULLISH</span>
+                <span className="text-accent-green">BULLISH</span>
             </div>
 
             <p className="mt-3 w-full text-center text-[10px] leading-relaxed text-muted-foreground">

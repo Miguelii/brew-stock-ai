@@ -26,7 +26,7 @@ export default async function ReportsIdPage(props: Props) {
 
                 <div className="flex flex-row w-full justify-between items-center">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-accent-blue">
+                        <h1 className="text-3xl font-bold tracking-tight text-accent-blue font-mono">
                             {report.stock}
                         </h1>
                         <p className="text-sm text-muted-foreground">

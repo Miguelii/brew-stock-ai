@@ -17,6 +17,11 @@ html {
     * {
         @apply border-border outline-ring/50;
     }
+
+    a,
+    button {
+        @apply cursor-pointer;
+    }
 }
 
 @layer components {

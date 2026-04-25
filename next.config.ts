@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
             'shadcn',
             'tailwind-merge',
             'tw-animate-css',
+            'vaul',
         ],
     },
     images: {

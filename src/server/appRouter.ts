@@ -76,7 +76,7 @@ export const appRouter = router({
             )
         ),
 
-    sbLogin: publicProcedure
+    signIn: publicProcedure
         .input(z.object({ email: z.email(), password: z.string() }))
         .mutation(({ input }) =>
             runEffect(sbLogin(input.email, input.password), 'sbLogin', (error) =>

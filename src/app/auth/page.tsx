@@ -2,7 +2,7 @@ import { AuthCard } from '@/components/auth-card'
 
 export default function AuthPage() {
     return (
-        <main id="#main" className="flex justify-center items-center flex-1">
+        <main className="flex flex-col items-center justify-center px-4 py-12">
             <AuthCard />
         </main>
     )

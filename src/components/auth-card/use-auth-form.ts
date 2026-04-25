@@ -3,15 +3,14 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const formSchema = z.object({
-    email: z.string().min(1, 'Required'),
+    email: z.email('Invalid email address'),
     password: z.string().min(1, 'Required'),
 })
 
 export type FormValues = z.infer<typeof formSchema>
 
-export const useAuthForm = () => {
-    const form = useForm<FormValues>({
+export const useAuthForm = () =>
+    useForm<FormValues>({
         resolver: zodResolver(formSchema),
+        defaultValues: { email: '', password: '' },
     })
-    return form
-}

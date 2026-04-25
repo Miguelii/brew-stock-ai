@@ -35,4 +35,4 @@ export const HOME_PAGE_PATH = '/'
 
 export const AUTH_PAGE_PATH = '/auth'
 
-export const MAX_STOCK_INPUT_LENGHT = 20
+export const MAX_STOCK_INPUT_LENGHT = 50

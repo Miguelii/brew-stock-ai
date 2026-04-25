@@ -7,20 +7,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { HOME_PAGE_PATH } from '@/lib/constants'
-import { trpc } from '@/server/trpc-client'
 import { UserRound, LayoutDashboard, LogOut } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useLogout } from './use-logout'
 
 export function ProfileMenu() {
-    const router = useRouter()
-    const logout = trpc.sbLogout.useMutation({
-        onSuccess: () => {
-            router.refresh()
-            router.push(HOME_PAGE_PATH)
-        },
-    })
+    const logout = useLogout()
 
     return (
         <DropdownMenu>
@@ -40,7 +32,7 @@ export function ProfileMenu() {
 
                 <DropdownMenuItem onClick={() => logout.mutate()}>
                     <LogOut size={14} />
-                    Logout
+                    {logout.isPending ? 'Logging out…' : 'Logout'}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

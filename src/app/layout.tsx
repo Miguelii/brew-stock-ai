@@ -6,6 +6,7 @@ import { SpeedInsights as VercelSpeedInsights } from '@vercel/speed-insights/nex
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { Providers } from '@/providers'
+import { Toaster } from '@/components/ui/sonner'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -18,8 +19,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-    title: 'EquityIntel — AI Stock Analysis',
-    description: 'Institutional-grade AI stock analysis platform for private investors.',
+    title: 'StockBrewAI — AI Stock Analysis',
+    description:
+        'Deep financial insights, market sentiment, and technical indicators. For less than a coffee',
 }
 
 type Props = LayoutProps<'/'>
@@ -35,6 +37,7 @@ export default function RootLayout({ children }: Props) {
             <VercelSpeedInsights />
             <body className="min-h-screen flex flex-col">
                 <Providers>
+                    <Toaster />
                     <Header />
                     <div className="flex-1">{children}</div>
                     <Footer />

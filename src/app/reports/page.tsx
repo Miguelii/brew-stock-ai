@@ -11,8 +11,7 @@ export default function Report() {
                         Analysis Reports
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        View and manage comprehensive intelligence reports across your tracked
-                        assets.
+                        Track the status of your requested reports.
                     </p>
                 </div>
 

@@ -1,19 +1,22 @@
-import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { ProfileMenu } from './profile-menu'
+import { MobileMenu } from './mobile-menu'
+import { NavLinks, LoginLink } from './nav-links'
 import { Effect } from 'effect'
 import { getSession } from '@/services/supabase/get-session'
+import type { NavLink } from '@/types/NavLink'
+import Image from 'next/image'
 
-const PUBLIC_NAV_LINKS = [
+const PUBLIC_NAV_LINKS: NavLink[] = [
     {
         label: 'Analysis',
         href: '/',
     },
 ]
 
-const AUTH_NAV_LINKS = [
+const AUTH_NAV_LINKS: NavLink[] = [
     {
-        label: 'Reports',
+        label: 'My Reports',
         href: '/reports',
     },
 ]
@@ -28,45 +31,20 @@ export async function Header() {
     return (
         <nav className="sticky top-0 z-50 border-b border-border bg-card backdrop-blur-md">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <span className="text-accent-blue font-bold text-lg tracking-tight font-mono">
-                        Guru
-                    </span>
-                    <span className="text-on-surface font-bold text-lg tracking-tight font-mono">
-                        Finances
-                    </span>
-                </div>
+                <Link className="flex items-center gap-2 justify-center" href="/" prefetch={false}>
+                    <Image height={32} width={32} src="/assets/logo.png" alt="" />
+                    <div className="font-bold text-lg tracking-tight pt-1.5">
+                        <span>StockBrew</span>
+                        <span className="text-accent-blue font-mono">AI</span>
+                    </div>
+                </Link>
 
-                <div className="flex flex-row gap-5">
-                    <ul className="hidden md:flex items-center gap-0.5">
-                        {navLinks.map((link) => (
-                            <li key={link.href}>
-                                <Link
-                                    prefetch={false}
-                                    href={link.href}
-                                    className={cn(
-                                        'px-4 py-2 rounded text-sm font-medium transition-colors'
-                                    )}
-                                >
-                                    {link.label}
-                                </Link>
-                            </li>
-                        ))}
-
-                        <li>
-                            {user ? (
-                                <ProfileMenu />
-                            ) : (
-                                <Link
-                                    prefetch={false}
-                                    href="/auth"
-                                    className="px-4 py-2 rounded text-sm font-medium transition-colors"
-                                >
-                                    Login
-                                </Link>
-                            )}
-                        </li>
-                    </ul>
+                <div className="flex flex-row gap-5 items-center">
+                    <MobileMenu isAuthenticated={!!user} nav={navLinks} />
+                    <div className="hidden md:flex items-center gap-5">
+                        <NavLinks links={navLinks} />
+                        {user ? <ProfileMenu /> : <LoginLink />}
+                    </div>
                 </div>
             </div>
         </nav>

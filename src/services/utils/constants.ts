@@ -53,6 +53,16 @@ export class GetReportsError extends Data.TaggedError('GetReportsError')<{
     error_hash: string
 }> {}
 
+export class FetchReportForTaskError extends Data.TaggedError('FetchReportForTaskError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class MarkReportFailedError extends Data.TaggedError('MarkReportFailedError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
 export class SignInWithPasswordError extends Data.TaggedError('SignInWithPasswordError')<{
     cause: unknown
     error_hash: string

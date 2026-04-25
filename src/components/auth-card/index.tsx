@@ -4,60 +4,59 @@ import { Card, CardContent } from '@/components/ui/card'
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
 import { useAuthForm, type FormValues } from './use-auth-form'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { Input } from '@base-ui/react/input'
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
 import { useRouter } from 'next/navigation'
 
 export function AuthCard() {
-    const login = trpc.sbLogin.useMutation()
-
+    const login = trpc.signIn.useMutation()
     const form = useAuthForm()
-
     const router = useRouter()
 
     const onSubmit = async (values: FormValues) => {
-        console.log({ values })
-
         try {
-            const response = await login.mutateAsync(values)
-
-            console.log({ response })
-
+            await login.mutateAsync(values)
             router.refresh()
-        } catch (error) {
-            console.error({ error })
+        } catch {
+            form.setError('root', { message: 'Invalid credentials. Please try again.' })
         }
     }
 
     return (
-        <Card>
-            <CardContent>
-                <Form {...form}>
-                    <h2 className="text-lg font-semibold text-center mb-4">Welcome Back</h2>
-                    <p className="text-sm text-center text-primary-muted">
-                        Please sign in to your account to continue.
-                    </p>
+        <Card className="w-full max-w-sm rounded-none">
+            <CardContent className="flex flex-col gap-6 px-8 pt-8 pb-8">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="text-center">
+                        <h1 className="text-lg font-semibold text-primary">Welcome back</h1>
+                        <p className="mt-0.5 text-sm text-primary-muted">Sign in to your account</p>
+                    </div>
+                </div>
 
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex flex-col sm:flex-row items-end gap-3"
-                    >
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                         <FormField
                             control={form.control}
                             name="email"
                             render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-primary-muted">
-                                        Email
-                                    </FormLabel>
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="email"
-                                            placeholder="analytis@institution.com"
-                                            className="h-10 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition"
+                                            placeholder="name@company.com"
                                             {...field}
+                                            className="rounded-none"
                                         />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -66,33 +65,64 @@ export function AuthCard() {
                             control={form.control}
                             name="password"
                             render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-primary-muted">
-                                        Email
-                                    </FormLabel>
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
                                     <FormControl>
                                         <Input
-                                            type="password"
                                             placeholder="******"
-                                            className="h-10 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition uppercase"
+                                            type="password"
                                             {...field}
-                                            onChange={(e) =>
-                                                field.onChange(e.target.value.toUpperCase())
-                                            }
+                                            className="rounded-none"
                                         />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
+
+                        {form.formState.errors.root && (
+                            <p className="text-sm text-destructive">
+                                {form.formState.errors.root.message}
+                            </p>
+                        )}
+
                         <Button
                             type="submit"
                             disabled={login.isPending}
-                            className="h-10! px-6 bg-accent-blue text-background font-semibold shrink-0 gap-2 cursor-pointer"
+                            className="w-full bg-accent-blue text-white hover:bg-accent-blue/90"
                         >
-                            {login.isPending ? 'Signing In....' : 'Sign In'}
+                            {login.isPending ? 'Signing in...' : 'Sign In'}
                         </Button>
                     </form>
                 </Form>
+
+                <div className="flex items-center gap-3">
+                    <Separator className="flex-1" />
+                    <span className="text-xs text-primary-muted">OR</span>
+                    <Separator className="flex-1" />
+                </div>
+
+                <Button variant="outline" type="button" className="w-full gap-2">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+                        <path
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                            fill="#4285F4"
+                        />
+                        <path
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                            fill="#34A853"
+                        />
+                        <path
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                            fill="#FBBC05"
+                        />
+                        <path
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                            fill="#EA4335"
+                        />
+                    </svg>
+                    Continue with Google
+                </Button>
             </CardContent>
         </Card>
     )

@@ -2,6 +2,7 @@
     "$schema": "https://unpkg.com/knip@5/schema.json",
     "tags": ["-lintignore"],
     "entry": [
+        "trigger.config.ts",
         "src/env/server.ts",
         "src/env/client.ts",
         "src/features/reports/reports-table/table-filters.tsx",

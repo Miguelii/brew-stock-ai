@@ -6,6 +6,15 @@ import { ServerEnv } from '@/env/server'
 import { type NextRequest, NextResponse } from 'next/server'
 import { AUTH_PAGE_PATH, HOME_PAGE_PATH, PROTECTED_PATHS } from '@/lib/constants'
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
+
+/**
+ * Creates a Supabase server client without cookie-based session management and with SERVICE_ROLE_KEY
+ *
+ * Necessary for trigger dev to run task from SB
+ */
+export const createSbAdminClient = () =>
+    createClient(process.env.NEXT_SUPABASE_URL!, process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY!)
 
 /**
  * Creates a Supabase server client with cookie-based session management.

@@ -16,3 +16,5 @@ export type ReportDTO = {
     stock: string
     sentiment: number
 }
+
+export type ReportListItem = Pick<ReportDTO, 'created_at' | 'id' | 'status' | 'stock' | 'type'>

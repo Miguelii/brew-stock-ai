@@ -11,6 +11,8 @@ import {
 import { createSbServerClient } from '@/lib/utils.server'
 import { ReportStatus } from '@/types/ReportDTO'
 import { getSession } from '@/services/supabase/get-session'
+import { tasks } from '@trigger.dev/sdk/v3'
+import type { processReportTask } from '@/trigger/process-report'
 
 export const createReport = Effect.fn('createReport')(function* (
     stockSymbol: string,
@@ -50,6 +52,9 @@ export const createReport = Effect.fn('createReport')(function* (
     if (insertError) {
         return yield* new CreateReportError({ cause: insertError, error_hash: 'ecrtrptinsrtr' })
     }
+
+    // Send to trigger.dev to proccess in the background
+    tasks.trigger<typeof processReportTask>('process-report', { reportId: report.id })
 
     return report.id as string
 })

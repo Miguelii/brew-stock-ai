@@ -1,7 +1,7 @@
 :root {
     --primary: #262626;
     --border: oklch(0.922 0 0);
-    --card: #fbfbfd;
+    --card: #ffffff;
     --primary-muted: #909097;
 
     --accent-blue: #3b82f6;
@@ -10,7 +10,7 @@
     --accent-green: #28a754;
     --accent-green-light: #e3f0ed;
 
-    --background: #f5f5ee;
+    --background: #fbfbfd;
     --foreground: oklch(0.145 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);

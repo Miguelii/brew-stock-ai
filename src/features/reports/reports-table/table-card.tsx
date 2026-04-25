@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import type { ReportDTO } from '@/types/ReportDTO'
+import type { ReportListItem } from '@/types/ReportDTO'
 import { ReportStatus } from '@/types/ReportDTO'
 import { Skeleton } from '@/components/ui/skeleton'
 import { trpc } from '@/server/trpc-client'
@@ -21,7 +21,7 @@ import { PROMPT_OPTIONS } from '@/lib/constants'
 import { parseReportDate } from '@/lib/utils'
 
 type Props = {
-    reports: ReportDTO[]
+    reports: ReportListItem[]
     isLoading: boolean
 }
 
@@ -69,8 +69,8 @@ function ReportsList({ reports }: Pick<Props, 'reports'>) {
         <>
             {reports?.map((report) => (
                 <TableRow key={report.id}>
-                    <TableCell className="pl-5 py-4">
-                        <span className="font-mono">{report.stock}</span>
+                    <TableCell className="pl-5 py-4 max-w-37.5">
+                        <span className="text-wrap">{report.stock}</span>
                     </TableCell>
                     <TableCell className="py-4">
                         {PROMPT_OPTIONS.find((o) => o.type === report.type)?.label}
@@ -137,7 +137,7 @@ function StatusBadge({ status }: { status: ReportStatus }) {
     )
 }
 
-function ActionCell({ status, report }: { status: ReportStatus; report: ReportDTO }) {
+function ActionCell({ status, report }: { status: ReportStatus; report: ReportListItem }) {
     const proccessReport = trpc.getStockAnalysis.useMutation()
 
     const onDebugClick = async () => {
@@ -150,7 +150,7 @@ function ActionCell({ status, report }: { status: ReportStatus; report: ReportDT
 
     if (status === ReportStatus.COMPLETED) {
         return (
-            <div className="flex flex-row gap-5 w-fit">
+            <div className="flex flex-row gap-5 w-full justify-end">
                 <Button
                     variant="outline"
                     size="sm"

@@ -12,11 +12,13 @@ import {
 } from '@/services/utils/constants'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { saveAnalysisToReport } from './save-analysis-to-report'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     stockSymbol: string,
     promptType: string,
-    reportId: ReportDTO['id']
+    reportId: ReportDTO['id'],
+    supabaseClient?: SupabaseClient
 ) {
     const basePrompt = PROMPTS_MAP[promptType]
 
@@ -50,7 +52,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         })
     }
 
-    yield* saveAnalysisToReport(reportId, analysis, sentiment)
+    yield* saveAnalysisToReport(reportId, analysis, sentiment, supabaseClient)
 
     return { analysis, sentiment }
 })

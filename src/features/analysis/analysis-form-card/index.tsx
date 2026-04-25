@@ -15,9 +15,17 @@ import {
 import { useAnalysisForm, type FormValues } from './use-analysis-form'
 import { Input } from '@/components/ui/input'
 import { MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
-export function AnalysisFormCard() {
+type Props = {
+    isAuthenticated: boolean
+}
+
+export function AnalysisFormCard({ isAuthenticated }: Props) {
     const utils = trpc.useUtils()
+
+    const router = useRouter()
 
     const createReport = trpc.createReport.useMutation({
         onSuccess: async () => {
@@ -31,8 +39,12 @@ export function AnalysisFormCard() {
         try {
             await createReport.mutateAsync(values)
             resetForm()
+            toast.success('Your report is being generated ☕')
+            setTimeout(() => router.push('/reports'), 2000)
         } catch (error) {
-            console.error((error as { message?: string })?.message)
+            toast.error('Something went wrong.', {
+                description: (error as { message?: string })?.message ?? '',
+            })
         }
     }
 
@@ -40,8 +52,13 @@ export function AnalysisFormCard() {
         form.reset()
     }
 
+    const getButtonLabel = () => {
+        if (!isAuthenticated) return 'Sign In to generate'
+        return createReport.isPending ? 'Generating...' : 'Generate Report'
+    }
+
     return (
-        <Card className="border-border shadow-sm pt-0">
+        <Card className="pt-0 rounded-none">
             <CardContent className="p-4">
                 <Form {...form}>
                     <form
@@ -61,7 +78,7 @@ export function AnalysisFormCard() {
                                             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-muted pointer-events-none" />
                                             <Input
                                                 placeholder="Enter AAPL, TSLA, etc."
-                                                className="h-10 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition uppercase"
+                                                className="h-10 w-full rounded-none border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition uppercase"
                                                 {...field}
                                                 onChange={(e) =>
                                                     field.onChange(e.target.value.toUpperCase())
@@ -84,7 +101,7 @@ export function AnalysisFormCard() {
                                     </FormLabel>
                                     <FormControl>
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger className="h-10! w-full bg-background border-border text-primary">
+                                            <SelectTrigger className="h-10! w-full bg-background border-border text-primary rounded-none">
                                                 <BarChart2Icon className="size-4 text-primary-muted shrink-0" />
                                                 <SelectValue placeholder="Select type">
                                                     {PROMPT_OPTIONS.find(
@@ -92,7 +109,7 @@ export function AnalysisFormCard() {
                                                     )?.label ?? 'Select type'}
                                                 </SelectValue>
                                             </SelectTrigger>
-                                            <SelectContent className="">
+                                            <SelectContent className="rounded-none">
                                                 {PROMPT_OPTIONS.map((option) => (
                                                     <SelectItem
                                                         key={option.type}
@@ -110,11 +127,11 @@ export function AnalysisFormCard() {
 
                         <Button
                             type="submit"
-                            disabled={createReport.isPending}
-                            className="h-10! px-6 bg-accent-blue text-background font-semibold shrink-0 gap-2 cursor-pointer"
+                            disabled={createReport.isPending || !isAuthenticated}
+                            className="h-10! w-full max-w-45 px-6 bg-accent-blue text-background font-semibold shrink-0 gap-2 cursor-pointer"
                         >
                             <SparklesIcon className="size-4" />
-                            {createReport.isPending ? 'Generating...' : 'Generate Report'}
+                            {getButtonLabel()}
                         </Button>
                     </form>
                 </Form>

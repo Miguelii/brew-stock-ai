@@ -15,7 +15,7 @@
         "knip": "knip",
         "prepare": "husky",
         "trigger:deploy": "pnpm dlx trigger.dev@latest deploy",
-        "trigger:dev": "pnpm dlx trigger.dev@latest deploy"
+        "trigger:dev": "pnpm dlx trigger.dev@latest dev"
     },
     "dependencies": {
         "@ai-sdk/anthropic": "^3.0.71",

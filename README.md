@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+AI-powered stock analysis — get institutional-grade financial insights, market sentiment, and technical indicators for any equity. For less than a coffee ☕
 
-## Getting Started
+## Technical Tools
 
-First, run the development server:
+Some cool highlighted tools this project uses:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **[Effect](https://effect.website):** a powerful TypeScript library designed to help developers easily create complex, synchronous, and asynchronous programs.
+- **[tRPC](https://trpc.io):** end-to-end typesafe APIs, used to expose Effect services to the client.
+- **[Trigger.dev](https://trigger.dev):** background job processing for long-running AI analysis tasks.
+- **[Supabase](https://supabase.com):** Postgres database with auth and real-time capabilities.
+- **[Vercel AI SDK](https://sdk.vercel.ai):** streaming AI responses with structured output using Claude (Anthropic).
+- **[TanStack Query](https://tanstack.com/query):** server state management and caching on the client.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Code Quality Tools
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project uses automated code quality tools to maintain consistency:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **[vite-plus](https://github.com/vite-plus/vite-plus):** unified toolchain that bundles linting, formatting and testing:
+    - **oxlint:** Rust-based linter (replaces ESLint)
+    - **oxfmt:** Rust-based code formatter (replaces Prettier)
+    - **Vitest:** unit testing
+- **[Knip](https://knip.dev):** detects unused files, exports, and dependencies.
+- **TypeScript:** provides type safety.
+- **[Husky](https://typicode.github.io/husky):** runs pre-commit hooks automatically.

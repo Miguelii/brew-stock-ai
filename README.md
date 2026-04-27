@@ -10,6 +10,7 @@ Some cool highlighted tools this project uses:
 - **[Supabase](https://supabase.com):** Postgres database with auth and real-time capabilities.
 - **[Vercel AI SDK](https://sdk.vercel.ai):** streaming AI responses with structured output using Claude (Anthropic).
 - **[TanStack Query](https://tanstack.com/query):** server state management and caching on the client.
+- **[Puppeteer](https://pptr.dev):** headless browser used to generate PDF exports of analysis reports.
 
 ## Code Quality Tools
 

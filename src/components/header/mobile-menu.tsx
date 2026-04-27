@@ -50,7 +50,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                         <DrawerClose asChild>
                             <button
                                 aria-label="Close menu"
-                                className="flex items-center justify-center h-8 w-8 rounded-lg text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
+                                className="flex items-center justify-center h-8 w-8 rounded-lg text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
                             >
                                 <X size={16} />
                             </button>
@@ -63,7 +63,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                             <DrawerClose asChild key={link.href}>
                                 <Link
                                     href={link.href}
-                                    className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-primary transition-colors hover:bg-muted"
+                                    className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-muted transition-colors hover:bg-muted"
                                 >
                                     {link.label}
                                 </Link>

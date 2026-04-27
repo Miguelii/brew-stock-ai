@@ -1,20 +1,18 @@
-import Link from 'next/link'
 import { ProfileMenu } from './profile-menu'
 import { MobileMenu } from './mobile-menu'
 import { NavLinks, LoginLink } from './nav-links'
 import { Effect } from 'effect'
 import { getSession } from '@/services/supabase/get-session'
 import type { NavLink } from '@/types/NavLink'
-import Image from 'next/image'
+import Logo from '@/components/logo'
 
-const PUBLIC_NAV_LINKS: NavLink[] = [
+const PUBLIC_NAV_LINKS: NavLink[] = []
+
+const AUTH_NAV_LINKS: NavLink[] = [
     {
         label: 'Analysis',
         href: '/',
     },
-]
-
-const AUTH_NAV_LINKS: NavLink[] = [
     {
         label: 'My Reports',
         href: '/reports',
@@ -31,14 +29,7 @@ export async function Header() {
     return (
         <nav className="sticky top-0 z-50 border-b border-border bg-card backdrop-blur-md">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                <Link className="flex items-center gap-2 justify-center" href="/" prefetch={false}>
-                    <Image height={32} width={32} src="/assets/logo.png" alt="" />
-                    <div className="font-bold text-lg tracking-tight pt-1.5">
-                        <span>StockBrew</span>
-                        <span className="text-accent-blue font-mono">AI</span>
-                    </div>
-                </Link>
-
+                <Logo />
                 <div className="flex flex-row gap-5 items-center">
                     <MobileMenu isAuthenticated={!!user} nav={navLinks} />
                     <div className="hidden md:flex items-center gap-5">

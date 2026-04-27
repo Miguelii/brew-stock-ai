@@ -1,4 +1,4 @@
-import { PropmptsEnum } from '../types/PropmptsEnum'
+import { PropmptsEnum } from '@/types/PropmptsEnum'
 
 export const PROMPT_TYPES = {
     [PropmptsEnum.STOCK_ANALYSIS]: {
@@ -31,8 +31,8 @@ export const STATIC_PREFIXES = ['/_next', '/api/', '/assets', '/favicon', '/robo
 
 export const PROTECTED_PATHS = new Set(['/reports', '/account'])
 
-export const HOME_PAGE_PATH = '/'
+export const AUTH_PAGES_PATHS = new Set(['/auth', '/sign-in'])
 
-export const AUTH_PAGE_PATH = '/auth'
+export const HOME_PAGE_PATH = '/'
 
 export const MAX_STOCK_INPUT_LENGHT = 50

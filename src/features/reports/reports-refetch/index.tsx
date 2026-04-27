@@ -20,12 +20,11 @@ export function ReportsRefetch() {
     return (
         <Button
             variant="outline"
-            size="lg"
             className="cursor-pointer bg-card rounded-none"
             onClick={() => refetch()}
         >
             <RefreshCcwIcon className={cn(isPending ? 'animate-spin' : '')} />
-            Refetch
+            Refresh
         </Button>
     )
 }

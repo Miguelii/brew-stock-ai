@@ -1,6 +1,11 @@
+import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 import { ReportsTable } from '@/features/reports/reports-table'
 import { ReportsRefetch } from '@/features/reports/reports-refetch'
+
+export const metadata: Metadata = {
+    title: 'My Reports',
+}
 
 export default function Report() {
     return (

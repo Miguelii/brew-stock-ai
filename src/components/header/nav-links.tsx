@@ -21,7 +21,7 @@ export function NavLinks({ links }: { links: NavLink[] }) {
                                 'border-b-2 pb-0.5 text-sm font-medium transition-colors',
                                 isActive
                                     ? 'border-accent-blue text-accent-blue'
-                                    : 'border-transparent text-primary-muted hover:text-primary'
+                                    : 'border-transparent text-muted-foreground hover:text-accent-blue'
                             )}
                         >
                             {link.label}
@@ -38,7 +38,7 @@ export function LoginLink() {
         <Link
             prefetch={false}
             href="/auth"
-            className="rounded-md bg-accent-blue px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-blue/90"
+            className="px-3 py-1.5 text-sm font-medium bg-accent-blue text-background hover:bg-accent-blue/90"
         >
             Sign In
         </Link>

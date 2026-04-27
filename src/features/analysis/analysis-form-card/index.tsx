@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart2Icon, SearchIcon, SparklesIcon } from 'lucide-react'
+import { BarChart2Icon, FileChartLineIcon, SearchIcon } from 'lucide-react'
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -42,8 +42,9 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
             toast.success('Your report is being generated ☕')
             setTimeout(() => router.push('/reports'), 2000)
         } catch (error) {
+            const errorCode = (error as { message?: string })?.message ?? null
             toast.error('Something went wrong.', {
-                description: (error as { message?: string })?.message ?? '',
+                description: errorCode ? `code: ${errorCode}` : undefined,
             })
         }
     }
@@ -63,7 +64,7 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex flex-col sm:flex-row items-end gap-3"
+                        className="flex flex-col md:flex-row items-end gap-3"
                     >
                         <FormField
                             control={form.control}
@@ -126,11 +127,14 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                         />
 
                         <Button
-                            type="submit"
-                            disabled={createReport.isPending || !isAuthenticated}
-                            className="h-10! w-full max-w-45 px-6 bg-accent-blue text-background font-semibold shrink-0 gap-2 cursor-pointer"
+                            type={isAuthenticated ? 'submit' : 'button'}
+                            disabled={createReport.isPending}
+                            className="h-10! mt-3 ms:mt-0 w-full md:max-w-45 shrink-0 gap-2 cursor-pointer"
+                            onClick={() => {
+                                if (!isAuthenticated) router.push('/auth')
+                            }}
                         >
-                            <SparklesIcon className="size-4" />
+                            <FileChartLineIcon className="size-4" />
                             {getButtonLabel()}
                         </Button>
                     </form>

@@ -1,6 +1,7 @@
 import { AnalysisFormCard } from '@/features/analysis/analysis-form-card'
 import { getSession } from '@/services/supabase/get-session'
 import { Effect } from 'effect'
+import { WebApplicationSchema, WebSiteSchema } from '@/features/metadata/structured-data'
 
 export default async function Home() {
     const user = await Effect.runPromise(
@@ -9,6 +10,8 @@ export default async function Home() {
 
     return (
         <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-16">
+            <WebSiteSchema />
+            <WebApplicationSchema />
             <div className="mb-12">
                 <h1 className="text-4xl lg:text-5xl font-bold tracking-tight mb-4 leading-tight">
                     AI-Powered Stock Analysis

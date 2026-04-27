@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import type { ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { STATIC_PREFIXES } from '../lib/constants'
+import { STATIC_PREFIXES } from '@/lib/constants'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))

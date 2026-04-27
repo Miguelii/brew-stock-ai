@@ -4,7 +4,7 @@ import type { GetAllCookies, SetAllCookies } from '@supabase/ssr/dist/main/types
 import { cookies, headers } from 'next/headers'
 import { ServerEnv } from '@/env/server'
 import { type NextRequest, NextResponse } from 'next/server'
-import { AUTH_PAGE_PATH, HOME_PAGE_PATH, PROTECTED_PATHS } from '@/lib/constants'
+import { AUTH_PAGES_PATHS, HOME_PAGE_PATH, PROTECTED_PATHS } from '@/lib/constants'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 
@@ -108,7 +108,7 @@ export async function sbProxy(request: NextRequest) {
         return NextResponse.redirect(url)
     }
 
-    if (user && request.nextUrl.pathname === AUTH_PAGE_PATH) {
+    if (user && [...AUTH_PAGES_PATHS].some((path) => request.nextUrl.pathname.startsWith(path))) {
         const url = request.nextUrl.clone()
         url.pathname = HOME_PAGE_PATH
         return NextResponse.redirect(url)

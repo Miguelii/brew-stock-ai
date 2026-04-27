@@ -4,7 +4,8 @@
     --card: #ffffff;
     --primary-muted: #909097;
 
-    --accent-blue: #3b82f6;
+    --accent-blue: #0047cc;
+    --accent-blue-dark: #003eb3;
     --accent-blue-light: #cfe1fb;
 
     --accent-green: #28a754;
@@ -50,6 +51,7 @@
 
     --color-accent-blue: var(--accent-blue);
     --color-accent-blue-light: var(--accent-blue-light);
+    --color-accent-blue-dark: var(--accent-blue-dark);
     --color-accent-green: var(--accent-green);
     --color-accent-green-light: var(--accent-green-light);
 

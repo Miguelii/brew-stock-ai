@@ -12,7 +12,7 @@ export const ClientEnv = createEnv({
     },
 })
 
-export function normalizeWebsiteUrl(normalized = 'http://localhost:3000'): string {
+function normalizeWebsiteUrl(normalized = 'http://localhost:3000'): string {
     // Always returns https
     if (!normalized.startsWith('http://') && !normalized.startsWith('https://')) {
         normalized = `https://${normalized}`

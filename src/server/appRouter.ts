@@ -4,11 +4,13 @@ import { z } from 'zod'
 import { Logger } from '@/lib/logger'
 import { publicProcedure, router } from './trpc'
 import { sbLogin } from '@/services/supabase/sb-login'
+import { sbSignUp } from '@/services/supabase/sb-signup'
 import { sbLogout } from '@/services/supabase/sb-logout'
 import { createReport } from '@/services/reports/create-report'
 import { getStockAnalysis } from '@/services/analysis/get-stock-analysis'
 import { getReports } from '@/services/reports/get-reports'
 import { getReportById } from '@/services/reports/get-report-by-id'
+import { exportReport } from '@/services/reports/export-report'
 import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 
 async function runEffect<A, E extends { _tag: string; error_hash: string }>(
@@ -88,6 +90,18 @@ export const appRouter = router({
             )
         ),
 
+    signUp: publicProcedure
+        .input(z.object({ email: z.email(), password: z.string().min(6) }))
+        .mutation(({ input }) =>
+            runEffect(sbSignUp(input.email, input.password), 'sbSignUp', (error) =>
+                Match.value(error).pipe(
+                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('SignUpError', () => 'BAD_REQUEST' as const),
+                    Match.exhaustive
+                )
+            )
+        ),
+
     getReports: publicProcedure.query(() =>
         runEffect(getReports(), 'getReports', (error) =>
             Match.value(error).pipe(
@@ -117,6 +131,18 @@ export const appRouter = router({
                 Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
                 Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
                 Match.tag('GetReportByIdError', () => 'NOT_FOUND' as const),
+                Match.exhaustive
+            )
+        )
+    ),
+
+    exportReport: publicProcedure.input(z.object({ id: z.string().min(1) })).mutation(({ input }) =>
+        runEffect(exportReport(input.id), 'exportReport', (error) =>
+            Match.value(error).pipe(
+                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                Match.tag('ExportReportError', () => 'INTERNAL_SERVER_ERROR' as const),
                 Match.exhaustive
             )
         )

@@ -28,7 +28,8 @@ export function PushNotificationPrompt() {
             toast.success('Notifications enabled.')
             setOpen(false)
         },
-        onError: () => {
+        onError: (error) => {
+            console.error(error)
             toast.error('Could not enable notifications.')
         },
     })
@@ -65,7 +66,8 @@ export function PushNotificationPrompt() {
                     keys: { p256dh: string; auth: string }
                 },
             })
-        } catch {
+        } catch (error) {
+            console.error(error)
             toast.error('Could not enable notifications. Check your browser permissions.')
             setOpen(false)
         } finally {

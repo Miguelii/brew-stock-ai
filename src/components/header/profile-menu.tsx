@@ -4,13 +4,21 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { UserRound, LogOut } from 'lucide-react'
+import { UserRound, LogOut, BellRing } from 'lucide-react'
 import { useLogout } from './use-logout'
+import { trpc } from '@/server/trpc-client'
+import { toast } from 'sonner'
 
 export function ProfileMenu() {
     const logout = useLogout()
+
+    const testNotification = trpc.sendPushNotification.useMutation({
+        onSuccess: () => toast.success('Test notification sent.'),
+        onError: () => toast.error('Failed to send test notification.'),
+    })
 
     return (
         <DropdownMenu>
@@ -19,14 +27,20 @@ export function ProfileMenu() {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="min-w-40 rounded-none">
-                {/*  <DropdownMenuItem>
-                    <Link href="/account" className="flex items-center gap-2.5">
-                        <LayoutDashboard size={14} className="text-muted-foreground" />
-                        Profile
-                    </Link>
-                </DropdownMenuItem> */}
+                <DropdownMenuItem
+                    onClick={() =>
+                        testNotification.mutate({
+                            title: 'Test notification',
+                            body: 'Push notifications are working! 🎉',
+                        })
+                    }
+                    disabled={testNotification.isPending}
+                >
+                    <BellRing size={14} />
+                    {testNotification.isPending ? 'Sending…' : 'Test notification'}
+                </DropdownMenuItem>
 
-                {/*  <DropdownMenuSeparator /> */}
+                <DropdownMenuSeparator />
 
                 <DropdownMenuItem onClick={() => logout.mutate()}>
                     <LogOut size={14} />

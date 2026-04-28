@@ -7,7 +7,7 @@ export function ReportsTable() {
     const query = trpc.getReports.useQuery(undefined, {
         staleTime: 1000 * 60 * 1, // 1m
         gcTime: 1000 * 60 * 1, // 1m
-        refetchInterval: 1000 * 30, // 30s
+        refetchInterval: 1000 * 20, // 20s
     })
 
     const reports = query.data

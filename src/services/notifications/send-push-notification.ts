@@ -2,11 +2,17 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import webpush from 'web-push'
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createSbAdminClient, createSbServerClient } from '@/lib/utils.server'
 import { ServerEnv } from '@/env/server'
-import { GetPushSubscriptionError, SendPushNotificationError } from '@/services/utils/constants'
-import { ClientEnv } from '@/env/client'
+import {
+    CreateSbClientError,
+    GetPushSubscriptionError,
+    SendPushNotificationError,
+    UnauthenticatedError,
+} from '@/services/utils/constants'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { ClientEnv } from '@/env/client'
+import { getSession } from '@/services/supabase/get-session'
 
 function setupVapid() {
     webpush.setVapidDetails(
@@ -14,6 +20,13 @@ function setupVapid() {
         ClientEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
         ServerEnv.VAPID_PRIVATE_KEY
     )
+}
+
+function fetchSubscriptions(supabase: SupabaseClient, userId: string) {
+    return Effect.tryPromise({
+        try: () => supabase.from('push_subscriptions').select('subscription').eq('user_id', userId),
+        catch: (cause) => new GetPushSubscriptionError({ cause, error_hash: 'esndpshfetch' }),
+    })
 }
 
 function sendToSubscriptions(
@@ -31,17 +44,48 @@ function sendToSubscriptions(
                     )
                 )
             ),
-        catch: (cause) => new SendPushNotificationError({ cause, error_hash: 'esndpshsend' }),
+        catch: (cause) => {
+            const statusCode = (cause as { statusCode?: number })?.statusCode
+            console.error('[sendToSubscriptions] statusCode:', statusCode, cause)
+            return new SendPushNotificationError({ cause, error_hash: 'esndpshsend' })
+        },
     }).pipe(Effect.map(() => ({ success: true as const })))
 }
 
-function fetchSubscriptions(supabase: SupabaseClient, userId: string) {
-    return Effect.tryPromise({
-        try: () => supabase.from('push_subscriptions').select('subscription').eq('user_id', userId),
-        catch: (cause) => new GetPushSubscriptionError({ cause, error_hash: 'esndpshfetch' }),
-    })
-}
+/**
+ * Send a push notification to the currently logged-in user.
+ * Uses the cookie-based Supabase client — for tRPC procedures.
+ */
+export const sendPushNotification = Effect.fn('sendPushNotification')(function* (
+    title: string,
+    body: string
+) {
+    setupVapid()
 
+    const supabase = yield* Effect.tryPromise({
+        try: () => createSbServerClient(),
+        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'esndpshclient' }),
+    })
+
+    const user = yield* getSession(supabase)
+
+    if (!user) {
+        return yield* new UnauthenticatedError({ error_hash: 'esndpshunauth' })
+    }
+
+    const { data: rows, error } = yield* fetchSubscriptions(supabase, user.id)
+
+    if (error)
+        return yield* new GetPushSubscriptionError({ cause: error, error_hash: 'esndpshusrerr' })
+    if (!rows?.length) return { success: false, reason: 'no_subscription' as const }
+
+    return yield* sendToSubscriptions(rows, title, body)
+})
+
+/**
+ * Send a push notification to a specific user by ID.
+ * Uses the admin client — for Trigger.dev tasks (no cookie available).
+ */
 export const sendPushNotificationToUser = Effect.fn('sendPushNotificationToUser')(function* (
     userId: string,
     title: string,
@@ -49,13 +93,12 @@ export const sendPushNotificationToUser = Effect.fn('sendPushNotificationToUser'
 ) {
     setupVapid()
 
-    // Called from Trigger.dev tasks — so uses admin client (no cookie needed)
     const supabase = createSbAdminClient()
 
     const { data: rows, error } = yield* fetchSubscriptions(supabase, userId)
 
     if (error)
-        return yield* new GetPushSubscriptionError({ cause: error, error_hash: 'esndpshusrerr' })
+        return yield* new GetPushSubscriptionError({ cause: error, error_hash: 'esndpshtousrerr' })
     if (!rows?.length) return { success: false, reason: 'no_subscription' as const }
 
     return yield* sendToSubscriptions(rows, title, body)

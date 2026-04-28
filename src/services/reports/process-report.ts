@@ -49,7 +49,13 @@ export const processReport = Effect.fn('processReport')(function* (reportId: str
         typedReport.user_id,
         `${typedReport.stock} analysis ready`,
         'Your report has been generated. Tap to view it.'
-    ).pipe(Effect.orElse(() => Effect.void))
+    ).pipe(
+        Effect.tap((result) => Effect.sync(() => logger.log('Push notification result', result))),
+        Effect.tapError((err) =>
+            Effect.sync(() => logger.error('Push notification failed', { err }))
+        ),
+        Effect.orElse(() => Effect.void)
+    )
 
     return { reportId: typedReport.id }
 })

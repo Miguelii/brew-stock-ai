@@ -14,6 +14,7 @@ import { getReportById } from '@/services/reports/get-report-by-id'
 import { exportReport } from '@/services/reports/export-report'
 import { subscribePush } from '@/services/notifications/subscribe-push'
 import { unsubscribePush } from '@/services/notifications/unsubscribe-push'
+import { sendPushNotification } from '@/services/notifications/send-push-notification'
 import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 
 async function runEffect<A, E extends { _tag: string; error_hash: string }>(
@@ -165,6 +166,30 @@ export const appRouter = router({
                     ),
                     Match.exhaustive
                 )
+            )
+        ),
+
+    sendPushNotification: publicProcedure
+        .input(z.object({ title: z.string().min(1), body: z.string().min(1) }))
+        .mutation(({ input }) =>
+            runEffect(
+                sendPushNotification(input.title, input.body),
+                'sendPushNotification',
+                (error) =>
+                    Match.value(error).pipe(
+                        Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                        Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                        Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                        Match.tag(
+                            'GetPushSubscriptionError',
+                            () => 'INTERNAL_SERVER_ERROR' as const
+                        ),
+                        Match.tag(
+                            'SendPushNotificationError',
+                            () => 'INTERNAL_SERVER_ERROR' as const
+                        ),
+                        Match.exhaustive
+                    )
             )
         ),
 })

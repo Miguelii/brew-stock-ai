@@ -27,6 +27,7 @@ export class CreateSbClientError extends Data.TaggedError('CreateSbClientError')
 }> {}
 
 export class UnauthenticatedError extends Data.TaggedError('UnauthenticatedError')<{
+    cause?: unknown
     error_hash: string
 }> {}
 

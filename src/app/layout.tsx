@@ -58,21 +58,12 @@ export const metadata: Metadata = {
         title: 'StockBrewAI — AI Stock Analysis',
         description:
             'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
-        images: [
-            {
-                url: '/assets/logo.png',
-                width: 1200,
-                height: 630,
-                alt: 'StockBrewAI — AI Stock Analysis',
-            },
-        ],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'StockBrewAI — AI Stock Analysis',
         description:
             'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
-        images: ['/assets/logo.png'],
     },
     robots: {
         index: true,
@@ -102,7 +93,7 @@ export default function RootLayout({ children }: Props) {
                 <Providers>
                     <Toaster />
                     <Header />
-                    {process.env.NEXT_PUBLIC_SHOW_BANNER === 'YES' ? <ComingSoon /> : null}
+                    <ComingSoon />
                     <div className="flex-1">{children}</div>
                     <Footer />
                 </Providers>

@@ -9,6 +9,7 @@ import { Providers } from '@/providers'
 import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
 import { ComingSoon } from '@/components/coming-soon'
+import { ServiceWorkerRegister } from '@/components/service-worker-register'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -87,6 +88,10 @@ export default function RootLayout({ children }: Props) {
             lang="en"
             className={`${geistSans.variable} ${geistMono.variable} bg-background antialiased font-sans text-primary`}
         >
+            <head>
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+                <meta name="apple-mobile-web-app-title" content="GuruFiances" />
+            </head>
             <VercelAnalytics />
             <VercelSpeedInsights />
             <body className="min-h-screen flex flex-col">
@@ -97,6 +102,7 @@ export default function RootLayout({ children }: Props) {
                     <div className="flex-1">{children}</div>
                     <Footer />
                 </Providers>
+                <ServiceWorkerRegister />
             </body>
         </html>
     )

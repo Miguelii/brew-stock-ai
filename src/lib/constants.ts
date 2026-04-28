@@ -27,7 +27,20 @@ export const PROMPT_OPTIONS = Object.values(PROMPT_TYPES)
 
 export const NEXT_IMAGE_PATH = '/_next/image'
 
-export const STATIC_PREFIXES = ['/_next', '/api/', '/assets', '/favicon', '/robots.txt', '/script']
+export const SW_PATH = '/sw.js'
+
+export const STATIC_PREFIXES = [
+    '/_next',
+    '/api/',
+    '/assets',
+    '/favicon',
+    '/robots.txt',
+    '/script',
+    SW_PATH,
+    '/apple-touch-icon',
+    '/web-app-manifest-192x192',
+    '/web-app-manifest-512x512',
+]
 
 export const PROTECTED_PATHS = new Set(['/reports', '/account'])
 

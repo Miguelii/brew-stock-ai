@@ -1,5 +1,5 @@
 import type { NextResponse } from 'next/server'
-import { NEXT_IMAGE_PATH } from '@/lib/constants'
+import { NEXT_IMAGE_PATH, SW_PATH } from '@/lib/constants'
 import { isPathFromStaticFiles } from '@/lib/utils'
 
 export const setCSP = (response: NextResponse, pathname: string) => {
@@ -7,13 +7,20 @@ export const setCSP = (response: NextResponse, pathname: string) => {
     const staticCsp = generateStaticCSP()
 
     if (isPathFromStaticFiles(pathname)) {
-        response.headers.set('Content-Security-Policy', staticCsp)
-
-        if (pathname.startsWith(NEXT_IMAGE_PATH)) {
-            response.headers.set('Cache-Control', 'public, max-age=31536000, must-revalidate')
+        // Special case for PWA
+        if (pathname.startsWith(SW_PATH)) {
+            response.headers.set('Content-Type', 'application/javascript; charset=utf-8')
+            response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+            response.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self'")
         } else {
-            // Let Next.js handle its own chunk caching
-            // overriding causes stale chunk errors after deploys or HMR in Next.js 16+
+            response.headers.set('Content-Security-Policy', staticCsp)
+
+            if (pathname.startsWith(NEXT_IMAGE_PATH)) {
+                response.headers.set('Cache-Control', 'public, max-age=31536000, must-revalidate')
+            } else {
+                // Let Next.js handle its own chunk caching
+                // overriding causes stale chunk errors after deploys or HMR in Next.js 16+
+            }
         }
     } else {
         response.headers.set('Content-Security-Policy', csp)

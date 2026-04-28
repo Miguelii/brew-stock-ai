@@ -11,7 +11,7 @@ export default function Logo({ imageSize = 28 }: Props) {
             <Image
                 height={imageSize}
                 width={imageSize}
-                src="/assets/logo_v2.png"
+                src="/assets/logo_no_bg.png"
                 alt="StockBrewAI logo"
             />
             <div className="font-bold text-lg tracking-tight pt-1.5">

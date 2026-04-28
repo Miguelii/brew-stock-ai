@@ -6,10 +6,12 @@ export const ServerEnv = createEnv({
         NEXT_SUPABASE_URL: z.string(),
         NEXT_SUPABASE_PUBLISHABLE_KEY: z.string(),
         NEXT_SUPABASE_SERVICE_ROLE_KEY: z.string(),
+        NEXT_ANTHROPIC_AI_KEY: z.string(),
     },
     runtimeEnv: {
         NEXT_SUPABASE_URL: process.env.NEXT_SUPABASE_URL,
         NEXT_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_SUPABASE_PUBLISHABLE_KEY,
         NEXT_SUPABASE_SERVICE_ROLE_KEY: process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY,
+        NEXT_ANTHROPIC_AI_KEY: process.env.NEXT_ANTHROPIC_AI_KEY,
     },
 })

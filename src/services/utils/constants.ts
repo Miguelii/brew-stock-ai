@@ -1,3 +1,5 @@
+import 'server-only'
+
 import { PROMPT_TYPES } from '@/lib/constants'
 import { Data } from 'effect'
 import {

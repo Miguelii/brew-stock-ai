@@ -30,7 +30,7 @@ export function ReportExport({ reportId }: Props) {
         <Button
             variant="outline"
             size="lg"
-            className="cursor-pointer bg-card rounded-none w-fit disabled:opacity-50"
+            className="cursor-pointer bg-card rounded-none w-full md:w-fit md:min-w-31.25"
             onClick={() => exportMutation.mutate({ id: reportId })}
             disabled={exportMutation.isPending}
         >

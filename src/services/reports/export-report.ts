@@ -144,17 +144,19 @@ function buildHtml(params: {
             font-size: 13px;
             color: #262626;
             line-height: 1.6;
-            display: flex;
-            gap: 8px;
+            position: relative;
+            padding-left: 1.25rem;
             margin-bottom: 6px;
         }
         .analysis li::before {
             content: '•';
             color: #0047CC;
             font-weight: 700;
-            flex-shrink: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
         }
-        .analysis li strong { white-space: nowrap; }
+        .analysis li > strong:first-child { display: block; }
         .analysis strong { color: #0047CC; font-weight: 600; }
         .analysis em { color: #909097; font-style: normal; }
 

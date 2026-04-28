@@ -8,7 +8,7 @@ type Props = {
 
 export function ReportSentimentCard({ report }: Props) {
     return (
-        <Card className="h-76 md:h-81">
+        <Card className="h-79 md:h-81">
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">AI Sentiment Score</CardTitle>
             </CardHeader>

@@ -35,7 +35,7 @@ export default async function ReportsIdPage(props: Props) {
                     </Button>
                 </Link>
 
-                <div className="flex flex-row w-full justify-between items-center">
+                <div className="flex flex-col gap-6 md:gap-0 items-start md:flex-row w-full justify-between md:items-center">
                     <div className="space-y-1">
                         <h1 className="text-3xl font-bold tracking-tight text-accent-blue font-mono">
                             {report.stock}

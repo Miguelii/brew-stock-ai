@@ -63,7 +63,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                             <DrawerClose asChild key={link.href}>
                                 <Link
                                     href={link.href}
-                                    className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-muted transition-colors hover:bg-muted"
+                                    className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
                                 >
                                     {link.label}
                                 </Link>

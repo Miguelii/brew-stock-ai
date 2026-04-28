@@ -59,17 +59,23 @@ html {
 
         /* Lists */
         ul {
-            @apply space-y-2 my-3 pl-0 list-none;
+            @apply space-y-2 my-3 list-none;
+            padding-left: 0;
         }
         li {
-            @apply text-sm text-primary leading-relaxed flex gap-2;
+            @apply text-sm text-primary leading-relaxed;
+            position: relative;
+            padding-left: 1.25rem;
         }
         li::before {
             content: '•';
-            @apply text-accent-blue shrink-0 font-bold;
+            @apply text-accent-blue font-bold;
+            position: absolute;
+            left: 0;
+            top: 0;
         }
-        li strong {
-            @apply whitespace-nowrap;
+        li > strong:first-child {
+            @apply block;
         }
 
         /* Emphasis */

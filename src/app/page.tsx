@@ -1,12 +1,9 @@
 import { AnalysisFormCard } from '@/features/analysis/analysis-form-card'
-import { getSession } from '@/services/supabase/get-session'
-import { Effect } from 'effect'
 import { WebApplicationSchema, WebSiteSchema } from '@/features/metadata/structured-data'
+import { getCachedSession } from '@/services/supabase/get-cached-session'
 
 export default async function Home() {
-    const user = await Effect.runPromise(
-        getSession().pipe(Effect.catchAll(() => Effect.succeed(null)))
-    )
+    const user = await getCachedSession()
 
     if (!user) {
         return (

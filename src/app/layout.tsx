@@ -10,6 +10,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
 import { PushNotificationPrompt } from '@/features/push-notifications/push-notification-prompt'
+import { getCachedSession } from '@/services/supabase/get-cached-session'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -81,7 +82,9 @@ export const metadata: Metadata = {
 
 type Props = LayoutProps<'/'>
 
-export default function RootLayout({ children }: Props) {
+export default async function RootLayout({ children }: Props) {
+    const user = await getCachedSession()
+
     return (
         <html
             data-scroll-behavior="smooth"
@@ -98,7 +101,7 @@ export default function RootLayout({ children }: Props) {
                 <Providers>
                     <Toaster />
                     <Header />
-                    <PushNotificationPrompt />
+                    {user && <PushNotificationPrompt />}
                     <div className="flex-1">{children}</div>
                     <Footer />
                 </Providers>

@@ -85,6 +85,26 @@ export class ExportReportError extends Data.TaggedError('ExportReportError')<{
     error_hash: string
 }> {}
 
+export class SavePushSubscriptionError extends Data.TaggedError('SavePushSubscriptionError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class DeletePushSubscriptionError extends Data.TaggedError('DeletePushSubscriptionError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class GetPushSubscriptionError extends Data.TaggedError('GetPushSubscriptionError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class SendPushNotificationError extends Data.TaggedError('SendPushNotificationError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
 export const PROMPTS_MAP: Record<string, string> = {
     [PROMPT_TYPES.STOCK_ANALYSIS.type]: WallStreetStyleStockAnalysisPrompt,
     [PROMPT_TYPES.DEEP_FINANCIAL_BREAKDOWN.type]: DeepFinancialBreakdownPrompt,

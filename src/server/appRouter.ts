@@ -1,3 +1,5 @@
+// oxlint-disable import/max-dependencies
+
 import { TRPCError } from '@trpc/server'
 import { Cause, Effect, Exit, Match, Option } from 'effect'
 import { z } from 'zod'
@@ -7,10 +9,11 @@ import { sbLogin } from '@/services/supabase/sb-login'
 import { sbSignUp } from '@/services/supabase/sb-signup'
 import { sbLogout } from '@/services/supabase/sb-logout'
 import { createReport } from '@/services/reports/create-report'
-import { getStockAnalysis } from '@/services/analysis/get-stock-analysis'
 import { getReports } from '@/services/reports/get-reports'
 import { getReportById } from '@/services/reports/get-report-by-id'
 import { exportReport } from '@/services/reports/export-report'
+import { subscribePush } from '@/services/notifications/subscribe-push'
+import { unsubscribePush } from '@/services/notifications/unsubscribe-push'
 import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 
 async function runEffect<A, E extends { _tag: string; error_hash: string }>(
@@ -36,28 +39,6 @@ async function runEffect<A, E extends { _tag: string; error_hash: string }>(
 }
 
 export const appRouter = router({
-    getStockAnalysis: publicProcedure
-        .input(
-            z.object({
-                stockSymbol: z.string().min(1),
-                promptType: z.string().min(1),
-                reportId: z.string().min(1),
-            })
-        )
-        .mutation(({ input }) =>
-            runEffect(
-                getStockAnalysis(input.stockSymbol, input.promptType, input.reportId),
-                'getStockAnalysis',
-                (error) =>
-                    Match.value(error).pipe(
-                        Match.tag('InvalidPromptTypeError', () => 'BAD_REQUEST' as const),
-                        Match.tag('AiGenerationError', () => 'INTERNAL_SERVER_ERROR' as const),
-                        //@ts-expect-error - debug only
-                        Match.exhaustive
-                    )
-            )
-        ),
-
     createReport: publicProcedure
         .input(
             z.object({
@@ -147,6 +128,45 @@ export const appRouter = router({
             )
         )
     ),
+
+    subscribePush: publicProcedure
+        .input(
+            z.object({
+                subscription: z.object({
+                    endpoint: z.string(),
+                    expirationTime: z.number().nullable(),
+                    keys: z.object({ p256dh: z.string(), auth: z.string() }),
+                }),
+            })
+        )
+        .mutation(({ input }) =>
+            runEffect(subscribePush(input.subscription), 'subscribePush', (error) =>
+                Match.value(error).pipe(
+                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                    Match.tag('SavePushSubscriptionError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.exhaustive
+                )
+            )
+        ),
+
+    unsubscribePush: publicProcedure
+        .input(z.object({ endpoint: z.string() }))
+        .mutation(({ input }) =>
+            runEffect(unsubscribePush(input.endpoint), 'unsubscribePush', (error) =>
+                Match.value(error).pipe(
+                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                    Match.tag(
+                        'DeletePushSubscriptionError',
+                        () => 'INTERNAL_SERVER_ERROR' as const
+                    ),
+                    Match.exhaustive
+                )
+            )
+        ),
 })
 
 export type AppRouter = typeof appRouter

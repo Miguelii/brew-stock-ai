@@ -6,6 +6,7 @@ import { logger } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
 import { getStockAnalysis } from '../analysis/get-stock-analysis'
 import { FetchReportForTaskError, MarkReportFailedError } from '../utils/constants'
+import { sendPushNotificationToUser } from '../notifications/send-push-notification'
 
 export const processReport = Effect.fn('processReport')(function* (reportId: string) {
     const supabase = createSbAdminClient()
@@ -43,6 +44,12 @@ export const processReport = Effect.fn('processReport')(function* (reportId: str
     )
 
     logger.log('Report completed', { reportId: typedReport.id })
+
+    yield* sendPushNotificationToUser(
+        typedReport.user_id,
+        `${typedReport.stock} analysis ready`,
+        'Your report has been generated. Tap to view it.'
+    ).pipe(Effect.orElse(() => Effect.void))
 
     return { reportId: typedReport.id }
 })

@@ -16,7 +16,6 @@ import Link from 'next/link'
 import type { ReportListItem } from '@/types/ReportDTO'
 import { ReportStatus } from '@/types/ReportDTO'
 import { Skeleton } from '@/components/ui/skeleton'
-import { trpc } from '@/server/trpc-client'
 import { PROMPT_OPTIONS } from '@/lib/constants'
 import { parseReportDate } from '@/lib/utils'
 
@@ -138,48 +137,13 @@ function StatusBadge({ status }: { status: ReportStatus }) {
 }
 
 function ActionCell({ status, report }: { status: ReportStatus; report: ReportListItem }) {
-    const proccessReport = trpc.getStockAnalysis.useMutation()
-
-    const onDebugClick = async () => {
-        await proccessReport.mutateAsync({
-            stockSymbol: report.stock,
-            promptType: report.type,
-            reportId: report.id,
-        })
-    }
-
     if (status === ReportStatus.COMPLETED) {
         return (
-            <div className="flex flex-row gap-5 w-full justify-end">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="cursor-pointer"
-                    onClick={() => onDebugClick()}
-                >
-                    DEGUB
+            <Link className="contents" href={`/reports/${report.id}`} prefetch={false}>
+                <Button variant="outline" size="sm" className="cursor-pointer bg-card rounded-none">
+                    View Report
                 </Button>
-                <Link className="contents" href={`/reports/${report.id}`} prefetch={false}>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="cursor-pointer bg-card rounded-none"
-                    >
-                        View Report
-                    </Button>
-                </Link>
-            </div>
+            </Link>
         )
     }
-
-    return (
-        <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer"
-            onClick={() => onDebugClick()}
-        >
-            DEGUB
-        </Button>
-    )
 }

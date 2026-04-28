@@ -8,8 +8,6 @@ import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2Icon } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
-import Link from 'next/link'
 
 export function AuthCard() {
     const login = trpc.signIn.useMutation()
@@ -34,7 +32,7 @@ export function AuthCard() {
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                    <Button variant="outline" type="button" className="w-full gap-2">
+                    {/* <Button variant="outline" type="button" className="w-full gap-2">
                         <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                             <path
                                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -60,7 +58,7 @@ export function AuthCard() {
                         <Separator className="flex-1" />
                         <span className="text-xs text-primary-muted">OR</span>
                         <Separator className="flex-1" />
-                    </div>
+                    </div> */}
 
                     <FormField
                         control={form.control}
@@ -114,10 +112,11 @@ export function AuthCard() {
             </Form>
 
             <p className="text-center text-sm text-muted-foreground">
-                Don&apos;t have an account?{' '}
+                Beta access only. Sign up coming soon.
+                {/* Don&apos;t have an account?{' '}
                 <Link href="/sign-up" className="text-primary underline font-medium">
                     Sign up
-                </Link>
+                </Link> */}
             </p>
         </div>
     )

@@ -12,10 +12,13 @@ function serializeError(error: unknown): unknown {
 
     // Effect TaggedError — has _tag, skip the Effect fiber stack
     if (typeof error === 'object' && '_tag' in error) {
-        const { stack: _, ...fields } = error as Record<string, unknown>
+        const e = error as Record<string, unknown>
+        const { stack: _, ...fields } = e
         return {
             ...fields,
-            cause: serializeError(fields.cause),
+            // cause is non-enumerable on Data.TaggedError so it won't appear
+            // in the spread — access it directly via property lookup instead
+            cause: serializeError(e.cause),
         }
     }
 

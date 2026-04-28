@@ -8,8 +8,8 @@ import { Header } from '@/components/header'
 import { Providers } from '@/providers'
 import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
-import { ComingSoon } from '@/components/coming-soon'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
+import { PushNotificationPrompt } from '@/features/push-notifications/push-notification-prompt'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -98,7 +98,7 @@ export default function RootLayout({ children }: Props) {
                 <Providers>
                     <Toaster />
                     <Header />
-                    <ComingSoon />
+                    <PushNotificationPrompt />
                     <div className="flex-1">{children}</div>
                     <Footer />
                 </Providers>

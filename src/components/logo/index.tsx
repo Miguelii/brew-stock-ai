@@ -13,6 +13,7 @@ export default function Logo({ imageSize = 28 }: Props) {
                 width={imageSize}
                 src="/assets/logo_no_bg.png"
                 alt="StockBrewAI logo"
+                className="w-auto h-auto"
             />
             <div className="font-bold text-lg tracking-tight pt-1.5">
                 <span>StockBrew</span>

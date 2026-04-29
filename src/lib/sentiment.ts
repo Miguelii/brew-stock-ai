@@ -5,12 +5,6 @@ interface SentimentInfo {
 
 /**
  * Maps a 0–100 sentiment score to a label, level key, and colour.
- *
- *  0–24   → Extreme Bearish  (#ef4444)
- * 25–44   → Bearish          (#f97316)
- * 45–55   → Neutral          (#f59e0b)
- * 56–75   → Bullish          (#84cc16)
- * 76–100  → Extreme Bullish  (#22c55e)
  */
 export function getSentimentInfo(score: number): SentimentInfo {
     if (score <= 24) return { label: 'Extreme Bearish', color: EXTREME_BEARISH_COLOR }

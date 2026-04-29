@@ -1,7 +1,8 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer-core'
+import chromium from '@sparticuz/chromium'
 import { createSbServerClient } from '@/lib/utils.server'
 import { PROMPT_TYPES } from '@/lib/constants'
 import {
@@ -12,12 +13,7 @@ import {
 import type { ReportDTO } from '@/types/ReportDTO'
 import type { PropmptsEnum } from '@/types/PropmptsEnum'
 import { getSession } from '@/services/supabase/get-session'
-
-function getSentimentLabel(sentiment: ReportDTO['sentiment']) {
-    if (sentiment >= 69) return { label: 'Bullish', color: '#28a754' }
-    if (sentiment >= 30) return { label: 'Neutral', color: '#f59e0b' }
-    return { label: 'Bearish', color: '#ef4444' }
-}
+import { getSentimentInfo } from '@/lib/sentiment'
 
 function buildHtml(params: {
     stock: ReportDTO['stock']
@@ -28,7 +24,7 @@ function buildHtml(params: {
 }) {
     const { stock, type, ai_response, sentiment, created_at } = params
     const label = PROMPT_TYPES[type as PropmptsEnum]?.label ?? type
-    const { label: sentimentLabel, color: sentimentColor } = getSentimentLabel(sentiment)
+    const { label: sentimentLabel, color: sentimentColor } = getSentimentInfo(sentiment)
     const date = new Date(created_at).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -236,11 +232,16 @@ export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['
 
     const pdf = yield* Effect.tryPromise({
         try: async () => {
-            // oxlint-disable-next-line import/no-named-as-default-member
-            const browser = await puppeteer.launch({
-                headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            })
+            // @sparticuz/chromium ships a Linux binary — only use it on Vercel/serverless.
+            // In local dev (macOS), fall back to puppeteer (full) which manages its own Chrome.
+            const isDev = process.env.NODE_ENV === 'development'
+            const browser = isDev
+                ? await (await import('puppeteer')).launch({ headless: true })
+                : await puppeteer.launch({
+                      args: chromium.args,
+                      executablePath: await chromium.executablePath(),
+                      headless: true,
+                  })
             const page = await browser.newPage()
             await page.setContent(html, { waitUntil: 'networkidle0' })
             const buffer = await page.pdf({

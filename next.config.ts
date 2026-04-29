@@ -23,6 +23,8 @@ const nextConfig: NextConfig = {
             'tailwind-merge',
             'tw-animate-css',
             'vaul',
+            '@sparticuz/chromium',
+            'puppeteer-core',
         ],
     },
     images: {

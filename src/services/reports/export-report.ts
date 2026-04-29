@@ -237,7 +237,8 @@ export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['
             const isDev = process.env.NODE_ENV === 'development'
             const browser = isDev
                 ? await (await import('puppeteer')).launch({ headless: true })
-                : await puppeteer.launch({
+                : // oxlint-disable-next-line import/no-named-as-default-member
+                  await puppeteer.launch({
                       args: chromium.args,
                       executablePath: await chromium.executablePath(),
                       headless: true,

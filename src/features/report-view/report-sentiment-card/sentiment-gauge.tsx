@@ -1,14 +1,42 @@
 'use client'
 
-import { EXTREME_BEARISH_COLOR, EXTREME_BULLISH_COLOR, NEUTRAL_COLOR } from '@/lib/sentiment'
+import {
+    BEARISH_COLOR,
+    BULLISH_COLOR,
+    EXTREME_BEARISH_COLOR,
+    EXTREME_BULLISH_COLOR,
+    getSentimentInfo,
+    NEUTRAL_COLOR,
+} from '@/lib/sentiment'
 
 const CX = 100
 const CY = 100
-const R_OUT = 78
-const R_IN = 56
-const NEEDLE_LEN = 68
+const R_OUT = 88
+const R_IN = 52
+const R_MID = (R_OUT + R_IN) / 2 // 70
+const NEEDLE_LEN = 62
 const NEEDLE_BASE_R = 5
-const STEPS = 90 // 2° per segment → smooth gradient
+const GAP = 0.5
+
+interface SegmentDef {
+    startScore: number
+    endScore: number
+    color: string
+    lines: string[]
+}
+
+const SEGMENTS: SegmentDef[] = [
+    { startScore: 0, endScore: 24, color: EXTREME_BEARISH_COLOR, lines: ['EXTREME', 'BEARISH'] },
+    { startScore: 25, endScore: 42, color: BEARISH_COLOR, lines: ['BEARISH'] },
+    { startScore: 43, endScore: 57, color: NEUTRAL_COLOR, lines: ['NEUTRAL'] },
+    { startScore: 58, endScore: 75, color: BULLISH_COLOR, lines: ['BULLISH'] },
+    { startScore: 76, endScore: 100, color: EXTREME_BULLISH_COLOR, lines: ['EXTREME', 'BULLISH'] },
+]
+
+/** Maps score 0–100 to an angle in degrees: 0 → 180° (left), 100 → 0° (right). */
+function scoreToAngle(score: number) {
+    return 180 * (1 - score / 100)
+}
 
 function pt(r: number, deg: number) {
     const rad = (deg * Math.PI) / 180
@@ -19,13 +47,13 @@ function fmt(n: number) {
     return n.toFixed(2)
 }
 
-function donutSector(fromDeg: number, toDeg: number) {
+/** Donut sector path from fromDeg → toDeg (fromDeg > toDeg, i.e. left → right). */
+function arcPath(fromDeg: number, toDeg: number) {
     const o1 = pt(R_OUT, fromDeg)
     const o2 = pt(R_OUT, toDeg)
     const i2 = pt(R_IN, toDeg)
     const i1 = pt(R_IN, fromDeg)
-    const span = Math.abs(fromDeg - toDeg)
-    const large = span > 180 ? 1 : 0
+    const large = Math.abs(fromDeg - toDeg) > 180 ? 1 : 0
     return [
         `M ${fmt(o1.x)} ${fmt(o1.y)}`,
         `A ${R_OUT} ${R_OUT} 0 ${large} 1 ${fmt(o2.x)} ${fmt(o2.y)}`,
@@ -35,33 +63,68 @@ function donutSector(fromDeg: number, toDeg: number) {
     ].join(' ')
 }
 
-/** Interpolate hue 0 (red) → 120 (green) through yellow, matching the image. */
-function segmentColor(step: number) {
-    const hue = (step / STEPS) * 120
-    return `hsl(${hue.toFixed(1)}, 88%, 52%)`
-}
-
 interface Props {
     score: number // 0–100
 }
 
 export function SentimentGauge({ score }: Props) {
     const clamped = Math.min(100, Math.max(0, score))
-    //const { label, color } = getSentimentInfo(clamped)
+    const { label, color } = getSentimentInfo(clamped)
 
-    // Needle: score 0 → 180° (left), score 100 → 0° (right)
     const needleAngleRad = Math.PI * (1 - clamped / 100)
     const needleX = CX + NEEDLE_LEN * Math.cos(needleAngleRad)
     const needleY = CY - NEEDLE_LEN * Math.sin(needleAngleRad)
 
     return (
-        <div className="flex flex-col items-center gap-1">
-            <svg viewBox="0 0 200 104" className="w-full max-w-60">
-                {/* Gradient arc — 90 × 2° segments blended red→yellow→green */}
-                {Array.from({ length: STEPS }, (_, i) => {
-                    const fromDeg = 180 - (i / STEPS) * 179
-                    const toDeg = 180 - ((i + 1) / STEPS) * 179
-                    return <path key={i} d={donutSector(fromDeg, toDeg)} fill={segmentColor(i)} />
+        <div className="flex flex-col items-center gap-2">
+            <svg viewBox="0 0 200 108" className="w-full max-w-64">
+                {SEGMENTS.map((seg, i) => {
+                    // Apply half-gap inward on each shared boundary (none on the outer edges)
+                    const startAngle = i === 0 ? 180 : scoreToAngle(seg.startScore) - GAP
+                    const endAngle =
+                        i === SEGMENTS.length - 1 ? 0 : scoreToAngle(seg.endScore) + GAP
+
+                    // Text sits at mid-radius, mid-angle of the segment
+                    const midAngle = (startAngle + endAngle) / 2
+                    const textPt = pt(R_MID, midAngle)
+
+                    // Rotate text so it follows the curvature (perpendicular to radius)
+                    const rotation = -(midAngle - 90)
+
+                    return (
+                        <g key={seg.startScore}>
+                            {/* Segment arc — always coloured */}
+                            <path d={arcPath(startAngle, endAngle)} fill={seg.color} />
+
+                            {/* Label — translated to mid-point then rotated along the arc */}
+                            <g
+                                transform={`translate(${fmt(textPt.x)}, ${fmt(textPt.y)}) rotate(${rotation.toFixed(1)})`}
+                            >
+                                <text
+                                    textAnchor="middle"
+                                    fontSize={seg.lines.length > 1 ? '4.5' : '5'}
+                                    fontWeight="700"
+                                    letterSpacing="0.2"
+                                    fill="white"
+                                >
+                                    {seg.lines.length === 1 ? (
+                                        <tspan x="0" dy="2">
+                                            {seg.lines[0]}
+                                        </tspan>
+                                    ) : (
+                                        <>
+                                            <tspan x="0" dy="-1.5">
+                                                {seg.lines[0]}
+                                            </tspan>
+                                            <tspan x="0" dy="6">
+                                                {seg.lines[1]}
+                                            </tspan>
+                                        </>
+                                    )}
+                                </text>
+                            </g>
+                        </g>
+                    )
                 })}
 
                 {/* Needle */}
@@ -71,7 +134,7 @@ export function SentimentGauge({ score }: Props) {
                     x2={fmt(needleX)}
                     y2={fmt(needleY)}
                     stroke="var(--muted-foreground)"
-                    strokeWidth={2.5}
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                 />
 
@@ -79,13 +142,12 @@ export function SentimentGauge({ score }: Props) {
                 <circle cx={CX} cy={CY} r={NEEDLE_BASE_R} fill="var(--muted-foreground)" />
             </svg>
 
-            <div className="mt-1 flex w-full max-w-60 justify-between px-3 text-[10px] font-semibold tracking-wide">
-                <span style={{ color: EXTREME_BEARISH_COLOR }}>BEARISH</span>
-                <span style={{ color: NEUTRAL_COLOR }}>NEUTRAL</span>
-                <span style={{ color: EXTREME_BULLISH_COLOR }}>BULLISH</span>
-            </div>
+            {/* Active label */}
+            <p className="text-sm font-bold tracking-wide" style={{ color }}>
+                {label.toUpperCase()}
+            </p>
 
-            <p className="mt-3 w-full text-center text-[10px] leading-relaxed text-muted-foreground">
+            <p className="mt-1 w-full text-center text-[10px] leading-relaxed text-muted-foreground">
                 This score reflects the sentiment inferred from the AI analysis only and does not
                 constitute financial advice or an investment recommendation.
             </p>

@@ -19,9 +19,9 @@ You must always respond with a JSON object containing exactly two fields:
 
 2. "sentiment": An integer from 0 to 100 representing your conviction on the stock:
    - 0–24: Extreme Bearish
-   - 25–44: Bearish
-   - 45–55: Neutral
-   - 56–75: Bullish
+   - 25–42: Bearish
+   - 43–57: Neutral
+   - 58–75: Bullish
    - 76–100: Extreme Bullish
    Base this strictly on the analysis you performed. Be honest and precise.
 `

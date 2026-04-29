@@ -1,11 +1,6 @@
 'use client'
 
-import {
-    EXTREME_BEARISH_COLOR,
-    EXTREME_BULLISH_COLOR,
-    getSentimentInfo,
-    NEUTRAL_COLOR,
-} from '@/lib/sentiment'
+import { EXTREME_BEARISH_COLOR, EXTREME_BULLISH_COLOR, NEUTRAL_COLOR } from '@/lib/sentiment'
 
 const CX = 100
 const CY = 100
@@ -52,7 +47,7 @@ interface Props {
 
 export function SentimentGauge({ score }: Props) {
     const clamped = Math.min(100, Math.max(0, score))
-    const { label, color } = getSentimentInfo(clamped)
+    //const { label, color } = getSentimentInfo(clamped)
 
     // Needle: score 0 → 180° (left), score 100 → 0° (right)
     const needleAngleRad = Math.PI * (1 - clamped / 100)
@@ -85,15 +80,9 @@ export function SentimentGauge({ score }: Props) {
             </svg>
 
             <div className="mt-1 flex w-full max-w-60 justify-between px-3 text-[10px] font-semibold tracking-wide">
-                <span style={{ color: EXTREME_BEARISH_COLOR }} className="">
-                    BEARISH
-                </span>
-                <span style={{ color: NEUTRAL_COLOR }} className="">
-                    NEUTRAL
-                </span>
-                <span style={{ color: EXTREME_BULLISH_COLOR }} className="">
-                    BULLISH
-                </span>
+                <span style={{ color: EXTREME_BEARISH_COLOR }}>BEARISH</span>
+                <span style={{ color: NEUTRAL_COLOR }}>NEUTRAL</span>
+                <span style={{ color: EXTREME_BULLISH_COLOR }}>BULLISH</span>
             </div>
 
             <p className="mt-3 w-full text-center text-[10px] leading-relaxed text-muted-foreground">

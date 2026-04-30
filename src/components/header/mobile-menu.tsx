@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { Menu, X, LayoutDashboard, LogOut } from 'lucide-react'
+import { Menu, X, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer'
 import { Separator } from '@/components/ui/separator'
@@ -76,7 +76,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                         <Separator className="mb-4" />
                         {isAuthenticated ? (
                             <div className="flex flex-col gap-1">
-                                <DrawerClose asChild>
+                                {/* <DrawerClose asChild>
                                     <Link
                                         href="/account"
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-primary transition-colors hover:bg-muted"
@@ -87,7 +87,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                                         />
                                         Profile
                                     </Link>
-                                </DrawerClose>
+                                </DrawerClose> */}
                                 <button
                                     onClick={onClickHandler}
                                     disabled={logout.isPending}

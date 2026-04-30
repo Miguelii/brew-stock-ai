@@ -12,7 +12,7 @@ import { useLogout } from './use-logout'
 import { trpc } from '@/server/trpc-client'
 import { toast } from 'sonner'
 
-export function ProfileMenu() {
+export function ProfileDropdownMenu() {
     const logout = useLogout()
 
     const testNotification = trpc.sendPushNotification.useMutation({

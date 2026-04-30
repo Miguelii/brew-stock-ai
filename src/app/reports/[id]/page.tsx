@@ -9,19 +9,37 @@ import { ReportExport } from '@/features/report-view/report-export'
 import { notFound } from 'next/navigation'
 import { Effect } from 'effect'
 import { getReportById } from '@/services/reports/get-report-by-id'
+import { cache } from 'react'
+import type { ReportDTO } from '@/types/ReportDTO'
+import { ReportTldrCard } from '@/features/report-view/report-tldr-card'
 
 type Props = PageProps<'/reports/[id]'>
 
-export const metadata: Metadata = {
-    title: 'See Report',
+const getCachedReportById = cache(async (id: ReportDTO['id']) => {
+    return await Effect.runPromise(
+        getReportById(id).pipe(Effect.catchAll(() => Effect.succeed(null)))
+    )
+})
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { id } = await params
+
+    const report = await getCachedReportById(id)
+
+    if (report?.stock) {
+        return {
+            title: report.stock.charAt(0).toUpperCase() + report.stock.slice(1).toLowerCase(),
+        }
+    }
+    return {
+        title: 'See Report',
+    }
 }
 
 export default async function ReportsIdPage(props: Props) {
     const params = await props.params
 
-    const report = await Effect.runPromise(
-        getReportById(params.id).pipe(Effect.catchAll(() => Effect.succeed(null)))
-    )
+    const report = await getCachedReportById(params.id)
 
     if (!report) return notFound()
 
@@ -50,9 +68,10 @@ export default async function ReportsIdPage(props: Props) {
 
             <Separator />
 
+            <ReportTldrCard report={report} />
+
             <div className="flex flex-col-reverse md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
                 <ReportAnalysisCard report={report} />
-
                 <ReportSentimentCard report={report} />
             </div>
         </main>

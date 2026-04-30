@@ -1,4 +1,4 @@
-import { ProfileMenu } from './profile-menu'
+import { ProfileDropdownMenu } from './profile-dropdown-menu'
 import { MobileMenu } from './mobile-menu'
 import { NavLinks, LoginLink } from './nav-links'
 import { CreditsDisplay } from './credits-display'
@@ -38,7 +38,7 @@ export async function Header() {
                         {user ? (
                             <div className="flex items-center gap-2">
                                 <CreditsDisplay credits={3} />
-                                <ProfileMenu />
+                                <ProfileDropdownMenu />
                             </div>
                         ) : (
                             <LoginLink />

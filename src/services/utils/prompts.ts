@@ -16,6 +16,7 @@ You must always respond with a JSON object containing exactly two fields:
    - <strong> for emphasis on key metrics or terms
    - <em> for secondary emphasis
    Do NOT include <html>, <head>, <body> or any document-level tags. Only inner content.
+   Always end the analysis with an <h3>Investment Thesis Summary</h3> section containing a single concise <p> that summarises the entire analysis in 2–3 sentences — the key takeaway a busy investor needs to know.
 
 2. "sentiment": An integer from 0 to 100 representing your conviction on the stock:
    - 0–24: Extreme Bearish

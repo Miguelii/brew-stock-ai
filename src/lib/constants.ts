@@ -29,7 +29,7 @@ export const NEXT_IMAGE_PATH = '/_next/image'
 
 export const SW_PATH = '/sw.js'
 
-export const CHROMIUM_PACK_PATH = '/chromium-v148.0.0-pack.x64'
+export const CHROMIUM_PACK_PATH = '/chromium-v148.0.0-pack.x64.tar'
 
 export const STATIC_PREFIXES = [
     '/_next',

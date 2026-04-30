@@ -16,7 +16,7 @@ import { getSession } from '@/services/supabase/get-session'
 
 function setupVapid() {
     webpush.setVapidDetails(
-        `mailto:${ServerEnv.VAPID_EMAIL}`,
+        'mailto:miguelgoncalves18@hotmail.com',
         ClientEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
         ServerEnv.VAPID_PRIVATE_KEY
     )

@@ -1,6 +1,7 @@
 import { ProfileMenu } from './profile-menu'
 import { MobileMenu } from './mobile-menu'
 import { NavLinks, LoginLink } from './nav-links'
+import { CreditsDisplay } from './credits-display'
 import { Effect } from 'effect'
 import { getSession } from '@/services/supabase/get-session'
 import type { NavLink } from '@/types/NavLink'
@@ -34,7 +35,14 @@ export async function Header() {
                     <MobileMenu isAuthenticated={!!user} nav={navLinks} />
                     <div className="hidden md:flex items-center gap-5">
                         <NavLinks links={navLinks} />
-                        {user ? <ProfileMenu /> : <LoginLink />}
+                        {user ? (
+                            <div className="flex items-center gap-2">
+                                <CreditsDisplay credits={3} />
+                                <ProfileMenu />
+                            </div>
+                        ) : (
+                            <LoginLink />
+                        )}
                     </div>
                 </div>
             </div>

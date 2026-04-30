@@ -6,11 +6,9 @@ loadSystemEnvs()
 const buildTimestamp = Date.now().toString()
 
 const nextConfig: NextConfig = {
-    /* config options here */
     reactCompiler: true,
-    // Keep native-binary packages out of the Next.js bundle so their
-    // file paths (e.g. @sparticuz/chromium/bin) remain intact on Vercel.
-    serverExternalPackages: ['@sparticuz/chromium', 'puppeteer-core'],
+    // Prevent Next.js from bundling these packages (they contain native binaries)
+    serverExternalPackages: ['@sparticuz/chromium-min', 'puppeteer-core'],
     experimental: {
         viewTransition: true,
         optimizePackageImports: [

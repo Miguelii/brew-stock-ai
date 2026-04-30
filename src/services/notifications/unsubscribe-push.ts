@@ -9,7 +9,7 @@ import {
 } from '@/services/utils/constants'
 import { getSession } from '@/services/supabase/get-session'
 
-export const unsubscribePush = Effect.fn('unsubscribePush')(function* (endpoint: string) {
+export const unsubscribePush = Effect.fn('unsubscribePush')(function* () {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
         catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eunsubpshsbclnt' }),
@@ -22,12 +22,7 @@ export const unsubscribePush = Effect.fn('unsubscribePush')(function* (endpoint:
     }
 
     const { error } = yield* Effect.tryPromise({
-        try: () =>
-            supabase
-                .from('push_subscriptions')
-                .delete()
-                .eq('user_id', user.id)
-                .eq('endpoint', endpoint),
+        try: () => supabase.from('push_subscriptions').delete().eq('user_id', user.id),
         catch: (cause) => new DeletePushSubscriptionError({ cause, error_hash: 'eunsubpshdelete' }),
     })
 

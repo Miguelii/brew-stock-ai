@@ -1,10 +1,8 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import puppeteer from 'puppeteer-core'
-import chromium from '@sparticuz/chromium'
 import { createSbServerClient } from '@/lib/utils.server'
-import { PROMPT_TYPES } from '@/lib/constants'
+import { CHROMIUM_PACK_PATH, PROMPT_TYPES } from '@/lib/constants'
 import {
     CreateSbClientError,
     ExportReportError,
@@ -14,6 +12,32 @@ import type { ReportDTO } from '@/types/ReportDTO'
 import type { PropmptsEnum } from '@/types/PropmptsEnum'
 import { getSession } from '@/services/supabase/get-session'
 import { getSentimentInfo } from '@/lib/sentiment'
+import { ClientEnv } from '@/env/client'
+
+const CHROMIUM_PACK_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}/${CHROMIUM_PACK_PATH}`
+
+let cachedExecutablePath: string | null = null
+let downloadPromise: Promise<string> | null = null
+
+const getChromiumPath = Effect.fn('getChromiumPath')(function* () {
+    if (cachedExecutablePath) return cachedExecutablePath
+
+    downloadPromise ??= import('@sparticuz/chromium-min')
+        .then((m) => m.default.executablePath(CHROMIUM_PACK_URL))
+        .then((path) => {
+            cachedExecutablePath = path
+            return path
+        })
+        .catch((err) => {
+            downloadPromise = null // reset to allow retry
+            throw err
+        })
+
+    return yield* Effect.tryPromise({
+        try: () => downloadPromise!,
+        catch: (cause) => new ExportReportError({ cause, error_hash: 'echrmpath' }),
+    })
+})
 
 function buildHtml(params: {
     stock: ReportDTO['stock']
@@ -230,27 +254,43 @@ export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['
 
     const html = buildHtml(report)
 
+    const isDev = process.env.NODE_ENV === 'development'
+
+    // Resolve the Chromium path before entering the tryPromise async context
+    // so we can use yield* (Effect.gen) instead of await (async/Promise)
+    const chromiumPath = isDev ? null : yield* getChromiumPath()
+
     const pdf = yield* Effect.tryPromise({
         try: async () => {
-            // @sparticuz/chromium ships a Linux binary — only use it on Vercel/serverless.
-            // In local dev (macOS), fall back to puppeteer (full) which manages its own Chrome.
-            const isDev = process.env.NODE_ENV === 'development'
-            const browser = isDev
-                ? await (await import('puppeteer')).launch({ headless: true })
-                : // oxlint-disable-next-line import/no-named-as-default-member
-                  await puppeteer.launch({
-                      args: chromium.args,
-                      executablePath: await chromium.executablePath(),
-                      headless: true,
-                  })
+            let puppeteer: any
+            let launchOptions: any = { headless: true }
+
+            if (isDev) {
+                puppeteer = await import('puppeteer')
+            } else {
+                const chromium = (await import('@sparticuz/chromium-min')).default
+                puppeteer = await import('puppeteer-core')
+                launchOptions = {
+                    ...launchOptions,
+                    args: chromium.args,
+                    executablePath: chromiumPath!,
+                }
+            }
+
+            const browser = await puppeteer.launch(launchOptions)
+
             const page = await browser.newPage()
+
             await page.setContent(html, { waitUntil: 'networkidle0' })
+
             const buffer = await page.pdf({
                 format: 'A4',
                 printBackground: true,
                 margin: { top: '0', right: '0', bottom: '0', left: '0' },
             })
+
             await browser.close()
+
             return buffer
         },
         catch: (cause) => new ExportReportError({ cause, error_hash: 'eexprptpdf' }),

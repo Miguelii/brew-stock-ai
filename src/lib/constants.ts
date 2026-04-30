@@ -29,6 +29,8 @@ export const NEXT_IMAGE_PATH = '/_next/image'
 
 export const SW_PATH = '/sw.js'
 
+export const CHROMIUM_PACK_PATH = '/chromium-v148.0.0-pack.arm64.tar'
+
 export const STATIC_PREFIXES = [
     '/_next',
     '/api/',
@@ -40,6 +42,7 @@ export const STATIC_PREFIXES = [
     '/apple-touch-icon',
     '/web-app-manifest-192x192',
     '/web-app-manifest-512x512',
+    CHROMIUM_PACK_PATH,
 ]
 
 export const PROTECTED_PATHS = new Set(['/reports', '/account'])

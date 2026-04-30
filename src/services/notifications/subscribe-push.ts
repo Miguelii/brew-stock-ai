@@ -34,14 +34,9 @@ export const subscribePush = Effect.fn('subscribePush')(function* (
 
     const { error } = yield* Effect.tryPromise({
         try: () =>
-            supabase.from('push_subscriptions').upsert(
-                {
-                    user_id: user.id,
-                    endpoint: subscription.endpoint,
-                    subscription,
-                },
-                { onConflict: 'user_id, endpoint' }
-            ),
+            supabase
+                .from('push_subscriptions')
+                .upsert({ user_id: user.id, subscription }, { onConflict: 'user_id' }),
         catch: (cause) => new SavePushSubscriptionError({ cause, error_hash: 'esubpshsave' }),
     })
 

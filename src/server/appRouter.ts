@@ -152,22 +152,17 @@ export const appRouter = router({
             )
         ),
 
-    unsubscribePush: publicProcedure
-        .input(z.object({ endpoint: z.string() }))
-        .mutation(({ input }) =>
-            runEffect(unsubscribePush(input.endpoint), 'unsubscribePush', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                    Match.tag(
-                        'DeletePushSubscriptionError',
-                        () => 'INTERNAL_SERVER_ERROR' as const
-                    ),
-                    Match.exhaustive
-                )
+    unsubscribePush: publicProcedure.mutation(() =>
+        runEffect(unsubscribePush(), 'unsubscribePush', (error) =>
+            Match.value(error).pipe(
+                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                Match.tag('DeletePushSubscriptionError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.exhaustive
             )
-        ),
+        )
+    ),
 
     sendPushNotification: publicProcedure
         .input(z.object({ title: z.string().min(1), body: z.string().min(1) }))

@@ -8,6 +8,9 @@ const buildTimestamp = Date.now().toString()
 const nextConfig: NextConfig = {
     /* config options here */
     reactCompiler: true,
+    // Keep native-binary packages out of the Next.js bundle so their
+    // file paths (e.g. @sparticuz/chromium/bin) remain intact on Vercel.
+    serverExternalPackages: ['@sparticuz/chromium', 'puppeteer-core'],
     experimental: {
         viewTransition: true,
         optimizePackageImports: [
@@ -23,8 +26,6 @@ const nextConfig: NextConfig = {
             'tailwind-merge',
             'tw-animate-css',
             'vaul',
-            '@sparticuz/chromium',
-            'puppeteer-core',
         ],
     },
     images: {

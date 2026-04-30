@@ -8,7 +8,7 @@ const buildTimestamp = Date.now().toString()
 const nextConfig: NextConfig = {
     reactCompiler: true,
     // Prevent Next.js from bundling these packages (they contain native binaries)
-    serverExternalPackages: ['@sparticuz/chromium-min', 'puppeteer-core'],
+    serverExternalPackages: ['@sparticuz/chromium', '@sparticuz/chromium-min', 'puppeteer-core'],
     experimental: {
         viewTransition: true,
         optimizePackageImports: [

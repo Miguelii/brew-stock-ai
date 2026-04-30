@@ -16,10 +16,6 @@ import { ClientEnv } from '@/env/client'
 
 const CHROMIUM_PACK_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${CHROMIUM_PACK_PATH}`
 
-console.log({ NEXT_PUBLIC_WEBSITE_URL: ClientEnv.NEXT_PUBLIC_WEBSITE_URL })
-
-console.log({ CHROMIUM_PACK_URL })
-
 let cachedExecutablePath: string | null = null
 let downloadPromise: Promise<string> | null = null
 

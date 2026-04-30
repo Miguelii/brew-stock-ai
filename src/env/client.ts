@@ -9,7 +9,7 @@ export const ClientEnv = createEnv({
     runtimeEnv: {
         NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
         NEXT_PUBLIC_WEBSITE_URL: normalizeWebsiteUrl(
-            process?.env?.NEXT_PUBLIC_VERCEL_URL ?? undefined
+            process?.env?.NEXT_PUBLIC_WEBSITE_URL ?? undefined
         ),
     },
 })

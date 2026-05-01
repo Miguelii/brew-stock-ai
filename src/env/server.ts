@@ -8,6 +8,8 @@ export const ServerEnv = createEnv({
         NEXT_SUPABASE_SERVICE_ROLE_KEY: z.string(),
         NEXT_ANTHROPIC_AI_KEY: z.string(),
         VAPID_PRIVATE_KEY: z.string(),
+        STRIPE_SECRET_KEY: z.string(),
+        STRIPE_WEBHOOK_SECRET: z.string(),
     },
     runtimeEnv: {
         NEXT_SUPABASE_URL: process.env.NEXT_SUPABASE_URL,
@@ -15,5 +17,7 @@ export const ServerEnv = createEnv({
         NEXT_SUPABASE_SERVICE_ROLE_KEY: process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY,
         NEXT_ANTHROPIC_AI_KEY: process.env.NEXT_ANTHROPIC_AI_KEY,
         VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     },
 })

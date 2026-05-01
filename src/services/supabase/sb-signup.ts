@@ -2,7 +2,7 @@ import 'server-only'
 
 import { createSbServerClient } from '@/lib/utils.server'
 import { Effect } from 'effect'
-import { CreateSbClientError, SignUpError } from '@/services/utils/constants'
+import { CreateSbClientError, SignUpError } from '@/services/utils/tagged-errors'
 import { sbLogin } from './sb-login'
 
 export const sbSignUp = Effect.fn('sbSignUp')(function* (email: string, password: string) {

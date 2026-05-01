@@ -5,7 +5,7 @@ import { type ReportDTO, ReportStatus } from '@/types/ReportDTO'
 import { logger } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
 import { getStockAnalysis } from '../analysis/get-stock-analysis'
-import { FetchReportForTaskError, MarkReportFailedError } from '../utils/constants'
+import { FetchReportForTaskError, MarkReportFailedError } from '../utils/tagged-errors'
 import { sendPushNotificationToUser } from '../notifications/send-push-notification'
 
 export const processReport = Effect.fn('processReport')(function* (reportId: string) {

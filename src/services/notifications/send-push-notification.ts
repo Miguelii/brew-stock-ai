@@ -9,7 +9,7 @@ import {
     GetPushSubscriptionError,
     SendPushNotificationError,
     UnauthenticatedError,
-} from '@/services/utils/constants'
+} from '@/services/utils/tagged-errors'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
 import { getSession } from '@/services/supabase/get-session'

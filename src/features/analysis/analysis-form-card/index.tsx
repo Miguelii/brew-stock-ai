@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart2Icon, FileChartLineIcon, SearchIcon } from 'lucide-react'
+import { BarChart2Icon, CoinsIcon, FileChartLineIcon, SearchIcon } from 'lucide-react'
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -42,10 +42,17 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
             toast.success('Your report is being generated ☕')
             setTimeout(() => router.push('/reports'), 2000)
         } catch (error) {
-            const errorCode = (error as { message?: string })?.message ?? null
-            toast.error('Something went wrong.', {
-                description: errorCode ? `code: ${errorCode}` : undefined,
-            })
+            const code = (error as { data?: { code?: string } })?.data?.code
+
+            if (code === 'PAYMENT_REQUIRED') {
+                toast.error('Not enough credits.', {
+                    description: 'Purchase more credits to generate reports.',
+                })
+            } else if (code === 'INTERNAL_SERVER_ERROR') {
+                toast.error('Failed to deduct credits. Please try again.')
+            } else {
+                toast.error('Something went wrong. Please try again.')
+            }
         }
     }
 
@@ -105,9 +112,23 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                             <SelectTrigger className="h-10! w-full bg-background border-border text-primary rounded-none">
                                                 <BarChart2Icon className="size-4 text-primary-muted shrink-0" />
                                                 <SelectValue placeholder="Select type">
-                                                    {PROMPT_OPTIONS.find(
-                                                        (o) => o.type === field.value
-                                                    )?.label ?? 'Select type'}
+                                                    {(() => {
+                                                        const selected = PROMPT_OPTIONS.find(
+                                                            (o) => o.type === field.value
+                                                        )
+                                                        if (!selected) return 'Select type'
+                                                        return (
+                                                            <span className="flex items-center gap-2">
+                                                                <span className="truncate">
+                                                                    {selected.label}
+                                                                </span>
+                                                                <span className="flex items-center gap-0.5 text-xs text-accent-blue font-semibold shrink-0">
+                                                                    <CoinsIcon className="size-3" />
+                                                                    {selected.cost}
+                                                                </span>
+                                                            </span>
+                                                        )
+                                                    })()}
                                                 </SelectValue>
                                             </SelectTrigger>
                                             <SelectContent className="rounded-none">
@@ -116,7 +137,13 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                                         key={option.type}
                                                         value={option.type}
                                                     >
-                                                        {option.label}
+                                                        <span className="flex items-center justify-between gap-4 w-full">
+                                                            <span>{option.label}</span>
+                                                            <span className="flex items-center gap-0.5 text-xs text-accent-blue font-semibold shrink-0">
+                                                                <CoinsIcon className="size-3" />
+                                                                {option.cost}
+                                                            </span>
+                                                        </span>
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>

@@ -6,7 +6,7 @@ import {
     CreateSbClientError,
     SavePushSubscriptionError,
     UnauthenticatedError,
-} from '@/services/utils/constants'
+} from '@/services/utils/tagged-errors'
 import { getSession } from '@/services/supabase/get-session'
 
 type PushSubscriptionJSON = {

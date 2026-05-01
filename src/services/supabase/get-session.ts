@@ -2,7 +2,7 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, GetUserError } from '@/services/utils/constants'
+import { CreateSbClientError, GetUserError } from '@/services/utils/tagged-errors'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 export const getSession = Effect.fn('getSession')(function* (client?: SupabaseClient) {

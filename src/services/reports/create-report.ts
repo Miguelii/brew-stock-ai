@@ -5,14 +5,15 @@ import {
     CreateReportError,
     CreateSbClientError,
     InvalidPromptTypeError,
-    PROMPTS_MAP,
     UnauthenticatedError,
-} from '@/services/utils/constants'
+} from '@/services/utils/tagged-errors'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ReportStatus } from '@/types/ReportDTO'
 import { getSession } from '@/services/supabase/get-session'
+import { deductCredit } from '@/services/tokens/deduct-credit'
 import { tasks } from '@trigger.dev/sdk/v3'
 import type { processReportTask } from '@/trigger/process-report'
+import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/services/utils/constants'
 
 export const createReport = Effect.fn('createReport')(function* (
     stockSymbol: string,
@@ -32,6 +33,10 @@ export const createReport = Effect.fn('createReport')(function* (
     if (!user) {
         return yield* new UnauthenticatedError({ error_hash: 'ecrtrptunauthd' })
     }
+
+    const creditCost = PROMPT_COSTS_MAP[promptType] ?? 1
+
+    yield* deductCredit(user.id, supabase, creditCost)
 
     const { data: report, error: insertError } = yield* Effect.tryPromise({
         try: () =>

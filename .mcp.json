@@ -1,8 +1,12 @@
 {
     "mcpServers": {
         "trigger": {
-            "args": ["trigger.dev@4.4.4", "mcp"],
-            "command": "npx"
+            "command": "npx",
+            "args": ["trigger.dev@4.4.4", "mcp"]
+        },
+        "supabase": {
+            "type": "http",
+            "url": "https://mcp.supabase.com/mcp"
         }
     }
 }

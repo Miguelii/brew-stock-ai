@@ -2,7 +2,7 @@ import 'server-only'
 
 import { createSbServerClient } from '@/lib/utils.server'
 import { Effect } from 'effect'
-import { CreateSbClientError, SignInWithPasswordError } from '@/services/utils/constants'
+import { CreateSbClientError, SignInWithPasswordError } from '@/services/utils/tagged-errors'
 
 export const sbLogin = Effect.fn('sbLogin')(function* (email: string, password: string) {
     const supabase = yield* Effect.tryPromise({

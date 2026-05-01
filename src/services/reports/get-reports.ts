@@ -6,7 +6,7 @@ import {
     CreateSbClientError,
     GetReportsError,
     UnauthenticatedError,
-} from '@/services/utils/constants'
+} from '@/services/utils/tagged-errors'
 import type { ReportListItem } from '@/types/ReportDTO'
 import { getSession } from '@/services/supabase/get-session'
 

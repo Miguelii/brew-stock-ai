@@ -15,6 +15,9 @@ import { exportReport } from '@/services/reports/export-report'
 import { subscribePush } from '@/services/notifications/subscribe-push'
 import { unsubscribePush } from '@/services/notifications/unsubscribe-push'
 import { sendPushNotification } from '@/services/notifications/send-push-notification'
+import { getCredits } from '@/services/tokens/get-credits'
+import { createCheckoutSession } from '@/services/tokens/create-checkout-session'
+import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
 import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 
 async function runEffect<A, E extends { _tag: string; error_hash: string }>(
@@ -54,6 +57,8 @@ export const appRouter = router({
                     Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                    Match.tag('DeductCreditError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('InsufficientCreditsError', () => 'PAYMENT_REQUIRED' as const),
                     Match.tag('CreateReportError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.exhaustive
                 )
@@ -181,6 +186,38 @@ export const appRouter = router({
                         ),
                         Match.tag(
                             'SendPushNotificationError',
+                            () => 'INTERNAL_SERVER_ERROR' as const
+                        ),
+                        Match.exhaustive
+                    )
+            )
+        ),
+
+    getCredits: publicProcedure.query(() =>
+        runEffect(getCredits(), 'getCredits', (error) =>
+            Match.value(error).pipe(
+                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                Match.tag('GetCreditsError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.exhaustive
+            )
+        )
+    ),
+
+    createCheckoutSession: publicProcedure
+        .input(z.object({ packageId: z.enum(['starter', 'pro', 'expert']) }))
+        .mutation(({ input }) =>
+            runEffect(
+                createCheckoutSession(input.packageId as TokenPackageId),
+                'createCheckoutSession',
+                (error) =>
+                    Match.value(error).pipe(
+                        Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                        Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                        Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                        Match.tag(
+                            'CreateCheckoutSessionError',
                             () => 'INTERNAL_SERVER_ERROR' as const
                         ),
                         Match.exhaustive

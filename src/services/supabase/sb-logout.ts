@@ -2,7 +2,7 @@ import 'server-only'
 
 import { createSbServerClient } from '@/lib/utils.server'
 import { Effect } from 'effect'
-import { CreateSbClientError, LogoutError } from '@/services/utils/constants'
+import { CreateSbClientError, LogoutError } from '@/services/utils/tagged-errors'
 import { revalidatePath } from 'next/cache'
 import { HOME_PAGE_PATH } from '@/lib/constants'
 

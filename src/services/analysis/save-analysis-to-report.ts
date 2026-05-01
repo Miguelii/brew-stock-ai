@@ -2,7 +2,7 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, SaveAnalysisError } from '@/services/utils/constants'
+import { CreateSbClientError, SaveAnalysisError } from '@/services/utils/tagged-errors'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { ReportStatus } from '@/types/ReportDTO'
 import type { SupabaseClient } from '@supabase/supabase-js'

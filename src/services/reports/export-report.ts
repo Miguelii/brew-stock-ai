@@ -7,7 +7,7 @@ import {
     CreateSbClientError,
     ExportReportError,
     UnauthenticatedError,
-} from '@/services/utils/constants'
+} from '@/services/utils/tagged-errors'
 import type { ReportDTO } from '@/types/ReportDTO'
 import type { PropmptsEnum } from '@/types/PropmptsEnum'
 import { getSession } from '@/services/supabase/get-session'

@@ -3,12 +3,10 @@
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
 import { useAuthForm, type FormValues } from './use-auth-form'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Form } from '@/components/ui/form'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { AuthErrorHandler } from './auth-error-handler'
-import { Loader2Icon } from 'lucide-react'
-import { Input } from '@/components/ui/input'
 import { SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
 
 export function AuthCard() {
@@ -39,7 +37,7 @@ export function AuthCard() {
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                    {/* <Button
+                    <Button
                         variant="outline"
                         type="button"
                         className="w-full gap-2 cursor-pointer"
@@ -64,7 +62,7 @@ export function AuthCard() {
                             />
                         </svg>
                         Continue with Google
-                    </Button> */}
+                    </Button>
 
                     {/* <div className="flex items-center gap-3">
                         <Separator className="flex-1" />
@@ -72,7 +70,7 @@ export function AuthCard() {
                         <Separator className="flex-1" />
                     </div> */}
 
-                    <FormField
+                    {/* <FormField
                         control={form.control}
                         name="email"
                         render={({ field }) => (
@@ -90,9 +88,9 @@ export function AuthCard() {
                                 </FormControl>
                             </FormItem>
                         )}
-                    />
+                    /> */}
 
-                    <FormField
+                    {/* <FormField
                         control={form.control}
                         name="password"
                         render={({ field }) => (
@@ -110,16 +108,16 @@ export function AuthCard() {
                                 </FormControl>
                             </FormItem>
                         )}
-                    />
+                    /> */}
 
-                    <Button
+                    {/* <Button
                         type="submit"
                         disabled={login.isPending}
                         className="w-full h-11 mt-1 bg-accent-blue hover:bg-accent-blue-dark text-background font-medium rounded-none cursor-pointer"
                     >
                         {login.isPending ? <Loader2Icon className="animate-spin" /> : null}
                         Sign in
-                    </Button>
+                    </Button> */}
                 </form>
             </Form>
 

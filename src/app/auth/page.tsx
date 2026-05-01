@@ -6,10 +6,14 @@ export const metadata: Metadata = {
     title: 'Sign In',
 }
 
-export default function AuthPage() {
+type Props = PageProps<'/auth'>
+
+export default async function AuthPage({ searchParams }: Props) {
+    const { returnTo } = await searchParams
+
     return (
         <AuthLayout>
-            <AuthCard />
+            <AuthCard returnTo={typeof returnTo === 'string' ? returnTo : undefined} />
         </AuthLayout>
     )
 }

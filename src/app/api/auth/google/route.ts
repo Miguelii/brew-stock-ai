@@ -1,25 +1,24 @@
-import { NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { Effect, Exit } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
 import { CreateSbClientError, OAuthInitError } from '@/services/utils/tagged-errors'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
-const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* () {
+const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo?: string) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
         catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eoauthgglsbclnt' }),
     })
 
-    const REDIRECT_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${AUTH_PAGE_PATH}/callback`
+    const callbackUrl = new URL(`${AUTH_PAGE_PATH}/callback`, ClientEnv.NEXT_PUBLIC_WEBSITE_URL)
+    if (returnTo) callbackUrl.searchParams.set('next', returnTo)
 
     const { data, error } = yield* Effect.tryPromise({
         try: () =>
             supabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: {
-                    redirectTo: REDIRECT_URL,
-                },
+                options: { redirectTo: callbackUrl.toString() },
             }),
         catch: (cause) => new OAuthInitError({ cause, error_hash: 'eoauthgglinit' }),
     })
@@ -36,8 +35,9 @@ const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* () {
 
 const errorUrl = new URL(`${AUTH_PAGE_PATH}?error=oauth`, ClientEnv.NEXT_PUBLIC_WEBSITE_URL)
 
-export async function GET() {
-    const exit = await Effect.runPromiseExit(initiateGoogleOAuth())
+export async function GET(request: NextRequest) {
+    const returnTo = request.nextUrl.searchParams.get('returnTo') ?? undefined
+    const exit = await Effect.runPromiseExit(initiateGoogleOAuth(returnTo))
 
     if (Exit.isFailure(exit)) {
         return NextResponse.redirect(errorUrl)

@@ -9,7 +9,11 @@ import { toast } from 'sonner'
 import { AuthErrorHandler } from './auth-error-handler'
 import { SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
 
-export function AuthCard() {
+type Props = {
+    returnTo?: string
+}
+
+export function AuthCard({ returnTo }: Props) {
     const login = trpc.signIn.useMutation()
     const form = useAuthForm()
     const router = useRouter()
@@ -24,7 +28,10 @@ export function AuthCard() {
     }
 
     const onOAuthClick = () => {
-        window.location.href = SIGN_IN_GOOGLE_API_PATH
+        const url = returnTo
+            ? `${SIGN_IN_GOOGLE_API_PATH}?returnTo=${encodeURIComponent(returnTo)}`
+            : SIGN_IN_GOOGLE_API_PATH
+        window.location.href = url
     }
 
     return (

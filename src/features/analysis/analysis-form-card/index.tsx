@@ -16,7 +16,7 @@ import { useAnalysisForm, type FormValues } from './use-analysis-form'
 import { Input } from '@/components/ui/input'
 import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 type Props = {
     isAuthenticated: boolean
@@ -27,6 +27,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     const utils = trpc.useUtils()
 
     const router = useRouter()
+    const pathname = usePathname()
 
     const createReport = trpc.createReport.useMutation({
         onSuccess: async () => {
@@ -172,7 +173,10 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                             disabled={createReport.isPending}
                             className="h-11! w-full gap-2 cursor-pointer"
                             onClick={() => {
-                                if (!isAuthenticated) router.push(AUTH_PAGE_PATH)
+                                if (!isAuthenticated)
+                                    router.push(
+                                        `${AUTH_PAGE_PATH}?returnTo=${encodeURIComponent(pathname)}`
+                                    )
                             }}
                         >
                             <FileChartLineIcon className="size-4" />

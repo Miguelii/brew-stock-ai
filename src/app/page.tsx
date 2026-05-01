@@ -6,19 +6,21 @@ export default async function Home() {
     const user = await getCachedSession()
 
     return (
-        <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-16">
+        <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-16 lg:py-24">
             <WebSiteSchema />
             <WebApplicationSchema />
-            <div className="mb-12">
-                <h1 className="text-4xl lg:text-5xl font-bold tracking-tight mb-4 leading-tight">
-                    AI-Powered Stock Analysis
-                </h1>
-                <span className="text-primary-muted max-w-2xl leading-relaxed">
-                    <p>Deep financial insights, market sentiment, and technical indicators.</p>
-                    <strong>For less than a coffee ☕</strong>
-                </span>
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center w-full justify-between">
+                <div className="flex flex-col gap-4">
+                    <h1 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+                        AI-Powered Stock Analysis
+                    </h1>
+                    <span className="text-primary-muted max-w-2xl leading-relaxed">
+                        <p>Deep financial insights, market sentiment, and technical indicators.</p>
+                        <strong>For less than a coffee ☕</strong>
+                    </span>
+                </div>
+                <AnalysisFormCard isAuthenticated={!!user} />
             </div>
-            <AnalysisFormCard isAuthenticated={!!user} />
         </main>
     )
 }

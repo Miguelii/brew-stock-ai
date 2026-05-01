@@ -66,13 +66,10 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
     }
 
     return (
-        <Card className="pt-0 rounded-none">
-            <CardContent className="p-4">
+        <Card className="pt-0 drop-shadow-md w-full lg:w-[43%]">
+            <CardContent className="p-6">
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex flex-col md:flex-row items-end gap-3"
-                    >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                         <FormField
                             control={form.control}
                             name="stockSymbol"
@@ -86,7 +83,7 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-muted pointer-events-none" />
                                             <Input
                                                 placeholder="Enter AAPL, TSLA, etc."
-                                                className="h-10 w-full rounded-none border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition uppercase"
+                                                className="h-10 w-full border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition uppercase"
                                                 {...field}
                                                 onChange={(e) =>
                                                     field.onChange(e.target.value.toUpperCase())
@@ -171,7 +168,7 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                         <Button
                             type={isAuthenticated ? 'submit' : 'button'}
                             disabled={createReport.isPending}
-                            className="h-10! mt-3 ms:mt-0 w-full md:max-w-45 shrink-0 gap-2 cursor-pointer"
+                            className="h-11! w-full gap-2 cursor-pointer"
                             onClick={() => {
                                 if (!isAuthenticated) router.push(AUTH_PAGE_PATH)
                             }}

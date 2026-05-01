@@ -8,6 +8,7 @@
         "src/env/server.ts",
         "src/env/client.ts",
 
+        "src/lib/utils.ts",
         "src/features/auth/signup-card/index.tsx",
         "src/features/auth/signup-card/use-signup-form.ts",
         "src/features/reports/reports-table/table-filters.tsx",

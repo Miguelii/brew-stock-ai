@@ -41,7 +41,7 @@ export function InvoicesTable() {
     }
 
     return (
-        <div className="divide-y divide-border rounded-lg border border-border overflow-hidden">
+        <div className="divide-y divide-border rounded-none border border-border overflow-hidden">
             <div className="grid grid-cols-[1fr_auto_auto] gap-4 px-4 py-2.5 bg-muted text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 <span>Description</span>
                 <span className="text-right">Date</span>

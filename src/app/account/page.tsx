@@ -5,6 +5,7 @@ import { getSession } from '@/services/supabase/get-session'
 import { notFound } from 'next/navigation'
 import { UserIcon, ReceiptTextIcon } from 'lucide-react'
 import { InvoicesTable } from '@/features/account/invoices-table'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
     title: 'Account',
@@ -34,11 +35,22 @@ export default async function AccountPage() {
                         Profile
                     </h2>
                 </div>
-                <div className="rounded-lg border border-border px-4 py-3 flex items-center gap-3">
+                <div className="rounded-none border border-border px-4 py-3 flex items-center gap-3">
                     <div className="size-9 rounded-full bg-accent-blue/10 flex items-center justify-center shrink-0">
-                        <span className="text-sm font-bold text-accent-blue uppercase">
-                            {user.email?.[0] ?? '?'}
-                        </span>
+                        {user?.user_metadata?.avatar_url ? (
+                            <Image
+                                src={user.user_metadata.avatar_url}
+                                alt="Profile"
+                                className="h-full w-full object-cover bg-background rounded-full"
+                                referrerPolicy="no-referrer"
+                                width={36}
+                                height={36}
+                            />
+                        ) : (
+                            <span className="text-sm font-bold text-accent-blue uppercase">
+                                {user.email?.[0] ?? '?'}
+                            </span>
+                        )}
                     </div>
                     <p className="text-sm font-medium">{user.email}</p>
                 </div>

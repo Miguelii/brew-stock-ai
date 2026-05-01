@@ -38,10 +38,6 @@ export async function POST(request: Request) {
             p_credits: credits,
         })
 
-        console.log('ADDD CREDITS!')
-
-        console.log({ response: response })
-
         if (response.error) {
             console.error('[stripe-webhook] add_credits error', response.error)
             return NextResponse.json({ error: 'Failed to add credits' }, { status: 500 })

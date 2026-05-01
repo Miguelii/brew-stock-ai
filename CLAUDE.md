@@ -153,6 +153,39 @@ export function MyForm() {
 }
 ```
 
+## Next.js Page & Layout Props
+
+Always type page and layout props using the project's typed helpers — never use raw `{ params, searchParams }`:
+
+```tsx
+// Page
+type Props = PageProps<'/analysis/[ticker]'>
+
+// Layout
+type Props = LayoutProps<'/dashboard'>
+```
+
+The string must match the exact file path relative to `src/app/` (without the filename). Update the path for each page accordingly.
+
+---
+
+### Styling — ALWAYS use `cn()` for class merging
+
+**Never** use template literals or string concatenation for conditional classes. **Always** use the `cn()` utility from `@/lib/utils`:
+
+```tsx
+// ❌ Wrong
+className={`base-class ${condition ? 'class-a' : 'class-b'}`}
+
+// ✅ Correct
+className={cn('base-class', condition ? 'class-a' : 'class-b')}
+className={cn('base-class', {
+  condition: 'conditional-class'
+})}
+ƒ```
+
+---
+
 ### Rules
 - Form schema and types always in the hook file
 - Hook file named `use-<form-name>.ts`, colocated with the component

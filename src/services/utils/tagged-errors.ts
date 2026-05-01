@@ -62,11 +62,6 @@ export class SignInWithPasswordError extends Data.TaggedError('SignInWithPasswor
     error_hash: string
 }> {}
 
-export class SignUpError extends Data.TaggedError('SignUpError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
 export class LogoutError extends Data.TaggedError('LogoutError')<{
     cause: unknown
     error_hash: string
@@ -127,6 +122,11 @@ export class OAuthInitError extends Data.TaggedError('OAuthInitError')<{
 }> {}
 
 export class OAuthCallbackError extends Data.TaggedError('OAuthCallbackError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class CreateConsentCookieError extends Data.TaggedError('CreateConsentCookieError')<{
     cause: unknown
     error_hash: string
 }> {}

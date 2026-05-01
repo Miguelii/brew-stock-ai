@@ -35,10 +35,12 @@ export function NavLinks({ links }: { links: NavLink[] }) {
 }
 
 export function LoginLink() {
+    const pathname = usePathname()
+
     return (
         <Link
             prefetch={false}
-            href={AUTH_PAGE_PATH}
+            href={`${AUTH_PAGE_PATH}?returnTo=${encodeURIComponent(pathname)}`}
             className="px-3 py-1.5 text-sm font-medium bg-accent-blue text-background hover:bg-accent-blue/90"
         >
             Sign In

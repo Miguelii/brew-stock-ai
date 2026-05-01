@@ -12,13 +12,5 @@ export function ReportsTable() {
 
     const reports = query.data
 
-    return (
-        <>
-            {/* <TableFilters /> */}
-
-            <TableCard reports={reports ?? []} isLoading={query.isLoading} />
-
-            {/* <TablePagination /> */}
-        </>
-    )
+    return <TableCard reports={reports ?? []} isLoading={query.isLoading} />
 }

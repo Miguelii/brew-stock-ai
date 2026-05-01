@@ -11,12 +11,16 @@ const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* () {
         catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eoauthgglsbclnt' }),
     })
 
+    const REDIRECT_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${AUTH_PAGE_PATH}/callback`
+
+    console.log({ REDIRECT_URL })
+
     const { data, error } = yield* Effect.tryPromise({
         try: () =>
             supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${AUTH_PAGE_PATH}/callback`,
+                    redirectTo: REDIRECT_URL,
                 },
             }),
         catch: (cause) => new OAuthInitError({ cause, error_hash: 'eoauthgglinit' }),

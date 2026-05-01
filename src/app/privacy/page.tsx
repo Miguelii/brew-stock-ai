@@ -116,10 +116,10 @@ export default function PrivacyPage() {
                     <p>
                         For privacy-related questions or requests, contact us at{' '}
                         <a
-                            href="mailto:privacy@stockbrewai.com"
+                            href="mailto:contact@brewstockai.com"
                             className="text-accent-blue underline underline-offset-2"
                         >
-                            privacy@stockbrewai.com
+                            contact@brewstockai.com
                         </a>
                         .
                     </p>

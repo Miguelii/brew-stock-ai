@@ -29,7 +29,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
     return (
         <>
             <div className="md:hidden flex flex-row gap-3">
-                <CreditsDisplay />
+                {isAuthenticated ? <CreditsDisplay /> : null}
                 <button
                     aria-label="Open menu"
                     onClick={() => setOpen(true)}

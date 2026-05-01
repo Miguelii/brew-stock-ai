@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { BellIcon, Loader2Icon, XIcon } from 'lucide-react'
+import { BellIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { ClientEnv } from '@/env/client'
 import { trpc } from '@/server/trpc-client'
 import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY, SW_PATH } from '@/lib/constants'
+import { PromptCard } from '@/components/ui/prompt-card'
 
 function urlBase64ToUint8Array(base64String: string) {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
@@ -83,46 +83,16 @@ export function PushNotificationPrompt() {
     if (!open) return null
 
     return (
-        <div className="fixed bottom-4 right-4 z-50 w-72 bg-card border border-border shadow-lg p-4 flex flex-col gap-3">
-            <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                    <BellIcon className="w-4 h-4 text-accent-blue shrink-0 mt-0.5" />
-                    <p className="text-sm font-medium leading-tight">Enable notifications</p>
-                </div>
-                <button
-                    onClick={handleDismiss}
-                    className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                >
-                    <XIcon className="w-4 h-4" />
-                </button>
-            </div>
-
-            <p className="text-xs text-muted-foreground leading-relaxed">
-                Get notified when your analysis reports are ready.
-            </p>
-
-            <div className="flex gap-2">
-                <Button
-                    size="sm"
-                    className="flex-1 bg-accent-blue hover:bg-accent-blue-dark text-white rounded-none text-xs"
-                    onClick={handleEnable}
-                    disabled={isLoading || subscribeMutation.isPending}
-                >
-                    {isLoading || subscribeMutation.isPending ? (
-                        <Loader2Icon className="animate-spin w-3 h-3" />
-                    ) : null}
-                    Enable
-                </Button>
-                <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1 rounded-none text-xs"
-                    onClick={handleDismiss}
-                    disabled={isLoading}
-                >
-                    Later
-                </Button>
-            </div>
-        </div>
+        <PromptCard
+            icon={
+                <BellIcon aria-hidden="true" className="w-4 h-4 text-accent-blue shrink-0 mt-0.5" />
+            }
+            title="Enable notifications"
+            description="Get notified when your analysis reports are ready."
+            isPending={isLoading || subscribeMutation.isPending}
+            onDismiss={handleDismiss}
+            primaryAction={{ label: 'Enable', onClick: handleEnable }}
+            secondaryAction={{ label: 'Later', onClick: handleDismiss }}
+        />
     )
 }

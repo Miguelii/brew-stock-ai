@@ -19,6 +19,7 @@ import { getCredits } from '@/services/tokens/get-credits'
 import { getInvoices } from '@/services/tokens/get-invoices'
 import { createCheckoutSession } from '@/services/tokens/create-checkout-session'
 import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
+import { createConsentCookie } from '@/services/consent/create-consent-cookie'
 import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 
 async function runEffect<A, E extends { _tag: string; error_hash: string }>(
@@ -237,6 +238,16 @@ export const appRouter = router({
                         ),
                         Match.exhaustive
                     )
+            )
+        ),
+    createConsentCookie: publicProcedure
+        .input(z.object({ allowAnalytics: z.boolean() }))
+        .mutation(({ input }) =>
+            runEffect(createConsentCookie(input.allowAnalytics), 'createConsentCookie', (error) =>
+                Match.value(error).pipe(
+                    Match.tag('CreateConsentCookieError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.exhaustive
+                )
             )
         ),
 })

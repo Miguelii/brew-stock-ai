@@ -9,8 +9,10 @@ import { Providers } from '@/providers'
 import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
-import { PushNotificationPrompt } from '@/features/push-notifications/push-notification-prompt'
+import { PushNotificationPrompt } from '@/features/push-notifications'
+import { CookiePrompt } from '@/features/cookie-prompt'
 import { getCachedSession } from '@/services/supabase/get-cached-session'
+import { GtmScript } from '@/components/gtm-script'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -93,15 +95,17 @@ export default async function RootLayout({ children }: Props) {
         >
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-                <meta name="apple-mobile-web-app-title" content="GuruFiances" />
+                <meta name="apple-mobile-web-app-title" content="StockBrewAI" />
             </head>
             <VercelAnalytics />
             <VercelSpeedInsights />
+            <GtmScript />
             <body className="min-h-screen flex flex-col">
                 <Providers>
                     <Toaster />
                     <Header />
                     {user && <PushNotificationPrompt />}
+                    <CookiePrompt />
                     <div className="flex-1">{children}</div>
                     <Footer />
                 </Providers>

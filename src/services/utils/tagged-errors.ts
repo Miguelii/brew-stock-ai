@@ -130,3 +130,8 @@ export class OAuthCallbackError extends Data.TaggedError('OAuthCallbackError')<{
     cause: unknown
     error_hash: string
 }> {}
+
+export class CreateConsentCookieError extends Data.TaggedError('CreateConsentCookieError')<{
+    cause: unknown
+    error_hash: string
+}> {}

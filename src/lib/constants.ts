@@ -1,3 +1,4 @@
+import type { GTMWithoutPrefix } from '@/types/GTM'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 
 export const PROMPT_TYPES = {
@@ -65,3 +66,12 @@ export const MAX_STOCK_INPUT_LENGHT = 50
 export const PUSH_DISMISSED_KEY = 'push_prompt_dismissed'
 
 export const PUSH_DISMISS_TTL_DAYS = 7
+
+export const GTM_ID = 'G-3VFDWM9Q9V'
+
+export const GTM_ID_WITHOUT_G: GTMWithoutPrefix<typeof GTM_ID> = GTM_ID.replace(
+    'G-',
+    ''
+) as GTMWithoutPrefix<typeof GTM_ID>
+
+export const CONSENT_COOKIE = 'brew_stock_cookie_consent'

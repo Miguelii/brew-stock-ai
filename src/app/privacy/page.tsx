@@ -80,13 +80,13 @@ export default function PrivacyPage() {
 
                 <Section title="4. Cookies">
                     <p>
-                        We use strictly necessary cookies to manage your authentication session. We
-                        do not use advertising or tracking cookies. Analytics data (via Vercel
-                        Analytics) is anonymised and does not require consent under ePrivacy rules.
+                        We only use Google analytical cookies for statistical purposes, namely to
+                        analyze traffic and improve the user experience. No personal data is
+                        collected for commercial or marketing purposes.
                     </p>
                 </Section>
 
-                <Section title="5. Your Rights">
+                <Section title="6. Your Rights">
                     <p>
                         Under applicable data protection law (including GDPR where relevant), you
                         have the right to:

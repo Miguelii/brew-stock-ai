@@ -20,9 +20,10 @@ import { useRouter } from 'next/navigation'
 
 type Props = {
     isAuthenticated: boolean
+    defaultTicker?: string
 }
 
-export function AnalysisFormCard({ isAuthenticated }: Props) {
+export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     const utils = trpc.useUtils()
 
     const router = useRouter()
@@ -33,7 +34,7 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
         },
     })
 
-    const form = useAnalysisForm()
+    const form = useAnalysisForm(defaultTicker)
 
     const onSubmit = async (values: FormValues) => {
         try {
@@ -89,6 +90,7 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                                     field.onChange(e.target.value.toUpperCase())
                                                 }
                                                 maxLength={MAX_STOCK_INPUT_LENGHT}
+                                                disabled={defaultTicker != null}
                                             />
                                         </div>
                                     </FormControl>

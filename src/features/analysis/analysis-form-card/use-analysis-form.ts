@@ -10,11 +10,11 @@ const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>
 
-export const useAnalysisForm = () => {
+export const useAnalysisForm = (defaultTicker?: string) => {
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            stockSymbol: '',
+            stockSymbol: defaultTicker ?? '',
             promptType: '',
         },
     })

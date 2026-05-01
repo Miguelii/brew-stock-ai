@@ -13,6 +13,7 @@ import { PushNotificationPrompt } from '@/features/push-notifications'
 import { CookiePrompt } from '@/features/cookie-prompt'
 import { getCachedSession } from '@/services/supabase/get-cached-session'
 import { GtmScript } from '@/components/gtm-script'
+import { WebApplicationSchema, WebSiteSchema } from '@/components/structured-data'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -102,6 +103,8 @@ export default async function RootLayout({ children }: Props) {
             <GtmScript />
             <body className="min-h-screen flex flex-col">
                 <Providers>
+                    <WebSiteSchema />
+                    <WebApplicationSchema />
                     <Toaster />
                     <Header />
                     {user && <PushNotificationPrompt />}

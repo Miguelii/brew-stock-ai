@@ -9,9 +9,11 @@ export default function NotFound() {
                 <p className="text-8xl font-bold font-mono text-accent-blue">404</p>
 
                 <div className="space-y-2">
-                    <h1 className="text-xl font-semibold text-foreground">Ticker not found</h1>
-                    <p className="text-sm text-primary-muted leading-relaxed">
-                        This page doesn&apos;t trade on any exchange we know of.
+                    <h1 className="text-xl font-semibold text-foreground">
+                        Even our AI couldn&apos;t find this one
+                    </h1>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                        The page you&apos;re looking for has gone dark. Probably a bad trade.
                     </p>
                 </div>
 

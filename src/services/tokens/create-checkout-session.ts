@@ -39,12 +39,18 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
 
     const user = yield* getSession(supabase)
 
+    console.log({ user })
+
     if (!user) {
         return yield* new UnauthenticatedError({ error_hash: 'ecktchksssunath' })
     }
 
     const stripe = new StripeClient(ServerEnv.STRIPE_SECRET_KEY)
     const baseUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+
+    console.log({ stripe })
+
+    console.log({ baseUrl })
 
     const session = yield* Effect.tryPromise({
         try: () =>
@@ -71,6 +77,8 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
             }),
         catch: (cause) => new CreateCheckoutSessionError({ cause, error_hash: 'ecktchksssncrt' }),
     })
+
+    console.log({ session })
 
     return session.url as string
 })

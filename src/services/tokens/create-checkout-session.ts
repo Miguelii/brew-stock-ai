@@ -3,7 +3,6 @@ import 'server-only'
 import { Effect } from 'effect'
 import StripeClient from 'stripe'
 import { ServerEnv } from '@/env/server'
-import { ClientEnv } from '@/env/client'
 import {
     CreateCheckoutSessionError,
     CreateSbClientError,
@@ -11,6 +10,7 @@ import {
 } from '@/services/utils/tagged-errors'
 import { createSbServerClient } from '@/lib/utils.server'
 import { getSession } from '@/services/supabase/get-session'
+import { ClientEnv } from '@/env/client'
 
 export const TOKEN_PACKAGES = [
     { id: 'starter', credits: 5, amount: 250, label: 'Starter' },
@@ -39,13 +39,15 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
 
     const user = yield* getSession(supabase)
 
-    console.log({ user })
-
     if (!user) {
         return yield* new UnauthenticatedError({ error_hash: 'ecktchksssunath' })
     }
 
-    const stripe = new StripeClient(ServerEnv.STRIPE_SECRET_KEY)
+    const stripe = yield* Effect.try({
+        try: () => new StripeClient(ServerEnv.STRIPE_SECRET_KEY),
+        catch: (cause) => new CreateCheckoutSessionError({ cause, error_hash: 'ecktchksssnstrp' }),
+    })
+
     const baseUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
     console.log({ stripe })
@@ -77,8 +79,6 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
             }),
         catch: (cause) => new CreateCheckoutSessionError({ cause, error_hash: 'ecktchksssncrt' }),
     })
-
-    console.log({ session })
 
     return session.url as string
 })

@@ -32,6 +32,8 @@ async function runEffect<A, E extends { _tag: string; error_hash: string }>(
     const maybeError = Cause.failureOption(exit.cause)
 
     if (Option.isNone(maybeError)) {
+        const defects = Cause.defects(exit.cause)
+        Logger({ level: 'error', error: defects, context: `[${context}] defect` })
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'unexpected_defect' })
     }
 

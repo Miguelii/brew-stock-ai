@@ -62,11 +62,6 @@ export class SignInWithPasswordError extends Data.TaggedError('SignInWithPasswor
     error_hash: string
 }> {}
 
-export class SignUpError extends Data.TaggedError('SignUpError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
 export class LogoutError extends Data.TaggedError('LogoutError')<{
     cause: unknown
     error_hash: string

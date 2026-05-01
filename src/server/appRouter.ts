@@ -6,7 +6,6 @@ import { z } from 'zod'
 import { Logger } from '@/lib/logger'
 import { publicProcedure, router } from './trpc'
 import { sbLogin } from '@/services/supabase/sb-login'
-import { sbSignUp } from '@/services/supabase/sb-signup'
 import { sbLogout } from '@/services/supabase/sb-logout'
 import { createReport } from '@/services/reports/create-report'
 import { getReports } from '@/services/reports/get-reports'
@@ -76,18 +75,6 @@ export const appRouter = router({
                 Match.value(error).pipe(
                     Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('SignInWithPasswordError', () => 'UNAUTHORIZED' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
-
-    signUp: publicProcedure
-        .input(z.object({ email: z.email(), password: z.string().min(6) }))
-        .mutation(({ input }) =>
-            runEffect(sbSignUp(input.email, input.password), 'sbSignUp', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('SignUpError', () => 'BAD_REQUEST' as const),
                     Match.exhaustive
                 )
             )

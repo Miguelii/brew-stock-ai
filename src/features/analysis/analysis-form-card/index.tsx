@@ -136,6 +136,7 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                                     <SelectItem
                                                         key={option.type}
                                                         value={option.type}
+                                                        className="px-3"
                                                     >
                                                         <span className="flex items-center justify-between gap-4 w-full">
                                                             <span>{option.label}</span>

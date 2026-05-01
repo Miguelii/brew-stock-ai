@@ -40,10 +40,7 @@ export default async function AccountPage() {
                             {user.email?.[0] ?? '?'}
                         </span>
                     </div>
-                    <div>
-                        <p className="text-sm font-medium">{user.email}</p>
-                        <p className="text-xs text-muted-foreground">Member</p>
-                    </div>
+                    <p className="text-sm font-medium">{user.email}</p>
                 </div>
             </section>
 

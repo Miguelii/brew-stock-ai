@@ -6,7 +6,7 @@ import { useAuthForm, type FormValues } from './use-auth-form'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { useAuthError } from './use-auth-error'
+import { AuthErrorHandler } from './auth-error-handler'
 import { Loader2Icon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
@@ -15,8 +15,6 @@ export function AuthCard() {
     const login = trpc.signIn.useMutation()
     const form = useAuthForm()
     const router = useRouter()
-
-    useAuthError()
 
     const onSubmit = async (values: FormValues) => {
         try {
@@ -33,6 +31,7 @@ export function AuthCard() {
 
     return (
         <div className="w-full max-w-sm flex flex-col gap-8">
+            <AuthErrorHandler />
             <div>
                 <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
                 <p className="mt-1.5 text-sm text-muted-foreground">Sign in to your account</p>

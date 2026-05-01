@@ -6,6 +6,8 @@ import { Effect } from 'effect'
 import { getSession } from '@/services/supabase/get-session'
 import type { NavLink } from '@/types/NavLink'
 import Logo from '@/components/logo'
+import Image from 'next/image'
+import { UserRound } from 'lucide-react'
 
 const PUBLIC_NAV_LINKS: NavLink[] = []
 
@@ -36,9 +38,22 @@ export async function Header() {
                     <div className="hidden md:flex items-center gap-5">
                         <NavLinks links={navLinks} />
                         {user ? (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
                                 <CreditsDisplay />
-                                <ProfileDropdownMenu />
+                                <ProfileDropdownMenu>
+                                    {user?.user_metadata?.avatar_url ? (
+                                        <Image
+                                            src={user.user_metadata.avatar_url}
+                                            alt="Profile"
+                                            className="h-full w-full object-cover bg-background"
+                                            referrerPolicy="no-referrer"
+                                            width={36}
+                                            height={36}
+                                        />
+                                    ) : (
+                                        <UserRound size={18} />
+                                    )}
+                                </ProfileDropdownMenu>
                             </div>
                         ) : (
                             <LoginLink />

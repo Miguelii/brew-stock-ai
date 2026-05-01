@@ -7,11 +7,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { UserRound, LogOut, UserIcon } from 'lucide-react'
-import { useLogout } from './use-logout'
+import { LogOut, UserIcon } from 'lucide-react'
+import { useLogout } from '@/hooks/use-logout'
 import { useRouter } from 'next/navigation'
 
-export function ProfileDropdownMenu() {
+type Props = {
+    children: React.ReactNode
+}
+
+export function ProfileDropdownMenu({ children }: Props) {
     const logout = useLogout()
 
     const router = useRouter()
@@ -23,8 +27,8 @@ export function ProfileDropdownMenu() {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg bg-card text-accent-blue transition-colors hover:bg-accent/30 border border-border focus:outline-none">
-                <UserRound size={18} />
+            <DropdownMenuTrigger className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-card text-accent-blue transition-colors hover:bg-accent/30 border border-border focus:outline-none overflow-hidden">
+                {children}
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="min-w-40 rounded-none">

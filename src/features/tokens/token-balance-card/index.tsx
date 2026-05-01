@@ -8,7 +8,7 @@ export function TokenBalanceCard() {
     const { isLoading, credits } = useGetCredits()
 
     return (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground rounded-lg border border-border bg-card px-4 py-3">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground rounded-none border border-border bg-card px-4 py-3">
             <CoinsIcon className="w-4 h-4 text-accent-blue shrink-0" />
             <span>
                 Your current balance:{' '}

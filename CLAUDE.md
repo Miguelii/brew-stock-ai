@@ -153,6 +153,23 @@ export function MyForm() {
 }
 ```
 
+### Styling — ALWAYS use `cn()` for class merging
+
+**Never** use template literals or string concatenation for conditional classes. **Always** use the `cn()` utility from `@/lib/utils`:
+
+```tsx
+// ❌ Wrong
+className={`base-class ${condition ? 'class-a' : 'class-b'}`}
+
+// ✅ Correct
+className={cn('base-class', condition ? 'class-a' : 'class-b')}
+className={cn('base-class', {
+  condition: 'conditional-class'
+})}
+ƒ```
+
+---
+
 ### Rules
 - Form schema and types always in the hook file
 - Hook file named `use-<form-name>.ts`, colocated with the component

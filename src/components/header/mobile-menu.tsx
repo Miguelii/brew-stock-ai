@@ -7,9 +7,10 @@ import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import type { NavLink } from '@/types/NavLink'
-import { useLogout } from './use-logout'
+import { useLogout } from '@/hooks/use-logout'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 import { CreditsDisplay } from './credits-display'
+import { LoginLink } from './nav-links'
 
 type Props = {
     nav: NavLink[]
@@ -29,17 +30,23 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
     return (
         <>
             <div className="md:hidden flex flex-row gap-3">
-                {isAuthenticated ? <CreditsDisplay /> : null}
-                <button
-                    aria-label="Open menu"
-                    onClick={() => setOpen(true)}
-                    className={cn(
-                        'flex items-center justify-center h-9 w-9 rounded-lg border border-border bg-card',
-                        'text-primary transition-all duration-200 hover:bg-muted active:scale-95'
-                    )}
-                >
-                    <Menu size={18} />
-                </button>
+                {isAuthenticated ? (
+                    <>
+                        <CreditsDisplay />
+                        <button
+                            aria-label="Open menu"
+                            onClick={() => setOpen(true)}
+                            className={cn(
+                                'flex items-center justify-center h-9 w-9 rounded-sm border border-border bg-card',
+                                'text-primary transition-all duration-200 hover:bg-muted active:scale-95'
+                            )}
+                        >
+                            <Menu size={18} />
+                        </button>
+                    </>
+                ) : (
+                    <LoginLink />
+                )}
             </div>
 
             <Drawer open={open} onOpenChange={setOpen} direction="right">
@@ -55,7 +62,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                         <DrawerClose asChild>
                             <button
                                 aria-label="Close menu"
-                                className="flex items-center justify-center h-8 w-8 rounded-lg text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
+                                className="flex items-center justify-center h-8 w-8 rounded-sm text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
                             >
                                 <X size={16} />
                             </button>
@@ -68,7 +75,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                             <DrawerClose asChild key={link.href}>
                                 <Link
                                     href={link.href}
-                                    className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
+                                    className="flex items-center px-3 py-2.5 rounded-sm text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
                                 >
                                     {link.label}
                                 </Link>
@@ -84,7 +91,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                                 <DrawerClose asChild>
                                     <Link
                                         href="/account"
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-primary transition-colors hover:bg-muted"
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-primary transition-colors hover:bg-muted"
                                     >
                                         <UserIcon size={15} className="text-muted-foreground" />
                                         Account
@@ -93,7 +100,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                                 <button
                                     onClick={onClickHandler}
                                     disabled={logout.isPending}
-                                    className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-primary transition-colors hover:bg-muted"
+                                    className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-primary transition-colors hover:bg-muted"
                                 >
                                     <LogOut size={15} />
                                     {logout.isPending ? 'Logging out…' : 'Logout'}

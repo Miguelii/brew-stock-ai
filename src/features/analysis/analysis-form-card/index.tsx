@@ -109,8 +109,14 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                     </FormLabel>
                                     <FormControl>
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger className="h-10! w-full bg-background border-border text-primary rounded-none">
-                                                <BarChart2Icon className="size-4 text-primary-muted shrink-0" />
+                                            <SelectTrigger
+                                                aria-label="Analysis Type"
+                                                className="h-10! w-full bg-background border-border text-primary rounded-none"
+                                            >
+                                                <BarChart2Icon
+                                                    aria-hidden="true"
+                                                    className="size-4 text-primary-muted shrink-0"
+                                                />
                                                 <SelectValue placeholder="Select type">
                                                     {(() => {
                                                         const selected = PROMPT_OPTIONS.find(
@@ -123,8 +129,13 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                                                     {selected.label}
                                                                 </span>
                                                                 <span className="flex items-center gap-0.5 text-xs text-accent-blue font-semibold shrink-0">
-                                                                    <CoinsIcon className="size-3" />
-                                                                    {selected.cost}
+                                                                    <CoinsIcon
+                                                                        aria-hidden="true"
+                                                                        className="size-3"
+                                                                    />
+                                                                    <span>
+                                                                        {selected.cost} credits
+                                                                    </span>
                                                                 </span>
                                                             </span>
                                                         )
@@ -141,8 +152,11 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                                                         <span className="flex items-center justify-between gap-4 w-full">
                                                             <span>{option.label}</span>
                                                             <span className="flex items-center gap-0.5 text-xs text-accent-blue font-semibold shrink-0">
-                                                                <CoinsIcon className="size-3" />
-                                                                {option.cost}
+                                                                <CoinsIcon
+                                                                    aria-hidden="true"
+                                                                    className="size-3"
+                                                                />
+                                                                <span>{option.cost} credits</span>
                                                             </span>
                                                         </span>
                                                     </SelectItem>

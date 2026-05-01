@@ -13,8 +13,6 @@ const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* () {
 
     const REDIRECT_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${AUTH_PAGE_PATH}/callback`
 
-    console.log({ REDIRECT_URL })
-
     const { data, error } = yield* Effect.tryPromise({
         try: () =>
             supabase.auth.signInWithOAuth({

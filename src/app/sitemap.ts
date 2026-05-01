@@ -14,8 +14,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
         {
             url: `${siteUrl}${AUTH_PAGE_PATH}`,
-            changeFrequency: 'yearly',
+            changeFrequency: 'monthly',
             priority: 0.3,
+        },
+        {
+            url: `${siteUrl}/privacy`,
+            changeFrequency: 'monthly',
+            priority: 0.2,
         },
     ]
 }

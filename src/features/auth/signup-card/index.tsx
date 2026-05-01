@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2Icon } from 'lucide-react'
 import Link from 'next/link'
-import { HOME_PAGE_PATH } from '@/lib/constants'
+import { AUTH_PAGE_PATH, HOME_PAGE_PATH } from '@/lib/constants'
 
 export function SignupCard() {
     const signUp = trpc.signUp.useMutation()
@@ -124,7 +124,7 @@ export function SignupCard() {
 
             <p className="text-center text-sm text-muted-foreground">
                 Already have an account?{' '}
-                <Link href="/auth" className="text-primary font-medium underline">
+                <Link href={AUTH_PAGE_PATH} className="text-primary font-medium underline">
                     Sign in
                 </Link>
             </p>

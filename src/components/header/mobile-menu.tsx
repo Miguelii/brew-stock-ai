@@ -8,6 +8,8 @@ import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import type { NavLink } from '@/types/NavLink'
 import { useLogout } from './use-logout'
+import { AUTH_PAGE_PATH } from '@/lib/constants'
+import { CreditsDisplay } from './credits-display'
 
 type Props = {
     nav: NavLink[]
@@ -26,16 +28,19 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
 
     return (
         <>
-            <button
-                aria-label="Open menu"
-                onClick={() => setOpen(true)}
-                className={cn(
-                    'md:hidden flex items-center justify-center h-9 w-9 rounded-lg border border-border bg-card',
-                    'text-primary transition-all duration-200 hover:bg-muted active:scale-95'
-                )}
-            >
-                <Menu size={18} />
-            </button>
+            <div className="md:hidden flex flex-row gap-3">
+                <CreditsDisplay />
+                <button
+                    aria-label="Open menu"
+                    onClick={() => setOpen(true)}
+                    className={cn(
+                        'flex items-center justify-center h-9 w-9 rounded-lg border border-border bg-card',
+                        'text-primary transition-all duration-200 hover:bg-muted active:scale-95'
+                    )}
+                >
+                    <Menu size={18} />
+                </button>
+            </div>
 
             <Drawer open={open} onOpenChange={setOpen} direction="right">
                 <DrawerContent className="w-70 bg-card p-0 border-l border-border flex flex-col rounded-none!">
@@ -97,7 +102,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                         ) : (
                             <DrawerClose asChild>
                                 <Link
-                                    href="/auth"
+                                    href={AUTH_PAGE_PATH}
                                     prefetch={false}
                                     className="flex items-center justify-center w-full px-4 py-2.5 rounded-none bg-accent-blue text-background text-sm font-semibold transition-all duration-200 hover:bg-accent-blue/90 active:scale-[0.98]"
                                 >

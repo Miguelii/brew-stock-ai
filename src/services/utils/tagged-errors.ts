@@ -120,3 +120,13 @@ export class GetInvoicesError extends Data.TaggedError('GetInvoicesError')<{
     cause: unknown
     error_hash: string
 }> {}
+
+export class OAuthInitError extends Data.TaggedError('OAuthInitError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class OAuthCallbackError extends Data.TaggedError('OAuthCallbackError')<{
+    cause: unknown
+    error_hash: string
+}> {}

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import type { NavLink } from '@/types/NavLink'
+import { AUTH_PAGE_PATH } from '@/lib/constants'
 
 export function NavLinks({ links }: { links: NavLink[] }) {
     const pathname = usePathname()
@@ -37,7 +38,7 @@ export function LoginLink() {
     return (
         <Link
             prefetch={false}
-            href="/auth"
+            href={AUTH_PAGE_PATH}
             className="px-3 py-1.5 text-sm font-medium bg-accent-blue text-background hover:bg-accent-blue/90"
         >
             Sign In

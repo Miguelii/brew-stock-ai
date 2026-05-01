@@ -3,16 +3,17 @@
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
 import { useAuthForm, type FormValues } from './use-auth-form'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { Form } from '@/components/ui/form'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { Loader2Icon } from 'lucide-react'
+import { SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
+import { useAuthError } from './use-auth-error'
 
 export function AuthCard() {
     const login = trpc.signIn.useMutation()
     const form = useAuthForm()
     const router = useRouter()
+    useAuthError()
 
     const onSubmit = async (values: FormValues) => {
         try {
@@ -32,7 +33,14 @@ export function AuthCard() {
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                    {/* <Button variant="outline" type="button" className="w-full gap-2">
+                    <Button
+                        variant="outline"
+                        type="button"
+                        className="w-full gap-2 cursor-pointer"
+                        onClick={() => {
+                            window.location.href = SIGN_IN_GOOGLE_API_PATH
+                        }}
+                    >
                         <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                             <path
                                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -54,13 +62,13 @@ export function AuthCard() {
                         Continue with Google
                     </Button>
 
-                    <div className="flex items-center gap-3">
+                    {/* <div className="flex items-center gap-3">
                         <Separator className="flex-1" />
                         <span className="text-xs text-primary-muted">OR</span>
                         <Separator className="flex-1" />
                     </div> */}
 
-                    <FormField
+                    {/* <FormField
                         control={form.control}
                         name="email"
                         render={({ field }) => (
@@ -78,9 +86,9 @@ export function AuthCard() {
                                 </FormControl>
                             </FormItem>
                         )}
-                    />
+                    /> */}
 
-                    <FormField
+                    {/* <FormField
                         control={form.control}
                         name="password"
                         render={({ field }) => (
@@ -98,26 +106,25 @@ export function AuthCard() {
                                 </FormControl>
                             </FormItem>
                         )}
-                    />
+                    /> */}
 
-                    <Button
+                    {/* <Button
                         type="submit"
                         disabled={login.isPending}
                         className="w-full h-11 mt-1 bg-accent-blue hover:bg-accent-blue-dark text-background font-medium rounded-none cursor-pointer"
                     >
                         {login.isPending ? <Loader2Icon className="animate-spin" /> : null}
                         Sign in
-                    </Button>
+                    </Button> */}
                 </form>
             </Form>
 
-            <p className="text-center text-sm text-muted-foreground">
-                Beta access only. Sign up coming soon.
-                {/* Don&apos;t have an account?{' '}
+            {/* <p className="text-center text-sm text-muted-foreground">
+                Don&apos;t have an account?{' '}
                 <Link href="/sign-up" className="text-primary underline font-medium">
                     Sign up
-                </Link> */}
-            </p>
+                </Link>
+            </p> */}
         </div>
     )
 }

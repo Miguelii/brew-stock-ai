@@ -1,4 +1,5 @@
 import { ClientEnv } from '@/env/client'
+import { AUTH_PAGE_PATH } from '@/lib/constants'
 import type { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -12,12 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 1,
         },
         {
-            url: `${siteUrl}/auth`,
-            changeFrequency: 'yearly',
-            priority: 0.3,
-        },
-        {
-            url: `${siteUrl}/sign-up`,
+            url: `${siteUrl}${AUTH_PAGE_PATH}`,
             changeFrequency: 'yearly',
             priority: 0.3,
         },

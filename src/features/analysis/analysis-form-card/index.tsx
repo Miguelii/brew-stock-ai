@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select'
 import { useAnalysisForm, type FormValues } from './use-analysis-form'
 import { Input } from '@/components/ui/input'
-import { MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
+import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -159,7 +159,7 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                             disabled={createReport.isPending}
                             className="h-10! mt-3 ms:mt-0 w-full md:max-w-45 shrink-0 gap-2 cursor-pointer"
                             onClick={() => {
-                                if (!isAuthenticated) router.push('/auth')
+                                if (!isAuthenticated) router.push(AUTH_PAGE_PATH)
                             }}
                         >
                             <FileChartLineIcon className="size-4" />

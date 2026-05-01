@@ -55,7 +55,7 @@ export const AUTH_PAGE_PATH = '/auth'
 
 export const PROTECTED_PATHS = new Set(['/reports', '/account', '/tokens'])
 
-export const AUTH_PAGES_PATHS = new Set([AUTH_PAGE_PATH, '/sign-in'])
+export const AUTH_PAGES_PATHS = new Set([AUTH_PAGE_PATH])
 
 export const HOME_PAGE_PATH = '/'
 

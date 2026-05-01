@@ -34,14 +34,63 @@ export function TableCard({ reports, isLoading }: Props) {
     }
 
     return (
-        <Card className="pt-0">
-            <CardContent className="p-0">
-                <Table>
-                    <ReportsTableHeader />
-                    <TableBody>{renderContent()}</TableBody>
-                </Table>
-            </CardContent>
-        </Card>
+        <>
+            {/* Desktop: table */}
+            <Card className="pt-0 hidden md:block">
+                <CardContent className="p-0">
+                    <Table>
+                        <ReportsTableHeader />
+                        <TableBody>{renderContent()}</TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+
+            {/* Mobile: stacked cards */}
+            <div className="flex flex-col gap-3 md:hidden">
+                {isLoading && (
+                    <>
+                        {Array.from({ length: 4 }).map((_, i) => (
+                            <Skeleton key={`mobile-loading-${i}`} className="h-28 w-full" />
+                        ))}
+                    </>
+                )}
+                {isEmpty && (
+                    <Card className="pt-0">
+                        <CardContent className="h-32 flex items-center justify-center text-sm text-muted-foreground">
+                            No reports found.
+                        </CardContent>
+                    </Card>
+                )}
+                {!isLoading &&
+                    !isEmpty &&
+                    reports.map((report) => (
+                        <Card key={report.id} className="pt-0">
+                            <CardContent className="p-4 flex flex-col gap-3">
+                                <div className="flex items-start justify-between gap-2">
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="font-semibold text-foreground uppercase tracking-wide">
+                                            {report.stock}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">
+                                            {
+                                                PROMPT_OPTIONS.find((o) => o.type === report.type)
+                                                    ?.label
+                                            }
+                                        </span>
+                                    </div>
+                                    <StatusBadge status={report.status} />
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs text-muted-foreground">
+                                        {parseReportDate(report.created_at)}
+                                    </span>
+                                    <ActionCell status={report.status} report={report} />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+            </div>
+        </>
     )
 }
 
@@ -116,21 +165,21 @@ function ReportsTableHeader() {
 function StatusBadge({ status }: { status: ReportStatus }) {
     if (status === ReportStatus.COMPLETED) {
         return (
-            <Badge className="py-3 border border-accent-green/25 bg-accent-green-light text-accent-green font-bold hover:bg-accent-green/10">
+            <Badge className="py-3 border border-accent-green/25 bg-accent-green-light text-accent-green font-bold hover:bg-accent-green/10 w-32.5 md:w-30">
                 Completed
             </Badge>
         )
     }
     if (status === ReportStatus.GENERATING) {
         return (
-            <Badge className="py-3 gap-1.5 border border-accent-blue/25 bg-accent-blue-light text-accent-blue font-bold hover:bg-accent-blue/10">
+            <Badge className="py-3 gap-1.5 border border-accent-blue/25 bg-accent-blue-light text-accent-blue font-bold hover:bg-accent-blue/10 w-32.5 md:w-30">
                 <Loader2 className="size-3 animate-spin" />
                 AI is working...
             </Badge>
         )
     }
     return (
-        <Badge className="py-3 border border-destructive/25 bg-destructive/10 text-destructive font-bold hover:bg-destructive/10">
+        <Badge className="py-3 border border-destructive/25 bg-destructive/10 text-destructive font-bold hover:bg-destructive/10 w-32.5 md:w-30">
             Failed
         </Badge>
     )
@@ -140,7 +189,11 @@ function ActionCell({ status, report }: { status: ReportStatus; report: ReportLi
     if (status === ReportStatus.COMPLETED) {
         return (
             <Link className="contents" href={`/reports/${report.id}`} prefetch={false}>
-                <Button variant="outline" size="sm" className="cursor-pointer bg-card rounded-none">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer bg-card rounded-none w-32.5 md:w-fit"
+                >
                     View Report
                 </Button>
             </Link>

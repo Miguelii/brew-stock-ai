@@ -127,13 +127,6 @@ export function AuthCard({ returnTo }: Props) {
                     </Button> */}
                 </form>
             </Form>
-
-            {/* <p className="text-center text-sm text-muted-foreground">
-                Don&apos;t have an account?{' '}
-                <Link href="/sign-up" className="text-primary underline font-medium">
-                    Sign up
-                </Link>
-            </p> */}
         </div>
     )
 }

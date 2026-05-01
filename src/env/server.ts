@@ -1,5 +1,5 @@
 import { createEnv } from '@t3-oss/env-nextjs'
-import * as z from 'zod/mini'
+import { z } from 'zod'
 
 export const ServerEnv = createEnv({
     server: {
@@ -8,8 +8,8 @@ export const ServerEnv = createEnv({
         NEXT_SUPABASE_SERVICE_ROLE_KEY: z.string(),
         NEXT_ANTHROPIC_AI_KEY: z.string(),
         VAPID_PRIVATE_KEY: z.string(),
-        STRIPE_SECRET_KEY: z.string(),
-        STRIPE_WEBHOOK_SECRET: z.string(),
+        STRIPE_SECRET_KEY: z.string().optional(),
+        STRIPE_WEBHOOK_SECRET: z.string().optional(),
     },
     runtimeEnv: {
         NEXT_SUPABASE_URL: process.env.NEXT_SUPABASE_URL,

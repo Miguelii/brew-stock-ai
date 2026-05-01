@@ -115,3 +115,8 @@ export class CreateCheckoutSessionError extends Data.TaggedError('CreateCheckout
     cause: unknown
     error_hash: string
 }> {}
+
+export class GetInvoicesError extends Data.TaggedError('GetInvoicesError')<{
+    cause: unknown
+    error_hash: string
+}> {}

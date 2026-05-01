@@ -11,12 +11,7 @@ import {
 import { createSbServerClient } from '@/lib/utils.server'
 import { getSession } from '@/services/supabase/get-session'
 import { ClientEnv } from '@/env/client'
-
-export const TOKEN_PACKAGES = [
-    { id: 'starter', credits: 5, amount: 250, label: 'Starter' },
-    { id: 'pro', credits: 15, amount: 599, label: 'Pro' },
-    { id: 'expert', credits: 50, amount: 1499, label: 'Expert' },
-] as const
+import { TOKEN_PACKAGES } from '@/services/utils/constants'
 
 export type TokenPackageId = (typeof TOKEN_PACKAGES)[number]['id']
 
@@ -44,15 +39,11 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
     }
 
     const stripe = yield* Effect.try({
-        try: () => new StripeClient(ServerEnv.STRIPE_SECRET_KEY),
+        try: () => new StripeClient(ServerEnv.STRIPE_SECRET_KEY!),
         catch: (cause) => new CreateCheckoutSessionError({ cause, error_hash: 'ecktchksssnstrp' }),
     })
 
     const baseUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
-
-    console.log({ stripe })
-
-    console.log({ baseUrl })
 
     const session = yield* Effect.tryPromise({
         try: () =>
@@ -73,6 +64,12 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
                 metadata: {
                     userId: user.id,
                     credits: String(pkg.credits),
+                },
+                payment_intent_data: {
+                    metadata: {
+                        userId: user.id,
+                        credits: String(pkg.credits),
+                    },
                 },
                 success_url: `${baseUrl}/tokens?success=true`,
                 cancel_url: `${baseUrl}/tokens?canceled=true`,

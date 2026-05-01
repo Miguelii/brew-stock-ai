@@ -5,7 +5,7 @@ export const ClientEnv = createEnv({
     client: {
         NEXT_PUBLIC_WEBSITE_URL: z.string(),
         NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string(),
-        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
     },
     runtimeEnv: {
         NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,

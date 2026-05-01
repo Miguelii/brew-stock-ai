@@ -30,7 +30,7 @@ function fetchSubscriptions(supabase: SupabaseClient, userId: string) {
 }
 
 function sendToSubscriptions(
-    rows: { subscription: unknown }[],
+    rows: { subscription: PushSubscriptionJSON }[],
     title: string,
     body: string
 ): Effect.Effect<{ success: true }, SendPushNotificationError> {
@@ -45,8 +45,6 @@ function sendToSubscriptions(
                 )
             ),
         catch: (cause) => {
-            const statusCode = (cause as { statusCode?: number })?.statusCode
-            console.error('[sendToSubscriptions] statusCode:', statusCode, cause)
             return new SendPushNotificationError({ cause, error_hash: 'esndpshsend' })
         },
     }).pipe(Effect.map(() => ({ success: true as const })))

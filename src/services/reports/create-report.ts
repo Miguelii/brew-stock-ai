@@ -59,7 +59,10 @@ export const createReport = Effect.fn('createReport')(function* (
     }
 
     // Send to trigger.dev to proccess in the background
-    tasks.trigger<typeof processReportTask>('process-report', { reportId: report.id })
+    tasks.trigger<typeof processReportTask>('process-report', {
+        reportId: report.id,
+        useBaseModel: process.env.NODE_ENV === 'development',
+    })
 
     return report.id as string
 })

@@ -30,3 +30,9 @@ export const stockAnalysisSchema = z.object({
             'Integer from 0 to 100. 0–30 bearish, 31–69 neutral, 70–100 bullish. Must be between 0 and 100.'
         ),
 })
+
+export const TOKEN_PACKAGES = [
+    { id: 'starter', credits: 5, amount: 249, label: 'Starter' },
+    { id: 'pro', credits: 15, amount: 599, label: 'Pro' },
+    { id: 'expert', credits: 50, amount: 1499, label: 'Expert' },
+] as const

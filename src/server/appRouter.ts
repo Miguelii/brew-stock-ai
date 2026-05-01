@@ -16,6 +16,7 @@ import { subscribePush } from '@/services/notifications/subscribe-push'
 import { unsubscribePush } from '@/services/notifications/unsubscribe-push'
 import { sendPushNotification } from '@/services/notifications/send-push-notification'
 import { getCredits } from '@/services/tokens/get-credits'
+import { getInvoices } from '@/services/tokens/get-invoices'
 import { createCheckoutSession } from '@/services/tokens/create-checkout-session'
 import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
 import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
@@ -202,6 +203,18 @@ export const appRouter = router({
                 Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
                 Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
                 Match.tag('GetCreditsError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.exhaustive
+            )
+        )
+    ),
+
+    getInvoices: publicProcedure.query(() =>
+        runEffect(getInvoices(), 'getInvoices', (error) =>
+            Match.value(error).pipe(
+                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                Match.tag('GetInvoicesError', () => 'INTERNAL_SERVER_ERROR' as const),
                 Match.exhaustive
             )
         )

@@ -8,7 +8,10 @@ import { getStockAnalysis } from '../analysis/get-stock-analysis'
 import { FetchReportForTaskError, MarkReportFailedError } from '../utils/tagged-errors'
 import { sendPushNotificationToUser } from '../notifications/send-push-notification'
 
-export const processReport = Effect.fn('processReport')(function* (reportId: string) {
+export const processReport = Effect.fn('processReport')(function* (
+    reportId: string,
+    useBaseModel?: boolean
+) {
     const supabase = createSbAdminClient()
 
     const { data: report, error } = yield* Effect.tryPromise({
@@ -29,7 +32,13 @@ export const processReport = Effect.fn('processReport')(function* (reportId: str
         userId: typedReport.user_id,
     })
 
-    yield* getStockAnalysis(typedReport.stock, typedReport.type, typedReport.id, supabase).pipe(
+    yield* getStockAnalysis(
+        typedReport.stock,
+        typedReport.type,
+        typedReport.id,
+        supabase,
+        useBaseModel
+    ).pipe(
         Effect.catchAll((err) =>
             Effect.tryPromise({
                 try: () =>

@@ -9,15 +9,6 @@ import {
 } from '@/services/utils/tagged-errors'
 import { getSession } from '@/services/supabase/get-session'
 
-type PushSubscriptionJSON = {
-    endpoint: string
-    expirationTime: number | null
-    keys: {
-        p256dh: string
-        auth: string
-    }
-}
-
 export const subscribePush = Effect.fn('subscribePush')(function* (
     subscription: PushSubscriptionJSON
 ) {

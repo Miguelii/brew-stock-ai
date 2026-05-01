@@ -1,18 +1,24 @@
+'use client'
+
 import Link from 'next/link'
 import { CoinsIcon } from 'lucide-react'
+import { useGetCredits } from '@/hooks/use-get-credits'
+import { Skeleton } from '@/components/ui/skeleton'
 
-interface Props {
-    credits: number
-}
+export function CreditsDisplay() {
+    const { isLoading, credits } = useGetCredits()
 
-export function CreditsDisplay({ credits }: Props) {
     return (
         <Link
             href="/tokens"
             className="flex items-center gap-1.5 px-3 h-9 rounded-lg border border-border bg-card text-sm font-semibold tabular-nums hover:bg-muted transition-colors"
         >
             <CoinsIcon className="w-4 h-4 text-accent-blue shrink-0" />
-            <span>{credits}</span>
+            {isLoading ? (
+                <Skeleton className="w-4 h-3.5 rounded bg-muted-foreground/20 animate-pulse" />
+            ) : (
+                <span>{credits}</span>
+            )}
         </Link>
     )
 }

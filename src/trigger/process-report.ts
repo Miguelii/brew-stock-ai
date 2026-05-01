@@ -1,6 +1,6 @@
+import { processReport } from '@/services/reports/process-report'
 import { task } from '@trigger.dev/sdk/v3'
 import { Effect } from 'effect'
-import { processReport } from '@/services/reports/process-report'
 
 export const processReportTask = task({
     id: 'process-report',
@@ -8,5 +8,6 @@ export const processReportTask = task({
     retry: {
         maxAttempts: 1,
     },
-    run: (payload: { reportId: string }) => Effect.runPromise(processReport(payload.reportId)),
+    run: (payload: { reportId: string; useBaseModel?: boolean }) =>
+        Effect.runPromise(processReport(payload.reportId, payload.useBaseModel)),
 })

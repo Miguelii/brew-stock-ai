@@ -7,18 +7,19 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { UserRound, LogOut, BellRing } from 'lucide-react'
+import { UserRound, LogOut, UserIcon } from 'lucide-react'
 import { useLogout } from './use-logout'
-import { trpc } from '@/server/trpc-client'
-import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export function ProfileDropdownMenu() {
     const logout = useLogout()
 
-    const testNotification = trpc.sendPushNotification.useMutation({
+    const router = useRouter()
+
+    /* const testNotification = trpc.sendPushNotification.useMutation({
         onSuccess: () => toast.success('Test notification sent.'),
         onError: () => toast.error('Failed to send test notification.'),
-    })
+    }) */
 
     return (
         <DropdownMenu>
@@ -27,7 +28,12 @@ export function ProfileDropdownMenu() {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="min-w-40 rounded-none">
-                <DropdownMenuItem
+                <DropdownMenuItem onClick={() => router.push('/account')}>
+                    <UserIcon size={14} />
+                    Account
+                </DropdownMenuItem>
+
+                {/* <DropdownMenuItem
                     onClick={() =>
                         testNotification.mutate({
                             title: 'Test notification',
@@ -38,7 +44,7 @@ export function ProfileDropdownMenu() {
                 >
                     <BellRing size={14} />
                     {testNotification.isPending ? 'Sending…' : 'Test notification'}
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
 
                 <DropdownMenuSeparator />
 

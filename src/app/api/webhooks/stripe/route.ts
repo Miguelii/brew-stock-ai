@@ -11,12 +11,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 })
     }
 
-    const stripe = new StripeClient(ServerEnv.STRIPE_SECRET_KEY)
+    const stripe = new StripeClient(ServerEnv.STRIPE_SECRET_KEY!)
 
     let event: Stripe.Event
 
     try {
-        event = stripe.webhooks.constructEvent(body, signature, ServerEnv.STRIPE_WEBHOOK_SECRET)
+        event = stripe.webhooks.constructEvent(body, signature, ServerEnv.STRIPE_WEBHOOK_SECRET!)
     } catch {
         return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 400 })
     }

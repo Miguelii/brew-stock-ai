@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart2Icon, CoinsIcon, FileChartLineIcon, SearchIcon } from 'lucide-react'
+import { BarChart2Icon, ClockIcon, CoinsIcon, FileChartLineIcon, SearchIcon } from 'lucide-react'
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -166,6 +166,10 @@ export function AnalysisFormCard({ isAuthenticated }: Props) {
                         </Button>
                     </form>
                 </Form>
+                <p className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
+                    <ClockIcon className="size-3 shrink-0" />
+                    AI analysis runs in the background and typically takes 30s - 1 min.
+                </p>
             </CardContent>
         </Card>
     )

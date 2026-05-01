@@ -14,7 +14,8 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     stockSymbol: string,
     promptType: string,
     reportId: ReportDTO['id'],
-    supabaseClient?: SupabaseClient
+    supabaseClient?: SupabaseClient,
+    useBaseModel?: boolean
 ) {
     const basePrompt = PROMPTS_MAP[promptType]
 
@@ -24,28 +25,26 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
 
     const resolvedPrompt = basePrompt.replaceAll('##TICKER##', stockSymbol)
 
-    const isDev = process.env.NODE_ENV === 'development'
-
     const FREE_MODEL = 'claude-haiku-4-5'
     const PROD_MODEL = 'claude-sonnet-4-5-20250929'
 
     const { output } = yield* Effect.tryPromise({
         try: () =>
             generateText({
-                model: anthropic(isDev ? FREE_MODEL : PROD_MODEL),
-                ...(isDev
+                model: anthropic(useBaseModel ? FREE_MODEL : PROD_MODEL),
+                ...(useBaseModel
                     ? {}
                     : {
                           providerOptions: {
                               anthropic: {
-                                  thinking: { type: 'enabled', budgetTokens: 8000 },
+                                  thinking: { type: 'enabled', budgetTokens: 1500 },
                               },
                           },
                       }),
                 output: Output.object({ schema: stockAnalysisSchema }),
                 system: SystemPrompt,
                 prompt: resolvedPrompt,
-                maxOutputTokens: isDev ? 4000 : 12000,
+                maxOutputTokens: useBaseModel ? 4000 : 5000,
             }),
         catch: (cause) => {
             console.error('[getStockAnalysis] raw AI error:', cause)

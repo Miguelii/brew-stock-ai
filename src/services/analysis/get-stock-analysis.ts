@@ -7,6 +7,8 @@ import { SystemPrompt } from '@/services/utils/prompts'
 import { AiGenerationError, InvalidPromptTypeError } from '@/services/utils/tagged-errors'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { saveAnalysisToReport } from './save-analysis-to-report'
+import { saveStockData } from './save-stock-data'
+import { getYahooData } from './get-yahoo-data'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { PROMPTS_MAP, stockAnalysisSchema } from '@/services/utils/constants'
 
@@ -52,7 +54,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         },
     })
 
-    const { analysis, sentiment } = output
+    const { analysis, sentiment, yahoo_ticker } = output
 
     if (!analysis) {
         return yield* new AiGenerationError({
@@ -61,7 +63,36 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         })
     }
 
-    yield* saveAnalysisToReport(reportId, analysis, sentiment, supabaseClient)
+    yield* saveAnalysisToReport(reportId, analysis, yahoo_ticker, sentiment, supabaseClient)
+
+    // Yahoo enrichment — non-fatal: if Yahoo fails the report still completes
+    const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
+
+    const shouldFetchYahoo = supabaseClient
+        ? yield* Effect.tryPromise({
+              try: () =>
+                  supabaseClient
+                      .from('stock_data')
+                      .select('last_update_at')
+                      .eq('id', yahoo_ticker)
+                      .maybeSingle(),
+              catch: (cause) => cause,
+          }).pipe(
+              Effect.map((res) => {
+                  if (!res.data?.last_update_at) return true
+                  const elapsed = Date.now() - new Date(res.data.last_update_at).getTime()
+                  return elapsed >= THIRTY_DAYS_MS
+              }),
+              Effect.orElse(() => Effect.succeed(true))
+          )
+        : true
+
+    if (shouldFetchYahoo) {
+        yield* getYahooData(yahoo_ticker).pipe(
+            Effect.flatMap((yahooData) => saveStockData(yahoo_ticker, yahooData, supabaseClient)),
+            Effect.orElse(() => Effect.void)
+        )
+    }
 
     return { analysis, sentiment }
 })

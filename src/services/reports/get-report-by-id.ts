@@ -7,7 +7,7 @@ import {
     GetReportByIdError,
     UnauthenticatedError,
 } from '@/services/utils/tagged-errors'
-import type { ReportDTO } from '@/types/ReportDTO'
+import type { ReportDTO, ReportWithStockData, StockData } from '@/types/ReportDTO'
 import { getSession } from '@/services/supabase/get-session'
 
 export const getReportById = Effect.fn('getReportById')(function* (id: ReportDTO['id']) {
@@ -32,5 +32,16 @@ export const getReportById = Effect.fn('getReportById')(function* (id: ReportDTO
         return yield* new GetReportByIdError({ cause: error, error_hash: 'egrptbiderr' })
     }
 
-    return report as ReportDTO
+    const typedReport = report as ReportDTO
+
+    const stockData = yield* Effect.tryPromise({
+        try: () =>
+            supabase.from('stock_data').select('*').eq('id', typedReport.ticker).maybeSingle(),
+        catch: (cause) => cause,
+    }).pipe(
+        Effect.map((res) => (res.data as StockData) ?? null),
+        Effect.orElse(() => Effect.succeed(null))
+    )
+
+    return { report: typedReport, stockData } satisfies ReportWithStockData
 })

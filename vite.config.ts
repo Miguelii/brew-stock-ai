@@ -41,7 +41,7 @@ export default defineConfig({
             'react-perf/jsx-no-new-function-as-prop': 'off',
             'react/react-in-jsx-scope': 'off',
             'import/no-unassigned-import': 'off',
-            'import/max-dependencies': ['warn', { max: 15 }],
+            'import/max-dependencies': ['warn', { max: 20 }],
             'eslint/max-lines-per-function': ['warn', { max: 250 }],
             'eslint/max-lines': ['warn', { max: 350 }],
             'eslint/eqeqeq': 'off',

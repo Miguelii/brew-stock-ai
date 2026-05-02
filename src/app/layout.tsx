@@ -97,6 +97,11 @@ export default async function RootLayout({ children }: Props) {
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <meta name="apple-mobile-web-app-title" content="StockBrewAI" />
+                <script
+                    async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1939312153475109"
+                    crossOrigin="anonymous"
+                />
             </head>
             <VercelAnalytics />
             <VercelSpeedInsights />

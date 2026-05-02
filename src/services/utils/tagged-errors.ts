@@ -130,3 +130,23 @@ export class CreateConsentCookieError extends Data.TaggedError('CreateConsentCoo
     cause: unknown
     error_hash: string
 }> {}
+
+export class YahooClientError extends Data.TaggedError('YahooClientError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class YahooInsightsError extends Data.TaggedError('YahooInsightsError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class YahooSearchError extends Data.TaggedError('YahooSearchError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
+export class SaveStockDataError extends Data.TaggedError('SaveStockDataError')<{
+    cause: unknown
+    error_hash: string
+}> {}

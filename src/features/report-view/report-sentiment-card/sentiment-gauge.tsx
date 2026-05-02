@@ -33,6 +33,14 @@ const SEGMENTS: SegmentDef[] = [
     { startScore: 76, endScore: 100, color: EXTREME_BULLISH_COLOR, lines: ['EXTREME', 'BULLISH'] },
 ]
 
+const RISK_SEGMENTS: SegmentDef[] = [
+    { startScore: 0, endScore: 24, color: EXTREME_BEARISH_COLOR, lines: ['VERY HIGH', 'RISK'] },
+    { startScore: 25, endScore: 42, color: BEARISH_COLOR, lines: ['HIGH RISK'] },
+    { startScore: 43, endScore: 57, color: NEUTRAL_COLOR, lines: ['MODERATE', 'RISK'] },
+    { startScore: 58, endScore: 75, color: BULLISH_COLOR, lines: ['LOW RISK'] },
+    { startScore: 76, endScore: 100, color: EXTREME_BULLISH_COLOR, lines: ['VERY LOW', 'RISK'] },
+]
+
 /** Maps score 0–100 to an angle in degrees: 0 → 180° (left), 100 → 0° (right). */
 function scoreToAngle(score: number) {
     return 180 * (1 - score / 100)
@@ -65,11 +73,13 @@ function arcPath(fromDeg: number, toDeg: number) {
 
 interface Props {
     score: number // 0–100
+    isRiskAnalysis?: boolean
 }
 
-export function SentimentGauge({ score }: Props) {
+export function SentimentGauge({ score, isRiskAnalysis = false }: Props) {
     const clamped = Math.min(100, Math.max(0, score))
     const { label, color } = getSentimentInfo(clamped)
+    const segments = isRiskAnalysis ? RISK_SEGMENTS : SEGMENTS
 
     const needleAngleRad = Math.PI * (1 - clamped / 100)
     const needleX = CX + NEEDLE_LEN * Math.cos(needleAngleRad)
@@ -78,7 +88,7 @@ export function SentimentGauge({ score }: Props) {
     return (
         <div className="flex flex-col items-center gap-2">
             <svg viewBox="0 0 200 108" className="w-full max-w-64">
-                {SEGMENTS.map((seg, i) => {
+                {segments.map((seg, i) => {
                     // Apply half-gap inward on each shared boundary (none on the outer edges)
                     const startAngle = i === 0 ? 180 : scoreToAngle(seg.startScore) - GAP
                     const endAngle =
@@ -144,12 +154,17 @@ export function SentimentGauge({ score }: Props) {
 
             {/* Active label */}
             <p className="text-sm font-bold tracking-wide" style={{ color }}>
-                {label.toUpperCase()}
+                {isRiskAnalysis
+                    ? (RISK_SEGMENTS.find(
+                          (s) => clamped >= s.startScore && clamped <= s.endScore
+                      )?.lines.join(' ') ?? label.toUpperCase())
+                    : label.toUpperCase()}
             </p>
 
             <p className="mt-1 w-full text-center text-[10px] leading-relaxed text-muted-foreground">
-                This score reflects the sentiment inferred from the AI analysis only and does not
-                constitute financial advice or an investment recommendation.
+                {isRiskAnalysis
+                    ? 'This score reflects the risk level inferred from the AI analysis only and does not constitute financial advice.'
+                    : 'This score reflects the sentiment inferred from the AI analysis only and does not constitute financial advice or an investment recommendation.'}
             </p>
         </div>
     )

@@ -10,6 +10,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 export const saveAnalysisToReport = Effect.fn('saveAnalysisToReport')(function* (
     reportId: ReportDTO['id'],
     analysis: string,
+    ticker: string | null,
     sentiment?: number,
     prebuiltClient?: SupabaseClient
 ) {
@@ -28,6 +29,7 @@ export const saveAnalysisToReport = Effect.fn('saveAnalysisToReport')(function* 
                     status: ReportStatus.COMPLETED,
                     ai_response: analysis,
                     sentiment: sentiment ?? 'NULL',
+                    ticker: ticker ?? 'NULL',
                 })
                 .eq('id', reportId),
         catch: (cause) => new SaveAnalysisError({ cause, error_hash: 'esaveanlyupdt' }),

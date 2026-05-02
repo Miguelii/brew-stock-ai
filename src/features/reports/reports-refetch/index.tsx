@@ -13,7 +13,7 @@ export function ReportsRefetch() {
 
     function refetch() {
         startTransition(async () => {
-            await utils.getReports.refetch()
+            await Promise.all([utils.getReports.refetch(), utils.getCredits.refetch()])
         })
     }
 

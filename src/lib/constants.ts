@@ -48,6 +48,8 @@ export const STATIC_PREFIXES = [
     '/apple-touch-icon',
     '/web-app-manifest-192x192',
     '/web-app-manifest-512x512',
+    '/android-chrome-192x192.png',
+    '/android-chrome-512x512.png',
     CHROMIUM_PACK_PATH,
 ]
 

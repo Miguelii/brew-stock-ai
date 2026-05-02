@@ -12,6 +12,9 @@ import { getReportById } from '@/services/reports/get-report-by-id'
 import { cache } from 'react'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { ReportTldrCard } from '@/features/report-view/report-tldr-card'
+import { ReportSigDev } from '@/features/report-view/report-sig-dev'
+import { ReportLatestNews } from '@/features/report-view/report-latest-news'
+import { ReportSectorScores } from '@/features/report-view/report-sector-scores'
 
 type Props = PageProps<'/reports/[id]'>
 
@@ -24,7 +27,9 @@ const getCachedReportById = cache(async (id: ReportDTO['id']) => {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { id } = await params
 
-    const report = await getCachedReportById(id)
+    const response = await getCachedReportById(id)
+
+    const report = response?.report
 
     if (report?.stock) {
         return {
@@ -39,7 +44,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ReportsIdPage(props: Props) {
     const params = await props.params
 
-    const report = await getCachedReportById(params.id)
+    const response = await getCachedReportById(params.id)
+
+    const report = response?.report
+
+    const stockData = response?.stockData
 
     if (!report) return notFound()
 
@@ -74,6 +83,12 @@ export default async function ReportsIdPage(props: Props) {
                 <ReportAnalysisCard report={report} />
                 <ReportSentimentCard report={report} />
             </div>
+
+            <ReportSigDev headline={stockData?.sig_dev?.headline} date={stockData?.sig_dev?.date} />
+
+            <ReportLatestNews news={stockData?.reports ?? []} />
+
+            <ReportSectorScores scores={stockData?.scores ?? null} />
         </main>
     )
 }

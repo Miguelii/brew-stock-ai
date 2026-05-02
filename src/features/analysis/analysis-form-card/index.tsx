@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input'
 import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
 import { toast } from 'sonner'
 import { usePathname, useRouter } from 'next/navigation'
+import { useTransition } from 'react'
 
 type Props = {
     isAuthenticated: boolean
@@ -29,9 +30,18 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     const router = useRouter()
     const pathname = usePathname()
 
+    // oxlint-disable-next-line no-unused-vars
+    const [_, startTransition] = useTransition()
+
+    function refetch() {
+        startTransition(async () => {
+            await Promise.all([utils.getReports.invalidate(), utils.getCredits.refetch()])
+        })
+    }
+
     const createReport = trpc.createReport.useMutation({
         onSuccess: async () => {
-            await utils.getReports.invalidate()
+            refetch()
         },
     })
 
@@ -68,7 +78,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     }
 
     return (
-        <Card className="pt-0 drop-shadow-md w-full lg:w-[43%]">
+        <Card className="pt-0 drop-shadow-md w-full md:w-[75%] lg:w-[43%]">
             <CardContent className="p-6">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">

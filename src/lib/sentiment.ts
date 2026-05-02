@@ -14,6 +14,18 @@ export function getSentimentInfo(score: number): SentimentInfo {
     return { label: 'Extreme Bullish', color: EXTREME_BULLISH_COLOR }
 }
 
+/**
+ * Maps a 0–100 sentiment score to a risk level label and colour.
+ * Used for Risk Analysis reports where lower score = higher risk.
+ */
+export function getRiskLevelInfo(score: number): SentimentInfo {
+    if (score <= 24) return { label: 'Very High Risk', color: EXTREME_BEARISH_COLOR }
+    if (score <= 42) return { label: 'High Risk', color: BEARISH_COLOR }
+    if (score <= 57) return { label: 'Moderate Risk', color: NEUTRAL_COLOR }
+    if (score <= 75) return { label: 'Low Risk', color: BULLISH_COLOR }
+    return { label: 'Very Low Risk', color: EXTREME_BULLISH_COLOR }
+}
+
 export const EXTREME_BEARISH_COLOR = '#ef4444'
 
 export const BEARISH_COLOR = '#f97316'

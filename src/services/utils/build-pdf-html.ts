@@ -44,7 +44,7 @@ function buildScoreRows(scores: StockScores): string {
                     <span style="font-weight:600;">${label}</span>
                     <span>${valueText}<span style="color:#909097;font-weight:400;"> vs ${sectorText}</span></span>
                 </div>
-                <div style="position:relative;height:10px;background:#f0f0f0;border-radius:4px;overflow:hidden;">
+                <div style="position:relative;height:10px;background:${isNA ? '#ffffff' : '#d4d4d4'};border-radius:4px;overflow:hidden;">
                     ${bar}${tick}
                 </div>
             </div>`

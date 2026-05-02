@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import type { StockScores } from '@/types/ReportDTO'
 
 type ScoreRow = {
@@ -80,7 +81,12 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
             </div>
 
             {/* Track */}
-            <div className="relative h-3 rounded-full bg-muted overflow-hidden">
+            <div
+                className={cn(
+                    'relative h-3 rounded-full overflow-hidden',
+                    isNA ? 'bg-muted' : 'bg-primary/20'
+                )}
+            >
                 {isNA ? (
                     <div
                         className="absolute inset-0"
@@ -99,7 +105,7 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
                 {/* Sector avg tick — only render when sectorAvg is known */}
                 {score.sectorAvg !== null && (
                     <div
-                        className="absolute inset-y-0 w-0.5 bg-primary/30 z-10"
+                        className="absolute inset-y-0 w-0.5 bg-primary/20 z-10"
                         style={{ left: `${score.sectorAvg * 100}%` }}
                     />
                 )}

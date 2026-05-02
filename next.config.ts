@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
             'tailwind-merge',
             'tw-animate-css',
             'vaul',
+            'yahoo-finance2',
         ],
     },
     images: {

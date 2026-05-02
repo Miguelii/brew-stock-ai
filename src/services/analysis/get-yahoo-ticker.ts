@@ -1,12 +1,14 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import YahooFinance from 'yahoo-finance2'
 import { YahooClientError, YahooSearchError } from '@/services/utils/tagged-errors'
 
 export const getYahooTicker = Effect.fn('getYahooTicker')(function* (stockSymbol: string) {
-    const yahooClient = yield* Effect.try({
-        try: () => new YahooFinance({ suppressNotices: ['yahooSurvey'] }),
+    const yahooClient = yield* Effect.tryPromise({
+        try: async () => {
+            const { default: YahooFinance } = await import('yahoo-finance2')
+            return new YahooFinance({ suppressNotices: ['yahooSurvey'] })
+        },
         catch: (cause) => new YahooClientError({ cause, error_hash: 'yhosrchclnt' }),
     })
 

@@ -1,8 +1,6 @@
 import 'server-only'
 
-import { generateText, Output } from 'ai'
 import { Effect } from 'effect'
-import { anthropic } from '@/services/utils/init-anthropic'
 import { SystemPrompt } from '@/services/utils/prompts'
 import { AiGenerationError, InvalidPromptTypeError } from '@/services/utils/tagged-errors'
 import type { ReportDTO } from '@/types/ReportDTO'
@@ -84,9 +82,16 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     const PROD_MODEL = 'claude-sonnet-4-5-20250929'
 
     const { analysis, sentiment } = yield* Effect.tryPromise({
-        try: () =>
-            generateText({
-                model: anthropic(useBaseModel ? FREE_MODEL : PROD_MODEL),
+        try: async () => {
+            const [{ generateText, Output }, { createAnthropic }] = await Promise.all([
+                import('ai'),
+                import('@ai-sdk/anthropic'),
+            ])
+            const anthropicClient = createAnthropic({
+                apiKey: process.env.NEXT_ANTHROPIC_AI_KEY,
+            })
+            return generateText({
+                model: anthropicClient(useBaseModel ? FREE_MODEL : PROD_MODEL),
                 ...(useBaseModel
                     ? {}
                     : {
@@ -100,7 +105,8 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                 system: SystemPrompt,
                 prompt: resolvedPrompt,
                 maxOutputTokens: useBaseModel ? 4000 : 5000,
-            }).then((result) => result.output), // access .output inside try — throws AI_NoOutputGeneratedError otherwise
+            }).then((result) => result.output) // access .output inside try — throws AI_NoOutputGeneratedError otherwise
+        },
         catch: (cause) => {
             console.error('[getStockAnalysis] raw AI error:', cause)
             return new AiGenerationError({ cause, error_hash: 'elogaierf1' })

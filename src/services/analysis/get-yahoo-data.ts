@@ -2,12 +2,14 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { YahooClientError, YahooInsightsError } from '../utils/tagged-errors'
-import YahooFinance from 'yahoo-finance2'
 import type { StockReports, StockScores, StockSigDev } from '@/types/ReportDTO'
 
 export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string) {
-    const yahooClient = yield* Effect.try({
-        try: () => new YahooFinance({ suppressNotices: ['yahooSurvey'] }),
+    const yahooClient = yield* Effect.tryPromise({
+        try: async () => {
+            const { default: YahooFinance } = await import('yahoo-finance2')
+            return new YahooFinance({ suppressNotices: ['yahooSurvey'] })
+        },
         catch: (cause) => new YahooClientError({ cause, error_hash: 'yhoclterr' }),
     })
 

@@ -1,6 +1,6 @@
 import { PROMPT_TYPES } from '@/lib/constants'
-import { getSentimentInfo } from '@/lib/sentiment'
-import type { PropmptsEnum } from '@/types/PropmptsEnum'
+import { getSentimentInfo, getRiskLevelInfo } from '@/lib/sentiment'
+import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type { ReportDTO, StockData, StockScores } from '@/types/ReportDTO'
 
 function buildScoreRows(scores: StockScores): string {
@@ -63,7 +63,10 @@ export function buildPdfHtml(params: {
 }) {
     const { stock, type, ai_response, sentiment, created_at, stockData } = params
     const label = PROMPT_TYPES[type as PropmptsEnum]?.label ?? type
-    const { label: sentimentLabel, color: sentimentColor } = getSentimentInfo(sentiment)
+    const isRiskAnalysis = type === PropmptsEnum.RISK_ANALYSIS
+    const { label: sentimentLabel, color: sentimentColor } = isRiskAnalysis
+        ? getRiskLevelInfo(sentiment)
+        : getSentimentInfo(sentiment)
     const date = new Date(created_at).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -253,7 +256,7 @@ export function buildPdfHtml(params: {
             <div class="report-type">${label}</div>
         </div>
         <div class="sentiment-badge">
-            <span class="sentiment-label">Sentiment</span>
+            <span class="sentiment-label">${isRiskAnalysis ? 'Risk Level' : 'Sentiment'}</span>
             <span class="sentiment-value" style="color: ${sentimentColor}">${sentimentLabel}</span>
         </div>
     </div>

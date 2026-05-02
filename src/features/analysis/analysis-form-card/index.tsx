@@ -68,7 +68,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     }
 
     return (
-        <Card className="pt-0 drop-shadow-md w-full lg:w-[43%]">
+        <Card className="pt-0 drop-shadow-md w-full md:w-[75%] lg:w-[43%]">
             <CardContent className="p-6">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">

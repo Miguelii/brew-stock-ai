@@ -141,6 +141,11 @@ export class YahooInsightsError extends Data.TaggedError('YahooInsightsError')<{
     error_hash: string
 }> {}
 
+export class YahooSearchError extends Data.TaggedError('YahooSearchError')<{
+    cause: unknown
+    error_hash: string
+}> {}
+
 export class SaveStockDataError extends Data.TaggedError('SaveStockDataError')<{
     cause: unknown
     error_hash: string

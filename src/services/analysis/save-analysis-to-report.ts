@@ -10,7 +10,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 export const saveAnalysisToReport = Effect.fn('saveAnalysisToReport')(function* (
     reportId: ReportDTO['id'],
     analysis: string,
-    ticker: string,
+    ticker: string | null,
     sentiment?: number,
     prebuiltClient?: SupabaseClient
 ) {

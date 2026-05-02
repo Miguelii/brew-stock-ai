@@ -8,7 +8,7 @@ import { createSbAdminClient } from '@/lib/utils.server'
 import { logger } from '@trigger.dev/sdk'
 
 export const saveStockData = Effect.fn('saveStockData')(function* (
-    ticker: string,
+    ticker: string | null,
     data: GetYahooDataResult,
     supabaseClient?: SupabaseClient
 ) {

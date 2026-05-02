@@ -29,11 +29,6 @@ export const stockAnalysisSchema = z.object({
         .describe(
             'Integer from 0 to 100. 0–30 bearish, 31–69 neutral, 70–100 bullish. Must be between 0 and 100.'
         ),
-    yahoo_ticker: z
-        .string()
-        .describe(
-            'The exact Yahoo Finance ticker symbol for this stock (e.g. "AAPL", "BRK-B", "NESN.SW"). Must be a valid Yahoo Finance lookup key.'
-        ),
 })
 
 export const TOKEN_PACKAGES = [

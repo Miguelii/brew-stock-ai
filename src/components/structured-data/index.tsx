@@ -66,8 +66,63 @@ export function WebApplicationSchema() {
     )
 }
 
-// oxlint-disable-next-line no-unused-vars - to be used in the future
-function BreadcrumbSchema({ items }: Readonly<{ items: Array<{ name: string; url: string }> }>) {
+export function FAQSchema({
+    questions,
+}: Readonly<{ questions: Array<{ question: string; answer: string }> }>) {
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: questions.map(({ question, answer }) => ({
+            '@type': 'Question',
+            name: question,
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: answer,
+            },
+        })),
+    }
+
+    return (
+        <script
+            id="faq-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+    )
+}
+
+export function FinancialProductSchema({
+    ticker,
+    name,
+    description,
+    url,
+}: Readonly<{ ticker: string; name: string; description: string; url: string }>) {
+    const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'FinancialProduct',
+        name: `${name} (${ticker}) Stock`,
+        description,
+        url,
+        provider: {
+            '@type': 'Organization',
+            name: 'StockBrewAI',
+            url: WEBSITE_URL,
+        },
+        category: 'Stock Analysis',
+    }
+
+    return (
+        <script
+            id="financial-product-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+    )
+}
+
+export function BreadcrumbSchema({
+    items,
+}: Readonly<{ items: Array<{ name: string; url: string }> }>) {
     const breadcrumbSchema = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',

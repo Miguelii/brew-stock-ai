@@ -6,9 +6,7 @@ type Props = {
 }
 
 function extractInvestmentThesis(html: string): string | null {
-    const match = new RegExp(
-        /<h3[^>]*>\s*Investment Thesis Summary\s*<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/i
-    ).exec(html)
+    const match = /<h3[^>]*>[\s\S]*?Investment Thesis Summary[\s\S]*?<\/h3>([\s\S]*)$/i.exec(html)
     if (!match) return null
     return match[1].trim()
 }

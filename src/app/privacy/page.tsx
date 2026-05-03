@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 
-export const dynamic = 'force-static'
-
 export const metadata: Metadata = {
     title: 'Privacy Notice',
 }

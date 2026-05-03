@@ -5,14 +5,21 @@ import { type ReportDTO, ReportStatus } from '@/types/ReportDTO'
 import { logger } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
 import { getStockAnalysis } from '../analysis/get-stock-analysis'
-import { FetchReportForTaskError, MarkReportFailedError } from '../utils/tagged-errors'
+import {
+    CreateSbClientError,
+    FetchReportForTaskError,
+    MarkReportFailedError,
+} from '../utils/tagged-errors'
 import { sendPushNotificationToUser } from '../notifications/send-push-notification'
 
 export const processReport = Effect.fn('processReport')(function* (
     reportId: string,
     useBaseModel?: boolean
 ) {
-    const supabase = createSbAdminClient()
+    const supabase = yield* Effect.try({
+        try: () => createSbAdminClient(),
+        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eprcrptsbclnt' }),
+    })
 
     const { data: report, error } = yield* Effect.tryPromise({
         try: () => supabase.from('reports').select('*').eq('id', reportId).single(),
@@ -20,7 +27,10 @@ export const processReport = Effect.fn('processReport')(function* (
     })
 
     if (error || !report) {
-        return yield* Effect.fail(new Error(`Report not found: ${reportId}`))
+        return yield* new FetchReportForTaskError({
+            cause: `Report not found: ${reportId}`,
+            error_hash: 'eprcrptnotfnd',
+        })
     }
 
     const typedReport = report as ReportDTO
@@ -54,11 +64,12 @@ export const processReport = Effect.fn('processReport')(function* (
 
     logger.log('Report completed', { reportId: typedReport.id })
 
+    // Non-fatal — a failed push notification must never cause the task to retry
     yield* sendPushNotificationToUser(
         typedReport.user_id,
         `${typedReport.stock} analysis ready`,
         'Your report has been generated. Tap to view it.'
-    )
+    ).pipe(Effect.orElse(() => Effect.void))
 
     return { reportId: typedReport.id }
 })

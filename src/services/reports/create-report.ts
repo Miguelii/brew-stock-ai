@@ -58,11 +58,16 @@ export const createReport = Effect.fn('createReport')(function* (
         return yield* new CreateReportError({ cause: insertError, error_hash: 'ecrtrptinsrtr' })
     }
 
-    // Send to trigger.dev to proccess in the background
-    tasks.trigger<typeof processReportTask>('process-report', {
-        reportId: report.id,
-        useBaseModel: process.env.NODE_ENV === 'development',
-    })
+    // Send to trigger.dev to process in the background — non-fatal so the report
+    // ID is always returned to the client even if queueing has a transient blip
+    yield* Effect.tryPromise({
+        try: () =>
+            tasks.trigger<typeof processReportTask>('process-report', {
+                reportId: report.id,
+                useBaseModel: process.env.NODE_ENV === 'development',
+            }),
+        catch: (cause) => cause,
+    }).pipe(Effect.orElse(() => Effect.void))
 
     return report.id as string
 })

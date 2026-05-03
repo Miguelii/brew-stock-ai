@@ -20,11 +20,6 @@ export function ProfileDropdownMenu({ children }: Props) {
 
     const router = useRouter()
 
-    /* const testNotification = trpc.sendPushNotification.useMutation({
-        onSuccess: () => toast.success('Test notification sent.'),
-        onError: () => toast.error('Failed to send test notification.'),
-    }) */
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-card text-accent-blue transition-colors hover:bg-accent/30 border border-border focus:outline-none overflow-hidden">
@@ -36,19 +31,6 @@ export function ProfileDropdownMenu({ children }: Props) {
                     <UserIcon size={14} />
                     Account
                 </DropdownMenuItem>
-
-                {/* <DropdownMenuItem
-                    onClick={() =>
-                        testNotification.mutate({
-                            title: 'Test notification',
-                            body: 'Push notifications are working! 🎉',
-                        })
-                    }
-                    disabled={testNotification.isPending}
-                >
-                    <BellRing size={14} />
-                    {testNotification.isPending ? 'Sending…' : 'Test notification'}
-                </DropdownMenuItem> */}
 
                 <DropdownMenuSeparator />
 

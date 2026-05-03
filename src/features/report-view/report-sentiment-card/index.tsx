@@ -11,7 +11,7 @@ export function ReportSentimentCard({ report }: Props) {
     const isRiskAnalysis = report.type === PropmptsEnum.RISK_ANALYSIS
 
     return (
-        <Card className="h-79 md:h-81">
+        <Card className="h-79 md:h-full w-full">
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">
                     {isRiskAnalysis ? 'AI Risk Score' : 'AI Sentiment Score'}

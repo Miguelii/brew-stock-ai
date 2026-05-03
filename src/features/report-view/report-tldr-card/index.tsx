@@ -14,8 +14,10 @@ function extractInvestmentThesis(html: string): string | null {
 export function ReportTldrCard({ report }: Props) {
     const thesis = extractInvestmentThesis(report.ai_response ?? '')
 
+    if (!thesis) return null
+
     return (
-        <Card className="">
+        <Card>
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                     <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-bold tracking-widest uppercase bg-accent-blue-light text-accent-blue">

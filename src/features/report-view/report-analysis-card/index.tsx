@@ -14,7 +14,7 @@ export function ReportAnalysisCard({ report }: Props) {
                     {PROMPT_OPTIONS.find((o) => o.type === report.type)?.label}
                 </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0 space-y-4 h-full md:h-100 overflow-y-scroll">
+            <CardContent className="pt-0 space-y-4 h-full md:h-full overflow-y-scroll">
                 <div
                     className="analysis-prose"
                     dangerouslySetInnerHTML={{ __html: report?.ai_response ?? '' }}

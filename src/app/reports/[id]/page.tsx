@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { ArrowLeftIcon } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ReportAnalysisCard } from '@/features/report-view/report-analysis-card'
@@ -15,6 +14,7 @@ import { ReportTldrCard } from '@/features/report-view/report-tldr-card'
 import { ReportSigDev } from '@/features/report-view/report-sig-dev'
 import { ReportLatestNews } from '@/features/report-view/report-latest-news'
 import { ReportSectorScores } from '@/features/report-view/report-sector-scores'
+import { ReportSectionNav } from '@/features/report-view/report-section-nav'
 
 type Props = PageProps<'/reports/[id]'>
 
@@ -75,20 +75,33 @@ export default async function ReportsIdPage(props: Props) {
                 </div>
             </div>
 
-            <Separator />
+            <ReportSectionNav />
 
-            <ReportTldrCard report={report} />
+            <section id="overview">
+                <div className="flex flex-col md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
+                    <ReportTldrCard report={report} />
+                    <ReportSentimentCard report={report} />
+                </div>
+            </section>
 
-            <div className="flex flex-col-reverse md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
+            <section id="analysis">
                 <ReportAnalysisCard report={report} />
-                <ReportSentimentCard report={report} />
-            </div>
+            </section>
 
-            <ReportSigDev headline={stockData?.sig_dev?.headline} date={stockData?.sig_dev?.date} />
+            <section id="sig-dev">
+                <ReportSigDev
+                    headline={stockData?.sig_dev?.headline}
+                    date={stockData?.sig_dev?.date}
+                />
+            </section>
 
-            <ReportLatestNews news={stockData?.reports ?? []} />
+            <section id="latest-news">
+                <ReportLatestNews news={stockData?.reports ?? []} />
+            </section>
 
-            <ReportSectorScores scores={stockData?.scores ?? null} />
+            <section id="sector-scores">
+                <ReportSectorScores scores={stockData?.scores ?? null} />
+            </section>
         </main>
     )
 }

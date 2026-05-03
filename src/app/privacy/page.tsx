@@ -1,19 +1,10 @@
 import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 
+export const dynamic = 'force-static'
+
 export const metadata: Metadata = {
     title: 'Privacy Notice',
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-    return (
-        <section className="space-y-3">
-            <h2 className="text-base font-semibold text-foreground">{title}</h2>
-            <div className="space-y-2 text-sm text-muted-foreground leading-relaxed">
-                {children}
-            </div>
-        </section>
-    )
 }
 
 export default function PrivacyPage() {
@@ -126,5 +117,16 @@ export default function PrivacyPage() {
                 </Section>
             </div>
         </main>
+    )
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+    return (
+        <section className="space-y-3">
+            <h2 className="text-base font-semibold text-foreground">{title}</h2>
+            <div className="space-y-2 text-sm text-muted-foreground leading-relaxed">
+                {children}
+            </div>
+        </section>
     )
 }

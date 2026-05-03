@@ -122,14 +122,19 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
 
     const finalTicker = yahooPreFetch?.ticker ?? null
 
-    yield* saveAnalysisToReport(reportId, analysis, finalTicker, sentiment, supabaseClient)
+    yield* Effect.all(
+        [
+            saveAnalysisToReport(reportId, analysis, finalTicker, sentiment, supabaseClient),
 
-    // Only save to stock_data if we fetched fresh data during pre-fetch
-    if (yahooPreFetch?.isFresh) {
-        yield* saveStockData(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
-            Effect.orElse(() => Effect.void)
-        )
-    }
+            // Only save to stock_data if we fetched fresh data during pre-fetch — non-fatal
+            yahooPreFetch?.isFresh
+                ? saveStockData(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
+                      Effect.orElse(() => Effect.void)
+                  )
+                : Effect.void,
+        ],
+        { concurrency: 'unbounded' }
+    )
 
     return { analysis, sentiment }
 })

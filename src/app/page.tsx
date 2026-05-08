@@ -179,35 +179,39 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* CTA — High Contrast Dark */}
             <section className="bg-primary">
-                <div className="max-w-7xl mx-auto px-6 py-28 lg:py-40 text-center">
+                <div className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
                     <motion.div
-                        initial={{ opacity: 0, y: 24 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-8%' }}
                         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                        className="flex flex-col items-center"
+                        className="flex flex-col md:flex-row md:items-center md:justify-between gap-8"
                     >
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-primary-foreground mb-6 max-w-3xl">
-                            Ready to Analyze Your Next Stock?
-                        </h2>
-                        <p className="text-primary-foreground/60 leading-relaxed mb-10 max-w-xl text-lg">
-                            Pick a ticker, choose a report type, and get a detailed breakdown before
-                            your next trade. Your first analysis is free.
-                        </p>
-                        <Link href="/analysis" prefetch={false}>
+                        <div>
+                            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-primary-foreground">
+                                Your first analysis is free
+                            </h2>
+                            <p className="text-primary-foreground/60 mt-3 text-lg">
+                                See what StockBrewAI can do.
+                                <br />
+                                Pick a ticker, choose a report type and get a detailed breakdown.
+                            </p>
+                        </div>
+                        <Link href="/analysis" prefetch={false} className="shrink-0">
                             <Button
                                 size="lg"
                                 className="gap-2 text-base px-8 h-12 bg-background text-primary hover:bg-background/90 hover:text-primary"
                             >
-                                Start Free Analysis
+                                Start free analysis
                                 <ArrowRight className="size-5" />
                             </Button>
                         </Link>
                     </motion.div>
                 </div>
             </section>
+
+            {/* CTA — High Contrast Dark */}
         </main>
     )
 }

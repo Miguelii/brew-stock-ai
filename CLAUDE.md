@@ -173,6 +173,50 @@ The string must match the exact file path relative to `src/app/` (without the fi
 
 **Never** use template literals or string concatenation for conditional classes. **Always** use the `cn()` utility from `@/lib/utils`:
 
+---
+
+### Styling — ALWAYS use semantic theme tokens for colors
+
+**Never** use hardcoded color utilities like `text-white`, `text-black`, `bg-white`, `bg-black`, `text-gray-*`, etc. **Always** use the project's semantic CSS variable tokens:
+
+```tsx
+// ❌ Wrong — hardcoded colors break dark mode and theme consistency
+className="text-white bg-black text-gray-500"
+
+// ✅ Correct — semantic tokens that respect the active theme
+className="text-primary-foreground bg-primary text-muted-foreground"
+```
+
+Key token mappings:
+- `text-primary` — main body text
+- `text-primary-foreground` — text on top of `bg-primary` (e.g. dark buttons, dark sections)
+- `text-muted-foreground` — secondary/dimmed text
+- `text-primary-muted` — muted variant (project custom token)
+- `bg-background` — page background
+- `bg-card` — card/surface background
+- `bg-primary` — primary brand background (dark)
+- `bg-muted` — subtle background tint
+- `border-border` — default border color
+- `text-accent-blue` / `bg-accent-blue` — brand accent
+
+When placing light text on a dark surface, always use `text-primary-foreground` — never `text-white`.
+
+---
+
+### Motion — ALWAYS use `motion/react-client` in pages and Server Components
+
+**Never** import from `motion/react` directly in `page.tsx`, `layout.tsx`, or any Server Component. **Always** use the RSC-safe client entry point:
+
+```tsx
+// ❌ Wrong — breaks Server Components / page.tsx
+import { motion } from 'motion/react'
+
+// ✅ Correct — RSC-safe import for pages and Server Components
+import * as motion from 'motion/react-client'
+```
+
+The `motion/react-client` entry is the correct import for Next.js App Router pages and Server Components. Use `motion/react` only inside files already marked with `'use client'` that are **not** page or layout files.
+
 ```tsx
 // ❌ Wrong
 className={`base-class ${condition ? 'class-a' : 'class-b'}`}

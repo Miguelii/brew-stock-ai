@@ -143,11 +143,12 @@ export default function Home() {
                         className="mb-16"
                     >
                         <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                            Why Choose StockBrewAI?
+                            Hours of Research, Seconds to Deliver
                         </h2>
                         <p className="text-primary-muted leading-relaxed max-w-2xl text-lg">
-                            Traditional stock research is time-consuming and expensive. StockBrewAI
-                            processes the same data professional analysts rely on — in seconds.
+                            StockBrewAI processes earnings reports, balance sheets, and market data
+                            the same way professional analysts do. You get the output in under 1
+                            minute for less than a coffee.
                         </p>
                     </motion.div>
 
@@ -192,8 +193,8 @@ export default function Home() {
                             Ready to Analyze Your Next Stock?
                         </h2>
                         <p className="text-primary-foreground/60 leading-relaxed mb-10 max-w-xl text-lg">
-                            Join thousands of investors using StockBrewAI to make smarter,
-                            data-driven decisions. Your first analysis is free.
+                            Pick a ticker, choose a report type, and get a detailed breakdown before
+                            your next trade. Your first analysis is free.
                         </p>
                         <Link href="/analysis" prefetch={false}>
                             <Button

@@ -107,32 +107,10 @@ const SVG = ({
                         ease: 'linear',
                         repeat: Infinity,
                         repeatType: 'loop',
-                        delay: Math.floor(Math.random() * 10),
-                        repeatDelay: Math.floor(Math.random() * 10 + 2),
+                        delay: ((idx * 7) % 21) * 0.48,
+                        repeatDelay: 2 + ((idx * 3) % 8),
                     }}
-                    key={`path-first-${idx}`}
-                />
-            ))}
-
-            {/* duplicate for more paths */}
-            {paths.map((path, idx) => (
-                <motion.path
-                    d={path}
-                    stroke={colors[idx]}
-                    strokeWidth="2.3"
-                    strokeLinecap="round"
-                    variants={pathVariants}
-                    initial="initial"
-                    animate="animate"
-                    transition={{
-                        duration: svgOptions?.duration || 10,
-                        ease: 'linear',
-                        repeat: Infinity,
-                        repeatType: 'loop',
-                        delay: Math.floor(Math.random() * 10),
-                        repeatDelay: Math.floor(Math.random() * 10 + 2),
-                    }}
-                    key={`path-second-${idx}`}
+                    key={`path-${idx}`}
                 />
             ))}
         </motion.svg>

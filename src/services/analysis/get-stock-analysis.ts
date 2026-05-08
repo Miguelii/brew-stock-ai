@@ -26,7 +26,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         return yield* new InvalidPromptTypeError({ promptType, error_hash: 'elogprtntf' })
     }
 
-    const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
+    const YAHOO_DATA_TTL = 7 * 24 * 60 * 60 * 1000 // One week in milliseconds
 
     // Pre-fetch Yahoo ticker + data to enrich the AI prompt — fully non-fatal
     type YahooPreFetch = { ticker: string; data: GetYahooDataResult; isFresh: boolean } | null
@@ -51,7 +51,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                     const row = res.data
                     const isStale =
                         !row?.last_update_at ||
-                        Date.now() - new Date(row.last_update_at).getTime() >= THIRTY_DAYS_MS
+                        Date.now() - new Date(row.last_update_at).getTime() >= YAHOO_DATA_TTL
 
                     if (isStale) {
                         return getYahooData(yahoo_ticker).pipe(

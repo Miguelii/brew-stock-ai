@@ -11,7 +11,7 @@ export function HomeLayout({ children, companyName }: Props) {
                 <div className="flex flex-col gap-4 w-full md:w-fit items-start">
                     <div className="flex flex-col gap-2">
                         {companyName && (
-                            <h2 className='className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight"'>
+                            <h2 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
                                 {companyName}
                             </h2>
                         )}
@@ -20,10 +20,10 @@ export function HomeLayout({ children, companyName }: Props) {
                         </h1>
                     </div>
 
-                    <span className="text-primary-muted max-w-2xl leading-relaxed">
+                    <div className="text-primary-muted max-w-2xl leading-relaxed">
                         <p>Deep financial insights, market sentiment, and technical indicators.</p>
-                        <strong>For less than a coffee ☕</strong>
-                    </span>
+                        <p className="font-semibold">For less than a coffee ☕</p>
+                    </div>
                 </div>
                 {children}
             </div>

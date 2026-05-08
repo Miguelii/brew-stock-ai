@@ -9,13 +9,14 @@ import Logo from '@/components/logo'
 import Image from 'next/image'
 import { UserRound } from 'lucide-react'
 
-const PUBLIC_NAV_LINKS: NavLink[] = []
-
-const AUTH_NAV_LINKS: NavLink[] = [
+const PUBLIC_NAV_LINKS: NavLink[] = [
     {
         label: 'Analysis',
-        href: '/',
+        href: '/analysis',
     },
+]
+
+const AUTH_NAV_LINKS: NavLink[] = [
     {
         label: 'My Reports',
         href: '/reports',

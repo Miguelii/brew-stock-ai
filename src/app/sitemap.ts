@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const tickerRoutes: MetadataRoute.Sitemap = TICKER_PAGES.map((t) => ({
         url: `${siteUrl}/analysis/${t.slug}`,
         changeFrequency: 'monthly',
+        lastModified: new Date(),
         priority: 0.7,
     }))
 
@@ -16,18 +17,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
         {
             url: siteUrl,
             lastModified: new Date(),
-            changeFrequency: 'weekly',
+            changeFrequency: 'monthly',
+            priority: 1,
+        },
+        {
+            url: `${siteUrl}/analysis`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
             priority: 1,
         },
         ...tickerRoutes,
         {
             url: `${siteUrl}${AUTH_PAGE_PATH}`,
             changeFrequency: 'monthly',
+            lastModified: new Date(),
             priority: 0.3,
         },
         {
             url: `${siteUrl}/privacy`,
             changeFrequency: 'monthly',
+            lastModified: new Date(),
             priority: 0.2,
         },
     ]

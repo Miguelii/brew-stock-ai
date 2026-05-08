@@ -72,7 +72,7 @@ export default function Home() {
                     </h1>
                     <p className="mt-6 max-w-2xl text-base md:text-lg text-muted-foreground">
                         Institutional-grade analysis covering financial metrics, market sentiment,
-                        and technical indicators — delivered in under 30 seconds.
+                        and technical indicators — For less than a coffee ☕
                     </p>
                     <Link href="/analysis" prefetch={false} className="mt-8">
                         <Button size="lg" className="gap-2 text-base px-8 h-12">

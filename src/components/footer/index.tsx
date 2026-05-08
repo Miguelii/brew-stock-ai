@@ -9,6 +9,7 @@ export function Footer() {
                 </p>
                 <Link
                     href="/privacy"
+                    prefetch={false}
                     className="underline text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                     Privacy Notice

@@ -75,6 +75,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                             <DrawerClose asChild key={link.href}>
                                 <Link
                                     href={link.href}
+                                    prefetch={false}
                                     className="flex items-center px-3 py-2.5 rounded-sm text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
                                 >
                                     {link.label}
@@ -91,6 +92,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                                 <DrawerClose asChild>
                                     <Link
                                         href="/account"
+                                        prefetch={false}
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-primary transition-colors hover:bg-muted"
                                     >
                                         <UserIcon size={15} className="text-muted-foreground" />

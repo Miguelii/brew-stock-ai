@@ -63,7 +63,7 @@ export default function Home() {
                     Stock analysis with a comprehensive report covering financial metrics, market
                     sentiment and technical indicators — Powered by our trained AI.
                 </p>
-                <Link href="/analysis" className="mt-6 z-99">
+                <Link href="/analysis" className="mt-6 z-99" prefetch={false}>
                     <Button size="lg" className="gap-2 text-base px-6 h-12">
                         Start Free Analysis
                         <ArrowRight className="size-5" />
@@ -134,7 +134,7 @@ export default function Home() {
                         Join thousands of investors who use StockBrewAI to make smarter, data-driven
                         decisions. Start your first free analysis today.
                     </p>
-                    <Link href="/analysis">
+                    <Link href="/analysis" prefetch={false}>
                         <Button size="lg" className="gap-2 text-base px-6 h-12">
                             Start Free Analysis
                             <ArrowRight className="size-5" />

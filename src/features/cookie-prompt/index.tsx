@@ -57,6 +57,7 @@ export function CookiePrompt() {
                     We use strictly necessary cookies to manage your session. See our{' '}
                     <Link
                         href="/privacy"
+                        prefetch={false}
                         className="underline text-foreground hover:text-foreground/80 transition-colors"
                     >
                         privacy notice

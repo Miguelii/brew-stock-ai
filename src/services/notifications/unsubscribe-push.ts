@@ -6,8 +6,8 @@ import {
     CreateSbClientError,
     DeletePushSubscriptionError,
     UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
-import { getSession } from '@/services/supabase/get-session'
+} from '@/services/errors'
+import { getSession } from '@/services/auth/get-session'
 
 export const unsubscribePush = Effect.fn('unsubscribePush')(function* () {
     const supabase = yield* Effect.tryPromise({

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 import { Effect } from 'effect'
-import { getSession } from '@/services/supabase/get-session'
+import { getSession } from '@/services/auth/get-session'
 import { notFound } from 'next/navigation'
 import { UserIcon, ReceiptTextIcon } from 'lucide-react'
 import { AccountInvoicesTable } from '@/modules/account/invoices-table'

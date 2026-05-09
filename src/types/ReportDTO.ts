@@ -1,4 +1,4 @@
-import type { PropmptsEnum } from './PropmptsEnum'
+import type { PropmptsEnum } from '@/types/PropmptsEnum'
 import type {
     InsightsReport,
     InsightsCompanySnapshot,

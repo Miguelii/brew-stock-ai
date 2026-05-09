@@ -11,11 +11,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { useAnalysisForm } from './use-analysis-form'
+import { useAnalysisForm } from '@/modules/analysis/analysis-form-card/use-analysis-form'
 import { Input } from '@/components/ui/input'
 import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
 import { usePathname, useRouter } from 'next/navigation'
-import { useAnalysisCardHandlers } from './use-analysis-card-handlers'
+import { useAnalysisCardHandlers } from '@/modules/analysis/analysis-form-card/use-analysis-card-handlers'
 
 type Props = {
     isAuthenticated: boolean

@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { Effect, Exit } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
-import { CreateSbClientError, OAuthInitError } from '@/services/utils/tagged-errors'
+import { CreateSbClientError, OAuthInitError } from '@/services/errors'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
 const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo?: string) {

@@ -1,4 +1,4 @@
-import type { GetYahooDataResult } from './get-yahoo-data'
+import type { GetYahooDataResult } from '@/services/analysis/helpers/types'
 
 function fmt(v: number | null | undefined): string {
     return v != null ? v.toFixed(2) : 'N/A'

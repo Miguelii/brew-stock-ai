@@ -6,8 +6,8 @@ import {
     CreateSbClientError,
     SavePushSubscriptionError,
     UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
-import { getSession } from '@/services/supabase/get-session'
+} from '@/services/errors'
+import { getSession } from '@/services/auth/get-session'
 
 export const subscribePush = Effect.fn('subscribePush')(function* (
     subscription: PushSubscriptionJSON

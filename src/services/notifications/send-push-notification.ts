@@ -9,10 +9,10 @@ import {
     GetPushSubscriptionError,
     SendPushNotificationError,
     UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
+} from '@/services/errors'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
-import { getSession } from '@/services/supabase/get-session'
+import { getSession } from '@/services/auth/get-session'
 
 function setupVapid() {
     webpush.setVapidDetails(

@@ -4,13 +4,13 @@ import { createSbAdminClient } from '@/lib/utils.server'
 import { type ReportDTO, ReportStatus } from '@/types/ReportDTO'
 import { logger } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
-import { getStockAnalysis } from '../analysis/get-stock-analysis'
+import { getStockAnalysis } from '@/services/analysis/get-stock-analysis'
 import {
     CreateSbClientError,
     FetchReportForTaskError,
     MarkReportFailedError,
-} from '../utils/tagged-errors'
-import { sendPushNotificationToUser } from '../notifications/send-push-notification'
+} from '@/services/errors'
+import { sendPushNotificationToUser } from '@/services/notifications/send-push-notification'
 
 export const processReport = Effect.fn('processReport')(function* (
     reportId: string,

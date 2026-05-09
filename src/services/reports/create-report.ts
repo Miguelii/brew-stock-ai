@@ -6,14 +6,14 @@ import {
     CreateSbClientError,
     InvalidPromptTypeError,
     UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
+} from '@/services/errors'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ReportStatus } from '@/types/ReportDTO'
-import { getSession } from '@/services/supabase/get-session'
+import { getSession } from '@/services/auth/get-session'
 import { deductCredit } from '@/services/tokens/deduct-credit'
 import { tasks } from '@trigger.dev/sdk/v3'
 import type { processReportTask } from '@/trigger/process-report'
-import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/services/utils/constants'
+import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/services/analysis/helpers/constants'
 
 export const createReport = Effect.fn('createReport')(function* (
     stockSymbol: string,

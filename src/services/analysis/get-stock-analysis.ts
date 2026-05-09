@@ -1,17 +1,17 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { SystemPrompt } from '@/services/utils/prompts'
-import { AiGenerationError, InvalidPromptTypeError } from '@/services/utils/tagged-errors'
+import { SystemPrompt } from '@/services/analysis/helpers/prompts'
+import { AiGenerationError, InvalidPromptTypeError } from '@/services/errors'
 import type { ReportDTO } from '@/types/ReportDTO'
-import { saveAnalysisToReport } from './save-analysis-to-report'
-import { saveStockData } from './save-stock-data'
-import { getYahooData } from './get-yahoo-data'
-import { getYahooTicker } from './get-yahoo-ticker'
-import { buildYahooContext } from './build-yahoo-context'
-import type { GetYahooDataResult } from './get-yahoo-data'
+import { saveAnalysisToReport } from '@/services/analysis/save-analysis-to-report'
+import { saveStockData } from '@/services/analysis/save-stock-data'
+import { getYahooData } from '@/services/analysis/get-yahoo-data'
+import { getYahooTicker } from '@/services/analysis/get-yahoo-ticker'
+import { buildYahooContext } from '@/services/analysis/helpers/build-yahoo-context'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { PROMPTS_MAP, stockAnalysisSchema } from '@/services/utils/constants'
+import { PROMPTS_MAP, stockAnalysisSchema } from '@/services/analysis/helpers/constants'
+import type { GetYahooDataResult } from '@/services/analysis/helpers/types'
 
 export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     stockSymbol: string,

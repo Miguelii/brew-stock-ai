@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { SentimentGauge } from './sentiment-gauge'
+import { SentimentGauge } from '@/modules/report-view/report-sentiment-card/sentiment-gauge'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 

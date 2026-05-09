@@ -3,15 +3,11 @@ import 'server-only'
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { CHROMIUM_PACK_PATH } from '@/lib/constants'
-import {
-    CreateSbClientError,
-    ExportReportError,
-    UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
+import { CreateSbClientError, ExportReportError, UnauthenticatedError } from '@/services/errors'
 import type { ReportDTO, StockData } from '@/types/ReportDTO'
-import { getSession } from '@/services/supabase/get-session'
+import { getSession } from '@/services/auth/get-session'
 import { ClientEnv } from '@/env/client'
-import { buildPdfHtml } from '../utils/build-pdf-html'
+import { buildPdfHtml } from '@/services/reports/helpers/build-pdf-html'
 
 const CHROMIUM_PACK_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${CHROMIUM_PACK_PATH}`
 

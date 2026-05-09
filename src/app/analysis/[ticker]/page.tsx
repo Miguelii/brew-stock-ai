@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
-import { getCachedSession } from '@/services/supabase/get-cached-session'
+import { getCachedSession } from '@/services/auth/get-cached-session'
 import { TICKER_PAGES, TICKER_PAGE_MAP } from '@/lib/ticker-pages'
 import { HomeLayout } from '@/components/home-layout'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'

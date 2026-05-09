@@ -1,5 +1,5 @@
 import type { UseFormReturn } from 'react-hook-form'
-import type { FormValues } from './use-analysis-form'
+import type { FormValues } from '@/modules/analysis/analysis-form-card/use-analysis-form'
 import { trpc } from '@/server/trpc-client'
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'

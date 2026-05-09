@@ -2,12 +2,8 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import {
-    CreateSbClientError,
-    GetCreditsError,
-    UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
-import { getSession } from '@/services/supabase/get-session'
+import { CreateSbClientError, GetCreditsError, UnauthenticatedError } from '@/services/errors'
+import { getSession } from '@/services/auth/get-session'
 
 export const getCredits = Effect.fn('getCredits')(function* () {
     const supabase = yield* Effect.tryPromise({

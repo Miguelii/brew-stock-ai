@@ -7,11 +7,11 @@ import {
     CreateCheckoutSessionError,
     CreateSbClientError,
     UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
+} from '@/services/errors'
 import { createSbServerClient } from '@/lib/utils.server'
-import { getSession } from '@/services/supabase/get-session'
+import { getSession } from '@/services/auth/get-session'
 import { ClientEnv } from '@/env/client'
-import { TOKEN_PACKAGES } from '@/services/utils/constants'
+import { TOKEN_PACKAGES } from '@/services/tokens/helpers/constants'
 
 export type TokenPackageId = (typeof TOKEN_PACKAGES)[number]['id']
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense } from 'react'
-import { useAuthError } from './use-auth-error'
+import { useAuthError } from '@/modules/auth/auth-card/use-auth-error'
 
 function AuthErrorInner() {
     useAuthError()

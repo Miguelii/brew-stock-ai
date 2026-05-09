@@ -94,6 +94,24 @@ Always assign `mutateAsync` to an explicitly typed `Promise<T>` variable before 
 
 ---
 
+### Imports — ALWAYS use the `@/` alias
+
+**Never** use relative imports (`./`, `../`). **Always** use the `@/` path alias for every import within `src/`:
+
+```tsx
+// ❌ Wrong — relative paths
+import { getSession } from './get-session'
+import { getStockAnalysis } from '../analysis/get-stock-analysis'
+
+// ✅ Correct — alias paths
+import { getSession } from '@/services/auth/get-session'
+import { getStockAnalysis } from '@/services/analysis/get-stock-analysis'
+```
+
+This applies to all files — services, components, modules, helpers, types, etc. No exceptions.
+
+---
+
 ## Forms (react-hook-form + shadcn)
 
 All forms follow this structure — logic in a dedicated hook, UI in the component.

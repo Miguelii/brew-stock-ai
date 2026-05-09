@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils'
 import type { NavLink } from '@/types/NavLink'
 import { useLogout } from '@/hooks/use-logout'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
-import { CreditsDisplay } from './credits-display'
-import { LoginLink } from './nav-links'
+import { CreditsDisplay } from '@/components/header/credits-display'
+import { LoginLink } from '@/components/header/nav-links'
 
 type Props = {
     nav: NavLink[]

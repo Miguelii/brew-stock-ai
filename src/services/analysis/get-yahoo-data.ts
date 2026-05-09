@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { YahooClientError, YahooInsightsError } from '../utils/tagged-errors'
+import { YahooClientError, YahooInsightsError } from '@/services/errors'
 import type { StockReports, StockScores, StockSigDev } from '@/types/ReportDTO'
 
 export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string) {
@@ -61,9 +61,3 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
         sigDev,
     }
 })
-
-export type GetYahooDataResult = {
-    scores: StockScores | null
-    reports: StockReports[]
-    sigDev: StockSigDev | null
-}

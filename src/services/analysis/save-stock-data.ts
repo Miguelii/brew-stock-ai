@@ -2,10 +2,10 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { CreateSbClientError, SaveStockDataError } from '@/services/utils/tagged-errors'
-import type { GetYahooDataResult } from './get-yahoo-data'
+import { CreateSbClientError, SaveStockDataError } from '@/services/errors'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { logger } from '@trigger.dev/sdk'
+import type { GetYahooDataResult } from '@/services/analysis/helpers/types'
 
 export const saveStockData = Effect.fn('saveStockData')(function* (
     ticker: string | null,

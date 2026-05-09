@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { Effect, Exit } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
-import { CreateSbClientError, OAuthCallbackError } from '@/services/utils/tagged-errors'
+import { CreateSbClientError, OAuthCallbackError } from '@/services/errors'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
 const handleOAuthCallback = Effect.fn('handleOAuthCallback')(function* (code: string) {

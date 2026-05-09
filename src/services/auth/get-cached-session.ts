@@ -1,6 +1,6 @@
 import { cache } from 'react'
 import { Effect } from 'effect'
-import { getSession } from '@/services/supabase/get-session'
+import { getSession } from '@/services/auth/get-session'
 
 /**
  * Cached session getter — deduplicates Supabase calls within the same request.

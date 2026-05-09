@@ -2,11 +2,11 @@
 
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
-import { useAuthForm, type FormValues } from './use-auth-form'
+import { useAuthForm, type FormValues } from '@/modules/auth/auth-card/use-auth-form'
 import { Form } from '@/components/ui/form'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { AuthErrorHandler } from './auth-error-handler'
+import { AuthErrorHandler } from '@/modules/auth/auth-card/auth-error-handler'
 import { SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
 
 type Props = {

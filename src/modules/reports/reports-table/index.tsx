@@ -1,7 +1,7 @@
 'use client'
 
 import { trpc } from '@/server/trpc-client'
-import { TableCard } from './table-card'
+import { TableCard } from '@/modules/reports/reports-table/table-card'
 
 export function ReportsTable() {
     const query = trpc.getReports.useQuery(undefined, {

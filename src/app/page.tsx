@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Brain, Shield, TrendingUp } from 'lucide-react'
-import { BackgroundLines } from '@/components/hero/background-lines'
 import * as motion from 'motion/react-client'
 import { cn } from '@/lib/utils'
 import { Hero } from '@/components/hero'

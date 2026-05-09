@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { YahooClientError, YahooSearchError } from '@/services/utils/tagged-errors'
+import { YahooClientError, YahooSearchError } from '@/services/errors'
 
 export const getYahooTicker = Effect.fn('getYahooTicker')(function* (stockSymbol: string) {
     const yahooClient = yield* Effect.tryPromise({

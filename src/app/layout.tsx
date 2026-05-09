@@ -12,13 +12,13 @@ import { ClientEnv } from '@/env/client'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
 import { PushNotificationPrompt } from '@/modules/push-notifications'
 import { CookiePrompt } from '@/modules/cookie-prompt'
-import { getCachedSession } from '@/services/supabase/get-cached-session'
 import { GtmScript } from '@/components/gtm-script'
 import {
     OrganizationSchema,
     WebApplicationSchema,
     WebSiteSchema,
 } from '@/components/structured-data'
+import { getCachedSession } from '@/services/auth/get-cached-session'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',

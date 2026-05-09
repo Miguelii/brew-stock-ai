@@ -2,11 +2,7 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import {
-    CreateSbClientError,
-    DeductCreditError,
-    InsufficientCreditsError,
-} from '@/services/utils/tagged-errors'
+import { CreateSbClientError, DeductCreditError, InsufficientCreditsError } from '@/services/errors'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 export const deductCredit = Effect.fn('deductCredit')(function* (

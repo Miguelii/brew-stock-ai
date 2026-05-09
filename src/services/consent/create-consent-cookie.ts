@@ -3,7 +3,7 @@ import 'server-only'
 import { Effect } from 'effect'
 import { cookies } from 'next/headers'
 import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/lib/constants'
-import { CreateConsentCookieError } from '@/services/utils/tagged-errors'
+import { CreateConsentCookieError } from '@/services/errors'
 
 export const createConsentCookie = Effect.fn('createConsentCookie')(function* (
     allowAnalytics: boolean

@@ -1,4 +1,4 @@
-import { BackgroundLines } from './background-lines'
+import { BackgroundLines } from '@/components/hero/background-lines'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'

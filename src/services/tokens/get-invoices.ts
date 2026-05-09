@@ -3,13 +3,9 @@ import 'server-only'
 import { Effect } from 'effect'
 import StripeClient from 'stripe'
 import { ServerEnv } from '@/env/server'
-import {
-    CreateSbClientError,
-    GetInvoicesError,
-    UnauthenticatedError,
-} from '@/services/utils/tagged-errors'
+import { CreateSbClientError, GetInvoicesError, UnauthenticatedError } from '@/services/errors'
 import { createSbServerClient } from '@/lib/utils.server'
-import { getSession } from '@/services/supabase/get-session'
+import { getSession } from '@/services/auth/get-session'
 import type { Invoice } from '@/types/Invoice'
 
 export const getInvoices = Effect.fn('getInvoices')(function* () {

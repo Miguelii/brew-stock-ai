@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
-import { TokenPackages } from '@/features/tokens/token-packages'
+import { TokenPackages } from '@/modules/tokens/token-packages'
 import { CheckIcon } from 'lucide-react'
-import { TokenBalanceCard } from '@/features/tokens/token-balance-card'
+import { TokenBalanceCard } from '@/modules/tokens/token-balance-card'
 
 export const metadata: Metadata = {
     title: 'Buy Tokens',

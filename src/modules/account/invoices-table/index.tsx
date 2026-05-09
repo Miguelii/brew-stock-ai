@@ -2,23 +2,9 @@
 
 import { trpc } from '@/server/trpc-client'
 import { ReceiptIcon } from 'lucide-react'
+import { formatAmount, formatDate } from '@/modules/account/invoices-table/utils'
 
-function formatAmount(amount: number, currency: string) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currency.toUpperCase(),
-    }).format(amount / 100)
-}
-
-function formatDate(timestamp: number) {
-    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    })
-}
-
-export function InvoicesTable() {
+export function AccountInvoicesTable() {
     const { data: invoices = [], isLoading } = trpc.getInvoices.useQuery()
 
     if (isLoading) {

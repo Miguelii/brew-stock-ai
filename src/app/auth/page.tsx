@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { AuthCard } from '@/features/auth/auth-card'
-import { AuthLayout } from '@/features/auth/auth-layout'
+import { AuthCard } from '@/modules/auth/auth-card'
+import { AuthLayout } from '@/modules/auth/auth-layout'
 
 export const metadata: Metadata = {
     title: 'Sign In',

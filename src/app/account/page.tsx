@@ -4,7 +4,7 @@ import { Effect } from 'effect'
 import { getSession } from '@/services/supabase/get-session'
 import { notFound } from 'next/navigation'
 import { UserIcon, ReceiptTextIcon } from 'lucide-react'
-import { InvoicesTable } from '@/features/account/invoices-table'
+import { AccountInvoicesTable } from '@/modules/account/invoices-table'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
@@ -66,7 +66,7 @@ export default async function AccountPage() {
                         Billing History
                     </h2>
                 </div>
-                <InvoicesTable />
+                <AccountInvoicesTable />
             </section>
         </main>
     )

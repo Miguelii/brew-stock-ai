@@ -13,7 +13,11 @@ import { PushNotificationPrompt } from '@/features/push-notifications'
 import { CookiePrompt } from '@/features/cookie-prompt'
 import { getCachedSession } from '@/services/supabase/get-cached-session'
 import { GtmScript } from '@/components/gtm-script'
-import { WebApplicationSchema, WebSiteSchema } from '@/components/structured-data'
+import {
+    OrganizationSchema,
+    WebApplicationSchema,
+    WebSiteSchema,
+} from '@/components/structured-data'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -70,6 +74,9 @@ export const metadata: Metadata = {
         description:
             'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
     },
+    alternates: {
+        canonical: '/',
+    },
     robots: {
         index: true,
         follow: true,
@@ -110,6 +117,7 @@ export default async function RootLayout({ children }: Props) {
                 <Providers>
                     <WebSiteSchema />
                     <WebApplicationSchema />
+                    <OrganizationSchema />
                     <Toaster />
                     <Header />
                     {user && <PushNotificationPrompt />}

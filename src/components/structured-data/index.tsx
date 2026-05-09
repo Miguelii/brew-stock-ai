@@ -2,6 +2,32 @@ import { ClientEnv } from '@/env/client'
 
 const WEBSITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
+export function OrganizationSchema() {
+    const organizationSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'StockBrewAI',
+        url: WEBSITE_URL,
+        logo: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
+        description:
+            'Institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators.',
+        founder: {
+            '@type': 'Person',
+            name: 'Miguel Gonçalves',
+            url: 'https://www.linkedin.com/in/miguelgoncalves18/',
+        },
+        sameAs: ['https://www.linkedin.com/in/miguelgoncalves18/'],
+    }
+
+    return (
+        <script
+            id="organization-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+    )
+}
+
 export function WebSiteSchema() {
     const websiteSchema = {
         '@context': 'https://schema.org',

@@ -1,24 +1,5 @@
-'use client'
-
-import { cn } from '@/lib/utils'
-import { motion } from 'motion/react'
-import type { PropsWithChildren } from 'react'
-
-type Props = PropsWithChildren<{
-    className?: string
-    svgOptions?: {
-        duration?: number
-    }
-}>
-
-export const BackgroundLines = ({ children, className, svgOptions }: Props) => {
-    return (
-        <div className={cn('h-80 md:h-screen w-full bg-background', className)}>
-            <SVG svgOptions={svgOptions} />
-            {children}
-        </div>
-    )
-}
+import type { Variants } from 'motion/react'
+import * as motion from 'motion/react-client'
 
 const pathVariants = {
     initial: { strokeDashoffset: 800, strokeDasharray: '50 800' },
@@ -27,9 +8,9 @@ const pathVariants = {
         strokeDasharray: '20 800',
         opacity: [0, 1, 1, 0],
     },
-}
+} as Variants
 
-const SVG = ({
+export const SVG = ({
     svgOptions,
 }: {
     svgOptions?: {

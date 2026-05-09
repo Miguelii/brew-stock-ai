@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '@/styles/globals.css'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
@@ -22,11 +23,13 @@ import {
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
+    display: 'swap',
 })
 
 const geistMono = Geist_Mono({
     variable: '--font-geist-mono',
     subsets: ['latin'],
+    display: 'swap',
 })
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
@@ -104,15 +107,17 @@ export default async function RootLayout({ children }: Props) {
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <meta name="apple-mobile-web-app-title" content="StockBrewAI" />
-                <script
-                    async
-                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1939312153475109"
-                    crossOrigin="anonymous"
-                />
             </head>
             <VercelAnalytics />
             <VercelSpeedInsights />
             <GtmScript />
+            <Script
+                id="adsense"
+                async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1939312153475109"
+                crossOrigin="anonymous"
+                strategy="lazyOnload"
+            />
             <body className="min-h-screen flex flex-col">
                 <Providers>
                     <WebSiteSchema />

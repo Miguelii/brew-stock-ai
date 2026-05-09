@@ -117,7 +117,7 @@ export function TokenPackages() {
                                 disabled={checkout.isPending}
                                 onClick={() => checkout.mutate({ packageId: pkg.id })}
                             >
-                                {isLoading ? 'Redirecting…' : 'Buy Now'}
+                                {isLoading ? 'Creating checkout...' : 'Buy Now'}
                             </Button>
                         </CardContent>
                     </Card>

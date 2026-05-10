@@ -30,3 +30,5 @@ export const stockAnalysisSchema = z.object({
             'Integer from 0 to 100. 0–30 bearish, 31–69 neutral, 70–100 bullish. Must be between 0 and 100.'
         ),
 })
+
+export const YAHOO_DATA_TTL = 7 * 24 * 60 * 60 * 1000 // One week

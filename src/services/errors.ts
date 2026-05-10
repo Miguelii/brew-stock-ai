@@ -2,18 +2,81 @@ import 'server-only'
 
 import { Data } from 'effect'
 
+type ServiceErrorFields = { cause: unknown; error_hash: string }
+
+// Analysis
+export class AiGenerationError extends Data.TaggedError('AiGenerationError')<ServiceErrorFields> {}
+export class YahooClientError extends Data.TaggedError('YahooClientError')<ServiceErrorFields> {}
+export class YahooInsightsError extends Data.TaggedError(
+    'YahooInsightsError'
+)<ServiceErrorFields> {}
+export class YahooSearchError extends Data.TaggedError('YahooSearchError')<ServiceErrorFields> {}
+export class YahooQuoteSummaryError extends Data.TaggedError(
+    'YahooQuoteSummaryError'
+)<ServiceErrorFields> {}
+export class SaveStockDataError extends Data.TaggedError(
+    'SaveStockDataError'
+)<ServiceErrorFields> {}
+
+// Reports
+export class CreateReportError extends Data.TaggedError('CreateReportError')<ServiceErrorFields> {}
+export class SaveAnalysisError extends Data.TaggedError('SaveAnalysisError')<ServiceErrorFields> {}
+export class GetReportByIdError extends Data.TaggedError(
+    'GetReportByIdError'
+)<ServiceErrorFields> {}
+export class GetReportsError extends Data.TaggedError('GetReportsError')<ServiceErrorFields> {}
+export class FetchReportForTaskError extends Data.TaggedError(
+    'FetchReportForTaskError'
+)<ServiceErrorFields> {}
+export class MarkReportFailedError extends Data.TaggedError(
+    'MarkReportFailedError'
+)<ServiceErrorFields> {}
+export class ExportReportError extends Data.TaggedError('ExportReportError')<ServiceErrorFields> {}
+
+// Auth
+export class CreateSbClientError extends Data.TaggedError(
+    'CreateSbClientError'
+)<ServiceErrorFields> {}
+export class GetUserError extends Data.TaggedError('GetUserError')<ServiceErrorFields> {}
+export class SignInWithPasswordError extends Data.TaggedError(
+    'SignInWithPasswordError'
+)<ServiceErrorFields> {}
+export class LogoutError extends Data.TaggedError('LogoutError')<ServiceErrorFields> {}
+export class OAuthInitError extends Data.TaggedError('OAuthInitError')<ServiceErrorFields> {}
+export class OAuthCallbackError extends Data.TaggedError(
+    'OAuthCallbackError'
+)<ServiceErrorFields> {}
+
+// Notifications
+export class SavePushSubscriptionError extends Data.TaggedError(
+    'SavePushSubscriptionError'
+)<ServiceErrorFields> {}
+export class DeletePushSubscriptionError extends Data.TaggedError(
+    'DeletePushSubscriptionError'
+)<ServiceErrorFields> {}
+export class GetPushSubscriptionError extends Data.TaggedError(
+    'GetPushSubscriptionError'
+)<ServiceErrorFields> {}
+export class SendPushNotificationError extends Data.TaggedError(
+    'SendPushNotificationError'
+)<ServiceErrorFields> {}
+
+// Tokens
+export class GetCreditsError extends Data.TaggedError('GetCreditsError')<ServiceErrorFields> {}
+export class DeductCreditError extends Data.TaggedError('DeductCreditError')<ServiceErrorFields> {}
+export class CreateCheckoutSessionError extends Data.TaggedError(
+    'CreateCheckoutSessionError'
+)<ServiceErrorFields> {}
+export class GetInvoicesError extends Data.TaggedError('GetInvoicesError')<ServiceErrorFields> {}
+
+// Consent
+export class CreateConsentCookieError extends Data.TaggedError(
+    'CreateConsentCookieError'
+)<ServiceErrorFields> {}
+
+// Special cases
 export class InvalidPromptTypeError extends Data.TaggedError('InvalidPromptTypeError')<{
     promptType: string
-    error_hash: string
-}> {}
-
-export class AiGenerationError extends Data.TaggedError('AiGenerationError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class CreateSbClientError extends Data.TaggedError('CreateSbClientError')<{
-    cause: unknown
     error_hash: string
 }> {}
 
@@ -22,131 +85,6 @@ export class UnauthenticatedError extends Data.TaggedError('UnauthenticatedError
     error_hash: string
 }> {}
 
-export class GetUserError extends Data.TaggedError('GetUserError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class CreateReportError extends Data.TaggedError('CreateReportError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class SaveAnalysisError extends Data.TaggedError('SaveAnalysisError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class GetReportByIdError extends Data.TaggedError('GetReportByIdError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class GetReportsError extends Data.TaggedError('GetReportsError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class FetchReportForTaskError extends Data.TaggedError('FetchReportForTaskError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class MarkReportFailedError extends Data.TaggedError('MarkReportFailedError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class SignInWithPasswordError extends Data.TaggedError('SignInWithPasswordError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class LogoutError extends Data.TaggedError('LogoutError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class ExportReportError extends Data.TaggedError('ExportReportError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class SavePushSubscriptionError extends Data.TaggedError('SavePushSubscriptionError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class DeletePushSubscriptionError extends Data.TaggedError('DeletePushSubscriptionError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class GetPushSubscriptionError extends Data.TaggedError('GetPushSubscriptionError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class SendPushNotificationError extends Data.TaggedError('SendPushNotificationError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class GetCreditsError extends Data.TaggedError('GetCreditsError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class DeductCreditError extends Data.TaggedError('DeductCreditError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
 export class InsufficientCreditsError extends Data.TaggedError('InsufficientCreditsError')<{
-    error_hash: string
-}> {}
-
-export class CreateCheckoutSessionError extends Data.TaggedError('CreateCheckoutSessionError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class GetInvoicesError extends Data.TaggedError('GetInvoicesError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class OAuthInitError extends Data.TaggedError('OAuthInitError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class OAuthCallbackError extends Data.TaggedError('OAuthCallbackError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class CreateConsentCookieError extends Data.TaggedError('CreateConsentCookieError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class YahooClientError extends Data.TaggedError('YahooClientError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class YahooInsightsError extends Data.TaggedError('YahooInsightsError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class YahooSearchError extends Data.TaggedError('YahooSearchError')<{
-    cause: unknown
-    error_hash: string
-}> {}
-
-export class SaveStockDataError extends Data.TaggedError('SaveStockDataError')<{
-    cause: unknown
     error_hash: string
 }> {}

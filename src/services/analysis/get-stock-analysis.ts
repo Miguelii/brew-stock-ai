@@ -6,12 +6,10 @@ import { AiGenerationError, InvalidPromptTypeError } from '@/services/errors'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { saveAnalysisToReport } from '@/services/analysis/save-analysis-to-report'
 import { saveStockData } from '@/services/analysis/save-stock-data'
-import { getYahooData } from '@/services/analysis/get-yahoo-data'
-import { getYahooTicker } from '@/services/analysis/get-yahoo-ticker'
+import { getYahooTtlData } from '@/services/analysis/get-yahoo-ttl-data'
 import { buildYahooContext } from '@/services/analysis/helpers/build-yahoo-context'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { PROMPTS_MAP, stockAnalysisSchema } from '@/services/analysis/helpers/constants'
-import type { GetYahooDataResult } from '@/services/analysis/helpers/types'
 
 export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     stockSymbol: string,
@@ -26,54 +24,8 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         return yield* new InvalidPromptTypeError({ promptType, error_hash: 'elogprtntf' })
     }
 
-    const YAHOO_DATA_TTL = 7 * 24 * 60 * 60 * 1000 // One week in milliseconds
+    const yahooPreFetch = yield* getYahooTtlData(stockSymbol, supabaseClient)
 
-    // Pre-fetch Yahoo ticker + data to enrich the AI prompt — fully non-fatal
-    type YahooPreFetch = { ticker: string; data: GetYahooDataResult; isFresh: boolean } | null
-
-    const yahooPreFetch: YahooPreFetch = yield* getYahooTicker(stockSymbol).pipe(
-        Effect.flatMap((yahoo_ticker) => {
-            if (!supabaseClient)
-                return getYahooData(yahoo_ticker).pipe(
-                    Effect.map((data) => ({ ticker: yahoo_ticker, data, isFresh: true }))
-                )
-
-            return Effect.tryPromise({
-                try: () =>
-                    supabaseClient
-                        .from('stock_data')
-                        .select('*, last_update_at')
-                        .eq('id', yahoo_ticker)
-                        .maybeSingle(),
-                catch: (cause) => cause,
-            }).pipe(
-                Effect.flatMap((res) => {
-                    const row = res.data
-                    const isStale =
-                        !row?.last_update_at ||
-                        Date.now() - new Date(row.last_update_at).getTime() >= YAHOO_DATA_TTL
-
-                    if (isStale) {
-                        return getYahooData(yahoo_ticker).pipe(
-                            Effect.map((data) => ({ ticker: yahoo_ticker, data, isFresh: true }))
-                        )
-                    }
-
-                    return Effect.succeed({
-                        ticker: yahoo_ticker,
-                        data: row as unknown as GetYahooDataResult,
-                        isFresh: false,
-                    })
-                }),
-                Effect.orElse(() =>
-                    getYahooData(yahoo_ticker).pipe(
-                        Effect.map((data) => ({ ticker: yahoo_ticker, data, isFresh: true }))
-                    )
-                )
-            )
-        }),
-        Effect.orElse(() => Effect.succeed(null))
-    )
     const context = yahooPreFetch?.data ? `\n\n${buildYahooContext(yahooPreFetch.data)}` : ''
 
     const resolvedPrompt = basePrompt.replaceAll('##TICKER##', stockSymbol) + context
@@ -97,7 +49,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                     : {
                           providerOptions: {
                               anthropic: {
-                                  thinking: { type: 'enabled', budgetTokens: 1500 },
+                                  thinking: { type: 'enabled', budgetTokens: 4000 },
                               },
                           },
                       }),
@@ -105,7 +57,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                 system: SystemPrompt,
                 prompt: resolvedPrompt,
                 maxOutputTokens: useBaseModel ? 4000 : 5000,
-            }).then((result) => result.output) // access .output inside try — throws AI_NoOutputGeneratedError otherwise
+            }).then((result) => result.output)
         },
         catch: (cause) => {
             console.error('[getStockAnalysis] raw AI error:', cause)
@@ -126,7 +78,6 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         [
             saveAnalysisToReport(reportId, analysis, finalTicker, sentiment, supabaseClient),
 
-            // Only save to stock_data if we fetched fresh data during pre-fetch — non-fatal
             yahooPreFetch?.isFresh
                 ? saveStockData(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
                       Effect.orElse(() => Effect.void)

@@ -5,7 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { CreateSbClientError, SaveStockDataError } from '@/services/errors'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { logger } from '@trigger.dev/sdk'
-import type { GetYahooDataResult } from '@/services/analysis/helpers/types'
+import type { GetYahooDataResult } from '@/services/analysis/types'
 
 export const saveStockData = Effect.fn('saveStockData')(function* (
     ticker: string | null,
@@ -27,6 +27,7 @@ export const saveStockData = Effect.fn('saveStockData')(function* (
                     reports: data.reports,
                     scores: data.scores,
                     sig_dev: data.sigDev,
+                    financials: data.financials ?? null,
                     last_update_at: new Date().toISOString(),
                 },
                 { onConflict: 'id' }

@@ -1,8 +1,9 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { YahooClientError, YahooInsightsError } from '@/services/errors'
+import { YahooClientError, YahooInsightsError, YahooQuoteSummaryError } from '@/services/errors'
 import type { StockReports, StockScores, StockSigDev } from '@/types/ReportDTO'
+import type { StockFinancials } from '@/services/analysis/types'
 
 export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string) {
     const yahooClient = yield* Effect.tryPromise({
@@ -55,9 +56,53 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
         }
     }
 
+    // Fetch financial indicators via quoteSummary — non-fatal
+    const financials: StockFinancials | null = yield* Effect.tryPromise({
+        try: () =>
+            yahooClient.quoteSummary(ticker, {
+                modules: ['financialData', 'summaryDetail', 'defaultKeyStatistics'],
+            }),
+        catch: (cause) => new YahooQuoteSummaryError({ cause, error_hash: 'yhoqsmryerr' }),
+    }).pipe(
+        Effect.map((summary) => {
+            const fd = summary.financialData
+            const sd = summary.summaryDetail
+            const ks = summary.defaultKeyStatistics
+
+            return {
+                currentPrice: fd?.currentPrice ?? null,
+                marketCap: sd?.marketCap ?? null,
+                trailingPE: sd?.trailingPE ?? null,
+                forwardPE: sd?.forwardPE ?? null,
+                priceToBook: ks?.priceToBook ?? null,
+                fiftyTwoWeekHigh: sd?.fiftyTwoWeekHigh ?? null,
+                fiftyTwoWeekLow: sd?.fiftyTwoWeekLow ?? null,
+                beta: sd?.beta ?? null,
+                debtToEquity: fd?.debtToEquity ?? null,
+                revenueGrowth: fd?.revenueGrowth ?? null,
+                earningsGrowth: fd?.earningsGrowth ?? null,
+                freeCashflow: fd?.freeCashflow ?? null,
+                operatingCashflow: fd?.operatingCashflow ?? null,
+                profitMargins: fd?.profitMargins ?? null,
+                operatingMargins: fd?.operatingMargins ?? null,
+                returnOnEquity: fd?.returnOnEquity ?? null,
+                totalRevenue: fd?.totalRevenue ?? null,
+                ebitda: fd?.ebitda ?? null,
+                totalDebt: fd?.totalDebt ?? null,
+                enterpriseValue: ks?.enterpriseValue ?? null,
+                targetMeanPrice: fd?.targetMeanPrice ?? null,
+                targetHighPrice: fd?.targetHighPrice ?? null,
+                targetLowPrice: fd?.targetLowPrice ?? null,
+                dividendYield: sd?.dividendYield ?? null,
+            } satisfies StockFinancials
+        }),
+        Effect.orElse(() => Effect.succeed(null))
+    )
+
     return {
         scores,
         reports,
         sigDev,
+        financials,
     }
 })

@@ -1,6 +1,13 @@
 'use client'
 
-import { BarChart2Icon, ClockIcon, CoinsIcon, FileChartLineIcon, SearchIcon } from 'lucide-react'
+import {
+    BarChart2Icon,
+    ClockIcon,
+    CoinsIcon,
+    FileChartLineIcon,
+    Loader2,
+    SearchIcon,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
@@ -31,8 +38,30 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     const { onSubmit, isPending } = useAnalysisCardHandlers({ form })
 
     const getButtonLabel = () => {
-        if (!isAuthenticated) return 'Sign In to generate'
-        return isPending ? 'Generating...' : 'Generate Report'
+        if (!isAuthenticated) {
+            return (
+                <>
+                    <FileChartLineIcon className="size-4" />
+                    Sign In to generate
+                </>
+            )
+        }
+
+        if (isPending) {
+            return (
+                <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Generating...
+                </>
+            )
+        }
+
+        return (
+            <>
+                <FileChartLineIcon className="size-4" />
+                Generate Report
+            </>
+        )
     }
 
     return (
@@ -147,7 +176,6 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                     )
                             }}
                         >
-                            <FileChartLineIcon className="size-4" />
                             {getButtonLabel()}
                         </Button>
                     </form>

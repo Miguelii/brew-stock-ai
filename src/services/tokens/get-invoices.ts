@@ -4,6 +4,7 @@ import { Effect } from 'effect'
 import StripeClient from 'stripe'
 import { ServerEnv } from '@/env/server'
 import { CreateSbClientError, GetInvoicesError, UnauthenticatedError } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import { createSbServerClient } from '@/lib/utils.server'
 import { getSession } from '@/services/auth/get-session'
 import type { Invoice } from '@/types/Invoice'
@@ -11,18 +12,20 @@ import type { Invoice } from '@/types/Invoice'
 export const getInvoices = Effect.fn('getInvoices')(function* () {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'egtinvsbclnt' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.INVOICES_SB_CLIENT }),
     })
 
     const user = yield* getSession(supabase)
 
     if (!user) {
-        return yield* new UnauthenticatedError({ error_hash: 'egtinvunauthd' })
+        return yield* new UnauthenticatedError({ error_hash: ErrorCode.INVOICES_UNAUTH })
     }
 
     const stripe = yield* Effect.try({
         try: () => new StripeClient(ServerEnv.STRIPE_SECRET_KEY!),
-        catch: (cause) => new GetInvoicesError({ cause, error_hash: 'egtinvstrpinit' }),
+        catch: (cause) =>
+            new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_INIT }),
     })
 
     // List completed checkout sessions and filter by userId metadata client-side.
@@ -33,7 +36,8 @@ export const getInvoices = Effect.fn('getInvoices')(function* () {
                 limit: 100,
                 status: 'complete',
             }),
-        catch: (cause) => new GetInvoicesError({ cause, error_hash: 'egtinvstrpfetch' }),
+        catch: (cause) =>
+            new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_FETCH }),
     })
 
     const invoices: Invoice[] = sessions.data

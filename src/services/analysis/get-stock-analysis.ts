@@ -3,6 +3,7 @@ import 'server-only'
 import { Effect } from 'effect'
 import { SystemPrompt } from '@/services/analysis/helpers/prompts'
 import { AiGenerationError, InvalidPromptTypeError } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { saveAnalysisToReport } from '@/services/analysis/save-analysis-to-report'
 import { saveStockData } from '@/services/analysis/save-stock-data'
@@ -21,7 +22,10 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     const basePrompt = PROMPTS_MAP[promptType]
 
     if (!basePrompt) {
-        return yield* new InvalidPromptTypeError({ promptType, error_hash: 'elogprtntf' })
+        return yield* new InvalidPromptTypeError({
+            promptType,
+            error_hash: ErrorCode.ANALYSIS_INVALID_PROMPT,
+        })
     }
 
     const yahooPreFetch = yield* getYahooTtlData(stockSymbol, supabaseClient)
@@ -61,14 +65,14 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         },
         catch: (cause) => {
             console.error('[getStockAnalysis] raw AI error:', cause)
-            return new AiGenerationError({ cause, error_hash: 'elogaierf1' })
+            return new AiGenerationError({ cause, error_hash: ErrorCode.ANALYSIS_AI_GENERATION })
         },
     })
 
     if (!analysis) {
         return yield* new AiGenerationError({
             cause: 'Model returned incomplete output',
-            error_hash: 'elogaioptnull',
+            error_hash: ErrorCode.ANALYSIS_AI_NO_OUTPUT,
         })
     }
 

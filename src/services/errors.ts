@@ -1,8 +1,9 @@
 import 'server-only'
 
 import { Data } from 'effect'
+import type { ErrorCode } from '@/services/error-codes'
 
-type ServiceErrorFields = { cause: unknown; error_hash: string }
+type ServiceErrorFields = { cause: unknown; error_hash: ErrorCode }
 
 // Analysis
 export class AiGenerationError extends Data.TaggedError('AiGenerationError')<ServiceErrorFields> {}
@@ -77,14 +78,14 @@ export class CreateConsentCookieError extends Data.TaggedError(
 // Special cases
 export class InvalidPromptTypeError extends Data.TaggedError('InvalidPromptTypeError')<{
     promptType: string
-    error_hash: string
+    error_hash: ErrorCode
 }> {}
 
 export class UnauthenticatedError extends Data.TaggedError('UnauthenticatedError')<{
     cause?: unknown
-    error_hash: string
+    error_hash: ErrorCode
 }> {}
 
 export class InsufficientCreditsError extends Data.TaggedError('InsufficientCreditsError')<{
-    error_hash: string
+    error_hash: ErrorCode
 }> {}

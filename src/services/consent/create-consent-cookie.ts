@@ -4,6 +4,7 @@ import { Effect } from 'effect'
 import { cookies } from 'next/headers'
 import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/lib/constants'
 import { CreateConsentCookieError } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 
 export const createConsentCookie = Effect.fn('createConsentCookie')(function* (
     allowAnalytics: boolean
@@ -26,6 +27,7 @@ export const createConsentCookie = Effect.fn('createConsentCookie')(function* (
                 cookieStore.delete(`stats_ga_${GTM_ID_WITHOUT_G}`)
             }
         },
-        catch: (cause) => new CreateConsentCookieError({ cause, error_hash: 'crtcnsntckie' }),
+        catch: (cause) =>
+            new CreateConsentCookieError({ cause, error_hash: ErrorCode.CONSENT_COOKIE_CREATE }),
     })
 })

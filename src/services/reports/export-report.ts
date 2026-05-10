@@ -4,6 +4,7 @@ import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { CHROMIUM_PACK_PATH } from '@/lib/constants'
 import { CreateSbClientError, ExportReportError, UnauthenticatedError } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import type { ReportDTO, StockData } from '@/types/ReportDTO'
 import { getSession } from '@/services/auth/get-session'
 import { ClientEnv } from '@/env/client'
@@ -30,20 +31,22 @@ const getChromiumPath = Effect.fn('getChromiumPath')(function* () {
 
     return yield* Effect.tryPromise({
         try: () => downloadPromise!,
-        catch: (cause) => new ExportReportError({ cause, error_hash: 'echrmpath' }),
+        catch: (cause) =>
+            new ExportReportError({ cause, error_hash: ErrorCode.EXPORT_REPORT_CHROMIUM }),
     })
 })
 
 export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['id']) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eexprptsbclnt' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.EXPORT_REPORT_SB_CLIENT }),
     })
 
     const user = yield* getSession(supabase)
 
     if (!user) {
-        return yield* new UnauthenticatedError({ error_hash: 'eexprptunauthd' })
+        return yield* new UnauthenticatedError({ error_hash: ErrorCode.EXPORT_REPORT_UNAUTH })
     }
 
     const { data: report, error } = yield* Effect.tryPromise({
@@ -54,11 +57,15 @@ export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['
                 .eq('id', id)
                 .eq('user_id', user.id)
                 .single(),
-        catch: (cause) => new ExportReportError({ cause, error_hash: 'eexprptfetch' }),
+        catch: (cause) =>
+            new ExportReportError({ cause, error_hash: ErrorCode.EXPORT_REPORT_FETCH }),
     })
 
     if (error) {
-        return yield* new ExportReportError({ cause: error, error_hash: 'eexprpterr' })
+        return yield* new ExportReportError({
+            cause: error,
+            error_hash: ErrorCode.EXPORT_REPORT_FETCH_ERR,
+        })
     }
 
     const stockData = report.ticker
@@ -122,7 +129,7 @@ export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['
 
             return buffer
         },
-        catch: (cause) => new ExportReportError({ cause, error_hash: 'eexprptpdf' }),
+        catch: (cause) => new ExportReportError({ cause, error_hash: ErrorCode.EXPORT_REPORT_PDF }),
     })
 
     return {

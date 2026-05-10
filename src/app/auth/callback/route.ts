@@ -3,21 +3,27 @@ import { Effect, Exit } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
 import { CreateSbClientError, OAuthCallbackError } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
 const handleOAuthCallback = Effect.fn('handleOAuthCallback')(function* (code: string) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eoauthcbsbclnt' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.OAUTH_CALLBACK_SB_CLIENT }),
     })
 
     const { error } = yield* Effect.tryPromise({
         try: () => supabase.auth.exchangeCodeForSession(code),
-        catch: (cause) => new OAuthCallbackError({ cause, error_hash: 'eoauthcbexchng' }),
+        catch: (cause) =>
+            new OAuthCallbackError({ cause, error_hash: ErrorCode.OAUTH_CALLBACK_EXCHANGE }),
     })
 
     if (error) {
-        return yield* new OAuthCallbackError({ cause: error, error_hash: 'eoauthcbsesserr' })
+        return yield* new OAuthCallbackError({
+            cause: error,
+            error_hash: ErrorCode.OAUTH_CALLBACK_SESSION,
+        })
     }
 })
 

@@ -10,6 +10,7 @@ import {
     FetchReportForTaskError,
     MarkReportFailedError,
 } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import { sendPushNotificationToUser } from '@/services/notifications/send-push-notification'
 
 export const processReport = Effect.fn('processReport')(function* (
@@ -18,18 +19,20 @@ export const processReport = Effect.fn('processReport')(function* (
 ) {
     const supabase = yield* Effect.try({
         try: () => createSbAdminClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eprcrptsbclnt' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.PROCESS_REPORT_SB_CLIENT }),
     })
 
     const { data: report, error } = yield* Effect.tryPromise({
         try: () => supabase.from('reports').select('*').eq('id', reportId).single(),
-        catch: (cause) => new FetchReportForTaskError({ cause, error_hash: 'eprcrptfetch' }),
+        catch: (cause) =>
+            new FetchReportForTaskError({ cause, error_hash: ErrorCode.PROCESS_REPORT_FETCH }),
     })
 
     if (error || !report) {
         return yield* new FetchReportForTaskError({
             cause: `Report not found: ${reportId}`,
-            error_hash: 'eprcrptnotfnd',
+            error_hash: ErrorCode.PROCESS_REPORT_NOT_FOUND,
         })
     }
 
@@ -57,7 +60,10 @@ export const processReport = Effect.fn('processReport')(function* (
                         .update({ status: ReportStatus.FAILED })
                         .eq('id', typedReport.id),
                 catch: (markCause) =>
-                    new MarkReportFailedError({ cause: markCause, error_hash: 'eprcrptmrkfld' }),
+                    new MarkReportFailedError({
+                        cause: markCause,
+                        error_hash: ErrorCode.PROCESS_REPORT_MARK_FAILED,
+                    }),
             }).pipe(Effect.flatMap(() => Effect.fail(err)))
         )
     )

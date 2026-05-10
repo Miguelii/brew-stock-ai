@@ -3,11 +3,13 @@ import 'server-only'
 import { createSbServerClient } from '@/lib/utils.server'
 import { Effect } from 'effect'
 import { CreateSbClientError, SignInWithPasswordError } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 
 export const sbLogin = Effect.fn('sbLogin')(function* (email: string, password: string) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'lga12sd1231sdsda' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.AUTH_LOGIN_SB_CLIENT }),
     })
 
     const { error } = yield* Effect.tryPromise({
@@ -16,12 +18,16 @@ export const sbLogin = Effect.fn('sbLogin')(function* (email: string, password: 
                 email: email,
                 password: password,
             }),
-        catch: (cause) => new SignInWithPasswordError({ cause, error_hash: 'signpasrasda' }),
+        catch: (cause) =>
+            new SignInWithPasswordError({ cause, error_hash: ErrorCode.AUTH_LOGIN_SIGN_IN }),
     })
 
     if (error)
         return yield* Effect.fail(
-            new SignInWithPasswordError({ cause: error, error_hash: 'signpasrasdaa123' })
+            new SignInWithPasswordError({
+                cause: error,
+                error_hash: ErrorCode.AUTH_LOGIN_SIGN_IN_ERR,
+            })
         )
 
     return { status: 200 }

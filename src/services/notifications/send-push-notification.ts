@@ -10,6 +10,7 @@ import {
     SendPushNotificationError,
     UnauthenticatedError,
 } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
 import { getSession } from '@/services/auth/get-session'
@@ -25,7 +26,8 @@ function setupVapid() {
 function fetchSubscriptions(supabase: SupabaseClient, userId: string) {
     return Effect.tryPromise({
         try: () => supabase.from('push_subscriptions').select('subscription').eq('user_id', userId),
-        catch: (cause) => new GetPushSubscriptionError({ cause, error_hash: 'esndpshfetch' }),
+        catch: (cause) =>
+            new GetPushSubscriptionError({ cause, error_hash: ErrorCode.PUSH_SEND_FETCH_SUB }),
     })
 }
 
@@ -45,7 +47,10 @@ function sendToSubscriptions(
                 )
             ),
         catch: (cause) => {
-            return new SendPushNotificationError({ cause, error_hash: 'esndpshsend' })
+            return new SendPushNotificationError({
+                cause,
+                error_hash: ErrorCode.PUSH_SEND_DISPATCH,
+            })
         },
     }).pipe(Effect.map(() => ({ success: true as const })))
 }
@@ -62,19 +67,23 @@ export const sendPushNotification = Effect.fn('sendPushNotification')(function* 
 
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'esndpshclient' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.PUSH_SEND_SB_CLIENT }),
     })
 
     const user = yield* getSession(supabase)
 
     if (!user) {
-        return yield* new UnauthenticatedError({ error_hash: 'esndpshunauth' })
+        return yield* new UnauthenticatedError({ error_hash: ErrorCode.PUSH_SEND_UNAUTH })
     }
 
     const { data: rows, error } = yield* fetchSubscriptions(supabase, user.id)
 
     if (error)
-        return yield* new GetPushSubscriptionError({ cause: error, error_hash: 'esndpshusrerr' })
+        return yield* new GetPushSubscriptionError({
+            cause: error,
+            error_hash: ErrorCode.PUSH_SEND_USER_ERR,
+        })
     if (!rows?.length) return { success: false, reason: 'no_subscription' as const }
 
     return yield* sendToSubscriptions(rows, title, body)
@@ -96,7 +105,10 @@ export const sendPushNotificationToUser = Effect.fn('sendPushNotificationToUser'
     const { data: rows, error } = yield* fetchSubscriptions(supabase, userId)
 
     if (error)
-        return yield* new GetPushSubscriptionError({ cause: error, error_hash: 'esndpshtousrerr' })
+        return yield* new GetPushSubscriptionError({
+            cause: error,
+            error_hash: ErrorCode.PUSH_SEND_TO_USER_ERR,
+        })
     if (!rows?.length) return { success: false, reason: 'no_subscription' as const }
 
     return yield* sendToSubscriptions(rows, title, body)

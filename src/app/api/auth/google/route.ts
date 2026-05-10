@@ -3,12 +3,14 @@ import { Effect, Exit } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
 import { CreateSbClientError, OAuthInitError } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
 const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo?: string) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'eoauthgglsbclnt' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.OAUTH_GOOGLE_SB_CLIENT }),
     })
 
     const callbackUrl = new URL(`${AUTH_PAGE_PATH}/callback`, ClientEnv.NEXT_PUBLIC_WEBSITE_URL)
@@ -20,13 +22,13 @@ const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo
                 provider: 'google',
                 options: { redirectTo: callbackUrl.toString() },
             }),
-        catch: (cause) => new OAuthInitError({ cause, error_hash: 'eoauthgglinit' }),
+        catch: (cause) => new OAuthInitError({ cause, error_hash: ErrorCode.OAUTH_GOOGLE_INIT }),
     })
 
     if (error || !data.url) {
         return yield* new OAuthInitError({
             cause: error ?? 'No redirect URL returned',
-            error_hash: 'eoauthgglnourl',
+            error_hash: ErrorCode.OAUTH_GOOGLE_NO_URL,
         })
     }
 

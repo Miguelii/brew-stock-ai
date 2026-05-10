@@ -8,6 +8,7 @@ import {
     CreateSbClientError,
     UnauthenticatedError,
 } from '@/services/errors'
+import { ErrorCode } from '@/services/error-codes'
 import { createSbServerClient } from '@/lib/utils.server'
 import { getSession } from '@/services/auth/get-session'
 import { ClientEnv } from '@/env/client'
@@ -23,24 +24,26 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
     if (!pkg) {
         return yield* new CreateCheckoutSessionError({
             cause: `Unknown package: ${packageId}`,
-            error_hash: 'ecktchksssnpkg',
+            error_hash: ErrorCode.CHECKOUT_INVALID_PKG,
         })
     }
 
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'ecktchksssnclnt' }),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.CHECKOUT_SB_CLIENT }),
     })
 
     const user = yield* getSession(supabase)
 
     if (!user) {
-        return yield* new UnauthenticatedError({ error_hash: 'ecktchksssunath' })
+        return yield* new UnauthenticatedError({ error_hash: ErrorCode.CHECKOUT_UNAUTH })
     }
 
     const stripe = yield* Effect.try({
         try: () => new StripeClient(ServerEnv.STRIPE_SECRET_KEY!),
-        catch: (cause) => new CreateCheckoutSessionError({ cause, error_hash: 'ecktchksssnstrp' }),
+        catch: (cause) =>
+            new CreateCheckoutSessionError({ cause, error_hash: ErrorCode.CHECKOUT_STRIPE_INIT }),
     })
 
     const baseUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
@@ -74,7 +77,8 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
                 success_url: `${baseUrl}/tokens?success=true`,
                 cancel_url: `${baseUrl}/tokens?canceled=true`,
             }),
-        catch: (cause) => new CreateCheckoutSessionError({ cause, error_hash: 'ecktchksssncrt' }),
+        catch: (cause) =>
+            new CreateCheckoutSessionError({ cause, error_hash: ErrorCode.CHECKOUT_STRIPE_CREATE }),
     })
 
     return session.url as string

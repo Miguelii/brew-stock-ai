@@ -12,7 +12,7 @@ const LazySVG = lazy(() => import('./svg').then((m) => ({ default: m.SVG })))
 
 export const BackgroundLines = ({ children, className, svgOptions }: Props) => {
     return (
-        <div className={cn('h-80 md:h-screen w-full bg-background', className)}>
+        <div className={cn('h-screen w-full bg-background', className)}>
             <Suspense>
                 <LazySVG svgOptions={svgOptions} />
             </Suspense>

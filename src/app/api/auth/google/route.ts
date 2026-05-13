@@ -6,6 +6,10 @@ import { CreateSbClientError, OAuthInitError } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
+const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+
+const errorUrl = new URL(`${AUTH_PAGE_PATH}?error=oauth`, siteUrl)
+
 const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo?: string) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
@@ -13,7 +17,7 @@ const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo
             new CreateSbClientError({ cause, error_hash: ErrorCode.OAUTH_GOOGLE_SB_CLIENT }),
     })
 
-    const callbackUrl = new URL(`${AUTH_PAGE_PATH}/callback`, ClientEnv.NEXT_PUBLIC_WEBSITE_URL)
+    const callbackUrl = new URL(`${AUTH_PAGE_PATH}/callback`, siteUrl)
     if (returnTo) callbackUrl.searchParams.set('next', returnTo)
 
     const { data, error } = yield* Effect.tryPromise({
@@ -34,8 +38,6 @@ const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo
 
     return data.url
 })
-
-const errorUrl = new URL(`${AUTH_PAGE_PATH}?error=oauth`, ClientEnv.NEXT_PUBLIC_WEBSITE_URL)
 
 export async function GET(request: NextRequest) {
     const returnTo = request.nextUrl.searchParams.get('returnTo') ?? undefined

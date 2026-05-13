@@ -16,6 +16,8 @@ import { TOKEN_PACKAGES } from '@/services/tokens/helpers/constants'
 
 export type TokenPackageId = (typeof TOKEN_PACKAGES)[number]['id']
 
+const baseUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+
 export const createCheckoutSession = Effect.fn('createCheckoutSession')(function* (
     packageId: TokenPackageId
 ) {
@@ -45,8 +47,6 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
         catch: (cause) =>
             new CreateCheckoutSessionError({ cause, error_hash: ErrorCode.CHECKOUT_STRIPE_INIT }),
     })
-
-    const baseUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
     const session = yield* Effect.tryPromise({
         try: () =>

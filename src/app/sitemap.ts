@@ -3,9 +3,9 @@ import { AUTH_PAGE_PATH } from '@/lib/constants'
 import { TICKER_PAGES } from '@/lib/ticker-pages'
 import type { MetadataRoute } from 'next'
 
-export default function sitemap(): MetadataRoute.Sitemap {
-    const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
+export default function sitemap(): MetadataRoute.Sitemap {
     const tickerRoutes: MetadataRoute.Sitemap = TICKER_PAGES.map((t) => ({
         url: `${siteUrl}/analysis/${t.slug}`,
         changeFrequency: 'monthly',
@@ -17,13 +17,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
         {
             url: siteUrl,
             lastModified: new Date(),
-            changeFrequency: 'monthly',
+            changeFrequency: 'weekly',
             priority: 1,
         },
         {
             url: `${siteUrl}/analysis`,
             lastModified: new Date(),
-            changeFrequency: 'monthly',
+            changeFrequency: 'weekly',
             priority: 1,
         },
         ...tickerRoutes,

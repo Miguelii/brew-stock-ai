@@ -71,7 +71,7 @@ export default function Home() {
                         className="mb-12"
                     >
                         <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                            Five Analysis Types, One Platform
+                            Five AI Stock Analysis Types, One Platform
                         </h2>
                         <p className="text-primary-muted leading-relaxed max-w-2xl text-lg">
                             Choose the analysis that matches your investment strategy. Each report

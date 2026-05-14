@@ -51,6 +51,7 @@ export const STATIC_PREFIXES = [
     '/android-chrome-192x192.png',
     '/android-chrome-512x512.png',
     CHROMIUM_PACK_PATH,
+    '/ads.txt',
 ]
 
 export const AUTH_PAGE_PATH = '/auth'
@@ -77,3 +78,5 @@ export const GTM_ID_WITHOUT_G: GTMWithoutPrefix<typeof GTM_ID> = GTM_ID.replace(
 ) as GTMWithoutPrefix<typeof GTM_ID>
 
 export const CONSENT_COOKIE = 'brew_stock_cookie_consent'
+
+export const GOOGLE_ADSENSE_ACCOUNT_ID = 'ca-pub-1939312153475109' as const

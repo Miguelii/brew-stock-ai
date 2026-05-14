@@ -19,6 +19,7 @@ import {
     WebSiteSchema,
 } from '@/components/structured-data'
 import { getCachedSession } from '@/services/auth/get-cached-session'
+import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -107,6 +108,7 @@ export default async function RootLayout({ children }: Props) {
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <meta name="apple-mobile-web-app-title" content="StockBrewAI" />
+                <meta name="google-adsense-account" content={GOOGLE_ADSENSE_ACCOUNT_ID} />
             </head>
             <VercelAnalytics />
             <VercelSpeedInsights />
@@ -114,7 +116,7 @@ export default async function RootLayout({ children }: Props) {
             <Script
                 id="adsense"
                 async
-                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1939312153475109"
+                src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ACCOUNT_ID}`}
                 crossOrigin="anonymous"
                 strategy="lazyOnload"
             />

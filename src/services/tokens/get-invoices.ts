@@ -28,19 +28,20 @@ export const getInvoices = Effect.fn('getInvoices')(function* () {
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_INIT }),
     })
 
-    // List completed checkout sessions and filter by userId metadata client-side.
+    // List completed checkout sessions and then filter by userId.
     // This covers both existing payments (metadata only on session) and future ones.
-    const sessions = yield* Effect.tryPromise({
+    // Stripe's API does not support filtering by metadata server-side, so we must fetch all sessions and
+    // autoPagingToArray handles cursor pagination automatically — avoids the 100-item cap.
+    const allSessions = yield* Effect.tryPromise({
         try: () =>
-            stripe.checkout.sessions.list({
-                limit: 100,
-                status: 'complete',
-            }),
+            stripe.checkout.sessions
+                .list({ limit: 100, status: 'complete' })
+                .autoPagingToArray({ limit: 10_000 }),
         catch: (cause) =>
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_FETCH }),
     })
 
-    const invoices: Invoice[] = sessions.data
+    const invoices: Invoice[] = allSessions
         .filter((s) => s.metadata?.userId === user.id && s.amount_total)
         .map((s) => ({
             id: s.id,

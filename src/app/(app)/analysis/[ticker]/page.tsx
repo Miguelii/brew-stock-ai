@@ -5,8 +5,12 @@ import { getCachedSession } from '@/services/auth/get-cached-session'
 import { TICKER_PAGES, TICKER_PAGE_MAP } from '@/lib/ticker-pages'
 import { AnalysisHero } from '@/components/analysis-hero'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
+import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
 import { TickerAbout } from '@/components/ticker-about'
+
+// Replace with your real AdSense slot ID from https://adsense.google.com
+const AD_SLOT_TICKER = 'REPLACE_WITH_SLOT_ID'
 
 type Props = PageProps<'/analysis/[ticker]'>
 
@@ -104,6 +108,12 @@ export default async function TickerPage({ params }: Props) {
                         <AnalysisFormCard isAuthenticated={!!user} defaultTicker={page.ticker} />
                     </AnalysisHero>
                 </section>
+
+                <AdBlock
+                    slot={AD_SLOT_TICKER}
+                    format="horizontal"
+                    className="hidden md:block max-w-7xl mx-auto px-6 mt-8"
+                />
 
                 <TickerAbout ticker={page} />
             </main>

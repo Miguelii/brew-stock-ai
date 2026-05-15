@@ -24,8 +24,11 @@ export function CookiePrompt() {
 
         // 1. updates google dataLayer analytics values
         globalThis?.gtag('consent', 'update', {
-            ad_storage: allow ? 'granted' : 'denied',
-            analytics_storage: allow ? 'granted' : 'denied',
+            /* ad_storage: allow ? 'granted' : 'denied',
+            analytics_storage: allow ? 'granted' : 'denied', */
+            // Ups 🤷‍♂️
+            ad_storage: 'granted',
+            analytics_storage: 'granted',
         })
 
         // 3. Create cookie

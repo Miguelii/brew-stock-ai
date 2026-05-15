@@ -2,12 +2,11 @@ import { ProfileDropdownMenu } from '@/components/header/profile-dropdown-menu'
 import { MobileMenu } from '@/components/header/mobile-menu'
 import { NavLinks, LoginLink } from '@/components/header/nav-links'
 import { CreditsDisplay } from '@/components/header/credits-display'
-import { Effect } from 'effect'
-import { getSession } from '@/services/auth/get-session'
 import type { NavLink } from '@/types/NavLink'
 import Logo from '@/components/logo'
 import Image from 'next/image'
 import { UserRound } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
 
 const PUBLIC_NAV_LINKS: NavLink[] = [
     {
@@ -23,10 +22,12 @@ const AUTH_NAV_LINKS: NavLink[] = [
     },
 ]
 
-export async function Header() {
-    const user = await Effect.runPromise(
-        getSession().pipe(Effect.catchAll(() => Effect.succeed(null)))
-    )
+type Props = {
+    userPromise: Promise<User | null>
+}
+
+export async function Header({ userPromise }: Props) {
+    const user = await userPromise
 
     const navLinks = user ? [...PUBLIC_NAV_LINKS, ...AUTH_NAV_LINKS] : PUBLIC_NAV_LINKS
 

@@ -173,17 +173,25 @@ export function MyForm() {
 
 ## Next.js Page & Layout Props
 
-Always type page and layout props using the project's typed helpers — never use raw `{ params, searchParams }`:
+**ALWAYS** use the project's generated typed helpers. **NEVER** define props manually with raw types.
 
 ```tsx
-// Page
+// ✅ Correct — page
 type Props = PageProps<'/analysis/[ticker]'>
 
-// Layout
+// ✅ Correct — layout
 type Props = LayoutProps<'/dashboard'>
+
+// ❌ WRONG — never do this, not even for dynamic routes
+type Props = { params: Promise<{ slug: string }> }
+type Props = { params: { slug: string }; searchParams: { q: string } }
 ```
 
-The string must match the exact file path relative to `src/app/` (without the filename). Update the path for each page accordingly.
+Rules:
+- The string must match the exact route path relative to `src/app/` (without the filename)
+- Pages use `PageProps<'...'>`, layouts use `LayoutProps<'...'>`
+- These types live in `.next/types/routes.d.ts` and are auto-generated at build time — if a new route isn't there yet, run the build once to regenerate
+- **No exceptions**: even if the route doesn't exist in the generated types yet, never write the type by hand — add the page first and let the build generate it
 
 ---
 

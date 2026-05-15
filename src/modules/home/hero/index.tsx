@@ -17,7 +17,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col items-center text-center max-w-6xl mx-auto relative z-20"
+                className="flex flex-col items-center text-center max-w-7xl mx-auto relative z-20"
             >
                 <h1 className="bg-clip-text text-transparent bg-linear-to-b from-foreground to-foreground/70 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] py-3">
                     AI-Powered Stock Analysis

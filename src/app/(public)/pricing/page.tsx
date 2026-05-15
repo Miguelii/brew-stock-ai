@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
     return (
-        <main className="max-w-4xl mx-auto px-6 py-12 space-y-8 lg:pb-24">
+        <main className="max-w-7xl mx-auto px-6 py-12 space-y-8 lg:pb-24">
             <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
                 <TokenPackages
                     showBuyButton={false}
                     showFree={true}
-                    className="grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2"
+                    className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                 />
             </motion.section>
         </main>

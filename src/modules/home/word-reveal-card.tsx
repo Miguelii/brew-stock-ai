@@ -1,16 +1,15 @@
 import * as motion from 'motion/react-client'
 
-const revealWords =
-    'You type a ticker. Our AI analyzes all the data and you get institutional-grade analysis. In under 120 seconds.'.split(
-        ' '
-    )
+type Props = {
+    words: string[]
+}
 
-export function WordRevealCard() {
+export function WordRevealCard({ words }: Props) {
     return (
         <section className="border-b border-border">
             <div className="max-w-4xl mx-auto px-6 py-32 md:py-48">
                 <p className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-snug">
-                    {revealWords.map((word, i) => (
+                    {words.map((word, i) => (
                         <motion.span
                             key={`reveal-word-${word}`}
                             initial={{ opacity: 0.15 }}

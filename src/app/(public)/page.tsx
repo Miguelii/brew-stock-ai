@@ -4,6 +4,7 @@ import { MarketingCard } from '@/modules/home/markting-card'
 import { WordRevealCard } from '@/modules/home/word-reveal-card'
 import { PricingCard } from '@/modules/home/pricring-card'
 import { FinalCTA } from '@/modules/home/final-cta'
+import { HOME_REVEAL_WORDS } from '@/lib/revel-words'
 
 export const dynamic = 'force-static'
 
@@ -19,7 +20,7 @@ export default function HomePage() {
             <MarketingCard />
 
             {/* Scrubbing text reveal */}
-            <WordRevealCard />
+            <WordRevealCard words={HOME_REVEAL_WORDS} />
 
             {/* Pricing */}
             <PricingCard />

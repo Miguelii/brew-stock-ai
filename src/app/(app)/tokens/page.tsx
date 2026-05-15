@@ -14,7 +14,7 @@ export default async function TokensPage({ searchParams }: Props) {
     const params = await searchParams
 
     return (
-        <main className="max-w-4xl mx-auto px-6 py-10 space-y-8">
+        <main className="max-w-7xl mx-auto px-6 py-10 space-y-8">
             <div className="space-y-1">
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">Buy Tokens</h1>
                 <p className="text-sm text-muted-foreground">
@@ -39,7 +39,11 @@ export default async function TokensPage({ searchParams }: Props) {
 
             <Separator />
 
-            <TokenPackages showFree={false} showBuyButton={true} />
+            <TokenPackages
+                showFree={false}
+                showBuyButton={true}
+                className="md:grid-cols-2 lg:grid-cols-3"
+            />
         </main>
     )
 }

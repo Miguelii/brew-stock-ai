@@ -6,7 +6,7 @@ import { EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
 export function EducationHubList() {
     return (
         <section>
-            <div className="max-w-4xl mx-auto px-6 py-12 lg:py-16">
+            <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">
                 <div className="flex flex-col divide-y divide-border">
                     {EDUCATION_HUB_ARTICLES.map((article, i) => (
                         <motion.article

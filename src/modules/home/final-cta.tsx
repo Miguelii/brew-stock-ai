@@ -30,7 +30,7 @@ export function FinalCTA() {
                             className="gap-2 text-base px-8 h-12 bg-background text-primary hover:bg-background/90 hover:text-primary"
                         >
                             Start free analysis
-                            <ArrowRightIcon className="size-5" />
+                            <ArrowRightIcon className="size-4" />
                         </Button>
                     </Link>
                 </motion.div>

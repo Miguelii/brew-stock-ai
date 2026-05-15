@@ -17,9 +17,9 @@ export function ReportMacbookScroll() {
                 transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col items-center"
             >
-                <p className="text-xs uppercase tracking-widest mb-3 text-background">
-                    Actual output — no editing
-                </p>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-primary-foreground mb-8 text-center">
+                    This is what your report looks like.
+                </h2>
                 <MacbookScroll src="/assets/report-preview.png" showGradient={false} />
             </motion.div>
         </section>

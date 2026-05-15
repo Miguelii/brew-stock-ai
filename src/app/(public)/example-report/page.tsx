@@ -48,7 +48,7 @@ export default function ExampleReport() {
                                 <Link href="/analysis" prefetch={false}>
                                     <Button size="lg" className="gap-2 px-4 h-10">
                                         Run your own analysis
-                                        <ArrowRight className="size-5" />
+                                        <ArrowRight className="size-4" />
                                     </Button>
                                 </Link>
                                 <Link href="/pricing" prefetch={false}>

@@ -1,29 +1,29 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import { MotionValue, motion, useMotionValue, useScroll, useTransform } from 'motion/react'
+import { type ReactNode, useRef, useState } from 'react'
+import { type MotionValue, motion, useMotionValue, useScroll, useTransform } from 'motion/react'
 import { cn } from '@/lib/utils'
 import {
     IconBrightnessDown,
     IconBrightnessUp,
+    IconCaretDownFilled,
+    IconCaretLeftFilled,
     IconCaretRightFilled,
     IconCaretUpFilled,
     IconChevronUp,
+    IconCommand,
     IconMicrophone,
     IconMoon,
     IconPlayerSkipForward,
     IconPlayerTrackNext,
     IconPlayerTrackPrev,
+    IconSearch,
     IconTable,
     IconVolume,
     IconVolume2,
     IconVolume3,
+    IconWorld,
 } from '@tabler/icons-react'
-import { IconSearch } from '@tabler/icons-react'
-import { IconWorld } from '@tabler/icons-react'
-import { IconCommand } from '@tabler/icons-react'
-import { IconCaretLeftFilled } from '@tabler/icons-react'
-import { IconCaretDownFilled } from '@tabler/icons-react'
 import Image from 'next/image'
 
 export const MacbookScroll = ({
@@ -45,13 +45,7 @@ export const MacbookScroll = ({
         offset: ['start start', 'end start'],
     })
 
-    const [isMobile, setIsMobile] = useState(false)
-
-    useEffect(() => {
-        if (window && window.innerWidth < 768) {
-            setIsMobile(true)
-        }
-    }, [])
+    const [isMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
 
     const finalScale = isMobile ? 1 : 1.5
 
@@ -100,17 +94,13 @@ export const MacbookScroll = ({
                     <div className="absolute inset-x-0 mx-auto h-4 w-[80%] bg-[#050505]" />
                 </div>
                 <div className="relative flex">
-                    <div className="mx-auto h-full w-[10%] overflow-hidden">
-                        <SpeakerGrid />
-                    </div>
+                    <div className="mx-auto h-full w-[10%] overflow-hidden">{SPEAKER_GRID}</div>
                     <div className="mx-auto h-full w-[80%]">
                         <Keypad />
                     </div>
-                    <div className="mx-auto h-full w-[10%] overflow-hidden">
-                        <SpeakerGrid />
-                    </div>
+                    <div className="mx-auto h-full w-[10%] overflow-hidden">{SPEAKER_GRID}</div>
                 </div>
-                <Trackpad />
+                {TRACKPAD}
                 <div className="absolute inset-x-0 bottom-0 mx-auto h-2 w-20 rounded-tl-3xl rounded-tr-3xl bg-gradient-to-t from-[#272729] to-[#050505]" />
                 {showGradient && (
                     <div className="absolute inset-x-0 bottom-0 z-50 h-40 w-full bg-gradient-to-t from-white via-white to-transparent dark:from-black dark:via-black"></div>
@@ -164,7 +154,7 @@ export const Lid = ({
                     transformStyle: 'preserve-3d',
                     transformOrigin: 'top',
                 }}
-                className="absolute inset-0 h-70 w-lg rounded-2xl bg-primary p-2"
+                className="absolute inset-0 h-80 w-lg rounded-2xl bg-primary p-2"
             >
                 <div className="absolute inset-0 rounded-lg bg-primary" />
                 <Image
@@ -181,16 +171,14 @@ export const Lid = ({
     )
 }
 
-export const Trackpad = () => {
-    return (
-        <div
-            className="mx-auto my-1 h-32 w-[40%] rounded-xl"
-            style={{
-                boxShadow: '0px 0px 1px 1px #00000020 inset',
-            }}
-        ></div>
-    )
-}
+const TRACKPAD = (
+    <div
+        className="mx-auto my-1 h-32 w-[40%] rounded-xl"
+        style={{ boxShadow: '0px 0px 1px 1px #00000020 inset' }}
+    />
+)
+
+export const Trackpad = () => TRACKPAD
 
 export const Keypad = () => {
     return (
@@ -551,7 +539,7 @@ export const KBtn = ({
     backlit = true,
 }: {
     className?: string
-    children?: React.ReactNode
+    children?: ReactNode
     childrenClassName?: string
     backlit?: boolean
 }) => {
@@ -585,17 +573,17 @@ export const KBtn = ({
     )
 }
 
-export const SpeakerGrid = () => {
-    return (
-        <div
-            className="mt-2 flex h-40 gap-[2px] px-[0.5px]"
-            style={{
-                backgroundImage: 'radial-gradient(circle, #08080A 0.5px, transparent 0.5px)',
-                backgroundSize: '3px 3px',
-            }}
-        ></div>
-    )
-}
+const SPEAKER_GRID = (
+    <div
+        className="mt-2 flex h-40 gap-[2px] px-[0.5px]"
+        style={{
+            backgroundImage: 'radial-gradient(circle, #08080A 0.5px, transparent 0.5px)',
+            backgroundSize: '3px 3px',
+        }}
+    />
+)
+
+export const SpeakerGrid = () => SPEAKER_GRID
 
 export const OptionKey = ({ className }: { className: string }) => {
     return (
@@ -635,10 +623,10 @@ const AceternityLogo = () => {
             className="h-3 w-3 text-white"
         >
             <path
-                d="M8 8.05571C8 8.05571 54.9009 18.1782 57.8687 30.062C60.8365 41.9458 9.05432 57.4696 9.05432 57.4696"
+                d="M8 8C8 8 54.9 18.2 57.9 30.1C60.8 41.9 9.1 57.5 9.1 57.5"
                 stroke="currentColor"
                 strokeWidth="15"
-                strokeMiterlimit="3.86874"
+                strokeMiterlimit="3.9"
                 strokeLinecap="round"
             />
         </svg>

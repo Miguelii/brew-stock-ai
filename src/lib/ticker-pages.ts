@@ -1,4 +1,4 @@
-// oxlint-disable max-lines
+/* eslint-disable max-lines -- static file intentional exception */
 import type { TickerPage } from '@/types/TickerPage'
 
 export const TICKER_PAGES: TickerPage[] = [

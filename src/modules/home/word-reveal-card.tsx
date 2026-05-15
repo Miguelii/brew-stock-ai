@@ -11,7 +11,7 @@ export function WordRevealCard({ words }: Props) {
                 <p className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-snug">
                     {words.map((word, i) => (
                         <motion.span
-                            key={`reveal-word-${word}`}
+                            key={`reveal-word-${word}-${i}`}
                             initial={{ opacity: 0.15 }}
                             whileInView={{ opacity: 1 }}
                             viewport={{ once: true, margin: '-10%' }}

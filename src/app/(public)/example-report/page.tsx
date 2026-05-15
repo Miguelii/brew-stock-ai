@@ -3,11 +3,12 @@ import Link from 'next/link'
 import * as motion from 'motion/react-client'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { MacbookScroll } from '@/components/ui/macbook-scroll'
+
 import { FinalCTA } from '@/modules/home/final-cta'
 import { WordRevealCard } from '@/modules/home/word-reveal-card'
 import { REPORT_REVEAL_WORDS } from '@/lib/revel-words'
 import { ReportMarketingCard } from '@/modules/home/report-markting-card'
+import { ReportMacbookScroll } from '@/modules/home/report-macbook-scroll'
 
 export const dynamic = 'force-static'
 
@@ -90,20 +91,7 @@ export default function ExampleReport() {
             </section>
 
             {/* MacBook — dark centerpiece */}
-            <section className="bg-primary py-16 lg:py-24 overflow-hidden">
-                <motion.div
-                    initial={{ opacity: 0, y: 32 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-10%' }}
-                    transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col items-center"
-                >
-                    <p className="text-xs uppercase tracking-widest mb-3 text-background">
-                        Actual output — no editing
-                    </p>
-                    <MacbookScroll src="/assets/report-preview.png" showGradient={false} />
-                </motion.div>
-            </section>
+            <ReportMacbookScroll />
 
             {/* What's inside — Bento Grid */}
             <ReportMarketingCard />

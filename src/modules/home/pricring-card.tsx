@@ -1,5 +1,12 @@
+'use client'
+
 import * as motion from 'motion/react-client'
-import { TokenPackages } from '@/modules/tokens/token-packages'
+import dynamic from 'next/dynamic'
+
+const TokenPackages = dynamic(
+    () => import('@/modules/tokens/token-packages').then((m) => ({ default: m.TokenPackages })),
+    { ssr: false }
+)
 
 export function PricingCard() {
     return (

@@ -67,8 +67,8 @@ export function TickerAbout({ ticker }: Props) {
 
                         <p className="text-primary-muted leading-relaxed text-sm border-t border-border pt-5">
                             StockBrewAI delivers institutional-grade AI analysis for {ticker.ticker}{' '}
-                            in under 60 seconds — financial health, competitive moat, risk exposure,
-                            and growth potential for less than a coffee.
+                            in under 120 seconds — financial health, competitive moat, risk
+                            exposure, and growth potential for less than a coffee.
                         </p>
                     </motion.div>
 

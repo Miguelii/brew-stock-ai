@@ -39,7 +39,7 @@ export default async function TokensPage({ searchParams }: Props) {
 
             <Separator />
 
-            <TokenPackages />
+            <TokenPackages showFree={false} showBuyButton={true} />
         </main>
     )
 }

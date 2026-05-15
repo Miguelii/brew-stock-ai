@@ -7,4 +7,5 @@ declare global {
         targetId: string,
         config?: Record<string, unknown>
     ) => void
+    var adsbygoogle: unknown[]
 }

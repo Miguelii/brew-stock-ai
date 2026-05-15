@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { AdUnit } from '@/components/ad-unit'
+import { AdBlock } from '@/components/ad-block'
 import * as motion from 'motion/react-client'
 import type { EducationHubArticle } from '@/types/EducationHubArticle'
 
@@ -34,7 +34,7 @@ export function EducationHubArticle({ article }: Props) {
                         </p>
                     </motion.div>
                     {i === 1 && (
-                        <AdUnit slot={AD_SLOT_IN_ARTICLE} format="horizontal" className="my-6" />
+                        <AdBlock slot={AD_SLOT_IN_ARTICLE} format="horizontal" className="my-6" />
                     )}
                 </Fragment>
             ))}

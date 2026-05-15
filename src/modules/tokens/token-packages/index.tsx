@@ -9,6 +9,16 @@ import { cn } from '@/lib/utils'
 
 const PACKAGES = [
     {
+        id: 'free' as const,
+        label: 'Trial',
+        credits: 2,
+        price: 'Free',
+        pricePerToken: '2 analysis token included',
+        description: 'Your first analysis, on us.',
+        icon: TrophyIcon,
+        highlight: false,
+    },
+    {
         id: 'starter' as const,
         label: 'Starter',
         credits: 5,
@@ -40,7 +50,13 @@ const PACKAGES = [
     },
 ]
 
-export function TokenPackages() {
+type Props = {
+    showFree?: boolean
+    showBuyButton?: boolean
+    className?: string
+}
+
+export function TokenPackages({ showFree = false, showBuyButton = true, className }: Props) {
     const checkout = trpc.createCheckoutSession.useMutation({
         onSuccess: (url) => {
             window.location.href = url
@@ -51,10 +67,17 @@ export function TokenPackages() {
     })
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        <div
+            className={cn(
+                'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-4',
+                className
+            )}
+        >
             {PACKAGES.map((pkg) => {
                 const Icon = pkg.icon
                 const isLoading = checkout.isPending && checkout.variables?.packageId === pkg.id
+
+                if (!showFree && pkg.id === 'free') return null
 
                 return (
                     <Card
@@ -111,14 +134,20 @@ export function TokenPackages() {
 
                             <p className="text-sm text-muted-foreground">{pkg.description}</p>
 
-                            <Button
-                                className="mt-auto w-full"
-                                variant={pkg.highlight ? 'default' : 'outline'}
-                                disabled={checkout.isPending}
-                                onClick={() => checkout.mutate({ packageId: pkg.id })}
-                            >
-                                {isLoading ? 'Creating checkout...' : 'Buy Now'}
-                            </Button>
+                            {showBuyButton && (
+                                <Button
+                                    className="mt-auto w-full"
+                                    variant={pkg.highlight ? 'default' : 'outline'}
+                                    disabled={checkout.isPending}
+                                    onClick={() =>
+                                        checkout.mutate({
+                                            packageId: pkg.id as 'starter' | 'pro' | 'expert',
+                                        })
+                                    }
+                                >
+                                    {isLoading ? 'Creating checkout...' : 'Buy Now'}
+                                </Button>
+                            )}
                         </CardContent>
                     </Card>
                 )

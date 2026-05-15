@@ -5,7 +5,7 @@ import { getCachedSession } from '@/services/auth/get-cached-session'
 import { TICKER_PAGES, TICKER_PAGE_MAP } from '@/lib/ticker-pages'
 import { AnalysisHero } from '@/components/analysis-hero'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
-import { AdUnit } from '@/components/ad-unit'
+import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
 import { TickerAbout } from '@/components/ticker-about'
 
@@ -109,7 +109,7 @@ export default async function TickerPage({ params }: Props) {
                     </AnalysisHero>
                 </section>
 
-                <AdUnit
+                <AdBlock
                     slot={AD_SLOT_TICKER}
                     format="horizontal"
                     className="hidden md:block max-w-7xl mx-auto px-6 mt-8"

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, Clock } from 'lucide-react'
 import { EDUCATION_HUB_ARTICLE_MAP, EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
 import { BreadcrumbSchema } from '@/components/structured-data'
-import { AdUnit } from '@/components/ad-unit'
+import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
 import * as motion from 'motion/react-client'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
@@ -94,7 +94,7 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
 
                         <EducationHubArticle article={article} />
 
-                        <AdUnit slot={AD_SLOT_BOTTOM} format="rectangle" className="mt-10" />
+                        <AdBlock slot={AD_SLOT_BOTTOM} format="rectangle" className="mt-10" />
 
                         <StartAnalysisPreviewCard />
                     </motion.div>

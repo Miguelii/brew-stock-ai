@@ -40,6 +40,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'weekly',
             priority: 0.9,
         },
+        {
+            url: `${siteUrl}/pricing`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        },
+        {
+            url: `${siteUrl}/example-report`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        },
         ...tickerRoutes,
         ...educationHubRoutes,
         {

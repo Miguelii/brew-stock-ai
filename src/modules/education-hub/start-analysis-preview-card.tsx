@@ -9,7 +9,7 @@ export function StartAnalysisPreviewCard() {
                 <p className="text-primary-muted text-sm leading-relaxed mb-5">
                     Apply what you have learned. Run an AI-powered stock analysis and get a full
                     breakdown — financials, competitive positioning, risk, and growth potential — in
-                    under 60 seconds.
+                    under 120 seconds.
                 </p>
                 <Link
                     href="/analysis"

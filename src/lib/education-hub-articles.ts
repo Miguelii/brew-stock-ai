@@ -100,7 +100,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             },
             {
                 heading: 'Moat Analysis in StockBrewAI',
-                body: "StockBrewAI's Competitive Advantage analysis evaluates the five moat types for any stock you analyse. It examines pricing power trends, market share dynamics, switching cost indicators, and network effect strength to give you a structured view of how defensible a company's profits really are — in under 60 seconds.",
+                body: "StockBrewAI's Competitive Advantage analysis evaluates the five moat types for any stock you analyse. It examines pricing power trends, market share dynamics, switching cost indicators, and network effect strength to give you a structured view of how defensible a company's profits really are — in under 120 seconds.",
             },
         ],
     },
@@ -137,7 +137,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             },
             {
                 heading: 'Risk Analysis in StockBrewAI',
-                body: "StockBrewAI's Risk Analysis report evaluates all four risk dimensions — market, business, financial, and regulatory — for any stock you analyse. It identifies the specific vulnerabilities most likely to affect the company's performance and flags debt levels, covenant risks, and sector-specific threats. This gives you a complete risk picture in under 60 seconds, so you can decide whether the return potential justifies the exposure.",
+                body: "StockBrewAI's Risk Analysis report evaluates all four risk dimensions — market, business, financial, and regulatory — for any stock you analyse. It identifies the specific vulnerabilities most likely to affect the company's performance and flags debt levels, covenant risks, and sector-specific threats. This gives you a complete risk picture in under 120 seconds, so you can decide whether the return potential justifies the exposure.",
             },
         ],
     },

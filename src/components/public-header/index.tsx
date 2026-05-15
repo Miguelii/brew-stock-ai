@@ -7,7 +7,7 @@ export function PublicHeader() {
     return (
         <motion.header
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="sticky top-0 z-50 transition-all duration-300 border-b border-border bg-card backdrop-blur-md"
+            className="sticky top-0 z-60 transition-all duration-300 border-b border-border bg-card backdrop-blur-md"
         >
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <motion.div

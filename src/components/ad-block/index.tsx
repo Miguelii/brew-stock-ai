@@ -3,21 +3,13 @@
 import { useEffect } from 'react'
 import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
 
-type AdFormat = 'auto' | 'rectangle' | 'horizontal'
-
 type Props = {
     slot: string
-    format?: AdFormat
+    format?: 'auto' | 'rectangle' | 'horizontal'
     className?: string
 }
 
-declare global {
-    interface Window {
-        adsbygoogle: unknown[]
-    }
-}
-
-export function AdUnit({ slot, format = 'auto', className }: Props) {
+export function AdBlock({ slot, format = 'auto', className }: Props) {
     return null
 
     useEffect(() => {

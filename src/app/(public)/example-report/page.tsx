@@ -45,14 +45,18 @@ export default function ExampleReport() {
                                 less than a coffee.
                             </p>
                             <div className="mt-8 flex flex-wrap gap-3">
-                                <Link href="/analysis" prefetch={false}>
-                                    <Button size="lg" className="gap-2 px-4 h-10">
+                                <Link href="/analysis" prefetch={false} className="contents">
+                                    <Button size="lg" className="gap-2 px-4 h-10 w-full sm:w-fit">
                                         Run your own analysis
                                         <ArrowRight className="size-4" />
                                     </Button>
                                 </Link>
-                                <Link href="/pricing" prefetch={false}>
-                                    <Button size="lg" variant="outline" className="px-4 h-10">
+                                <Link href="/pricing" prefetch={false} className="contents">
+                                    <Button
+                                        size="lg"
+                                        variant="outline"
+                                        className="px-4 h-10 w-full sm:w-fit"
+                                    >
                                         See pricing
                                     </Button>
                                 </Link>

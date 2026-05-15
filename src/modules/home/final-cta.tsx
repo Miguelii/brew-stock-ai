@@ -24,10 +24,10 @@ export function FinalCTA() {
                             No credit card required.
                         </p>
                     </div>
-                    <Link href="/analysis" prefetch={false} className="shrink-0">
+                    <Link href="/analysis" prefetch={false} className="contents">
                         <Button
                             size="lg"
-                            className="gap-2 text-base px-8 h-12 bg-background text-primary hover:bg-background/90 hover:text-primary"
+                            className="gap-2 text-base px-8 h-12 bg-background text-primary hover:bg-background/90 hover:text-primary w-full sm:w-fit"
                         >
                             Start free analysis
                             <ArrowRightIcon className="size-4" />

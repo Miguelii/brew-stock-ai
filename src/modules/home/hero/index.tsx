@@ -28,15 +28,19 @@ export function Hero() {
                     Institutional-grade analysis covering financial metrics, market sentiment, and
                     technical indicators — for less than a coffee.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row items-center gap-3">
-                    <Link href="/analysis" prefetch={false}>
-                        <Button size="lg" className="gap-2 px-4 h-10">
+                <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-fit">
+                    <Link href="/analysis" prefetch={false} className="contents">
+                        <Button size="lg" className="gap-2 px-4 h-10 w-full sm:w-fit">
                             Start Free Analysis
                             <ArrowRight className="size-4" />
                         </Button>
                     </Link>
-                    <Link href="/example-report" prefetch={false}>
-                        <Button size="lg" variant="outline" className="gap-2 px-4 h-10">
+                    <Link href="/example-report" prefetch={false} className="contents">
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="gap-2 px-4 h-10 w-full sm:w-fit"
+                        >
                             <FileText className="size-4" />
                             See a Sample Report
                         </Button>

@@ -5,12 +5,10 @@ import '@/styles/globals.css'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
 import { SpeedInsights as VercelSpeedInsights } from '@vercel/speed-insights/next'
 import { Footer } from '@/components/footer'
-import { Header } from '@/components/header'
 import { Providers } from '@/providers'
 import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
-import { PushNotificationPrompt } from '@/modules/push-notifications'
 import { CookiePrompt } from '@/modules/cookie-prompt'
 import { GtmScript } from '@/components/gtm-script'
 import {
@@ -18,7 +16,6 @@ import {
     WebApplicationSchema,
     WebSiteSchema,
 } from '@/components/structured-data'
-import { getCachedSession } from '@/services/auth/get-cached-session'
 import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
 
 const geistSans = Geist({
@@ -96,9 +93,7 @@ export const metadata: Metadata = {
 
 type Props = LayoutProps<'/'>
 
-export default async function RootLayout({ children }: Props) {
-    const user = await getCachedSession()
-
+export default function RootLayout({ children }: Props) {
     return (
         <html
             data-scroll-behavior="smooth"
@@ -126,8 +121,6 @@ export default async function RootLayout({ children }: Props) {
                     <WebApplicationSchema />
                     <OrganizationSchema />
                     <Toaster />
-                    <Header />
-                    {user && <PushNotificationPrompt />}
                     <CookiePrompt />
                     <div className="flex-1">{children}</div>
                     <Footer />

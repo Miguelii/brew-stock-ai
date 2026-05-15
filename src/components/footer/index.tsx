@@ -7,13 +7,22 @@ export function Footer() {
                 <p className="text-xs text-muted-foreground">
                     © {new Date().getFullYear()} StockBrewAI. All rights reserved.
                 </p>
-                <Link
-                    href="/privacy"
-                    prefetch={false}
-                    className="underline text-xs text-muted-foreground hover:text-foreground transition-colors"
-                >
-                    Privacy Notice
-                </Link>
+                <div className="flex items-center gap-5">
+                    <Link
+                        href="/education-hub"
+                        prefetch={false}
+                        className="underline text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                        Education Hub
+                    </Link>
+                    <Link
+                        href="/privacy"
+                        prefetch={false}
+                        className="underline text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                        Privacy Notice
+                    </Link>
+                </div>
             </div>
         </footer>
     )

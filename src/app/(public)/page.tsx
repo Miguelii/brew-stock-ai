@@ -5,6 +5,8 @@ import * as motion from 'motion/react-client'
 import { cn } from '@/lib/utils'
 import { Hero } from '@/components/hero'
 
+export const dynamic = 'force-static'
+
 const features = [
     {
         icon: Brain,
@@ -187,8 +189,6 @@ export default function Home() {
                     </motion.div>
                 </div>
             </section>
-
-            {/* CTA — High Contrast Dark */}
         </main>
     )
 }

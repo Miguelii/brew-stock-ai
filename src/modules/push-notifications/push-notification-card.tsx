@@ -19,7 +19,7 @@ function urlBase64ToUint8Array(base64String: string) {
     return outputArray
 }
 
-export function PushNotificationPrompt() {
+export function PushNotificationCard() {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 

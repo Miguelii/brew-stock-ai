@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import type { TickerPage } from '@/types/TickerPage'
 
 export const TICKER_PAGES: TickerPage[] = [

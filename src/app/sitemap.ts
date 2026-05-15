@@ -1,6 +1,7 @@
 import { ClientEnv } from '@/env/client'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 import { TICKER_PAGES } from '@/lib/ticker-pages'
+import { EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
 import type { MetadataRoute } from 'next'
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
@@ -10,7 +11,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: `${siteUrl}/analysis/${t.slug}`,
         changeFrequency: 'monthly',
         lastModified: new Date(),
-        priority: 0.7,
+        priority: 0.8,
+    }))
+
+    const educationHubRoutes: MetadataRoute.Sitemap = EDUCATION_HUB_ARTICLES.map((a) => ({
+        url: `${siteUrl}/education-hub/${a.slug}`,
+        changeFrequency: 'monthly',
+        lastModified: new Date(a.publishedAt),
+        priority: 0.8,
     }))
 
     return [
@@ -26,7 +34,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'weekly',
             priority: 1,
         },
+        {
+            url: `${siteUrl}/education-hub`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.9,
+        },
         ...tickerRoutes,
+        ...educationHubRoutes,
         {
             url: `${siteUrl}${AUTH_PAGE_PATH}`,
             changeFrequency: 'monthly',

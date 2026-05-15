@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 const stats = [
     { value: '8', label: 'Report sections' },
     { value: '< 2min', label: 'Generation time' },
-    { value: '€0', label: 'First report' },
+    { value: 'Free', label: 'First report' },
 ] as const
 
 export default function ExampleReport() {

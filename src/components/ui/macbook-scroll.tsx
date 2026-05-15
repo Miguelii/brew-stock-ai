@@ -163,7 +163,6 @@ export const Lid = ({
                     className="absolute inset-0 h-full w-full rounded-lg object-cover aspect-square object-center"
                     width={600}
                     height={600}
-                    quality={100}
                     unoptimized
                 />
             </motion.div>

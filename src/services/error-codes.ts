@@ -103,6 +103,8 @@ export enum ErrorCode {
     PUSH_SEND_UNAUTH = 'y6bp3j8t',
     PUSH_SEND_USER_ERR = 'f9wk5c2n',
     PUSH_SEND_TO_USER_ERR = 'd3hm7v4x',
+    PUSH_VAPID_SETUP = 'r5cj2n8w',
+    PUSH_SEND_TO_USER_SB_CLIENT = 'k7mh4p9f',
 
     // Consent
     CONSENT_COOKIE_CREATE = 't1yj6r9b',

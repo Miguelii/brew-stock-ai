@@ -71,14 +71,14 @@ export const processReport = Effect.fn('processReport')(function* (
     logger.log('Report completed', { reportId: typedReport.id })
 
     // Non-fatal — a failed push notification must never cause the task to retry
-    yield* sendPushNotificationToUser(
+    /* yield* sendPushNotificationToUser(
         typedReport.user_id,
         `${typedReport.stock} analysis ready`,
         'Your report has been generated. Tap to view it.'
     ).pipe(
         Effect.sandbox,
         Effect.orElse(() => Effect.void)
-    )
+    ) */
 
     return { reportId: typedReport.id }
 })

@@ -98,9 +98,17 @@ export const sendPushNotificationToUser = Effect.fn('sendPushNotificationToUser'
     title: string,
     body: string
 ) {
-    setupVapid()
+    yield* Effect.try({
+        try: () => setupVapid(),
+        catch: (cause) =>
+            new SendPushNotificationError({ cause, error_hash: ErrorCode.PUSH_VAPID_SETUP }),
+    })
 
-    const supabase = createSbAdminClient()
+    const supabase = yield* Effect.try({
+        try: () => createSbAdminClient(),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.PUSH_SEND_TO_USER_SB_CLIENT }),
+    })
 
     const { data: rows, error } = yield* fetchSubscriptions(supabase, userId)
 

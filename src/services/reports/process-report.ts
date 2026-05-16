@@ -75,7 +75,10 @@ export const processReport = Effect.fn('processReport')(function* (
         typedReport.user_id,
         `${typedReport.stock} analysis ready`,
         'Your report has been generated. Tap to view it.'
-    ).pipe(Effect.orElse(() => Effect.void))
+    ).pipe(
+        Effect.sandbox,
+        Effect.orElse(() => Effect.void)
+    )
 
     return { reportId: typedReport.id }
 })

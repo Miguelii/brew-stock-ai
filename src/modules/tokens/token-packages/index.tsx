@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { CoinsIcon, ZapIcon, StarIcon, TrophyIcon, Loader2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { TokenPromo } from './token-promo'
+import { TokenPromo } from '@/modules/tokens/token-packages/token-promo'
 import { useTransition } from 'react'
 
 // Set to false to restore original pricing

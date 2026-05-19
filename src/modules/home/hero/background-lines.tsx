@@ -8,7 +8,7 @@ type Props = PropsWithChildren<{
     }
 }>
 
-const LazySVG = lazy(() => import('./svg').then((m) => ({ default: m.SVG })))
+const LazySVG = lazy(() => import('@/modules/home/hero/svg').then((m) => ({ default: m.SVG })))
 
 export const BackgroundLines = ({ children, className, svgOptions }: Props) => {
     return (

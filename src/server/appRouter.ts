@@ -7,6 +7,8 @@ import { Logger } from '@/lib/logger'
 import { publicProcedure, router } from '@/server/trpc'
 import { sbLogin } from '@/services/auth/sb-login'
 import { sbLogout } from '@/services/auth/sb-logout'
+import { sbSendOtp } from '@/services/auth/sb-send-otp'
+import { sbVerifyOtp } from '@/services/auth/sb-verify-otp'
 import { createReport } from '@/services/reports/create-report'
 import { getReports } from '@/services/reports/get-reports'
 import { getReportById } from '@/services/reports/get-report-by-id'
@@ -19,7 +21,7 @@ import { getInvoices } from '@/services/tokens/get-invoices'
 import { createCheckoutSession } from '@/services/tokens/create-checkout-session'
 import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
 import { createConsentCookie } from '@/services/consent/create-consent-cookie'
-import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
+import { MAX_STOCK_INPUT_LENGHT, SB_OTP_TOKEN_LENGTH } from '@/lib/constants'
 
 async function runEffect<A, E extends { _tag: string; error_hash: string }>(
     effect: Effect.Effect<A, E>,
@@ -75,6 +77,28 @@ export const appRouter = router({
                 Match.value(error).pipe(
                     Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('SignInWithPasswordError', () => 'UNAUTHORIZED' as const),
+                    Match.exhaustive
+                )
+            )
+        ),
+
+    sendOtp: publicProcedure.input(z.object({ email: z.email() })).mutation(({ input }) =>
+        runEffect(sbSendOtp(input.email), 'sbSendOtp', (error) =>
+            Match.value(error).pipe(
+                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('SendOtpError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.exhaustive
+            )
+        )
+    ),
+
+    verifyOtp: publicProcedure
+        .input(z.object({ email: z.email(), token: z.string().length(SB_OTP_TOKEN_LENGTH) }))
+        .mutation(({ input }) =>
+            runEffect(sbVerifyOtp(input.email, input.token), 'sbVerifyOtp', (error) =>
+                Match.value(error).pipe(
+                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('VerifyOtpError', () => 'UNAUTHORIZED' as const),
                     Match.exhaustive
                 )
             )

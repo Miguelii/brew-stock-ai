@@ -1,37 +1,77 @@
 'use client'
 
+import { useState, useTransition } from 'react'
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
-import { useAuthForm, type FormValues } from '@/modules/auth/auth-card/use-auth-form'
-import { Form } from '@/components/ui/form'
-import { useRouter } from 'next/navigation'
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import { Separator } from '@/components/ui/separator'
+import { useEmailForm, type EmailFormValues } from '@/modules/auth/auth-card/use-email-form'
 import { toast } from 'sonner'
 import { AuthErrorHandler } from '@/modules/auth/auth-card/auth-error-handler'
-import { SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
+import { ENABLE_OTP_LOGIN, SB_OTP_TOKEN_LENGTH, SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
+import { cn } from '@/lib/utils'
+import { Loader2Icon } from 'lucide-react'
 
 type Props = {
     returnTo?: string
 }
 
-export function AuthCard({ returnTo }: Props) {
-    const login = trpc.signIn.useMutation()
-    const form = useAuthForm()
-    const router = useRouter()
+type Step = 'email' | 'otp'
 
-    const onSubmit = async (values: FormValues) => {
-        try {
-            await login.mutateAsync(values)
-            router.refresh()
-        } catch {
-            toast.error('Invalid credentials. Please try again.')
-        }
-    }
+export function AuthCard({ returnTo }: Props) {
+    const [step, setStep] = useState<Step>('email')
+    const [email, setEmail] = useState('')
+    const [otp, setOtp] = useState('')
+
+    const [pending, startTransition] = useTransition()
+
+    const emailForm = useEmailForm()
+    const sendOtp = trpc.sendOtp.useMutation()
+    const verifyOtp = trpc.verifyOtp.useMutation()
 
     const onOAuthClick = () => {
         const url = returnTo
             ? `${SIGN_IN_GOOGLE_API_PATH}?returnTo=${encodeURIComponent(returnTo)}`
             : SIGN_IN_GOOGLE_API_PATH
         window.location.href = url
+    }
+
+    const onEmailSubmit = async (values: EmailFormValues) => {
+        startTransition(async () => {
+            try {
+                await sendOtp.mutateAsync({ email: values.email })
+                setEmail(values.email)
+                setStep('otp')
+            } catch {
+                toast.error('Failed to send code. Please try again.')
+            }
+        })
+    }
+
+    const onOtpConfirm = async () => {
+        startTransition(async () => {
+            try {
+                await verifyOtp.mutateAsync({ email, token: otp })
+                window.location.href = returnTo ?? '/analysis'
+            } catch {
+                toast.error('Invalid code. Please try again.')
+                setOtp('')
+            }
+        })
+    }
+
+    const onBackToEmail = () => {
+        setStep('email')
+        setOtp('')
     }
 
     return (
@@ -42,13 +82,13 @@ export function AuthCard({ returnTo }: Props) {
                 <p className="mt-1.5 text-sm text-muted-foreground">Sign in to your account</p>
             </div>
 
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+            {step === 'email' ? (
+                <div className="flex flex-col gap-5">
                     <Button
                         variant="outline"
                         type="button"
                         className="w-full gap-2 cursor-pointer"
-                        onClick={() => onOAuthClick()}
+                        onClick={onOAuthClick}
                     >
                         <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                             <path
@@ -71,62 +111,101 @@ export function AuthCard({ returnTo }: Props) {
                         Continue with Google
                     </Button>
 
-                    {/* <div className="flex items-center gap-3">
-                        <Separator className="flex-1" />
-                        <span className="text-xs text-primary-muted">OR</span>
-                        <Separator className="flex-1" />
-                    </div> */}
+                    {ENABLE_OTP_LOGIN && (
+                        <>
+                            <div className="flex items-center gap-3">
+                                <Separator className="flex-1" />
+                                <span className="text-xs text-muted-foreground">OR</span>
+                                <Separator className="flex-1" />
+                            </div>
 
-                    {/* <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem className="gap-1.5">
-                                <FormLabel className="text-muted-foreground capitalize">
-                                    Email
-                                </FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="email"
-                                        placeholder="name@company.com"
-                                        {...field}
-                                        className="h-9 rounded-none"
+                            <Form {...emailForm}>
+                                <form
+                                    onSubmit={emailForm.handleSubmit(onEmailSubmit)}
+                                    className="flex flex-col gap-4"
+                                >
+                                    <FormField
+                                        control={emailForm.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem className="gap-1.5">
+                                                <FormLabel className="text-muted-foreground">
+                                                    Email
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="email"
+                                                        placeholder="name@company.com"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    /> */}
+                                    <Button
+                                        type="submit"
+                                        disabled={sendOtp.isPending}
+                                        className="w-full cursor-pointer"
+                                    >
+                                        {sendOtp.isPending ? (
+                                            <Loader2Icon className="animate-spin w-3 h-3" />
+                                        ) : null}
+                                        Sign in with email
+                                    </Button>
+                                </form>
+                            </Form>
+                        </>
+                    )}
+                </div>
+            ) : (
+                <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-1.5">
+                        <p className="text-sm text-muted-foreground">
+                            We sent a {SB_OTP_TOKEN_LENGTH}-digit code to{' '}
+                            <span className="text-primary font-medium">{email}</span>
+                        </p>
+                    </div>
 
-                    {/* <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                            <FormItem className="gap-1.5">
-                                <FormLabel className="text-muted-foreground capitalize">
-                                    Password
-                                </FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="••••••••"
-                                        type="password"
-                                        {...field}
-                                        className="h-9 rounded-none"
-                                    />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    /> */}
+                    <div className="flex flex-col items-center gap-4">
+                        <InputOTP
+                            maxLength={SB_OTP_TOKEN_LENGTH}
+                            value={otp}
+                            onChange={setOtp}
+                            disabled={verifyOtp.isPending}
+                        >
+                            <InputOTPGroup>
+                                {Array.from({ length: SB_OTP_TOKEN_LENGTH }, (_, i) => (
+                                    <InputOTPSlot key={i} index={i} />
+                                ))}
+                            </InputOTPGroup>
+                        </InputOTP>
+                    </div>
 
-                    {/* <Button
-                        type="submit"
-                        disabled={login.isPending}
-                        className="w-full h-11 mt-1 bg-accent-blue hover:bg-accent-blue-dark text-background font-medium rounded-none cursor-pointer"
+                    <Button
+                        type="button"
+                        disabled={
+                            otp.length !== SB_OTP_TOKEN_LENGTH || verifyOtp.isPending || pending
+                        }
+                        className="w-full cursor-pointer! disabled:opacity-80 disabled:cursor-not-allowed!"
+                        onClick={onOtpConfirm}
                     >
-                        {login.isPending ? <Loader2Icon className="animate-spin" /> : null}
-                        Sign in
-                    </Button> */}
-                </form>
-            </Form>
+                        {pending || verifyOtp.isPending ? (
+                            <Loader2Icon className="animate-spin w-3 h-3" />
+                        ) : null}
+                        Confirm
+                    </Button>
+
+                    <Button
+                        variant="link"
+                        type="button"
+                        className={cn('w-full cursor-pointer text-muted-foreground')}
+                        onClick={onBackToEmail}
+                    >
+                        Use a different email
+                    </Button>
+                </div>
+            )}
         </div>
     )
 }

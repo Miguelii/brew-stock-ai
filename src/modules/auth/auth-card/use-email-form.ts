@@ -4,13 +4,12 @@ import { z } from 'zod'
 
 const formSchema = z.object({
     email: z.email('Invalid email address'),
-    password: z.string().min(1, 'Required'),
 })
 
-export type FormValues = z.infer<typeof formSchema>
+export type EmailFormValues = z.infer<typeof formSchema>
 
-export const useAuthForm = () =>
-    useForm<FormValues>({
+export const useEmailForm = () =>
+    useForm<EmailFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: { email: '', password: '' },
+        defaultValues: { email: '' },
     })

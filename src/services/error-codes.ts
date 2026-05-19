@@ -108,4 +108,12 @@ export enum ErrorCode {
 
     // Consent
     CONSENT_COOKIE_CREATE = 't1yj6r9b',
+
+    // Auth - OTP
+    AUTH_OTP_SEND_SB_CLIENT = 'c2qx8n5f',
+    AUTH_OTP_SEND_REQUEST = 'p7mv3h1k',
+    AUTH_OTP_SEND_ERR = 'j4yt6b9w',
+    AUTH_OTP_VERIFY_SB_CLIENT = 'r9kf2t7p',
+    AUTH_OTP_VERIFY_REQUEST = 'g5hn8m3x',
+    AUTH_OTP_VERIFY_ERR = 'v1wc4j6d',
 }

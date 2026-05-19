@@ -9,6 +9,13 @@ begin
   insert into public.user_credits (user_id, credits)
   values (new.id, 2)
   on conflict (user_id) do nothing;
+
+  if found then
+    raise warning 'handle_new_user_credits: inserted 2 credits for user_id=%', new.id;
+  else
+    raise warning 'handle_new_user_credits: conflict for user_id=%, no credits inserted', new.id;
+  end if;
+
   return new;
 end;
 $$;

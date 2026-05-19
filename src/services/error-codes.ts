@@ -106,6 +106,11 @@ export enum ErrorCode {
     PUSH_VAPID_SETUP = 'r5cj2n8w',
     PUSH_SEND_TO_USER_SB_CLIENT = 'k7mh4p9f',
 
+    // Feedback
+    FEEDBACK_SUBMIT_SB_CLIENT = 'n2qh7w5f',
+    FEEDBACK_SUBMIT_INSERT = 'e8kv3m1p',
+    FEEDBACK_SUBMIT_INSERT_ERR = 'z6xt9j4c',
+
     // Consent
     CONSENT_COOKIE_CREATE = 't1yj6r9b',
 

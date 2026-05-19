@@ -21,7 +21,14 @@ import { getInvoices } from '@/services/tokens/get-invoices'
 import { createCheckoutSession } from '@/services/tokens/create-checkout-session'
 import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
 import { createConsentCookie } from '@/services/consent/create-consent-cookie'
-import { MAX_STOCK_INPUT_LENGHT, SB_OTP_TOKEN_LENGTH } from '@/lib/constants'
+import { submitFeedback } from '@/services/feedback/submit-feedback'
+import {
+    CONTACT_FORM_MAX_MESSAGE_LENGTH,
+    CONTACT_FORM_MAX_NAME_LENGTH,
+    CONTACT_FORM_MIN_MESSAGE_LENGTH,
+    MAX_STOCK_INPUT_LENGHT,
+    SB_OTP_TOKEN_LENGTH,
+} from '@/lib/constants'
 
 async function runEffect<A, E extends { _tag: string; error_hash: string }>(
     effect: Effect.Effect<A, E>,
@@ -251,6 +258,30 @@ export const appRouter = router({
                     )
             )
         ),
+    submitFeedback: publicProcedure
+        .input(
+            z.object({
+                name: z.string().min(1).max(CONTACT_FORM_MAX_NAME_LENGTH),
+                email: z.email(),
+                message: z
+                    .string()
+                    .min(CONTACT_FORM_MIN_MESSAGE_LENGTH)
+                    .max(CONTACT_FORM_MAX_MESSAGE_LENGTH),
+            })
+        )
+        .mutation(({ input }) =>
+            runEffect(
+                submitFeedback(input.name, input.email, input.message),
+                'submitFeedback',
+                (error) =>
+                    Match.value(error).pipe(
+                        Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                        Match.tag('SubmitFeedbackError', () => 'INTERNAL_SERVER_ERROR' as const),
+                        Match.exhaustive
+                    )
+            )
+        ),
+
     createConsentCookie: publicProcedure
         .input(z.object({ allowAnalytics: z.boolean() }))
         .mutation(({ input }) =>

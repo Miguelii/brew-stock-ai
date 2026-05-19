@@ -84,3 +84,9 @@ export const GOOGLE_ADSENSE_ACCOUNT_ID = 'ca-pub-1939312153475109' as const
 export const SB_OTP_TOKEN_LENGTH = 6
 
 export const ENABLE_OTP_LOGIN = true
+
+export const CONTACT_FORM_MAX_MESSAGE_LENGTH = 250
+
+export const CONTACT_FORM_MIN_MESSAGE_LENGTH = 5
+
+export const CONTACT_FORM_MAX_NAME_LENGTH = 100

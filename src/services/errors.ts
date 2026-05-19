@@ -72,6 +72,11 @@ export class CreateCheckoutSessionError extends Data.TaggedError(
 )<ServiceErrorFields> {}
 export class GetInvoicesError extends Data.TaggedError('GetInvoicesError')<ServiceErrorFields> {}
 
+// Feedback
+export class SubmitFeedbackError extends Data.TaggedError(
+    'SubmitFeedbackError'
+)<ServiceErrorFields> {}
+
 // Consent
 export class CreateConsentCookieError extends Data.TaggedError(
     'CreateConsentCookieError'

@@ -182,7 +182,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                 </Form>
                 <p className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
                     <ClockIcon className="size-3 shrink-0" />
-                    AI analysis runs in the background and typically takes 30s - 1 min.
+                    AI analysis runs in the background and typically takes 1-2 min.
                 </p>
             </CardContent>
         </Card>

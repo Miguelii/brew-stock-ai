@@ -13,7 +13,7 @@ export const sbSendOtp = Effect.fn('sbSendOtp')(function* (email: string) {
     })
 
     const { error } = yield* Effect.tryPromise({
-        try: () => supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } }),
+        try: () => supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } }),
         catch: (cause) => new SendOtpError({ cause, error_hash: ErrorCode.AUTH_OTP_SEND_REQUEST }),
     })
 

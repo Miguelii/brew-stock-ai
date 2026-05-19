@@ -165,6 +165,9 @@ export function AuthCard({ returnTo }: Props) {
                             We sent a {SB_OTP_TOKEN_LENGTH}-digit code to{' '}
                             <span className="text-primary font-medium">{email}</span>
                         </p>
+                        <p className="text-sm text-muted-foreground">
+                            Can&apos;t find it? Check your spam folder.
+                        </p>
                     </div>
 
                     <div className="flex flex-col items-center gap-4">

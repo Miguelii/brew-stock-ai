@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
+import Link from 'next/link'
 
 export const dynamic = 'force-static'
 
@@ -105,13 +106,14 @@ export default function PrivacyPage() {
 
                 <Section title="7. Contact">
                     <p>
-                        For privacy-related questions or requests, contact us at{' '}
-                        <a
-                            href="mailto:contact@brewstockai.com"
+                        For privacy-related questions or requests, contact us using the{' '}
+                        <Link
+                            href="/contact"
+                            prefetch={false}
                             className="text-accent-blue underline underline-offset-2"
                         >
-                            contact@brewstockai.com
-                        </a>
+                            contact form
+                        </Link>
                         .
                     </p>
                 </Section>

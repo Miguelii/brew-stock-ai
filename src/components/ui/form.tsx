@@ -5,6 +5,7 @@ import {
     Controller,
     FormProvider,
     useFormContext,
+    useFormState,
     type ControllerProps,
     type FieldPath,
     type FieldValues,
@@ -73,8 +74,11 @@ function FormControl({ ...props }: React.ComponentProps<'div'>) {
 }
 
 function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
-    const { error } = useFormField()
-    const message = error?.message
+    const { name } = React.useContext(FormFieldContext)
+    const { control } = useFormContext()
+    const { errors } = useFormState({ control, name })
+    const message = (errors[name as keyof typeof errors] as { message?: string } | undefined)
+        ?.message
 
     if (!message) return null
 

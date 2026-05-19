@@ -16,7 +16,10 @@ const footerLinks = [
     },
     {
         label: 'Legal',
-        links: [{ label: 'Privacy Notice', href: '/privacy' }],
+        links: [
+            { label: 'Privacy Notice', href: '/privacy' },
+            { label: 'Contact Us', href: '/contact' },
+        ],
     },
 ] as const
 

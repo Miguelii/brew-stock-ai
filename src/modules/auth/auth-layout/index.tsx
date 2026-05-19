@@ -5,7 +5,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
     return (
         <div className="fixed inset-0 z-9999 flex">
             <div className="flex flex-1 flex-col bg-background px-12 py-8">
-                <Logo />
+                <Logo linkToHome={false} />
                 <div className="flex flex-1 items-center justify-center">{children}</div>
             </div>
 

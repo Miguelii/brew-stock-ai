@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '@/styles/globals.css'
@@ -31,6 +31,13 @@ const geistMono = Geist_Mono({
 })
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+
+export const viewport: Viewport = {
+    colorScheme: 'light',
+    width: 'device-width',
+    initialScale: 1,
+    height: 'device-height',
+}
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),

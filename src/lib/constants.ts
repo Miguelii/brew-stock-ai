@@ -80,3 +80,7 @@ export const GTM_ID_WITHOUT_G: GTMWithoutPrefix<typeof GTM_ID> = GTM_ID.replace(
 export const CONSENT_COOKIE = 'brew_stock_cookie_consent'
 
 export const GOOGLE_ADSENSE_ACCOUNT_ID = 'ca-pub-1939312153475109' as const
+
+export const SB_OTP_TOKEN_LENGTH = 6
+
+export const ENABLE_OTP_LOGIN = true

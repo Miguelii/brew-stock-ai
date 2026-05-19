@@ -24,7 +24,12 @@ const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo
         try: () =>
             supabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: { redirectTo: callbackUrl.toString() },
+                options: {
+                    redirectTo: callbackUrl.toString(),
+                    queryParams: {
+                        prompt: 'select_account',
+                    },
+                },
             }),
         catch: (cause) => new OAuthInitError({ cause, error_hash: ErrorCode.OAUTH_GOOGLE_INIT }),
     })

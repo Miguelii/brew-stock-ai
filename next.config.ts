@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
             'tw-animate-css',
             'vaul',
             'yahoo-finance2',
+            'input-otp',
         ],
     },
     images: {

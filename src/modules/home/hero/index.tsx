@@ -26,7 +26,7 @@ export function Hero() {
                 </h1>
                 <p className="mt-6 max-w-2xl text-base md:text-lg text-muted-foreground">
                     Institutional-grade analysis covering financial metrics, market sentiment, and
-                    technical indicators — for less than a coffee.
+                    technical indicators — for less than a coffee ☕.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-fit">
                     <Link href="/analysis" prefetch={false} className="contents">

@@ -47,6 +47,8 @@ export class OAuthInitError extends Data.TaggedError('OAuthInitError')<ServiceEr
 export class OAuthCallbackError extends Data.TaggedError(
     'OAuthCallbackError'
 )<ServiceErrorFields> {}
+export class SendOtpError extends Data.TaggedError('SendOtpError')<ServiceErrorFields> {}
+export class VerifyOtpError extends Data.TaggedError('VerifyOtpError')<ServiceErrorFields> {}
 
 // Notifications
 export class SavePushSubscriptionError extends Data.TaggedError(

@@ -3,10 +3,11 @@
 import { trpc } from '@/server/trpc-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { CoinsIcon, ZapIcon, StarIcon, TrophyIcon } from 'lucide-react'
+import { CoinsIcon, ZapIcon, StarIcon, TrophyIcon, Loader2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { TokenPromo } from './token-promo'
+import { useTransition } from 'react'
 
 // Set to false to restore original pricing
 const LAUNCH_PROMO_ACTIVE = true
@@ -69,9 +70,13 @@ type Props = {
 }
 
 export function TokenPackages({ showFree = false, showBuyButton = true, className }: Props) {
+    const [pending, startTransition] = useTransition()
+
     const checkout = trpc.createCheckoutSession.useMutation({
         onSuccess: (url) => {
-            window.location.href = url
+            startTransition(() => {
+                window.location.href = url
+            })
         },
         onError: () => {
             toast.error('Failed to start checkout. Please try again.')
@@ -212,7 +217,14 @@ export function TokenPackages({ showFree = false, showBuyButton = true, classNam
                                             })
                                         }
                                     >
-                                        {isLoading ? 'Creating checkout...' : 'Buy Now'}
+                                        {pending || isLoading ? (
+                                            <>
+                                                <Loader2Icon className="animate-spin w-3 h-3" />
+                                                Creating checkout
+                                            </>
+                                        ) : (
+                                            'Buy Now'
+                                        )}
                                     </Button>
                                 )}
                             </CardContent>

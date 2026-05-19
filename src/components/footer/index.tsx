@@ -7,7 +7,7 @@ const footerLinks = [
         links: [
             { label: 'Analysis', href: '/analysis' },
             { label: 'Pricing', href: '/pricing' },
-            { label: 'Example Report', href: '/example-report' },
+            { label: 'Reports', href: '/example-report' },
         ],
     },
     {

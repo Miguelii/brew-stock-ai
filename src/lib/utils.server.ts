@@ -151,3 +151,19 @@ export async function sbProxy(request: NextRequest) {
     // of sync and terminate the user's session prematurely!
     return supabaseResponse
 }
+
+/**
+ * Resolves `next` against `siteUrl` and returns the resulting URL only if it
+ * stays on the same origin, preventing open-redirect attacks via
+ * protocol-relative paths such as `//evil.com`.
+ *
+ * Falls back to `/analysis` when the resolved origin differs from the site origin.
+ */
+export function safeRedirectUrl(next: string, siteUrl: string): URL {
+    const resolved = new URL(next, siteUrl)
+    const base = new URL(siteUrl)
+    if (resolved.origin !== base.origin) {
+        return new URL('/analysis', siteUrl)
+    }
+    return resolved
+}

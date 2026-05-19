@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { Effect, Exit } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createSbServerClient, safeRedirectUrl } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
 import { CreateSbClientError, OAuthCallbackError } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
@@ -46,5 +46,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(errorUrl)
     }
 
-    return NextResponse.redirect(new URL(next, siteUrl))
+    const redirectUrl = safeRedirectUrl(next, siteUrl)
+
+    return NextResponse.redirect(redirectUrl)
 }

@@ -12,7 +12,7 @@ export function NavLinks({ links }: { links: NavLink[] }) {
     return (
         <ul className="flex items-center gap-6">
             {links.map((link) => {
-                const isActive = pathname === link.href
+                const isActive = pathname.startsWith(link.href)
                 return (
                     <li key={link.href}>
                         <Link

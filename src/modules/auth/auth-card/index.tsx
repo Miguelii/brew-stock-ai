@@ -48,7 +48,7 @@ export function AuthCard({ returnTo }: Props) {
 
         setTimeout(() => {
             saveLastUsed('google')
-        }, 1500)
+        }, 200)
 
         window.location.href = url
     }

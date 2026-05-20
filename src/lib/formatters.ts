@@ -28,3 +28,6 @@ export function fmtPrice(n: number | null | undefined): string {
     if (n == null) return 'N/A'
     return `$${n.toFixed(2)}`
 }
+
+export const fmtDate = (d: string, month: 'long' | 'short' = 'long') =>
+    new Date(d).toLocaleDateString('en-US', { year: 'numeric', month, day: 'numeric' })

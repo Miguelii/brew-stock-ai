@@ -1,7 +1,7 @@
 // oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/lib/sentiment'
-import { fmtLarge, fmtPct, fmtX, fmtNum, fmtPrice } from '@/lib/formatters'
+import { fmtLarge, fmtPct, fmtX, fmtNum, fmtPrice, fmtDate } from '@/lib/formatters'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type {
     ReportDTO,
@@ -11,9 +11,6 @@ import type {
     StockSigDev,
     StockReports,
 } from '@/types/ReportDTO'
-
-const fmtDate = (d: string, month: 'long' | 'short' = 'long') =>
-    new Date(d).toLocaleDateString('en-US', { year: 'numeric', month, day: 'numeric' })
 
 const SCORE_ROW_DEFS = [
     { label: 'Innovation', key: 'innovativeness' },

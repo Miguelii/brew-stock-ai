@@ -18,25 +18,32 @@ export function generateStaticParams() {
     return TICKER_PAGES.map((t) => ({ ticker: t.slug }))
 }
 
-const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { ticker } = await params
     const page = TICKER_PAGE_MAP.get(ticker)
     if (!page) return {}
 
-    const pageUrl = `${siteUrl}/analysis/${page.slug}`
+    const pageUrl = `${SITE_URL}/analysis/${page.slug}`
+
+    const META_TITLE = `${page.name} (${page.ticker}) Stock Analysis`
+    const META_DESCRIPTION = `AI-powered stock analysis for ${page.name} (${page.ticker}). Get institutional-grade financial insights, market sentiment, and technical indicators for less than a coffee.`
 
     return {
-        title: `${page.name} (${page.ticker}) Stock Analysis`,
-        description: `AI-powered stock analysis for ${page.name} (${page.ticker}). Get institutional-grade financial insights, market sentiment, and technical indicators for less than a coffee.`,
+        title: META_TITLE,
+        description: META_DESCRIPTION,
         alternates: {
             canonical: pageUrl,
         },
         openGraph: {
-            title: `${page.name} (${page.ticker}) Stock Analysis | StockBrewAI`,
-            description: `AI-powered stock analysis for ${page.name} (${page.ticker}). Financial metrics, sentiment analysis, and technical indicators.`,
+            title: META_TITLE,
+            description: META_DESCRIPTION,
             url: pageUrl,
+        },
+        twitter: {
+            title: META_TITLE,
+            description: META_DESCRIPTION,
         },
     }
 }
@@ -49,14 +56,14 @@ export default async function TickerPage({ params }: Props) {
 
     const user = await getCachedSession()
 
-    const pageUrl = `${siteUrl}/analysis/${page.slug}`
+    const pageUrl = `${SITE_URL}/analysis/${page.slug}`
 
     return (
         <>
             <BreadcrumbSchema
                 items={[
-                    { name: 'Home', url: `${siteUrl}/` },
-                    { name: 'Analysis', url: `${siteUrl}/analysis` },
+                    { name: 'Home', url: `${SITE_URL}/` },
+                    { name: 'Analysis', url: `${SITE_URL}/analysis` },
                     { name: `${page.name} (${page.ticker})`, url: pageUrl },
                 ]}
             />

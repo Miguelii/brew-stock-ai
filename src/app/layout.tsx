@@ -72,13 +72,19 @@ export const metadata: Metadata = {
         locale: 'en_US',
         url: siteUrl,
         siteName: 'StockBrewAI',
-        title: 'StockBrewAI — AI Stock Analysis',
+        title: {
+            default: 'StockBrewAI — AI-Powered Stock Analysis',
+            template: '%s | StockBrewAI',
+        },
         description:
             'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'StockBrewAI — AI Stock Analysis',
+        title: {
+            default: 'StockBrewAI — AI-Powered Stock Analysis',
+            template: '%s | StockBrewAI',
+        },
         description:
             'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
     },

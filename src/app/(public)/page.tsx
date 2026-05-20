@@ -5,28 +5,36 @@ import { WordRevealCard } from '@/modules/home/word-reveal-card'
 import { PricingCard } from '@/modules/home/pricring-card'
 import { FinalCTA } from '@/modules/home/final-cta'
 import { HOME_REVEAL_WORDS } from '@/lib/revel-words'
+import { BreadcrumbSchema } from '@/components/structured-data'
+import { ClientEnv } from '@/env/client'
 
 export const dynamic = 'force-static'
 
+const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+
 export default function HomePage() {
     return (
-        <main className="flex-1 overflow-x-hidden">
-            <Hero />
+        <>
+            <BreadcrumbSchema items={[{ name: 'Home', url: `${SITE_URL}/` }]} />
 
-            {/* Analysis Types — Bento Grid */}
-            <AnalysisCard />
+            <main className="flex-1 overflow-x-hidden">
+                <Hero />
 
-            {/* Features */}
-            <MarketingCard />
+                {/* Analysis Types — Bento Grid */}
+                <AnalysisCard />
 
-            {/* Scrubbing text reveal */}
-            <WordRevealCard words={HOME_REVEAL_WORDS} />
+                {/* Features */}
+                <MarketingCard />
 
-            {/* Pricing */}
-            <PricingCard />
+                {/* Scrubbing text reveal */}
+                <WordRevealCard words={HOME_REVEAL_WORDS} />
 
-            {/* Final CTA */}
-            <FinalCTA />
-        </main>
+                {/* Pricing */}
+                <PricingCard />
+
+                {/* Final CTA */}
+                <FinalCTA />
+            </main>
+        </>
     )
 }

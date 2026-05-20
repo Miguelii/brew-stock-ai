@@ -15,7 +15,7 @@ export const dynamic = 'force-static'
 // Replace these with your real AdSense slot IDs from https://adsense.google.com
 const AD_SLOT_BOTTOM = 'REPLACE_WITH_SLOT_ID'
 
-const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 export function generateStaticParams() {
     return EDUCATION_HUB_ARTICLES.map((a) => ({ slug: a.slug }))
@@ -28,16 +28,20 @@ export async function generateMetadata({
     const article = EDUCATION_HUB_ARTICLE_MAP.get(slug)
     if (!article) return {}
 
-    const url = `${siteUrl}/education-hub/${slug}`
+    const url = `${SITE_URL}/education-hub/${slug}`
 
     return {
-        title: `${article.title} | StockBrewAI`,
+        title: article.title,
         description: article.description,
         alternates: { canonical: url },
         openGraph: {
-            title: `${article.title} | StockBrewAI`,
+            title: article.title,
             description: article.description,
             url,
+        },
+        twitter: {
+            title: article.title,
+            description: article.description,
         },
     }
 }
@@ -48,14 +52,14 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
 
     if (!article) notFound()
 
-    const articleUrl = `${siteUrl}/education-hub/${slug}`
+    const articleUrl = `${SITE_URL}/education-hub/${slug}`
 
     return (
         <>
             <BreadcrumbSchema
                 items={[
-                    { name: 'Home', url: `${siteUrl}/` },
-                    { name: 'Learn', url: `${siteUrl}/education-hub` },
+                    { name: 'Home', url: `${SITE_URL}/` },
+                    { name: 'Learn', url: `${SITE_URL}/education-hub` },
                     { name: article.title, url: articleUrl },
                 ]}
             />

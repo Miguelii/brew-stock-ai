@@ -122,7 +122,7 @@ export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['
             const buffer = await page.pdf({
                 format: 'A4',
                 printBackground: true,
-                margin: { top: '0', right: '0', bottom: '0', left: '0' },
+                margin: { top: '32px', right: '0', bottom: '32px', left: '0' },
             })
 
             await browser.close()

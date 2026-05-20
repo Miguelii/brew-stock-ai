@@ -32,7 +32,8 @@ export const deductCredit = Effect.fn('deductCredit')(function* (
         })
     }
 
-    if (data === null || data === undefined) {
+    // Insufficient credits — SQL returns NULL when balance < cost (no row updated)
+    if (data === null || data === undefined || data < 0) {
         return yield* new InsufficientCreditsError({ error_hash: ErrorCode.TOKENS_INSUFFICIENT })
     }
 

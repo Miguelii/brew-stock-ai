@@ -227,28 +227,7 @@ function buildScoresSection(scores: StockScores): string {
     </div>`
 }
 
-export function buildPdfHtml(params: {
-    stock: ReportDTO['stock']
-    type: ReportDTO['type']
-    ai_response: ReportDTO['ai_response']
-    sentiment: ReportDTO['sentiment']
-    created_at: ReportDTO['created_at']
-    stockData?: StockData | null
-}) {
-    const { stock, type, ai_response, sentiment, created_at, stockData } = params
-    const label = PROMPT_TYPES[type as PropmptsEnum]?.label ?? type
-    const isRiskAnalysis = type === PropmptsEnum.RISK_ANALYSIS
-    const { label: sentimentLabel, color: sentimentColor } = isRiskAnalysis
-        ? getRiskLevelInfo(sentiment)
-        : getSentimentInfo(sentiment)
-    const date = fmtDate(created_at)
-
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
+const PDF_CSS = `
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -419,7 +398,30 @@ export function buildPdfHtml(params: {
         .fin-range-bar { position: relative; height: 10px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
         .fin-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: #909097; }
         .fin-range-meta { display: flex; gap: 14px; margin-top: 4px; font-size: 10px; color: #909097; }
-    </style>
+    `
+
+export function buildPdfHtml(params: {
+    stock: ReportDTO['stock']
+    type: ReportDTO['type']
+    ai_response: ReportDTO['ai_response']
+    sentiment: ReportDTO['sentiment']
+    created_at: ReportDTO['created_at']
+    stockData?: StockData | null
+}) {
+    const { stock, type, ai_response, sentiment, created_at, stockData } = params
+    const label = PROMPT_TYPES[type as PropmptsEnum]?.label ?? type
+    const isRiskAnalysis = type === PropmptsEnum.RISK_ANALYSIS
+    const { label: sentimentLabel, color: sentimentColor } = isRiskAnalysis
+        ? getRiskLevelInfo(sentiment)
+        : getSentimentInfo(sentiment)
+    const date = fmtDate(created_at)
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>${PDF_CSS}</style>
 </head>
 <body>
     <div class="header">

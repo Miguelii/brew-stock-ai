@@ -54,6 +54,7 @@ describe('buildPdfHtml', () => {
             reports: null,
             scores: null,
             sig_dev: { headline: 'Apple announces new product', date: '2024-06-10' },
+            financials: null,
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Apple announces new product')
@@ -73,6 +74,7 @@ describe('buildPdfHtml', () => {
             ],
             scores: null,
             sig_dev: null,
+            financials: null,
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Q3 Results')
@@ -89,6 +91,7 @@ describe('buildPdfHtml', () => {
                 sector: { innovativeness: 0.6, hiring: 0.5, sustainability: 0.5 },
             },
             sig_dev: null,
+            financials: null,
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Company vs Sector Scores')

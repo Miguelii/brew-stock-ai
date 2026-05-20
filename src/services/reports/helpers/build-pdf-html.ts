@@ -1,7 +1,9 @@
+// oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/lib/sentiment'
+import { fmtLarge, fmtPct, fmtX, fmtNum, fmtPrice } from '@/lib/formatters'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
-import type { ReportDTO, StockData, StockScores } from '@/types/ReportDTO'
+import type { ReportDTO, StockData, StockScores, StockFinancials } from '@/types/ReportDTO'
 
 function buildScoreRows(scores: StockScores): string {
     const rows = [
@@ -24,7 +26,7 @@ function buildScoreRows(scores: StockScores): string {
             const sectorPct = sector != null ? sector * 100 : 50
 
             const bar = isNA
-                ? `<div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,#d1d5db 0px,#d1d5db 3px,transparent 3px,transparent 8px);"></div>`
+                ? `<div style="position:absolute;inset:0;background:#e5e7eb;border-radius:4px;"></div>`
                 : `<div style="position:absolute;top:0;bottom:0;left:0;width:${(company! * 100).toFixed(1)}%;background:#0047CC;border-radius:4px;"></div>`
 
             const tick =
@@ -50,6 +52,143 @@ function buildScoreRows(scores: StockScores): string {
             </div>`
         })
         .join('')
+}
+
+function signStyle(n: number | null | undefined): string {
+    if (n == null) return 'color:#262626;'
+    return n >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'
+}
+
+function tile(label: string, value: string, colored = false, raw?: number | null): string {
+    const valueStyle = colored ? signStyle(raw) : 'color:#262626;'
+    const valueColor = value === 'N/A' ? 'color:#909097;' : valueStyle
+    return `<div class="fin-tile"><div class="fin-tile-label">${label}</div><div class="fin-tile-value" style="${valueColor}">${value}</div></div>`
+}
+
+function tile3(label: string, value: string, colored = false, raw?: number | null): string {
+    const valueStyle = colored ? signStyle(raw) : 'color:#262626;'
+    const valueColor = value === 'N/A' ? 'color:#909097;' : valueStyle
+    return `<div class="fin-tile-3"><div class="fin-tile-label">${label}</div><div class="fin-tile-value" style="${valueColor}">${value}</div></div>`
+}
+
+function buildRangeBar(
+    low: number | null,
+    high: number | null,
+    current: number | null,
+    mean?: number | null,
+    lowLabel?: string,
+    highLabel?: string,
+    currentLabel?: string,
+    meanLabel?: string
+): string {
+    const hasData = low != null && high != null && current != null && high > low
+    const range = hasData ? high! - low! : 1
+    const currentPct = hasData ? Math.min(Math.max(((current! - low!) / range) * 100, 0), 100) : 0
+    const meanPct =
+        mean != null && hasData ? Math.min(Math.max(((mean - low!) / range) * 100, 0), 100) : null
+
+    const barInner = hasData
+        ? `<div style="position:absolute;top:0;bottom:0;left:0;width:${currentPct.toFixed(1)}%;background:#0047CC33;border-radius:4px;"></div>
+           <div style="position:absolute;top:0;bottom:0;left:${currentPct.toFixed(1)}%;width:2px;background:#0047CC;z-index:1;"></div>
+           ${meanPct != null ? `<div style="position:absolute;top:0;bottom:0;left:${meanPct.toFixed(1)}%;width:2px;background:rgba(38,38,38,0.3);z-index:1;"></div>` : ''}`
+        : `<div style="position:absolute;inset:0;background:#e5e7eb;border-radius:4px;"></div>`
+
+    const legend = hasData
+        ? `<div class="fin-range-legend"><span>${lowLabel ?? ''}</span><span>${highLabel ?? ''}</span></div>
+           <div class="fin-range-meta">
+               <span><span style="display:inline-block;width:10px;height:2px;background:#0047CC;vertical-align:middle;margin-right:4px;"></span>${currentLabel ?? ''}</span>
+               ${meanLabel ? `<span><span style="display:inline-block;width:10px;height:2px;background:rgba(38,38,38,0.35);vertical-align:middle;margin-right:4px;"></span>${meanLabel}</span>` : ''}
+           </div>`
+        : `<div class="fin-range-meta"><span style="color:#909097;">Data N/A</span></div>`
+
+    return `
+    <div class="fin-range-wrap">
+        <div class="fin-range-bar">${barInner}</div>
+        ${legend}
+    </div>`
+}
+
+function buildFinancialsSection(f: StockFinancials): string {
+    const hasRange =
+        f.fiftyTwoWeekLow != null && f.fiftyTwoWeekHigh != null && f.currentPrice != null
+    const upside =
+        f.targetMeanPrice != null && f.currentPrice != null && f.currentPrice > 0
+            ? (((f.targetMeanPrice - f.currentPrice) / f.currentPrice) * 100).toFixed(1)
+            : null
+
+    const rangeBar = buildRangeBar(
+        f.fiftyTwoWeekLow,
+        f.fiftyTwoWeekHigh,
+        f.currentPrice,
+        null,
+        hasRange ? fmtPrice(f.fiftyTwoWeekLow) : undefined,
+        hasRange ? fmtPrice(f.fiftyTwoWeekHigh) : undefined,
+        hasRange ? `Current ${fmtPrice(f.currentPrice)}` : undefined
+    )
+
+    const targetBar =
+        f.targetMeanPrice != null
+            ? buildRangeBar(
+                  f.targetLowPrice,
+                  f.targetHighPrice,
+                  f.currentPrice,
+                  f.targetMeanPrice,
+                  fmtPrice(f.targetLowPrice),
+                  fmtPrice(f.targetHighPrice),
+                  `Current ${fmtPrice(f.currentPrice)}`,
+                  `Mean target ${fmtPrice(f.targetMeanPrice)}`
+              )
+            : ''
+
+    const upsideBadge =
+        upside != null
+            ? `<span style="font-size:10px;font-weight:600;${parseFloat(upside) >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'}">${parseFloat(upside) >= 0 ? '+' : ''}${upside}% to mean</span>`
+            : ''
+
+    return `
+    <div class="fin-group-title">52-Week Range</div>
+    ${rangeBar}
+
+    ${
+        f.targetMeanPrice != null
+            ? `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div class="fin-group-title" style="margin:0;">Analyst Price Target</div>
+        ${upsideBadge}
+    </div>
+    ${targetBar}`
+            : ''
+    }
+
+    <div class="fin-group-title">Revenue &amp; Profitability</div>
+    <div class="fin-grid">
+        ${tile3('Total Revenue', fmtLarge(f.totalRevenue))}
+        ${tile3('Revenue Growth', fmtPct(f.revenueGrowth), true, f.revenueGrowth)}
+        ${tile3('Earnings Growth', fmtPct(f.earningsGrowth), true, f.earningsGrowth)}
+        ${tile3('EBITDA', fmtLarge(f.ebitda), true, f.ebitda)}
+        ${tile3('Profit Margin', fmtPct(f.profitMargins), true, f.profitMargins)}
+        ${tile3('Operating Margin', fmtPct(f.operatingMargins), true, f.operatingMargins)}
+    </div>
+
+    <div class="fin-group-title">Valuation &amp; Returns</div>
+    <div class="fin-grid">
+        ${tile('Market Cap', fmtLarge(f.marketCap))}
+        ${tile('Enterprise Value', fmtLarge(f.enterpriseValue))}
+        ${tile('P/E (TTM)', fmtX(f.trailingPE))}
+        ${tile('Forward P/E', fmtX(f.forwardPE))}
+        ${tile('Price/Book', fmtX(f.priceToBook))}
+        ${tile('Beta', fmtNum(f.beta))}
+        ${tile('Dividend Yield', fmtPct(f.dividendYield))}
+        ${tile('ROE', fmtPct(f.returnOnEquity), true, f.returnOnEquity)}
+    </div>
+
+    <div class="fin-group-title">Cash Flow &amp; Debt</div>
+    <div class="fin-grid">
+        ${tile('Free Cash Flow', fmtLarge(f.freeCashflow), true, f.freeCashflow)}
+        ${tile('Operating Cash Flow', fmtLarge(f.operatingCashflow), true, f.operatingCashflow)}
+        ${tile('Total Debt', fmtLarge(f.totalDebt))}
+        ${tile('Debt/Equity', fmtNum(f.debtToEquity))}
+    </div>`
 }
 
 // oxlint-disable-next-line max-lines-per-function
@@ -239,6 +378,16 @@ export function buildPdfHtml(params: {
         .news-text { font-size: 11px; color: #262626; }
         .news-meta { font-size: 11px; color: #909097; }
         .scores-desc { font-size: 12px; color: #909097; margin-bottom: 18px; }
+        .fin-group-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #909097; margin-bottom: 8px; margin-top: 4px; }
+        .fin-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .fin-tile { flex: 1 1 calc(25% - 6px); min-width: 90px; background: #f5f5f7; border-radius: 4px; padding: 8px 10px; }
+        .fin-tile-3 { flex: 1 1 calc(33.333% - 6px); min-width: 90px; background: #f5f5f7; border-radius: 4px; padding: 8px 10px; }
+        .fin-tile-label { font-size: 10px; color: #909097; margin-bottom: 3px; }
+        .fin-tile-value { font-size: 12px; font-weight: 600; color: #262626; }
+        .fin-range-wrap { margin-bottom: 14px; }
+        .fin-range-bar { position: relative; height: 10px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+        .fin-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: #909097; }
+        .fin-range-meta { display: flex; gap: 14px; margin-top: 4px; font-size: 10px; color: #909097; }
     </style>
 </head>
 <body>
@@ -260,6 +409,16 @@ export function buildPdfHtml(params: {
             <span class="sentiment-value" style="color: ${sentimentColor}">${sentimentLabel}</span>
         </div>
     </div>
+
+    ${
+        stockData?.financials
+            ? `
+    <div class="extra-section">
+        <div class="extra-section-title">Key Financial Metrics</div>
+        ${buildFinancialsSection(stockData.financials)}
+    </div>`
+            : ''
+    }
 
     <hr class="divider" />
 

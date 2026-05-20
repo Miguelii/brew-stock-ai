@@ -31,4 +31,4 @@ export const stockAnalysisSchema = z.object({
         ),
 })
 
-export const YAHOO_DATA_TTL = 7 * 24 * 60 * 60 * 1000 // One week
+export const YAHOO_DATA_TTL = 3 * 24 * 60 * 60 * 1000 // Three days

@@ -15,6 +15,7 @@ import { ReportSigDev } from '@/modules/report-view/report-sig-dev'
 import { ReportLatestNews } from '@/modules/report-view/report-latest-news'
 import { ReportSectorScores } from '@/modules/report-view/report-sector-scores'
 import { ReportSectionNav } from '@/modules/report-view/report-section-nav'
+import { ReportFinancialsCard } from '@/modules/report-view/report-financials-card'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 
@@ -118,6 +119,10 @@ export default async function ReportsIdPage(props: Props) {
                         <ReportTldrCard report={report} />
                         <ReportSentimentCard report={report} />
                     </div>
+                </section>
+
+                <section id="key-metrics">
+                    <ReportFinancialsCard financials={stockData?.financials ?? null} />
                 </section>
 
                 <section id="analysis">

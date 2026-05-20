@@ -195,6 +195,65 @@ Rules:
 
 ---
 
+## Pages format
+
+Every page under  must follow this exact structure — metadata constants, the `Metadata` export, and the component body with `BreadcrumbSchema`.
+
+```tsx
+import type { Metadata } from 'next'
+import { ClientEnv } from '@/env/client'
+import { BreadcrumbSchema } from '@/components/structured-data'
+
+export const dynamic = 'force-static'
+
+const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+const META_TITLE = 'Page Title'
+const META_DESCRIPTION = 'Compelling description, 140–160 chars, includes a CTA or key benefit.'
+const META_URL = `${SITE_URL}/page-slug`
+
+export const metadata: Metadata = {
+    title: META_TITLE,
+    description: META_DESCRIPTION,
+    alternates: {
+        canonical: META_URL,
+    },
+    openGraph: {
+        title: META_TITLE,
+        description: META_DESCRIPTION,
+        url: META_URL,
+    },
+    twitter: {
+        title: META_TITLE,
+        description: META_DESCRIPTION,
+    },
+}
+
+export default function MyPage() {
+    return (
+        <>
+            <BreadcrumbSchema
+                items={[
+                    { name: 'Home', url: `${SITE_URL}/` },
+                    { name: META_TITLE, url: META_URL },
+                ]}
+            />
+
+            <main className="max-w-5xl mx-auto px-6 py-12 lg:pb-24">
+                {/* content */}
+            </main>
+        </>
+    )
+}
+```
+
+### Rules
+- `META_DESCRIPTION` must never be an empty string — write a real description before shipping
+- All four metadata keys (`title`, `description`, `openGraph`, `twitter`) must always be populated from the same constants
+- `BreadcrumbSchema` is always the first child of the fragment, before `<main>`
+- Default `<main>` width is `max-w-5xl`; wider layouts (e.g. pricing) may use `max-w-7xl`
+
+---
+
 ### Styling — ALWAYS use `cn()` for class merging
 
 **Never** use template literals or string concatenation for conditional classes. **Always** use the `cn()` utility from `@/lib/utils`:

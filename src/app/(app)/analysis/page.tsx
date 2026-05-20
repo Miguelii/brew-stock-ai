@@ -5,21 +5,28 @@ import { getCachedSession } from '@/services/auth/get-cached-session'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 
+const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+const META_TITLE = 'AI Stock Analysis'
+const META_DESCRIPTION =
+    'Get a free AI-powered stock analysis in under 1 minute. Enter any stock ticker — financial health, risk assessment, and growth potential included. No credit card needed.'
+const META_URL = `${SITE_URL}/analysis`
+
 export const metadata: Metadata = {
-    title: 'AI Stock Analysis — Instant Reports for Any Ticker',
-    description:
-        'Get a free AI-powered stock analysis in under 1 minute. Enter any stock ticker — financial health, risk assessment, and growth potential included. No credit card needed.',
+    title: META_TITLE,
+    description: META_DESCRIPTION,
     alternates: {
-        canonical: '/analysis',
+        canonical: META_URL,
     },
     openGraph: {
-        title: 'AI Stock Analysis — Instant Reports for Any Ticker | StockBrewAI',
-        description:
-            'Get a free AI-powered stock analysis in under 1 minute. Enter any stock ticker — financial health, risk assessment, and growth potential included.',
+        title: META_TITLE,
+        description: META_DESCRIPTION,
+        url: META_URL,
+    },
+    twitter: {
+        title: META_TITLE,
+        description: META_DESCRIPTION,
     },
 }
-
-const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 export default async function AnalysisPage() {
     const user = await getCachedSession()
@@ -27,8 +34,8 @@ export default async function AnalysisPage() {
         <>
             <BreadcrumbSchema
                 items={[
-                    { name: 'Home', url: `${siteUrl}/` },
-                    { name: 'Analysis', url: `${siteUrl}/analysis` },
+                    { name: 'Home', url: `${SITE_URL}/` },
+                    { name: 'Analysis', url: META_URL },
                 ]}
             />
             <main

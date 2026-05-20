@@ -15,10 +15,10 @@ import { BreadcrumbSchema } from '@/components/structured-data'
 export const dynamic = 'force-static'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
-const META_TITLE = 'Reports'
+const META_TITLE = 'Example Report'
 const META_DESCRIPTION =
     'See a real AI-generated stock analysis report. Institutional-grade coverage of financials, risk, growth, and competitive positioning.'
-const META_URL = `${SITE_URL}/reports`
+const META_URL = `${SITE_URL}/example-report`
 
 export const metadata: Metadata = {
     title: META_TITLE,

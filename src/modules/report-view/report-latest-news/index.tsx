@@ -12,7 +12,7 @@ export function ReportLatestNews({ news }: Props) {
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">Latest News</CardTitle>
+                <CardTitle className="text-base font-semibold">Media Mentions</CardTitle>
             </CardHeader>
             <CardContent className="p-0 px-5">
                 {news.length === 0 ? (

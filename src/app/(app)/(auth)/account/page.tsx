@@ -1,13 +1,12 @@
 import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
-import { Effect } from 'effect'
-import { getSession } from '@/services/auth/get-session'
 import { notFound } from 'next/navigation'
 import { UserIcon, ReceiptTextIcon } from 'lucide-react'
 import { AccountInvoicesTable } from '@/modules/account/invoices-table'
 import Image from 'next/image'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
+import { getCachedSession } from '@/services/auth/get-cached-session'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Account'
@@ -33,9 +32,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AccountPage() {
-    const user = await Effect.runPromise(
-        getSession().pipe(Effect.catchAll(() => Effect.succeed(null)))
-    )
+    const user = await getCachedSession()
 
     if (!user) return notFound()
 

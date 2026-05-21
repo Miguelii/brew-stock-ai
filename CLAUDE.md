@@ -315,6 +315,25 @@ className={cn('base-class', {
 
 ---
 
+### Component props — ALWAYS use a named `type Props`
+
+**Never** inline the type directly in the function signature. **Always** declare a named `type Props` above the component:
+
+```tsx
+// ❌ Wrong — inline type in signature
+export function MyComponent({ name, email }: { name?: string; email?: string }) { ... }
+
+// ✅ Correct — named type above the component
+type Props = {
+    name?: string
+    email?: string
+}
+
+export function MyComponent({ name, email }: Props) { ... }
+```
+
+---
+
 ### Rules
 - Form schema and types always in the hook file
 - Hook file named `use-<form-name>.ts`, colocated with the component

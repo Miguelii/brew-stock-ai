@@ -3,8 +3,7 @@ import { Separator } from '@/components/ui/separator'
 import { ContactForm } from '@/modules/contact/contact-form'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
-
-export const dynamic = 'force-static'
+import { getCachedSession } from '@/services/auth/get-cached-session'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Contact'
@@ -29,7 +28,9 @@ export const metadata: Metadata = {
     },
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+    const user = await getCachedSession()
+
     return (
         <>
             <BreadcrumbSchema
@@ -63,7 +64,10 @@ export default function ContactPage() {
                         </div>
                     </div>
 
-                    <ContactForm />
+                    <ContactForm
+                        email={user?.email}
+                        name={user?.user_metadata?.full_name as string | undefined}
+                    />
                 </div>
             </main>
         </>

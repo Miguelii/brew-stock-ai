@@ -254,10 +254,20 @@ export default function MyPage() {
 
 ---
 
-### Styling — ALWAYS use `cn()` for class merging
+### Styling — ALWAYS use `cn()` for class merging with correct format
 
 **Never** use template literals or string concatenation for conditional classes. **Always** use the `cn()` utility from `@/lib/utils`:
 
+```tsx
+// ❌ Wrong
+className={`base-class ${condition ? 'class-a' : 'class-b'}`}
+
+// ✅ Correct
+className={cn('base-class', condition ? 'class-a' : 'class-b')}
+className={cn('base-class', {
+  condition: 'conditional-class'
+})}
+```
 ---
 
 ### Styling — ALWAYS use semantic theme tokens for colors
@@ -301,17 +311,6 @@ import * as motion from 'motion/react-client'
 ```
 
 The `motion/react-client` entry is the correct import for Next.js App Router pages and Server Components. Use `motion/react` only inside files already marked with `'use client'` that are **not** page or layout files.
-
-```tsx
-// ❌ Wrong
-className={`base-class ${condition ? 'class-a' : 'class-b'}`}
-
-// ✅ Correct
-className={cn('base-class', condition ? 'class-a' : 'class-b')}
-className={cn('base-class', {
-  condition: 'conditional-class'
-})}
-ƒ```
 
 ---
 

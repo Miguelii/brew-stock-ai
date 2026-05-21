@@ -182,18 +182,35 @@ describe('buildFinancialsSection', () => {
         expect(html).toContain('Data N/A')
     })
 
-    it('renders the Analyst Price Target section when targetMeanPrice is provided', () => {
+    it('always renders the Analyst Price Targets section', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
-        expect(html).toContain('Analyst Price Target')
-        expect(html).toContain('Mean target $210.00')
+        expect(html).toContain('Analyst Price Targets')
+        expect(html).toContain('Bear target')
+        expect(html).toContain('Analyst consensus')
+        expect(html).toContain('Bull target')
     })
 
-    it('omits the Analyst Price Target section when targetMeanPrice is null', () => {
+    it('renders the 3 analyst target prices when all are provided', () => {
+        const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
+        expect(html).toContain('$170.00') // targetLowPrice
+        expect(html).toContain('$210.00') // targetMeanPrice
+        expect(html).toContain('$250.00') // targetHighPrice
+    })
+
+    it('shows N/A in each tile when target prices are null', () => {
         const html = buildPdfHtml({
             ...baseParams,
-            stockData: withFinancials({ ...baseFinancials, targetMeanPrice: null }),
+            stockData: withFinancials({
+                ...baseFinancials,
+                targetLowPrice: null,
+                targetMeanPrice: null,
+                targetHighPrice: null,
+            }),
         })
-        expect(html).not.toContain('Analyst Price Target')
+        expect(html).toContain('Analyst Price Targets')
+        // 3 N/A tiles from targets + any nulls already present — at least 3
+        const matches = html.match(/N\/A/g) ?? []
+        expect(matches.length).toBeGreaterThanOrEqual(3)
     })
 
     it('shows positive upside badge with + prefix and green color', () => {
@@ -201,7 +218,7 @@ describe('buildFinancialsSection', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
         expect(html).toContain('color:#16a34a;')
         expect(html).toContain('+')
-        expect(html).toContain('% to mean')
+        expect(html).toContain('% to consensus')
     })
 
     it('shows negative upside badge with red color when target is below current price', () => {
@@ -215,7 +232,16 @@ describe('buildFinancialsSection', () => {
             }),
         })
         expect(html).toContain('color:#ef4444;')
-        expect(html).toContain('% to mean')
+        expect(html).toContain('% to consensus')
+    })
+
+    it('omits the upside badge when targetMeanPrice is null', () => {
+        const html = buildPdfHtml({
+            ...baseParams,
+            stockData: withFinancials({ ...baseFinancials, targetMeanPrice: null }),
+        })
+        expect(html).toContain('Analyst Price Targets')
+        expect(html).not.toContain('% to consensus')
     })
 
     it('formats large numbers with B/T suffix', () => {

@@ -125,39 +125,24 @@ function buildFinancialsSection(f: StockFinancials): string {
         hasRange ? `Current ${fmtPrice(f.currentPrice)}` : undefined
     )
 
-    const targetBar =
-        f.targetMeanPrice != null
-            ? buildRangeBar(
-                  f.targetLowPrice,
-                  f.targetHighPrice,
-                  f.currentPrice,
-                  f.targetMeanPrice,
-                  fmtPrice(f.targetLowPrice),
-                  fmtPrice(f.targetHighPrice),
-                  `Current ${fmtPrice(f.currentPrice)}`,
-                  `Mean target ${fmtPrice(f.targetMeanPrice)}`
-              )
-            : ''
-
     const upsideBadge =
         upsideNum != null
-            ? `<span style="font-size:10px;font-weight:600;${upsideNum >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'}">${upsideNum >= 0 ? '+' : ''}${upsideNum.toFixed(1)}% to mean</span>`
+            ? `<span style="font-size:10px;font-weight:600;${upsideNum >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'}">${upsideNum >= 0 ? '+' : ''}${upsideNum.toFixed(1)}% to consensus</span>`
             : ''
 
     return `
     <div class="fin-group-title">52-Week Range</div>
     ${rangeBar}
 
-    ${
-        f.targetMeanPrice != null
-            ? `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <div class="fin-group-title" style="margin:0;">Analyst Price Target</div>
+        <div class="fin-group-title" style="margin:0;">Analyst Price Targets</div>
         ${upsideBadge}
     </div>
-    ${targetBar}`
-            : ''
-    }
+    <div class="fin-grid">
+        ${tile('Bear target', fmtPrice(f.targetLowPrice), 'fin-tile-3')}
+        ${tile('Analyst consensus', fmtPrice(f.targetMeanPrice), 'fin-tile-3')}
+        ${tile('Bull target', fmtPrice(f.targetHighPrice), 'fin-tile-3')}
+    </div>
 
     <div class="fin-group-title">Revenue &amp; Profitability</div>
     <div class="fin-grid">

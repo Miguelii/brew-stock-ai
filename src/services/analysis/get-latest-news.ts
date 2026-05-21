@@ -32,6 +32,13 @@ const fetchLatestNewsFn = (ticker: string) =>
     )
 
 export const getLatestNews = Effect.fn('getLatestNews')(function* (ticker: string) {
+    if (!ServerEnv.NEXT_FINNHUB_API_KEY || ServerEnv.NEXT_FINNHUB_API_KEY === '') {
+        return yield* new LatestNewsError({
+            cause: 'NO API KEY',
+            error_hash: ErrorCode.LATEST_NEWS_API_KEY_MISSING,
+        })
+    }
+
     return yield* Effect.tryPromise({
         try: () => fetchLatestNewsFn(ticker)(),
         catch: (cause) => new LatestNewsError({ cause, error_hash: ErrorCode.LATEST_NEWS_FETCH }),

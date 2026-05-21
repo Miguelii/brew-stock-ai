@@ -7,6 +7,7 @@ export enum ErrorCode {
     // Analysis - Latest News
     LATEST_NEWS_FETCH = 'c3nh8w2q',
     LATEST_NEWS_PARSE = 'm6xp4v7f',
+    LATEST_NEWS_API_KEY_MISSING = 'c3nh8a23',
 
     // Analysis - Yahoo
     YAHOO_CLIENT_INIT = 'w2pd9x6k',

@@ -43,7 +43,7 @@ export function buildYahooContext(data: GetYahooDataResult): string {
 
     if (data.reports?.length) {
         parts.push(
-            '**Media Mentions:**',
+            '**Analyst Coverage:**',
             ...data.reports.map((r) => {
                 const title = r.title ?? r.reportTitle ?? ''
                 const source = r.provider ?? ''

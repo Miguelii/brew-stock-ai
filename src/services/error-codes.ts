@@ -4,6 +4,10 @@ export enum ErrorCode {
     ANALYSIS_AI_GENERATION = 'q3vn8w4j',
     ANALYSIS_AI_NO_OUTPUT = 'r6ht5c1b',
 
+    // Analysis - Latest News
+    LATEST_NEWS_FETCH = 'c3nh8w2q',
+    LATEST_NEWS_PARSE = 'm6xp4v7f',
+
     // Analysis - Yahoo
     YAHOO_CLIENT_INIT = 'w2pd9x6k',
     YAHOO_INSIGHTS_FETCH = 'j8mc4v7n',

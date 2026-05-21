@@ -202,7 +202,7 @@ function buildSigDevSection(sigDev: StockSigDev): string {
 function buildNewsSection(reports: StockReports[]): string {
     return `
     <div class="extra-section">
-        <div class="extra-section-title">Media Mentions</div>
+        <div class="extra-section-title">Analyst Coverage</div>
         <ul class="news-list">
             ${reports
                 .map(

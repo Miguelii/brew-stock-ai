@@ -2,6 +2,14 @@
 
 # Project Conventions
 
+## Language
+
+**ALL code must be written in English — no exceptions.**
+
+This includes: variable names, function names, type names, constants, file names, code comments, JSDoc, inline strings used as identifiers (cache keys, error tags, enum values), and any other code artifact.
+
+Human-facing UI copy and documentation may be in any language, but **everything inside `.ts` / `.tsx` files must be English.**
+
 ## Services (Effect-TS)
 
 All services must use Effect-TS. Follow this exact pattern:

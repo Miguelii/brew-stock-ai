@@ -20,10 +20,10 @@ export default function NotFound() {
                         </p>
                     </div>
 
-                    <Link href="/analysis" className="contents" prefetch={false}>
+                    <Link href="/" className="contents" prefetch={false}>
                         <Button className="bg-accent-blue hover:bg-accent-blue-dark text-background">
                             <ArrowLeftIcon />
-                            Back to analysis
+                            Back to home
                         </Button>
                     </Link>
                 </div>

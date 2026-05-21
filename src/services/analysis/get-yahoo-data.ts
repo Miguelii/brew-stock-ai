@@ -3,8 +3,7 @@ import 'server-only'
 import { Effect } from 'effect'
 import { YahooClientError, YahooInsightsError, YahooQuoteSummaryError } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
-import type { StockReports, StockScores, StockSigDev } from '@/types/ReportDTO'
-import type { StockFinancials } from '@/services/analysis/types'
+import type { StockFinancials, StockReports, StockScores, StockSigDev } from '@/types/ReportDTO'
 
 export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string) {
     const yahooClient = yield* Effect.tryPromise({

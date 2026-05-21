@@ -21,8 +21,13 @@ import {
     CONTACT_FORM_MIN_MESSAGE_LENGTH,
 } from '@/lib/constants'
 
-export function ContactForm() {
-    const form = useContactForm()
+type Props = {
+    name?: string
+    email?: string
+}
+
+export function ContactForm({ name, email }: Props) {
+    const form = useContactForm({ name, email })
     const mutation = trpc.submitFeedback.useMutation()
 
     const onSubmit = async (values: ContactFormValues) => {
@@ -49,7 +54,7 @@ export function ContactForm() {
                         <FormItem className="gap-1.5">
                             <FormLabel className="text-muted-foreground">Name</FormLabel>
                             <FormControl>
-                                <Input placeholder="Your name" {...field} />
+                                <Input placeholder="Your name" {...field} disabled={!!name} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -67,6 +72,7 @@ export function ContactForm() {
                                     {...field}
                                     minLength={1}
                                     maxLength={CONTACT_FORM_MAX_NAME_LENGTH}
+                                    disabled={!!email}
                                 />
                             </FormControl>
                             <FormMessage />

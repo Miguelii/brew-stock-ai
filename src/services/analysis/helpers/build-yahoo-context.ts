@@ -1,35 +1,16 @@
-import type { GetYahooDataResult, StockFinancials } from '@/services/analysis/types'
-
-function fmt(v: number | null | undefined): string {
-    return v != null ? v.toFixed(2) : 'N/A'
-}
-
-function fmtPct(v: number | null | undefined): string {
-    return v != null ? `${(v * 100).toFixed(1)}%` : 'N/A'
-}
-
-function fmtLarge(v: number | null | undefined): string {
-    if (v == null) return 'N/A'
-    const abs = Math.abs(v)
-    if (abs >= 1e12) return `$${(v / 1e12).toFixed(2)}T`
-    if (abs >= 1e9) return `$${(v / 1e9).toFixed(2)}B`
-    if (abs >= 1e6) return `$${(v / 1e6).toFixed(1)}M`
-    return `$${v.toLocaleString()}`
-}
-
-function fmtPrice(v: number | null | undefined): string {
-    return v != null ? `$${v.toFixed(2)}` : 'N/A'
-}
+import type { GetYahooDataResult } from '@/services/analysis/types'
+import type { StockFinancials } from '@/types/ReportDTO'
+import { fmtNum, fmtPct, fmtLarge, fmtPrice } from '@/lib/formatters'
 
 function buildFinancialsSection(f: StockFinancials): string {
     const lines = [
         '**Key Financial Indicators:**',
-        `- Price: ${fmtPrice(f.currentPrice)} | 52w Range: ${fmtPrice(f.fiftyTwoWeekLow)}–${fmtPrice(f.fiftyTwoWeekHigh)} | Beta: ${fmt(f.beta)}`,
+        `- Price: ${fmtPrice(f.currentPrice)} | 52w Range: ${fmtPrice(f.fiftyTwoWeekLow)}–${fmtPrice(f.fiftyTwoWeekHigh)} | Beta: ${fmtNum(f.beta)}`,
         `- Market Cap: ${fmtLarge(f.marketCap)} | Enterprise Value: ${fmtLarge(f.enterpriseValue)}`,
-        `- P/E (TTM): ${fmt(f.trailingPE)} | Forward P/E: ${fmt(f.forwardPE)} | P/B: ${fmt(f.priceToBook)}`,
+        `- P/E (TTM): ${fmtNum(f.trailingPE)} | Forward P/E: ${fmtNum(f.forwardPE)} | P/B: ${fmtNum(f.priceToBook)}`,
         `- Revenue Growth (YoY): ${fmtPct(f.revenueGrowth)} | Earnings Growth: ${fmtPct(f.earningsGrowth)}`,
         `- Profit Margin: ${fmtPct(f.profitMargins)} | Operating Margin: ${fmtPct(f.operatingMargins)}`,
-        `- ROE: ${fmtPct(f.returnOnEquity)} | Debt-to-Equity: ${fmt(f.debtToEquity)}`,
+        `- ROE: ${fmtPct(f.returnOnEquity)} | Debt-to-Equity: ${fmtNum(f.debtToEquity)}`,
         `- Free Cash Flow: ${fmtLarge(f.freeCashflow)} | Operating Cash Flow: ${fmtLarge(f.operatingCashflow)}`,
         `- EBITDA: ${fmtLarge(f.ebitda)} | Total Revenue: ${fmtLarge(f.totalRevenue)}`,
     ]
@@ -77,9 +58,9 @@ export function buildYahooContext(data: GetYahooDataResult): string {
         const { company, sector } = data.scores
         parts.push(
             '**Company vs Sector Scores (0.0–1.0 scale):**',
-            `- Innovation: ${fmt(company.innovativeness)} (sector avg: ${fmt(sector.innovativeness)})`,
-            `- Hiring Velocity: ${fmt(company.hiring)} (sector avg: ${fmt(sector.hiring)})`,
-            `- Sustainability: ${fmt(company.sustainability)} (sector avg: ${fmt(sector.sustainability)})`
+            `- Innovation: ${fmtNum(company.innovativeness)} (sector avg: ${fmtNum(sector.innovativeness)})`,
+            `- Hiring Velocity: ${fmtNum(company.hiring)} (sector avg: ${fmtNum(sector.hiring)})`,
+            `- Sustainability: ${fmtNum(company.sustainability)} (sector avg: ${fmtNum(sector.sustainability)})`
         )
     }
 

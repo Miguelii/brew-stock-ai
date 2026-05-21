@@ -1,44 +1,46 @@
+// oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/lib/sentiment'
+import { fmtLarge, fmtPct, fmtX, fmtNum, fmtPrice, fmtDate } from '@/lib/formatters'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
-import type { ReportDTO, StockData, StockScores } from '@/types/ReportDTO'
+import type {
+    ReportDTO,
+    StockData,
+    StockScores,
+    StockFinancials,
+    StockSigDev,
+    StockReports,
+} from '@/types/ReportDTO'
+
+const SCORE_ROW_DEFS = [
+    { label: 'Innovation', key: 'innovativeness' },
+    { label: 'Hiring Velocity', key: 'hiring' },
+    { label: 'Sustainability', key: 'sustainability' },
+] as const
 
 function buildScoreRows(scores: StockScores): string {
-    const rows = [
-        {
-            label: 'Innovation',
-            company: scores.company.innovativeness,
-            sector: scores.sector.innovativeness,
-        },
-        { label: 'Hiring Velocity', company: scores.company.hiring, sector: scores.sector.hiring },
-        {
-            label: 'Sustainability',
-            company: scores.company.sustainability,
-            sector: scores.sector.sustainability,
-        },
-    ]
+    return SCORE_ROW_DEFS.map(({ label, key }) => {
+        const company = scores.company[key]
+        const sector = scores.sector[key]
+        const isNA = company == null
+        const sectorPct = sector != null ? sector * 100 : 50
 
-    return rows
-        .map(({ label, company, sector }) => {
-            const isNA = company === null || company === undefined
-            const sectorPct = sector != null ? sector * 100 : 50
+        const bar = isNA
+            ? `<div style="position:absolute;inset:0;background:#e5e7eb;border-radius:4px;"></div>`
+            : `<div style="position:absolute;top:0;bottom:0;left:0;width:${(company * 100).toFixed(1)}%;background:#0047CC;border-radius:4px;"></div>`
 
-            const bar = isNA
-                ? `<div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,#d1d5db 0px,#d1d5db 3px,transparent 3px,transparent 8px);"></div>`
-                : `<div style="position:absolute;top:0;bottom:0;left:0;width:${(company! * 100).toFixed(1)}%;background:#0047CC;border-radius:4px;"></div>`
+        const tick =
+            sector != null
+                ? `<div style="position:absolute;top:0;bottom:0;left:${sectorPct.toFixed(1)}%;width:2px;background:rgba(38,38,38,0.25);z-index:1;"></div>`
+                : ''
 
-            const tick =
-                sector != null
-                    ? `<div style="position:absolute;top:0;bottom:0;left:${sectorPct.toFixed(1)}%;width:2px;background:rgba(38,38,38,0.25);z-index:1;"></div>`
-                    : ''
+        const valueText = isNA
+            ? `<span style="color:#909097;">N/A</span>`
+            : `<span style="font-weight:600;">${company.toFixed(2)}</span>`
 
-            const valueText = isNA
-                ? `<span style="color:#909097;">N/A</span>`
-                : `<span style="font-weight:600;">${company!.toFixed(2)}</span>`
+        const sectorText = sector != null ? sector.toFixed(2) : 'N/A'
 
-            const sectorText = sector != null ? sector.toFixed(2) : 'N/A'
-
-            return `
+        return `
             <div style="margin-bottom:16px;">
                 <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;">
                     <span style="font-weight:600;">${label}</span>
@@ -48,37 +50,184 @@ function buildScoreRows(scores: StockScores): string {
                     ${bar}${tick}
                 </div>
             </div>`
-        })
-        .join('')
+    }).join('')
 }
 
-// oxlint-disable-next-line max-lines-per-function
-export function buildPdfHtml(params: {
-    stock: ReportDTO['stock']
-    type: ReportDTO['type']
-    ai_response: ReportDTO['ai_response']
-    sentiment: ReportDTO['sentiment']
-    created_at: ReportDTO['created_at']
-    stockData?: StockData | null
-}) {
-    const { stock, type, ai_response, sentiment, created_at, stockData } = params
-    const label = PROMPT_TYPES[type as PropmptsEnum]?.label ?? type
-    const isRiskAnalysis = type === PropmptsEnum.RISK_ANALYSIS
-    const { label: sentimentLabel, color: sentimentColor } = isRiskAnalysis
-        ? getRiskLevelInfo(sentiment)
-        : getSentimentInfo(sentiment)
-    const date = new Date(created_at).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    })
+function signStyle(n: number | null | undefined): string {
+    if (n == null) return 'color:#262626;'
+    return n >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'
+}
 
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
+function tile(
+    label: string,
+    value: string,
+    cls: 'fin-tile' | 'fin-tile-3',
+    colored = false,
+    raw?: number | null
+): string {
+    const valueStyle = colored ? signStyle(raw) : 'color:#262626;'
+    const valueColor = value === 'N/A' ? 'color:#909097;' : valueStyle
+    return `<div class="${cls}"><div class="fin-tile-label">${label}</div><div class="fin-tile-value" style="${valueColor}">${value}</div></div>`
+}
+
+function buildRangeBar(
+    low: number | null,
+    high: number | null,
+    current: number | null,
+    mean?: number | null,
+    lowLabel?: string,
+    highLabel?: string,
+    currentLabel?: string,
+    meanLabel?: string
+): string {
+    const hasData = low != null && high != null && current != null && high > low
+    const range = hasData ? high! - low! : 1
+    const currentPct = hasData ? Math.min(Math.max(((current! - low!) / range) * 100, 0), 100) : 0
+    const meanPct =
+        mean != null && hasData ? Math.min(Math.max(((mean - low!) / range) * 100, 0), 100) : null
+
+    const barInner = hasData
+        ? `<div style="position:absolute;top:0;bottom:0;left:0;width:${currentPct.toFixed(1)}%;background:#0047CC;border-radius:4px;"></div>
+           <div style="position:absolute;top:0;bottom:0;left:${currentPct.toFixed(1)}%;width:2px;background:#0047CC;z-index:1;"></div>
+           ${meanPct != null ? `<div style="position:absolute;top:0;bottom:0;left:${meanPct.toFixed(1)}%;width:2px;background:rgba(38,38,38,0.3);z-index:1;"></div>` : ''}`
+        : `<div style="position:absolute;inset:0;background:#e5e7eb;border-radius:4px;"></div>`
+
+    const legend = hasData
+        ? `<div class="fin-range-legend"><span>${lowLabel ?? ''}</span><span>${highLabel ?? ''}</span></div>
+           <div class="fin-range-meta">
+               <span><span style="display:inline-block;width:10px;height:2px;background:#0047CC;vertical-align:middle;margin-right:4px;"></span>${currentLabel ?? ''}</span>
+               ${meanLabel ? `<span><span style="display:inline-block;width:10px;height:2px;background:rgba(38,38,38,0.35);vertical-align:middle;margin-right:4px;"></span>${meanLabel}</span>` : ''}
+           </div>`
+        : `<div class="fin-range-meta"><span style="color:#909097;">Data N/A</span></div>`
+
+    return `
+    <div class="fin-range-wrap">
+        <div class="fin-range-bar">${barInner}</div>
+        ${legend}
+    </div>`
+}
+
+function buildFinancialsSection(f: StockFinancials): string {
+    const hasRange =
+        f.fiftyTwoWeekLow != null && f.fiftyTwoWeekHigh != null && f.currentPrice != null
+    const upsideNum =
+        f.targetMeanPrice != null && f.currentPrice != null && f.currentPrice > 0
+            ? ((f.targetMeanPrice - f.currentPrice) / f.currentPrice) * 100
+            : null
+
+    const rangeBar = buildRangeBar(
+        f.fiftyTwoWeekLow,
+        f.fiftyTwoWeekHigh,
+        f.currentPrice,
+        null,
+        hasRange ? fmtPrice(f.fiftyTwoWeekLow) : undefined,
+        hasRange ? fmtPrice(f.fiftyTwoWeekHigh) : undefined,
+        hasRange ? `Current ${fmtPrice(f.currentPrice)}` : undefined
+    )
+
+    const targetBar =
+        f.targetMeanPrice != null
+            ? buildRangeBar(
+                  f.targetLowPrice,
+                  f.targetHighPrice,
+                  f.currentPrice,
+                  f.targetMeanPrice,
+                  fmtPrice(f.targetLowPrice),
+                  fmtPrice(f.targetHighPrice),
+                  `Current ${fmtPrice(f.currentPrice)}`,
+                  `Mean target ${fmtPrice(f.targetMeanPrice)}`
+              )
+            : ''
+
+    const upsideBadge =
+        upsideNum != null
+            ? `<span style="font-size:10px;font-weight:600;${upsideNum >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'}">${upsideNum >= 0 ? '+' : ''}${upsideNum.toFixed(1)}% to mean</span>`
+            : ''
+
+    return `
+    <div class="fin-group-title">52-Week Range</div>
+    ${rangeBar}
+
+    ${
+        f.targetMeanPrice != null
+            ? `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div class="fin-group-title" style="margin:0;">Analyst Price Target</div>
+        ${upsideBadge}
+    </div>
+    ${targetBar}`
+            : ''
+    }
+
+    <div class="fin-group-title">Revenue &amp; Profitability</div>
+    <div class="fin-grid">
+        ${tile('Total Revenue', fmtLarge(f.totalRevenue), 'fin-tile-3')}
+        ${tile('Revenue Growth', fmtPct(f.revenueGrowth), 'fin-tile-3', true, f.revenueGrowth)}
+        ${tile('Earnings Growth', fmtPct(f.earningsGrowth), 'fin-tile-3', true, f.earningsGrowth)}
+        ${tile('EBITDA', fmtLarge(f.ebitda), 'fin-tile-3', true, f.ebitda)}
+        ${tile('Profit Margin', fmtPct(f.profitMargins), 'fin-tile-3', true, f.profitMargins)}
+        ${tile('Operating Margin', fmtPct(f.operatingMargins), 'fin-tile-3', true, f.operatingMargins)}
+    </div>
+
+    <div class="fin-group-title">Valuation &amp; Returns</div>
+    <div class="fin-grid">
+        ${tile('Market Cap', fmtLarge(f.marketCap), 'fin-tile')}
+        ${tile('Enterprise Value', fmtLarge(f.enterpriseValue), 'fin-tile')}
+        ${tile('P/E (TTM)', fmtX(f.trailingPE), 'fin-tile')}
+        ${tile('Forward P/E', fmtX(f.forwardPE), 'fin-tile')}
+        ${tile('Price/Book', fmtX(f.priceToBook), 'fin-tile')}
+        ${tile('Beta', fmtNum(f.beta), 'fin-tile')}
+        ${tile('Dividend Yield', fmtPct(f.dividendYield), 'fin-tile')}
+        ${tile('ROE', fmtPct(f.returnOnEquity), 'fin-tile', true, f.returnOnEquity)}
+    </div>
+
+    <div class="fin-group-title">Cash Flow &amp; Debt</div>
+    <div class="fin-grid">
+        ${tile('Free Cash Flow', fmtLarge(f.freeCashflow), 'fin-tile', true, f.freeCashflow)}
+        ${tile('Operating Cash Flow', fmtLarge(f.operatingCashflow), 'fin-tile', true, f.operatingCashflow)}
+        ${tile('Total Debt', fmtLarge(f.totalDebt), 'fin-tile')}
+        ${tile('Debt/Equity', fmtNum(f.debtToEquity), 'fin-tile')}
+    </div>`
+}
+
+function buildSigDevSection(sigDev: StockSigDev): string {
+    return `
+    <div class="extra-section">
+        <div class="extra-section-title">Recent Significant Development</div>
+        <p class="sig-dev-headline">${sigDev.headline}</p>
+        ${sigDev.date ? `<span class="sig-dev-date">${fmtDate(sigDev.date)}</span>` : ''}
+    </div>`
+}
+
+function buildNewsSection(reports: StockReports[]): string {
+    return `
+    <div class="extra-section">
+        <div class="extra-section-title">Latest News</div>
+        <ul class="news-list">
+            ${reports
+                .map(
+                    (item) => `
+            <li class="news-item">
+                <p class="news-headline">${item.title ?? ''}</p>
+                <p class="news-text">${item.reportTitle ?? ''}</p>
+                <span class="news-meta">${item.provider ?? ''}${item.reportDate ? ` · ${fmtDate(item.reportDate, 'short')}` : ''}</span>
+            </li>`
+                )
+                .join('')}
+        </ul>
+    </div>`
+}
+
+function buildScoresSection(scores: StockScores): string {
+    return `
+    <div class="extra-section">
+        <div class="extra-section-title">Company vs Sector Scores</div>
+        <p class="scores-desc">Comparison of AI-derived metrics against industry sector averages (Scale 0.0 – 1.0).</p>
+        ${buildScoreRows(scores)}
+    </div>`
+}
+
+const PDF_CSS = `
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -239,7 +388,40 @@ export function buildPdfHtml(params: {
         .news-text { font-size: 11px; color: #262626; }
         .news-meta { font-size: 11px; color: #909097; }
         .scores-desc { font-size: 12px; color: #909097; margin-bottom: 18px; }
-    </style>
+        .fin-group-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #909097; margin-bottom: 8px; margin-top: 4px; }
+        .fin-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .fin-tile { flex: 1 1 calc(25% - 6px); min-width: 90px; background: #f5f5f7; border-radius: 4px; padding: 8px 10px; }
+        .fin-tile-3 { flex: 1 1 calc(33.333% - 6px); min-width: 90px; background: #f5f5f7; border-radius: 4px; padding: 8px 10px; }
+        .fin-tile-label { font-size: 10px; color: #909097; margin-bottom: 3px; }
+        .fin-tile-value { font-size: 12px; font-weight: 600; color: #262626; }
+        .fin-range-wrap { margin-bottom: 14px; }
+        .fin-range-bar { position: relative; height: 10px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+        .fin-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: #909097; }
+        .fin-range-meta { display: flex; gap: 14px; margin-top: 4px; font-size: 10px; color: #909097; }
+    `
+
+export function buildPdfHtml(params: {
+    stock: ReportDTO['stock']
+    type: ReportDTO['type']
+    ai_response: ReportDTO['ai_response']
+    sentiment: ReportDTO['sentiment']
+    created_at: ReportDTO['created_at']
+    stockData?: StockData | null
+}) {
+    const { stock, type, ai_response, sentiment, created_at, stockData } = params
+    const label = PROMPT_TYPES[type as PropmptsEnum]?.label ?? type
+    const isRiskAnalysis = type === PropmptsEnum.RISK_ANALYSIS
+    const { label: sentimentLabel, color: sentimentColor } = isRiskAnalysis
+        ? getRiskLevelInfo(sentiment)
+        : getSentimentInfo(sentiment)
+    const date = fmtDate(created_at)
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>${PDF_CSS}</style>
 </head>
 <body>
     <div class="header">
@@ -261,54 +443,27 @@ export function buildPdfHtml(params: {
         </div>
     </div>
 
+    ${
+        stockData?.financials
+            ? `
+    <div class="extra-section">
+        <div class="extra-section-title">Key Financial Metrics</div>
+        ${buildFinancialsSection(stockData.financials)}
+    </div>`
+            : ''
+    }
+
     <hr class="divider" />
 
     <div class="analysis">
         ${ai_response}
     </div>
 
-    ${
-        stockData?.sig_dev?.headline
-            ? `
-    <div class="extra-section">
-        <div class="extra-section-title">Recent Significant Development</div>
-        <p class="sig-dev-headline">${stockData.sig_dev.headline}</p>
-        ${stockData.sig_dev.date ? `<span class="sig-dev-date">${new Date(stockData.sig_dev.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>` : ''}
-    </div>`
-            : ''
-    }
+    ${stockData?.sig_dev?.headline ? buildSigDevSection(stockData.sig_dev) : ''}
 
-    ${
-        stockData?.reports?.length
-            ? `
-    <div class="extra-section">
-        <div class="extra-section-title">Latest News</div>
-        <ul class="news-list">
-            ${stockData.reports
-                .map(
-                    (item) => `
-            <li class="news-item">
-                <p class="news-headline">${item.title ?? ''}</p>
-                <p class="news-text">${item.reportTitle ?? ''}</p>
-                <span class="news-meta">${item.provider ?? ''}${item.reportDate ? ` · ${new Date(item.reportDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}` : ''}</span>
-            </li>`
-                )
-                .join('')}
-        </ul>
-    </div>`
-            : ''
-    }
+    ${stockData?.reports?.length ? buildNewsSection(stockData.reports) : ''}
 
-    ${
-        stockData?.scores
-            ? `
-    <div class="extra-section">
-        <div class="extra-section-title">Company vs Sector Scores</div>
-        <p class="scores-desc">Comparison of AI-derived metrics against industry sector averages (Scale 0.0 – 1.0).</p>
-        ${buildScoreRows(stockData.scores)}
-    </div>`
-            : ''
-    }
+    ${stockData?.scores ? buildScoresSection(stockData.scores) : ''}
 
     <div class="footer">
         <span>Generated by StockBrewAI — For informational purposes only.</span>

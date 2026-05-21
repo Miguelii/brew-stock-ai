@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildYahooContext } from '@/services/analysis/helpers/build-yahoo-context'
-import type { GetYahooDataResult, StockFinancials } from '@/services/analysis/types'
+import type { GetYahooDataResult } from '@/services/analysis/types'
+import type { StockFinancials } from '@/types/ReportDTO'
 
 const mockFinancials: StockFinancials = {
     currentPrice: 150.25,
@@ -151,6 +152,6 @@ describe('buildYahooContext', () => {
     it('formats millions correctly', () => {
         const financials = { ...mockFinancials, freeCashflow: 500_000_000 }
         const result = buildYahooContext({ ...baseData, financials })
-        expect(result).toContain('$500.0M')
+        expect(result).toContain('$500.00M')
     })
 })

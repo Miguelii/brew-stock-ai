@@ -42,9 +42,9 @@ describe('PROMPT_COSTS_MAP', () => {
 })
 
 describe('YAHOO_DATA_TTL', () => {
-    it('equals exactly 7 days in milliseconds', () => {
-        const sevenDaysMs = 7 * 24 * 60 * 60 * 1000
-        expect(YAHOO_DATA_TTL).toBe(sevenDaysMs)
+    it('equals exactly 3 days in milliseconds', () => {
+        const threeDaysMs = 3 * 24 * 60 * 60 * 1000
+        expect(YAHOO_DATA_TTL).toBe(threeDaysMs)
     })
 
     it('is a positive number', () => {

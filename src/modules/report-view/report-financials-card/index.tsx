@@ -129,51 +129,74 @@ export function ReportFinancialsCard({ financials }: Props) {
                     </div>
                 </div>
 
-                {/* Analyst Price Target — only shown when data is available */}
-                {f?.targetMeanPrice != null && (
-                    <div className="flex flex-col gap-3">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                Analyst Price Target
+                {/* Analyst Price Targets */}
+                <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                            Analyst Price Targets
+                        </span>
+                        {upside !== null && (
+                            <span
+                                className={cn(
+                                    'text-xs font-semibold',
+                                    Number.parseFloat(upside) >= 0
+                                        ? 'text-green-600 dark:text-green-500'
+                                        : 'text-red-500'
+                                )}
+                            >
+                                {Number.parseFloat(upside) >= 0 ? '+' : ''}
+                                {upside}% to consensus
                             </span>
-                            {upside !== null && (
-                                <span
-                                    className={cn(
-                                        'text-xs font-semibold',
-                                        Number.parseFloat(upside) >= 0
-                                            ? 'text-green-600 dark:text-green-500'
-                                            : 'text-red-500'
-                                    )}
-                                >
-                                    {Number.parseFloat(upside) >= 0 ? '+' : ''}
-                                    {upside}% to mean
-                                </span>
-                            )}
+                        )}
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
+                            <span className="text-[11px] leading-none text-muted-foreground">
+                                Bear target
+                            </span>
+                            <span
+                                className={cn(
+                                    'text-sm font-semibold leading-tight',
+                                    f?.targetLowPrice == null
+                                        ? 'text-muted-foreground'
+                                        : 'text-primary'
+                                )}
+                            >
+                                {fmtPrice(f?.targetLowPrice)}
+                            </span>
                         </div>
-                        <RangeBar
-                            low={f.targetLowPrice}
-                            high={f.targetHighPrice}
-                            current={f.currentPrice}
-                            mean={f.targetMeanPrice}
-                            lowLabel={fmtPrice(f.targetLowPrice)}
-                            highLabel={fmtPrice(f.targetHighPrice)}
-                        />
-                        <div className="flex items-center gap-4 flex-wrap">
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-3 h-0.5 bg-accent-blue" />
-                                <span className="text-xs text-muted-foreground">
-                                    Current {fmtPrice(f.currentPrice)}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-3 h-0.5 bg-primary/50" />
-                                <span className="text-xs text-muted-foreground">
-                                    Mean target {fmtPrice(f.targetMeanPrice)}
-                                </span>
-                            </div>
+                        <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
+                            <span className="text-[11px] leading-none text-muted-foreground">
+                                Analyst consensus
+                            </span>
+                            <span
+                                className={cn(
+                                    'text-sm font-semibold leading-tight',
+                                    f?.targetMeanPrice == null
+                                        ? 'text-muted-foreground'
+                                        : 'text-primary'
+                                )}
+                            >
+                                {fmtPrice(f?.targetMeanPrice)}
+                            </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
+                            <span className="text-[11px] leading-none text-muted-foreground">
+                                Bull target
+                            </span>
+                            <span
+                                className={cn(
+                                    'text-sm font-semibold leading-tight',
+                                    f?.targetHighPrice == null
+                                        ? 'text-muted-foreground'
+                                        : 'text-primary'
+                                )}
+                            >
+                                {fmtPrice(f?.targetHighPrice)}
+                            </span>
                         </div>
                     </div>
-                )}
+                </div>
                 <Group title="Revenue &amp; Profitability" tiles={revenue} cols={3} />
                 <Group title="Valuation &amp; Returns" tiles={valuation} cols={4} />
                 <Group title="Cash Flow &amp; Debt" tiles={cashflow} cols={4} />

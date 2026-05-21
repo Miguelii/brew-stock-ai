@@ -74,30 +74,7 @@ export async function createSbServerClient(
  * Redirects unauthenticated users away from protected routes.
  * @param request - The incoming Next.js middleware request.
  */
-const BUILD_COOKIE = '_build_id'
-const CURRENT_BUILD = process.env.NEXT_PUBLIC_BUILD_TIMESTAMP ?? 'dev'
-
 export async function sbProxy(request: NextRequest) {
-    // If the build changed, wipe the Supabase session cookies so the user
-    // gets a fresh auth state on the next request.
-    const storedBuild = request.cookies.get(BUILD_COOKIE)?.value
-    if (storedBuild !== CURRENT_BUILD) {
-        const response = NextResponse.next({ request })
-        request.cookies
-            .getAll()
-            .filter((c) => c.name.startsWith('sb-'))
-            .forEach((c) => {
-                request.cookies.delete(c.name)
-                response.cookies.delete(c.name)
-            })
-        response.cookies.set(BUILD_COOKIE, CURRENT_BUILD, {
-            httpOnly: true,
-            sameSite: 'lax',
-            path: '/',
-        })
-        return response
-    }
-
     let supabaseResponse = NextResponse.next({
         request,
     })

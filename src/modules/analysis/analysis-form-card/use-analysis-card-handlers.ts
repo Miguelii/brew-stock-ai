@@ -4,6 +4,7 @@ import { trpc } from '@/server/trpc-client'
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { toastError } from '@/lib/toast-error'
 
 type Props = {
     form: UseFormReturn<FormValues>
@@ -38,13 +39,15 @@ export const useAnalysisCardHandlers = ({ form }: Props) => {
             const code = (error as { data?: { code?: string } })?.data?.code
 
             if (code === 'PAYMENT_REQUIRED') {
-                toast.error('Not enough credits.', {
-                    description: 'Purchase more credits to generate reports.',
-                })
+                toastError(
+                    'Not enough credits.',
+                    error,
+                    'Purchase more credits to generate reports.'
+                )
             } else if (code === 'INTERNAL_SERVER_ERROR') {
-                toast.error('Failed to deduct credits. Please try again.')
+                toastError('Failed to deduct credits.', error, 'Please try again later.')
             } else {
-                toast.error('Something went wrong. Please try again.')
+                toastError('Something went wrong.', error, 'Please try again later.')
             }
         }
     }

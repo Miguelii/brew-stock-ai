@@ -22,6 +22,7 @@ import { createCheckoutSession } from '@/services/tokens/create-checkout-session
 import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
 import { createConsentCookie } from '@/services/consent/create-consent-cookie'
 import { submitFeedback } from '@/services/feedback/submit-feedback'
+import { getLatestNews } from '@/services/analysis/get-latest-news'
 import {
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
     CONTACT_FORM_MAX_NAME_LENGTH,
@@ -279,6 +280,17 @@ export const appRouter = router({
                         Match.tag('SubmitFeedbackError', () => 'INTERNAL_SERVER_ERROR' as const),
                         Match.exhaustive
                     )
+            )
+        ),
+
+    getLatestNews: publicProcedure
+        .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
+        .query(({ input }) =>
+            runEffect(getLatestNews(input.ticker), 'getLatestNews', (error) =>
+                Match.value(error).pipe(
+                    Match.tag('LatestNewsError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.exhaustive
+                )
             )
         ),
 

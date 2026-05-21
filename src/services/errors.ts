@@ -7,6 +7,7 @@ type ServiceErrorFields = { cause: unknown; error_hash: ErrorCode }
 
 // Analysis
 export class AiGenerationError extends Data.TaggedError('AiGenerationError')<ServiceErrorFields> {}
+export class LatestNewsError extends Data.TaggedError('LatestNewsError')<ServiceErrorFields> {}
 export class YahooClientError extends Data.TaggedError('YahooClientError')<ServiceErrorFields> {}
 export class YahooInsightsError extends Data.TaggedError(
     'YahooInsightsError'

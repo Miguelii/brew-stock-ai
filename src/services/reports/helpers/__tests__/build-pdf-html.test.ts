@@ -50,7 +50,7 @@ describe('buildPdfHtml', () => {
 
     it('includes significant development when provided', () => {
         const stockData: StockData = {
-            ticker: 'AAPL',
+            id: 'AAPL',
             reports: null,
             scores: null,
             sig_dev: { headline: 'Apple announces new product', date: '2024-06-10' },
@@ -63,7 +63,7 @@ describe('buildPdfHtml', () => {
 
     it('includes news reports when provided', () => {
         const stockData: StockData = {
-            ticker: 'AAPL',
+            id: 'AAPL',
             reports: [
                 {
                     title: 'Q3 Results',
@@ -79,12 +79,12 @@ describe('buildPdfHtml', () => {
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Q3 Results')
         expect(html).toContain('Reuters')
-        expect(html).toContain('Media Mentions')
+        expect(html).toContain('Analyst Coverage')
     })
 
     it('includes scores section when provided', () => {
         const stockData: StockData = {
-            ticker: 'AAPL',
+            id: 'AAPL',
             reports: null,
             scores: {
                 company: { innovativeness: 0.9, hiring: 0.7, sustainability: 0.8 },
@@ -103,7 +103,7 @@ describe('buildPdfHtml', () => {
     it('renders without stockData', () => {
         const html = buildPdfHtml(baseParams)
         expect(html).not.toContain('Recent Significant Development')
-        expect(html).not.toContain('Media Mentions')
+        expect(html).not.toContain('Analyst Coverage')
         expect(html).not.toContain('Company vs Sector Scores')
     })
 
@@ -142,7 +142,7 @@ describe('buildFinancialsSection', () => {
     }
 
     const withFinancials = (financials: StockFinancials | null): StockData => ({
-        ticker: 'AAPL',
+        id: 'AAPL',
         reports: null,
         scores: null,
         sig_dev: null,

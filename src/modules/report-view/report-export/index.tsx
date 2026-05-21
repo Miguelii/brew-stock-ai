@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { trpc } from '@/server/trpc-client'
 import { DownloadIcon, Loader2Icon } from 'lucide-react'
-import { toast } from 'sonner'
+import { toastError } from '@/lib/toast-error'
 
 type Props = {
     reportId: string
@@ -23,8 +23,8 @@ export function ReportExport({ reportId }: Props) {
             a.remove()
             URL.revokeObjectURL(url)
         },
-        onError: () => {
-            toast.error('Failed to export PDF. Please try again.')
+        onError: (error) => {
+            toastError('Failed to export PDF.', error, 'Please try again later.')
         },
     })
 

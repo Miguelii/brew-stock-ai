@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { CookieIcon } from 'lucide-react'
 import { trpc } from '@/server/trpc-client'
-import { toast } from 'sonner'
+import { toastError } from '@/lib/toast-error'
 import Link from 'next/link'
 import { PromptCard } from '@/components/ui/prompt-card'
 import { CONSENT_COOKIE } from '@/lib/constants'
@@ -16,7 +16,8 @@ export function CookiePrompt() {
 
     const consentMutation = trpc.createConsentCookie.useMutation({
         onSuccess: () => setOpen(false),
-        onError: () => toast.error('Could not save your cookie preference. Please try again.'),
+        onError: (error) =>
+            toastError('Could not save your cookie preference.', error, 'Please try again later.'),
     })
 
     const handler = (allow: boolean) => {

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import type { StockReports } from '@/types/ReportDTO'
 
@@ -6,18 +6,21 @@ type Props = {
     news: StockReports[]
 }
 
-export function ReportLatestNews({ news }: Props) {
+export function ReportMediaMentions({ news }: Props) {
     const parsedDate = (item: string) => item.split('T').at(0)
 
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">Media Mentions</CardTitle>
+                <CardTitle className="text-base font-semibold">Analyst Coverage</CardTitle>
+                <CardDescription className="text-xs text-muted-foreground">
+                    Analyst reports and research coverage sourced via AI.
+                </CardDescription>
             </CardHeader>
             <CardContent className="p-0 px-5">
                 {news.length === 0 ? (
                     <p className="text-muted-foreground">
-                        Our AI couldn&apos;t find any recent news.
+                        Our AI couldn&apos;t find any recent analyst coverage.
                     </p>
                 ) : (
                     <ul>

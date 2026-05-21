@@ -1,3 +1,4 @@
+// oxlint-disable import/max-dependencies
 import type { Metadata } from 'next'
 import { ArrowLeftIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -8,16 +9,18 @@ import { ReportExport } from '@/modules/report-view/report-export'
 import { notFound } from 'next/navigation'
 import { Effect } from 'effect'
 import { getReportById } from '@/services/reports/get-report-by-id'
-import { cache } from 'react'
+import { cache, Suspense } from 'react'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { ReportTldrCard } from '@/modules/report-view/report-tldr-card'
 import { ReportSigDev } from '@/modules/report-view/report-sig-dev'
-import { ReportLatestNews } from '@/modules/report-view/report-latest-news'
+import { ReportMediaMentions } from '@/modules/report-view/report-media-mentions'
 import { ReportSectorScores } from '@/modules/report-view/report-sector-scores'
 import { ReportSectionNav } from '@/modules/report-view/report-section-nav'
 import { ReportFinancialsCard } from '@/modules/report-view/report-financials-card'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
+import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-server'
+import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-server/report-latest-news-card-skeleton'
 
 type Props = PageProps<'/reports/[id]'>
 
@@ -136,8 +139,14 @@ export default async function ReportsIdPage(props: Props) {
                     />
                 </section>
 
-                <section id="latest-news">
-                    <ReportLatestNews news={stockData?.reports ?? []} />
+                <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
+                    <section id="latest-news">
+                        <ReportLatestNewsServer ticker={stockData?.id} />
+                    </section>
+                </Suspense>
+
+                <section id="media-mentions">
+                    <ReportMediaMentions news={stockData?.reports ?? []} />
                 </section>
 
                 <section id="sector-scores">

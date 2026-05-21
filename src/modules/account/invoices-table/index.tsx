@@ -1,8 +1,8 @@
 'use client'
 
+import { formatAmount, formatDate } from '@/lib/formatters'
 import { trpc } from '@/server/trpc-client'
 import { ReceiptIcon } from 'lucide-react'
-import { formatAmount, formatDate } from '@/modules/account/invoices-table/utils'
 
 export function AccountInvoicesTable() {
     const { data: invoices = [], isLoading } = trpc.getInvoices.useQuery()

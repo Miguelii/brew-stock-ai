@@ -8,7 +8,8 @@ const SECTIONS = [
     { id: 'key-metrics', label: 'Key Metrics' },
     { id: 'analysis', label: 'Analysis' },
     { id: 'sig-dev', label: 'Sig. Dev.' },
-    { id: 'latest-news', label: 'Media Mentions' },
+    { id: 'latest-news', label: 'Latest News' },
+    { id: 'media-mentions', label: 'Analyst Coverage' },
     { id: 'sector-scores', label: 'Sector Scores' },
 ] as const
 

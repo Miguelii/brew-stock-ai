@@ -76,7 +76,7 @@ export type StockSigDev = {
 }
 
 export type StockData = {
-    ticker: string
+    id: string
     reports: StockReports[] | null
     scores: StockScores | null
     sig_dev: StockSigDev | null

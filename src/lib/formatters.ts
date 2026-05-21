@@ -31,3 +31,18 @@ export function fmtPrice(n: number | null | undefined): string {
 
 export const fmtDate = (d: string, month: 'long' | 'short' = 'long') =>
     new Date(d).toLocaleDateString('en-US', { year: 'numeric', month, day: 'numeric' })
+
+export function formatDate(ts: number): string {
+    return new Date(ts * 1000).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    })
+}
+
+export function formatAmount(amount: number, currency: string) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency.toUpperCase(),
+    }).format(amount / 100)
+}

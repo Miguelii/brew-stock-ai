@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CoinsIcon, ZapIcon, StarIcon, TrophyIcon, Loader2Icon } from 'lucide-react'
 import { toast } from 'sonner'
+import { toastError } from '@/lib/toast-error'
 import { cn } from '@/lib/utils'
 import { TokenPromo } from '@/modules/tokens/token-packages/token-promo'
 import { useTransition } from 'react'
@@ -78,8 +79,8 @@ export function TokenPackages({ showFree = false, showBuyButton = true, classNam
                 window.location.href = url
             })
         },
-        onError: () => {
-            toast.error('Failed to start checkout. Please try again.')
+        onError: (error) => {
+            toastError('Failed to start checkout.', error, 'Please try again later.')
         },
     })
 

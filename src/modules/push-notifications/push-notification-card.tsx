@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { BellIcon } from 'lucide-react'
 import { toast } from 'sonner'
+import { toastError } from '@/lib/toast-error'
 import { ClientEnv } from '@/env/client'
 import { trpc } from '@/server/trpc-client'
 import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY, SW_PATH } from '@/lib/constants'
@@ -30,7 +31,7 @@ export function PushNotificationCard() {
         },
         onError: (error) => {
             console.error(error)
-            toast.error('Could not enable notifications.')
+            toastError('Could not enable notifications.', error, 'Please try again later.')
         },
     })
 
@@ -68,7 +69,7 @@ export function PushNotificationCard() {
             })
         } catch (error) {
             console.error(error)
-            toast.error('Could not enable notifications. Check your browser permissions.')
+            toastError('Could not enable notifications.', error, 'Check your browser permissions.')
             setOpen(false)
         } finally {
             setIsLoading(false)

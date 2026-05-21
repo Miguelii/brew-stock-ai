@@ -14,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useContactForm, type ContactFormValues } from '@/modules/contact/use-contact-form'
 import { trpc } from '@/server/trpc-client'
 import { toast } from 'sonner'
+import { toastError } from '@/lib/toast-error'
 import { Loader2Icon } from 'lucide-react'
 import {
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
@@ -37,10 +38,8 @@ export function ContactForm({ name, email }: Props) {
                 description: 'Thanks for reaching out. We will reply to you as soon as possible.',
             })
             form.reset()
-        } catch {
-            toast.error('Something went wrong.', {
-                description: 'Please try again later.',
-            })
+        } catch (error) {
+            toastError('Something went wrong.', error, 'Please try again later.')
         }
     }
 

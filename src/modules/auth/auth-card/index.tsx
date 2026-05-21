@@ -16,7 +16,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { Separator } from '@/components/ui/separator'
 import { useEmailForm, type EmailFormValues } from '@/modules/auth/auth-card/use-email-form'
 import { useLastUsed } from '@/modules/auth/auth-card/use-last-used'
-import { toast } from 'sonner'
+import { toastError } from '@/lib/toast-error'
 import { AuthErrorHandler } from '@/modules/auth/auth-card/auth-error-handler'
 import { ENABLE_OTP_LOGIN, SB_OTP_TOKEN_LENGTH, SIGN_IN_GOOGLE_API_PATH } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -59,8 +59,8 @@ export function AuthCard({ returnTo }: Props) {
                 await sendOtp.mutateAsync({ email: values.email })
                 setEmail(values.email)
                 setStep('otp')
-            } catch {
-                toast.error('Failed to send code. Please try again.')
+            } catch (error) {
+                toastError('Failed to send code.', error, 'Please try again later.')
             }
         })
     }
@@ -71,8 +71,8 @@ export function AuthCard({ returnTo }: Props) {
                 await verifyOtp.mutateAsync({ email, token: otp })
                 saveLastUsed('email')
                 window.location.href = returnTo ?? '/analysis'
-            } catch {
-                toast.error('Invalid code. Please try again.')
+            } catch (error) {
+                toastError('Invalid code.', error, 'Please try again later.')
                 setOtp('')
             }
         })

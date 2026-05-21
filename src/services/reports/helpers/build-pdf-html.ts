@@ -202,7 +202,7 @@ function buildSigDevSection(sigDev: StockSigDev): string {
 function buildNewsSection(reports: StockReports[]): string {
     return `
     <div class="extra-section">
-        <div class="extra-section-title">Latest News</div>
+        <div class="extra-section-title">Media Mentions</div>
         <ul class="news-list">
             ${reports
                 .map(
@@ -232,7 +232,7 @@ const PDF_CSS = `
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #fbfbfd;
+            background: #ffffff;
             color: #262626;
             padding: 48px 56px;
             font-size: 14px;

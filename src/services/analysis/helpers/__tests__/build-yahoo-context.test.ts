@@ -129,7 +129,7 @@ describe('buildYahooContext', () => {
             ],
         }
         const result = buildYahooContext(data)
-        expect(result).toContain('**Latest News:**')
+        expect(result).toContain('**Media Mentions:**')
         expect(result).toContain('Q4 Earnings Beat — Reuters (2024-01-20)')
         expect(result).toContain('Revenue Up — Bloomberg (2024-01-18)')
     })

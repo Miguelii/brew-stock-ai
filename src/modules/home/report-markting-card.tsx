@@ -26,7 +26,7 @@ const reportSections = [
     },
     {
         icon: Newspaper,
-        title: 'Latest News',
+        title: 'Media Mentions',
         description:
             'A curated digest of recent headlines filtered for relevance, with context on how each story affects the investment thesis.',
         featured: false,

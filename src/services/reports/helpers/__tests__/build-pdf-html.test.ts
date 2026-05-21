@@ -79,7 +79,7 @@ describe('buildPdfHtml', () => {
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Q3 Results')
         expect(html).toContain('Reuters')
-        expect(html).toContain('Latest News')
+        expect(html).toContain('Media Mentions')
     })
 
     it('includes scores section when provided', () => {
@@ -103,7 +103,7 @@ describe('buildPdfHtml', () => {
     it('renders without stockData', () => {
         const html = buildPdfHtml(baseParams)
         expect(html).not.toContain('Recent Significant Development')
-        expect(html).not.toContain('Latest News')
+        expect(html).not.toContain('Media Mentions')
         expect(html).not.toContain('Company vs Sector Scores')
     })
 

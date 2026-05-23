@@ -39,14 +39,17 @@ export const viewport: Viewport = {
     height: 'device-height',
 }
 
+const META_TITLE = 'StockBrewAI | AI-Powered Stock Analysis'
+const META_DESCRIPTION =
+    'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.'
+
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
-        default: 'StockBrewAI — AI-Powered Stock Analysis',
+        default: META_TITLE,
         template: '%s | StockBrewAI',
     },
-    description:
-        'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
+    description: META_DESCRIPTION,
     keywords: [
         'AI stock analysis',
         'stock market AI',
@@ -73,20 +76,18 @@ export const metadata: Metadata = {
         url: siteUrl,
         siteName: 'StockBrewAI',
         title: {
-            default: 'StockBrewAI — AI-Powered Stock Analysis',
+            default: META_TITLE,
             template: '%s | StockBrewAI',
         },
-        description:
-            'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
+        description: META_DESCRIPTION,
     },
     twitter: {
         card: 'summary_large_image',
         title: {
-            default: 'StockBrewAI — AI-Powered Stock Analysis',
+            default: META_TITLE,
             template: '%s | StockBrewAI',
         },
-        description:
-            'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
+        description: META_DESCRIPTION,
     },
     alternates: {
         canonical: '/',

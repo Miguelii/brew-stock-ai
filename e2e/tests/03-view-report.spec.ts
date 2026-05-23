@@ -28,7 +28,7 @@ test.describe('View report page', () => {
         await expect(page.getByRole('button', { name: 'Summary' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Key Financial Metrics' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Full AI Report' })).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Sig. Dev.' })).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Happening Now' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Expert Coverage' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Sector Scores' })).toBeVisible()
     })

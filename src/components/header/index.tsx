@@ -36,7 +36,11 @@ export async function Header({ userPromise }: Props) {
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <Logo />
                 <div className="flex flex-row gap-5 items-center">
-                    <MobileMenu isAuthenticated={!!user} nav={navLinks} />
+                    <MobileMenu
+                        isAuthenticated={!!user}
+                        nav={navLinks}
+                        avatar_url={user?.user_metadata?.avatar_url}
+                    />
                     <div className="hidden md:flex items-center gap-5">
                         <NavLinks links={navLinks} />
                         {user ? (

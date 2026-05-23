@@ -24,14 +24,16 @@ function handle(req: IncomingMessage, res: ServerResponse) {
     // Consume request body (required even if unused, prevents socket hang)
     req.resume()
 
-    console.log({ url })
-
     if (url.startsWith('/auth/v1/user')) {
         return respond(res, MOCK_USER)
     }
 
     if (url.startsWith('/auth/v1/')) {
         return respond(res, {})
+    }
+
+    if (url.startsWith('/api/v1/company-news')) {
+        return respond(res, MOCK_NEWS_ITEMS)
     }
 
     if (url.startsWith('/rest/v1/reports')) {

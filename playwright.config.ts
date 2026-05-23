@@ -32,13 +32,18 @@ export default defineConfig({
     ],
     webServer: {
         // Port 3001 keeps E2E isolated from the dev server on 3000.
-        // Env vars point Next.js at the mock Supabase server started in globalSetup.
+        // Env vars point Next.js at the mock servers started in globalSetup.
+        // In CI the app is already built (separate step) so we use `pnpm start`
+        // for speed and to test the actual production bundle.
+        // Locally we use `pnpm dev` so no build step is needed.
         command: [
             'PORT=3001',
             'NEXT_SUPABASE_URL=http://localhost:54321',
             'NEXT_SUPABASE_PUBLISHABLE_KEY=test-publishable-key',
             'NEXT_SUPABASE_SERVICE_ROLE_KEY=test-service-key',
-            'pnpm dev',
+            'NEXT_FINNHUB_BASE_URL=http://localhost:54321/api/v1',
+            'NEXT_FINNHUB_API_KEY=test-key',
+            process.env.CI ? 'pnpm start' : 'pnpm dev',
         ].join(' '),
         url: 'http://localhost:3001',
         reuseExistingServer: !process.env.CI,

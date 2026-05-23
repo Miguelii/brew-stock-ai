@@ -37,7 +37,9 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     const form = useAnalysisForm(defaultTicker)
 
     const { onSubmit, isPending } = useAnalysisCardHandlers({ form })
-    const { credits, isLoading: creditsLoading } = useGetCredits()
+    const { credits, isLoading: creditsLoading } = useGetCredits({
+        enabled: isAuthenticated,
+    })
     const hasNoCredits = isAuthenticated && !creditsLoading && credits === 0
 
     const getButtonLabel = () => {

@@ -5,37 +5,37 @@ import { cn } from '@/lib/utils'
 const reportSections = [
     {
         icon: FileText,
-        title: 'Executive Summary',
+        title: 'Summary',
         description:
-            'A concise verdict on the stock — overall rating, key strengths, and the single most important risk to watch.',
-        featured: true,
+            'What the AI found — the overall verdict, top strengths, and the one risk you should know about.',
+        featured: false,
     },
     {
         icon: BarChart3,
-        title: 'Full Analysis',
+        title: 'Full AI Report',
         description:
-            'Deep dive into revenue trends, profit margins, cash flow, and balance sheet strength — the complete financial picture of the company.',
+            'A complete, in-depth analysis of the company — growth, profitability, cash flow, and financial health, explained in clear terms.',
         featured: false,
     },
     {
         icon: Zap,
-        title: 'Recent Significant Development',
+        title: "What's Happening Now",
         description:
-            'The most impactful recent event — earnings surprises, management changes, acquisitions, or regulatory shifts — and what it means for the stock.',
+            'The most notable recent event our AI identified — a big announcement, leadership change, or market-moving news — and why it matters.',
         featured: false,
     },
     {
         icon: Newspaper,
-        title: 'Analyst Coverage',
+        title: 'What Experts Are Saying',
         description:
-            'A curated digest of recent headlines filtered for relevance, with context on how each story affects the investment thesis.',
+            'A curated digest of recent reports from professional investors and analysts, filtered for relevance to this specific company.',
         featured: false,
     },
     {
         icon: Scale,
-        title: 'Company vs Sector Scores',
+        title: 'How It Compares',
         description:
-            "Side-by-side comparison of the company's key metrics against sector averages — showing where it leads, lags, or differentiates.",
+            'Side-by-side comparison of the company against others in the same industry — showing where it leads, lags, or stands out.',
         featured: false,
     },
 ] as const

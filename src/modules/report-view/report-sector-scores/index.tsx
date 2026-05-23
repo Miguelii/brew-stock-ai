@@ -4,6 +4,7 @@ import type { StockScores } from '@/types/ReportDTO'
 
 type ScoreRow = {
     label: string
+    description: string
     companyScore: number | null
     sectorAvg: number | null
 }
@@ -16,16 +17,19 @@ function toRows(scores: StockScores | null): ScoreRow[] {
     return [
         {
             label: 'Innovation',
+            description: 'How actively the company is developing new products and ideas',
             companyScore: scores?.company?.innovativeness ?? null,
             sectorAvg: scores?.sector.innovativeness ?? null,
         },
         {
-            label: 'Hiring',
+            label: 'Workforce Growth',
+            description: 'How much the company is hiring and expanding its team',
             companyScore: scores?.company?.hiring ?? null,
             sectorAvg: scores?.sector?.hiring ?? null,
         },
         {
             label: 'Sustainability',
+            description: 'How focused the company is on environmental and social responsibility',
             companyScore: scores?.company?.sustainability ?? null,
             sectorAvg: scores?.sector?.sustainability ?? null,
         },
@@ -38,14 +42,13 @@ export function ReportSectorScores({ scores }: Props) {
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">Company vs Sector Scores</CardTitle>
+                <CardTitle className="text-base font-semibold">How It Compares</CardTitle>
+                <p className="text-xs text-muted-foreground">
+                    How this company stacks up against others in the same industry (scale 0–1,
+                    higher is better)
+                </p>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
-                <p className="text-sm text-muted-foreground">
-                    Comparison of AI-derived metrics against industry sector averages (Scale 0.0 -
-                    1.0).
-                </p>
-
                 <div className="flex flex-col gap-5">
                     {rows.map((row) => (
                         <ScoreRowItem key={row.label} score={row} />
@@ -63,21 +66,24 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
 
     return (
         <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-semibold text-primary">{score.label}</span>
-                <span className="text-sm shrink-0">
-                    {isNA ? (
-                        <span className="text-muted-foreground">N/A</span>
-                    ) : (
-                        <span className="font-semibold text-primary">
-                            {score.companyScore!.toFixed(2)}
+            <div className="flex flex-col gap-0.5">
+                <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-primary">{score.label}</span>
+                    <span className="text-sm shrink-0">
+                        {isNA ? (
+                            <span className="text-muted-foreground">N/A</span>
+                        ) : (
+                            <span className="font-semibold text-primary">
+                                {score.companyScore!.toFixed(2)}
+                            </span>
+                        )}
+                        <span className="text-muted-foreground font-normal">
+                            {' '}
+                            vs {score.sectorAvg !== null ? score.sectorAvg.toFixed(2) : 'N/A'}
                         </span>
-                    )}
-                    <span className="text-muted-foreground font-normal">
-                        {' '}
-                        vs {score.sectorAvg !== null ? score.sectorAvg.toFixed(2) : 'N/A'}
                     </span>
-                </span>
+                </div>
+                <span className="text-[11px] text-muted-foreground">{score.description}</span>
             </div>
 
             {/* Track */}
@@ -119,14 +125,14 @@ function ScoreLegend() {
         <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-1.5">
                 <div className="size-2.5 rounded-full bg-accent-blue" />
-                <span className="text-xs text-muted-foreground">Company</span>
+                <span className="text-xs text-muted-foreground">This company</span>
             </div>
 
             <span className="text-xs text-muted-foreground">|</span>
 
             <div className="flex items-center gap-1.5">
                 <div className="size-2.5 rounded-full bg-primary/30" />
-                <span className="text-xs text-muted-foreground">Sector Avg</span>
+                <span className="text-xs text-muted-foreground">Sector average</span>
             </div>
 
             <span className="text-xs text-muted-foreground">|</span>
@@ -139,7 +145,7 @@ function ScoreLegend() {
                             'repeating-linear-gradient(45deg, #d1d5db 0px, #d1d5db 3px, transparent 3px, transparent 8px)',
                     }}
                 />
-                <span className="text-xs text-muted-foreground">Data N/A</span>
+                <span className="text-xs text-muted-foreground">Data not available</span>
             </div>
         </div>
     )

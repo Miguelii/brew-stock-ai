@@ -12,7 +12,7 @@ export function CreditsDisplay() {
         <Link
             href="/tokens"
             prefetch={false}
-            className="flex items-center gap-1.5 px-3 h-9 rounded-sm border border-border bg-card text-sm tabular-nums hover:bg-muted transition-colors"
+            className="flex items-center gap-1.5 px-3 h-9 rounded-none border border-border bg-card text-sm tabular-nums hover:bg-muted transition-colors"
         >
             <CoinsIcon className="w-4 h-4 text-accent-blue shrink-0" />
             {isLoading ? (

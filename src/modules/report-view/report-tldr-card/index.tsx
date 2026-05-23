@@ -21,7 +21,7 @@ export function ReportTldrCard({ report }: Props) {
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                     <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-bold tracking-widest uppercase bg-accent-blue-light text-accent-blue">
-                        TL;DR
+                        Summary of what our AI found:
                     </span>
                 </CardTitle>
             </CardHeader>

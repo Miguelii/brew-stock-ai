@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const SECTIONS = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'key-metrics', label: 'Key Metrics' },
-    { id: 'analysis', label: 'Analysis' },
+    { id: 'overview', label: 'Summary' },
+    { id: 'key-metrics', label: 'Key Financial Metrics' },
+    { id: 'analysis', label: 'Full AI Report' },
     { id: 'sig-dev', label: 'Sig. Dev.' },
     { id: 'latest-news', label: 'Latest News' },
-    { id: 'media-mentions', label: 'Analyst Coverage' },
+    { id: 'media-mentions', label: 'Expert Coverage' },
     { id: 'sector-scores', label: 'Sector Scores' },
 ] as const
 

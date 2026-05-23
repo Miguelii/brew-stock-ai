@@ -18,7 +18,7 @@ export function ReportFinancialsCard({ financials }: Props) {
             ? (((f.targetMeanPrice - f.currentPrice) / f.currentPrice) * 100).toFixed(1)
             : null
 
-    const revenue: MetricTile[] = [
+    const growthStory: MetricTile[] = [
         { label: 'Total Revenue', value: fmtLarge(f?.totalRevenue) },
         {
             label: 'Revenue Growth',
@@ -32,7 +32,12 @@ export function ReportFinancialsCard({ financials }: Props) {
             colored: true,
             rawValue: f?.earningsGrowth ?? null,
         },
-        { label: 'EBITDA', value: fmtLarge(f?.ebitda), colored: true, rawValue: f?.ebitda ?? null },
+        {
+            label: 'Operating Profit',
+            value: fmtLarge(f?.ebitda),
+            colored: true,
+            rawValue: f?.ebitda ?? null,
+        },
         {
             label: 'Profit Margin',
             value: fmtPct(f?.profitMargins),
@@ -47,23 +52,44 @@ export function ReportFinancialsCard({ financials }: Props) {
         },
     ]
 
-    const valuation: MetricTile[] = [
-        { label: 'Market Cap', value: fmtLarge(f?.marketCap) },
-        { label: 'Enterprise Value', value: fmtLarge(f?.enterpriseValue) },
-        { label: 'P/E (TTM)', value: fmtX(f?.trailingPE) },
-        { label: 'Forward P/E', value: fmtX(f?.forwardPE) },
-        { label: 'Price/Book', value: fmtX(f?.priceToBook) },
-        { label: 'Beta', value: fmtNum(f?.beta) },
-        { label: 'Dividend Yield', value: fmtPct(f?.dividendYield) },
+    const worthIt: MetricTile[] = [
         {
-            label: 'ROE',
+            label: 'Company Value',
+            value: fmtLarge(f?.marketCap),
+        },
+        {
+            label: 'Total Value incl. Debt',
+            value: fmtLarge(f?.enterpriseValue),
+        },
+        {
+            label: 'Price / Earnings',
+            value: fmtX(f?.trailingPE),
+        },
+        {
+            label: 'Expected P/E',
+            value: fmtX(f?.forwardPE),
+        },
+        {
+            label: 'Price vs Assets',
+            value: fmtX(f?.priceToBook),
+        },
+        {
+            label: 'Market Volatility',
+            value: fmtNum(f?.beta),
+        },
+        {
+            label: 'Dividend Yield',
+            value: fmtPct(f?.dividendYield),
+        },
+        {
+            label: 'Return on Equity',
             value: fmtPct(f?.returnOnEquity),
             colored: true,
             rawValue: f?.returnOnEquity ?? null,
         },
     ]
 
-    const cashflow: MetricTile[] = [
+    const financialHealth: MetricTile[] = [
         {
             label: 'Free Cash Flow',
             value: fmtLarge(f?.freeCashflow),
@@ -76,8 +102,14 @@ export function ReportFinancialsCard({ financials }: Props) {
             colored: true,
             rawValue: f?.operatingCashflow ?? null,
         },
-        { label: 'Total Debt', value: fmtLarge(f?.totalDebt) },
-        { label: 'Debt/Equity', value: fmtNum(f?.debtToEquity) },
+        {
+            label: 'Total Debt',
+            value: fmtLarge(f?.totalDebt),
+        },
+        {
+            label: 'Debt Level',
+            value: fmtNum(f?.debtToEquity),
+        },
     ]
 
     const hasRangeData =
@@ -89,10 +121,10 @@ export function ReportFinancialsCard({ financials }: Props) {
                 <CardTitle className="text-base font-semibold">Key Financial Metrics</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-                {/* 52-Week Range */}
+                {/* 52-Week Price Range */}
                 <div className="flex flex-col gap-3">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        52-Week Range
+                        Where the stock has traded in the last year
                     </span>
                     <RangeBar
                         low={f?.fiftyTwoWeekLow}
@@ -106,7 +138,7 @@ export function ReportFinancialsCard({ financials }: Props) {
                             <div className="flex items-center gap-1.5">
                                 <div className="w-3 h-0.5 bg-accent-blue" />
                                 <span className="text-xs text-muted-foreground">
-                                    Current {fmtPrice(f!.currentPrice)}
+                                    Current price {fmtPrice(f!.currentPrice)}
                                 </span>
                             </div>
                         ) : (
@@ -118,12 +150,14 @@ export function ReportFinancialsCard({ financials }: Props) {
                                             'repeating-linear-gradient(45deg, #d1d5db 0px, #d1d5db 3px, transparent 3px, transparent 8px)',
                                     }}
                                 />
-                                <span className="text-xs text-muted-foreground">Data N/A</span>
+                                <span className="text-xs text-muted-foreground">
+                                    Data not available
+                                </span>
                             </div>
                         )}
                         {f?.beta != null && (
                             <span className="text-xs text-muted-foreground">
-                                Beta {fmtNum(f.beta)}
+                                Volatility (Beta) {fmtNum(f.beta)}
                             </span>
                         )}
                     </div>
@@ -133,7 +167,7 @@ export function ReportFinancialsCard({ financials }: Props) {
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            Analyst Price Targets
+                            What analysts think the stock is worth
                         </span>
                         {upside !== null && (
                             <span
@@ -152,7 +186,7 @@ export function ReportFinancialsCard({ financials }: Props) {
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
                             <span className="text-[11px] leading-none text-muted-foreground">
-                                Bear target
+                                Lowest analyst target
                             </span>
                             <span
                                 className={cn(
@@ -167,7 +201,7 @@ export function ReportFinancialsCard({ financials }: Props) {
                         </div>
                         <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
                             <span className="text-[11px] leading-none text-muted-foreground">
-                                Analyst consensus
+                                Average analyst target
                             </span>
                             <span
                                 className={cn(
@@ -182,7 +216,7 @@ export function ReportFinancialsCard({ financials }: Props) {
                         </div>
                         <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
                             <span className="text-[11px] leading-none text-muted-foreground">
-                                Bull target
+                                Highest analyst target
                             </span>
                             <span
                                 className={cn(
@@ -197,9 +231,10 @@ export function ReportFinancialsCard({ financials }: Props) {
                         </div>
                     </div>
                 </div>
-                <Group title="Revenue &amp; Profitability" tiles={revenue} cols={3} />
-                <Group title="Valuation &amp; Returns" tiles={valuation} cols={4} />
-                <Group title="Cash Flow &amp; Debt" tiles={cashflow} cols={4} />
+
+                <Group title="Revenue &amp; Profitability" tiles={growthStory} cols={3} />
+                <Group title="Valuation &amp; Returns" tiles={worthIt} cols={4} />
+                <Group title="Financial Health" tiles={financialHealth} cols={4} />
             </CardContent>
         </Card>
     )

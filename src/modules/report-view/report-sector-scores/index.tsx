@@ -44,8 +44,8 @@ export function ReportSectorScores({ scores }: Props) {
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">How It Compares</CardTitle>
                 <p className="text-xs text-muted-foreground">
-                    How this company stacks up against others in the same industry (scale 0–1,
-                    higher is better)
+                    How this company stacks up against others in the same sector (scale 0–1, higher
+                    is better)
                 </p>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">

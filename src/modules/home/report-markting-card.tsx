@@ -35,7 +35,7 @@ const reportSections = [
         icon: Scale,
         title: 'How It Compares',
         description:
-            'Side-by-side comparison of the company against others in the same industry — showing where it leads, lags, or stands out.',
+            'Side-by-side comparison of the company against others in the same sector — showing where it leads, lags, or stands out.',
         featured: false,
     },
 ] as const

@@ -2,8 +2,9 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbAdminClient } from '@/lib/utils.server'
-import { AdminStatsError } from '@/services/errors'
+import { AdminStatsError, UnauthenticatedError } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
+import { isSuperAdmin } from '@/services/admin/is-super-admin'
 import type { ReportStatus } from '@/types/ReportDTO'
 import type { PropmptsEnum } from '@/types/PropmptsEnum'
 
@@ -17,7 +18,11 @@ export type AdminReport = {
     ticker: string
 }
 
-export const getAdminReports = Effect.fn('getAdminReports')(function* () {
+export const getAdminReports = Effect.fn('getAdminReports')(function* (callerEmail: string) {
+    if (!isSuperAdmin(callerEmail)) {
+        return yield* new UnauthenticatedError({ error_hash: ErrorCode.ADMIN_UNAUTH })
+    }
+
     const supabase = createSbAdminClient()
 
     const { data, error } = yield* Effect.tryPromise({

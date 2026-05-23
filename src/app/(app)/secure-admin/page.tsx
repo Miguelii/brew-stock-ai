@@ -112,12 +112,16 @@ export default async function SecureAdminPage() {
 
     if (!isSuperAdmin(user?.email)) return notFound()
 
+    const email = user!.email!
+
     const [stats, users, reports] = await Effect.runPromise(
         Effect.all(
             [
-                getAdminStats().pipe(Effect.catchAll(() => Effect.succeed(EMPTY_STATS))),
-                getAdminUsers().pipe(Effect.catchAll(() => Effect.succeed([] as AdminUser[]))),
-                getAdminReports().pipe(Effect.catchAll(() => Effect.succeed([] as AdminReport[]))),
+                getAdminStats(email).pipe(Effect.catchAll(() => Effect.succeed(EMPTY_STATS))),
+                getAdminUsers(email).pipe(Effect.catchAll(() => Effect.succeed([] as AdminUser[]))),
+                getAdminReports(email).pipe(
+                    Effect.catchAll(() => Effect.succeed([] as AdminReport[]))
+                ),
             ],
             { concurrency: 'unbounded' }
         )

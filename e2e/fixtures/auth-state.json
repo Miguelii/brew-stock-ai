@@ -1,0 +1,15 @@
+{
+    "cookies": [
+        {
+            "name": "sb-localhost-auth-token.0",
+            "value": "base64-eyJhY2Nlc3NfdG9rZW4iOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKemRXSWlPaUp3ZHkxMFpYTjBMWFZ6WlhJdGFXUWlMQ0psYldGcGJDSTZJbkJzWVhsM2NtbG5hSFJBZEdWemRDNXNiMk5oYkNJc0luSnZiR1VpT2lKaGRYUm9aVzUwYVdOaGRHVmtJaXdpWVhWa0lqb2lZWFYwYUdWdWRHbGpZWFJsWkNJc0ltVjRjQ0k2TVRneE1UQTVNVFF4Tm4wLmJXOWphdyIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJleHBpcmVzX2luIjozMTUzNjAwMCwiZXhwaXJlc19hdCI6MTgxMTA5MTQxNiwicmVmcmVzaF90b2tlbiI6Im1vY2stcmVmcmVzaC10b2tlbiIsInVzZXIiOnsiaWQiOiJwdy10ZXN0LXVzZXItaWQiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJlbWFpbCI6InBsYXl3cmlnaHRAdGVzdC5sb2NhbCJ9fQ",
+            "domain": "localhost",
+            "path": "/",
+            "expires": 1811091416,
+            "httpOnly": false,
+            "secure": false,
+            "sameSite": "Lax"
+        }
+    ],
+    "origins": []
+}

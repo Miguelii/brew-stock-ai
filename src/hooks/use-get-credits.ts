@@ -7,7 +7,11 @@ type Props = {
 export const useGetCredits = (props: Props = {}) => {
     const { enabled } = props
 
-    const { isLoading, data: credits = 0 } = trpc.getCredits.useQuery(undefined, {
+    const {
+        isLoading,
+        isSuccess,
+        data: credits = 0,
+    } = trpc.getCredits.useQuery(undefined, {
         staleTime: 0,
         gcTime: 0,
         enabled: enabled ?? undefined,
@@ -16,5 +20,6 @@ export const useGetCredits = (props: Props = {}) => {
     return {
         credits,
         isLoading,
+        isSuccess,
     }
 }

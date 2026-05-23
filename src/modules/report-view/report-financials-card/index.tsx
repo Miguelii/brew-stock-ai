@@ -165,7 +165,7 @@ export function ReportFinancialsCard({ financials }: Props) {
 
                 {/* Analyst Price Targets */}
                 <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0">
                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                             What analysts think the stock is worth
                         </span>
@@ -183,7 +183,7 @@ export function ReportFinancialsCard({ financials }: Props) {
                             </span>
                         )}
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
                             <span className="text-[11px] leading-none text-muted-foreground">
                                 Lowest analyst target

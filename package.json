@@ -16,7 +16,10 @@
         "knip": "knip",
         "prepare": "husky",
         "trigger:deploy": "pnpm dlx trigger.dev@latest deploy",
-        "trigger:dev": "pnpm dlx trigger.dev@latest dev"
+        "trigger:dev": "pnpm dlx trigger.dev@latest dev",
+        "e2e": "bash e2e/run.sh",
+        "e2e:ui": "bash e2e/run.sh --ui",
+        "e2e:debug": "bash e2e/run.sh --debug"
     },
     "dependencies": {
         "@ai-sdk/anthropic": "^3.0.71",
@@ -61,6 +64,7 @@
         "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@playwright/test": "^1.60.0",
         "@tailwindcss/postcss": "^4",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.1",
@@ -78,5 +82,6 @@
         "typescript": "^6",
         "vite-plus": "^0.1.19",
         "vitest": "^4.1.5"
-    }
+    },
+    "packageManager": "pnpm@10.24.0"
 }

@@ -9,5 +9,5 @@
         "src/env/client.ts",
         "src/lib/utils.ts"
     ],
-    "ignore": ["src/components/ui/**"]
+    "ignore": ["src/components/ui/**", "e2e/**"]
 }

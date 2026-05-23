@@ -1,0 +1,28 @@
+name: E2E Tests
+
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    NEXT_SUPABASE_URL: http://localhost:54321
+    NEXT_SUPABASE_PUBLISHABLE_KEY: test-publishable-key
+    NEXT_SUPABASE_SERVICE_ROLE_KEY: test-service-key
+    NEXT_FINNHUB_BASE_URL: http://localhost:54321/api/v1
+    NEXT_FINNHUB_API_KEY: test-key
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: BGiSpRcyyWiwlesjTWooXl
+    NEXT_ANTHROPIC_AI_KEY: sk-test
+    VAPID_PRIVATE_KEY: vapid-test
+
+jobs:
+    e2e:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: ./.github/actions/setup
+            - run: pnpm exec playwright install --with-deps chromium
+            - run: pnpm build
+            - run: pnpm e2e

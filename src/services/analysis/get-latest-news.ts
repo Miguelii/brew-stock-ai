@@ -16,7 +16,7 @@ const fetchLatestNewsFn = (ticker: string) =>
             from.setFullYear(from.getFullYear() - 1)
 
             const fmt = (d: Date) => d.toISOString().split('T')[0]
-            const url = `https://finnhub.io/api/v1/company-news?symbol=${encodeURIComponent(ticker)}&from=${fmt(from)}&to=${fmt(to)}&token=${ServerEnv.NEXT_FINNHUB_API_KEY}`
+            const url = `${ServerEnv.NEXT_FINNHUB_BASE_URL}/company-news?symbol=${encodeURIComponent(ticker)}&from=${fmt(from)}&to=${fmt(to)}&token=${ServerEnv.NEXT_FINNHUB_API_KEY}`
 
             const raw = await fetch(url).then((res) => res.json())
 

@@ -14,9 +14,10 @@ export function ReportSigDev({ headline, date }: Props) {
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">
-                    Recent Significant Development
-                </CardTitle>
+                <CardTitle className="text-base font-semibold">What&apos;s Happening Now</CardTitle>
+                <p className="text-xs text-muted-foreground">
+                    The most notable recent event our AI identified for this company
+                </p>
             </CardHeader>
             <CardContent className="flex flex-col md:flex-row gap-4 md:justify-between">
                 <p

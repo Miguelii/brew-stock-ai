@@ -12,9 +12,9 @@ export function ReportMediaMentions({ news }: Props) {
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">Analyst Coverage</CardTitle>
+                <CardTitle className="text-base font-semibold">What Experts Are Saying</CardTitle>
                 <CardDescription className="text-xs text-muted-foreground">
-                    Analyst reports and research coverage sourced via AI.
+                    Recent reports and research from professional investors and analysts
                 </CardDescription>
             </CardHeader>
             <CardContent className="p-0 px-5">

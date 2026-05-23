@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input'
 import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAnalysisCardHandlers } from '@/modules/analysis/analysis-form-card/use-analysis-card-handlers'
+import { useGetCredits } from '@/hooks/use-get-credits'
 
 type Props = {
     isAuthenticated: boolean
@@ -36,6 +37,10 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     const form = useAnalysisForm(defaultTicker)
 
     const { onSubmit, isPending } = useAnalysisCardHandlers({ form })
+    const { credits, isLoading: creditsLoading } = useGetCredits({
+        enabled: isAuthenticated,
+    })
+    const hasNoCredits = isAuthenticated && !creditsLoading && credits === 0
 
     const getButtonLabel = () => {
         if (!isAuthenticated) {
@@ -43,6 +48,15 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                 <>
                     <FileChartLineIcon className="size-4" />
                     Sign In to generate
+                </>
+            )
+        }
+
+        if (hasNoCredits) {
+            return (
+                <>
+                    <CoinsIcon className="size-4" />
+                    Buy tokens to generate
                 </>
             )
         }
@@ -166,14 +180,17 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                         />
 
                         <Button
-                            type={isAuthenticated ? 'submit' : 'button'}
+                            type={isAuthenticated && !hasNoCredits ? 'submit' : 'button'}
                             disabled={isPending}
                             className="h-11! w-full gap-2 cursor-pointer"
                             onClick={() => {
-                                if (!isAuthenticated)
+                                if (!isAuthenticated) {
                                     router.push(
                                         `${AUTH_PAGE_PATH}?returnTo=${encodeURIComponent(pathname)}`
                                     )
+                                } else if (hasNoCredits) {
+                                    router.push('/tokens')
+                                }
                             }}
                         >
                             {getButtonLabel()}

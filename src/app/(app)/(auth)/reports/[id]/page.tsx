@@ -21,6 +21,7 @@ import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-server'
 import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-server/report-latest-news-card-skeleton'
+import { PROMPT_OPTIONS } from '@/lib/constants'
 
 type Props = PageProps<'/reports/[id]'>
 
@@ -84,6 +85,8 @@ export default async function ReportsIdPage(props: Props) {
 
     const META_URL = `${SITE_URL}/reports/${report.id}`
 
+    const reportTypeLabel = PROMPT_OPTIONS?.find((o) => o.type === report.type)?.label
+
     return (
         <>
             <BreadcrumbSchema
@@ -103,8 +106,13 @@ export default async function ReportsIdPage(props: Props) {
                     </Link>
 
                     <div className="flex flex-col gap-6 md:gap-0 items-start md:flex-row w-full justify-between md:items-center">
-                        <div className="space-y-1">
-                            <h1 className="text-3xl font-bold tracking-tight text-accent-blue font-mono">
+                        <div className="space-y-3">
+                            {reportTypeLabel && (
+                                <span className="inline-flex items-center rounded px-2 py-1 text-xs font-semibold bg-accent-blue-light text-accent-blue">
+                                    {reportTypeLabel}
+                                </span>
+                            )}
+                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-accent-blue font-mono">
                                 {report.stock}
                             </h1>
                             <p className="text-sm text-muted-foreground">

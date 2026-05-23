@@ -11,13 +11,15 @@ import { useLogout } from '@/hooks/use-logout'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 import { CreditsDisplay } from '@/components/header/credits-display'
 import { LoginLink } from '@/components/header/nav-links'
+import Image from 'next/image'
 
 type Props = {
     nav: NavLink[]
     isAuthenticated: boolean
+    avatar_url?: string
 }
 
-export function MobileMenu({ nav, isAuthenticated }: Props) {
+export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
     const [open, setOpen] = useState(false)
 
     const logout = useLogout()
@@ -95,7 +97,18 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                                         prefetch={false}
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-primary transition-colors hover:bg-muted"
                                     >
-                                        <UserIcon size={15} className="text-muted-foreground" />
+                                        {avatar_url ? (
+                                            <Image
+                                                src={avatar_url}
+                                                alt="Profile"
+                                                className="h-5 w-5 object-cover bg-background rounded-full"
+                                                referrerPolicy="no-referrer"
+                                                width={20}
+                                                height={20}
+                                            />
+                                        ) : (
+                                            <UserIcon size={16} className="text-muted-foreground" />
+                                        )}
                                         Account
                                     </Link>
                                 </DrawerClose>
@@ -104,7 +117,7 @@ export function MobileMenu({ nav, isAuthenticated }: Props) {
                                     disabled={logout.isPending}
                                     className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-primary transition-colors hover:bg-muted"
                                 >
-                                    <LogOut size={15} />
+                                    <LogOut size={16} />
                                     {logout.isPending ? 'Logging out…' : 'Logout'}
                                 </button>
                             </div>

@@ -11,11 +11,13 @@ export function Tile({ label, value, colored, rawValue }: MetricTile) {
     const colorClass = colored && !isNA ? signColor(rawValue ?? null) : ''
 
     return (
-        <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
-            <span className="text-[11px] leading-none text-muted-foreground">{label}</span>
+        <div className="group flex flex-col gap-1 p-3 bg-muted/40 rounded-sm overflow-hidden">
+            <span className="text-[11px] leading-none text-muted-foreground flex items-center gap-1">
+                {label}
+            </span>
             <span
                 className={cn(
-                    'text-sm font-semibold leading-tight',
+                    'text-sm font-semibold leading-tight transition-transform duration-300 group-hover:scale-[1.02] origin-left',
                     isNA ? 'text-muted-foreground' : colorClass || 'text-primary'
                 )}
             >

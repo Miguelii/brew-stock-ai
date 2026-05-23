@@ -19,6 +19,7 @@ jobs:
         name: Lint & Knip
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
             - run: pnpm lint
             - run: pnpm knip
@@ -27,6 +28,7 @@ jobs:
         name: Typecheck
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
             - run: pnpm build
             - run: pnpm typecheck
@@ -35,6 +37,7 @@ jobs:
         name: Unit Tests
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
             - run: pnpm test
 
@@ -42,5 +45,6 @@ jobs:
         name: Build
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
             - run: pnpm build

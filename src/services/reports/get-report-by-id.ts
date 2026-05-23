@@ -6,6 +6,7 @@ import { CreateSbClientError, GetReportByIdError, UnauthenticatedError } from '@
 import { ErrorCode } from '@/services/error-codes'
 import type { ReportDTO, ReportWithStockData, StockData } from '@/types/ReportDTO'
 import { getSession } from '@/services/auth/get-session'
+import { isSuperAdmin } from '@/services/admin/is-super-admin'
 
 export const getReportById = Effect.fn('getReportById')(function* (id: ReportDTO['id']) {
     const supabase = yield* Effect.tryPromise({
@@ -20,9 +21,13 @@ export const getReportById = Effect.fn('getReportById')(function* (id: ReportDTO
         return yield* new UnauthenticatedError({ error_hash: ErrorCode.REPORT_BY_ID_UNAUTH })
     }
 
+    const isAdmin = isSuperAdmin(user?.email)
+
     const { data: report, error } = yield* Effect.tryPromise({
-        try: () =>
-            supabase.from('reports').select('*').eq('id', id).eq('user_id', user.id).single(),
+        try: () => {
+            const query = supabase.from('reports').select('*').eq('id', id)
+            return isAdmin ? query.single() : query.eq('user_id', user.id).single()
+        },
         catch: (cause) =>
             new GetReportByIdError({ cause, error_hash: ErrorCode.REPORT_BY_ID_FETCH }),
     })

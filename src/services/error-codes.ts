@@ -116,6 +116,9 @@ export enum ErrorCode {
     FEEDBACK_SUBMIT_INSERT = 'e8kv3m1p',
     FEEDBACK_SUBMIT_INSERT_ERR = 'z6xt9j4c',
 
+    // Admin
+    ADMIN_STATS_FETCH = 'admn_s7f3',
+
     // Consent
     CONSENT_COOKIE_CREATE = 't1yj6r9b',
 

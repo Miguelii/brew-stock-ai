@@ -5,7 +5,6 @@ on:
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    # Shared across build and test steps
     NEXT_SUPABASE_URL: http://localhost:54321
     NEXT_SUPABASE_PUBLISHABLE_KEY: test-publishable-key
     NEXT_SUPABASE_SERVICE_ROLE_KEY: test-service-key
@@ -16,105 +15,32 @@ env:
     VAPID_PRIVATE_KEY: vapid-test
 
 jobs:
-    # Lint and dead-code checks — no build needed, runs fast
     lint:
         name: Lint & Knip
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.24.0
-
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: pnpm
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Lint
-              run: pnpm lint
-
-            - name: Knip
-              run: pnpm knip
+            - uses: ./.github/actions/setup
+            - run: pnpm lint
+            - run: pnpm knip
 
     typecheck:
         name: Typecheck
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.24.0
-
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: pnpm
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Build
-              run: pnpm build
-
-            - name: Typecheck
-              run: pnpm typecheck
+            - uses: ./.github/actions/setup
+            - run: pnpm build
+            - run: pnpm typecheck
 
     unit:
         name: Unit Tests
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.24.0
-
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: pnpm
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Unit tests
-              run: pnpm test
+            - uses: ./.github/actions/setup
+            - run: pnpm test
 
     build:
         name: Build
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.24.0
-
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: pnpm
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Build
-              run: pnpm build
+            - uses: ./.github/actions/setup
+            - run: pnpm build

@@ -47,16 +47,26 @@ function handle(req: IncomingMessage, res: ServerResponse) {
     respond(res, {})
 }
 
-export function startMockSupabase(port = 54321): Promise<Server> {
+export function startMockSupabase(port = 54321): Promise<Server | null> {
     return new Promise((resolve, reject) => {
         const server = createServer(handle)
-        server.on('error', reject)
+        server.on('error', (err: NodeJS.ErrnoException) => {
+            if (err.code === 'EADDRINUSE') {
+                // Port already occupied — a previous session left the server running.
+                // Treat this as success so globalSetup doesn't block UI mode from showing tests.
+                console.warn(`[mock-server] Port ${port} already in use — reusing existing server`)
+                resolve(null)
+            } else {
+                reject(err)
+            }
+        })
         server.listen(port, '127.0.0.1', () => resolve(server))
     })
 }
 
 export function stopMockSupabase(server: Server): Promise<void> {
     return new Promise((resolve, reject) => {
+        server.closeAllConnections()
         server.close((err) => (err ? reject(err) : resolve()))
     })
 }

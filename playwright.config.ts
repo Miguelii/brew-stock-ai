@@ -1,4 +1,13 @@
 import { defineConfig, devices } from '@playwright/test'
+import { existsSync, writeFileSync, mkdirSync } from 'node:fs'
+
+// Ensure auth-state.json always exists so Playwright can load the config in --ui mode
+// before globalSetup has had a chance to generate it.
+const AUTH_STATE_PATH = './e2e/fixtures/auth-state.json'
+if (!existsSync(AUTH_STATE_PATH)) {
+    mkdirSync('./e2e/fixtures', { recursive: true })
+    writeFileSync(AUTH_STATE_PATH, JSON.stringify({ cookies: [], origins: [] }, null, 2))
+}
 
 export default defineConfig({
     testDir: './e2e/tests',
@@ -11,7 +20,7 @@ export default defineConfig({
     reporter: [['list'], ['html', { open: 'never' }]],
     use: {
         baseURL: 'http://localhost:3001',
-        storageState: './e2e/fixtures/auth-state.json',
+        storageState: AUTH_STATE_PATH,
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
     },

@@ -33,3 +33,7 @@ jobs:
 
             - name: Run E2E tests
               run: pnpm e2e
+              env:
+                  NEXT_PUBLIC_VAPID_PUBLIC_KEY: 'BGiSpRcyyWiwlesjTWooXl'
+                  NEXT_ANTHROPIC_AI_KEY: 'sk-test'
+                  VAPID_PRIVATE_KEY: 'vapid-test-private'

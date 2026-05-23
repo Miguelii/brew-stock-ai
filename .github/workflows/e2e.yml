@@ -31,8 +31,5 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Build app
-              run: pnpm build
-
             - name: Run E2E tests
               run: pnpm e2e

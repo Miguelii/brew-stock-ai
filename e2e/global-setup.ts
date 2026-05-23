@@ -47,7 +47,22 @@ function makeSessionCookieValue(accessToken: string): string {
 
 export default async function globalSetup() {
     const server = await startMockSupabase()
-    ;(globalThis as unknown as Record<string, unknown>).__MOCK_SERVER__ = server
+
+    if (server) {
+        ;(globalThis as unknown as Record<string, unknown>).__MOCK_SERVER__ = server
+
+        // Close the server immediately on SIGINT (Ctrl+C) or SIGTERM without
+        // waiting for keep-alive connections to drain on their own.
+        // process.once ensures we don't shadow Playwright's own signal handler —
+        // ours fires first, closes the socket, then Playwright continues its shutdown.
+        const forceClose = () => {
+            server.closeAllConnections()
+            server.close()
+        }
+        process.once('SIGINT', forceClose)
+        process.once('SIGTERM', forceClose)
+    }
+
     console.log('[globalSetup] Mock Supabase server listening on http://localhost:54321')
 
     const accessToken = makeAccessToken()

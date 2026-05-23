@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse, type Server } from 'node:http'
-import { MOCK_REPORT, MOCK_STOCK_DATA } from './fixtures/mock-data'
+import { MOCK_NEWS_ITEMS, MOCK_REPORT, MOCK_STOCK_DATA } from './fixtures/mock-data'
 
 const MOCK_USER = {
     id: 'pw-test-user-id',
@@ -23,6 +23,8 @@ function handle(req: IncomingMessage, res: ServerResponse) {
 
     // Consume request body (required even if unused, prevents socket hang)
     req.resume()
+
+    console.log({ url })
 
     if (url.startsWith('/auth/v1/user')) {
         return respond(res, MOCK_USER)
@@ -65,8 +67,10 @@ export function startMockSupabase(port = 54321): Promise<Server | null> {
 }
 
 export function stopMockSupabase(server: Server): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         server.closeAllConnections()
-        server.close((err) => (err ? reject(err) : resolve()))
+        // Always resolve — if the signal handler already closed the server,
+        // Node.js calls back with ERR_SERVER_NOT_RUNNING which we can safely ignore.
+        server.close(() => resolve())
     })
 }

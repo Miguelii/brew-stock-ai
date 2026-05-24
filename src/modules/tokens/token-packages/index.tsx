@@ -18,7 +18,7 @@ const PACKAGES = [
         label: 'Trial',
         credits: 2,
         price: 'Free',
-        pricePerToken: '2 analysis token included',
+        pricePerToken: '2 analysis credits included',
         originalPrice: null as string | null,
         originalPricePerToken: null as string | null,
         description: 'Your first analysis, on us.',
@@ -30,9 +30,9 @@ const PACKAGES = [
         label: 'Starter',
         credits: 5,
         price: LAUNCH_PROMO_ACTIVE ? '€1.25' : '€2.49',
-        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.25/token' : '€0.50/token',
+        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.25/credit' : '€0.50/credit',
         originalPrice: LAUNCH_PROMO_ACTIVE ? '€2.49' : null,
-        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.50/token' : null,
+        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.50/credit' : null,
         description: 'Perfect for trying out analyses',
         icon: ZapIcon,
         highlight: true,
@@ -42,9 +42,9 @@ const PACKAGES = [
         label: 'Pro',
         credits: 15,
         price: LAUNCH_PROMO_ACTIVE ? '€3.00' : '€5.99',
-        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.20/token' : '€0.40/token',
+        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.20/credit' : '€0.40/credit',
         originalPrice: LAUNCH_PROMO_ACTIVE ? '€5.99' : null,
-        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.40/token' : null,
+        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.40/credit' : null,
         description: 'Most popular for regular investors',
         icon: StarIcon,
         highlight: false,
@@ -54,9 +54,9 @@ const PACKAGES = [
         label: 'Expert',
         credits: 50,
         price: LAUNCH_PROMO_ACTIVE ? '€7.50' : '€14.99',
-        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.15/token' : '€0.30/token',
+        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.15/credit' : '€0.30/credit',
         originalPrice: LAUNCH_PROMO_ACTIVE ? '€14.99' : null,
-        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.30/token' : null,
+        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.30/credit' : null,
         description: 'Best value for power users',
         icon: TrophyIcon,
         highlight: false,
@@ -200,7 +200,7 @@ export function TokenPackages({ showFree = false, showBuyButton = true, classNam
                                         <span className="font-semibold text-foreground tabular-nums">
                                             {pkg.credits}
                                         </span>{' '}
-                                        analysis tokens
+                                        analysis credits
                                     </span>
                                 </div>
 

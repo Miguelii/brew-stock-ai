@@ -10,7 +10,7 @@ export const dynamic = 'force-static'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Pricing'
 const META_DESCRIPTION =
-    'Simple, pay-as-you-go pricing for AI-powered stock analysis. Buy tokens once and use them whenever you need — no subscriptions, no commitments.'
+    'Simple, pay-as-you-go pricing for AI-powered stock analysis. Buy credits once and use them whenever you need — no subscriptions, no commitments.'
 const META_URL = `${SITE_URL}/pricing`
 
 export const metadata: Metadata = {
@@ -53,7 +53,7 @@ export default function PricingPage() {
                             Simple, Pay-as-you-go Pricing.
                         </p>
                         <p className="text-primary-muted text-lg leading-relaxed max-w-2xl">
-                            No subscriptions. Buy tokens once, use them whenever you need.
+                            No subscriptions. Buy credits once, use them whenever you need.
                         </p>
                     </div>
                 </motion.div>

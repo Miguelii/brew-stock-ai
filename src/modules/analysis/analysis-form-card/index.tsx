@@ -24,6 +24,7 @@ import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/co
 import { usePathname, useRouter } from 'next/navigation'
 import { useAnalysisCardHandlers } from '@/modules/analysis/analysis-form-card/use-analysis-card-handlers'
 import { useGetCredits } from '@/hooks/use-get-credits'
+import { pluralizeCredits } from '@/lib/utils'
 
 type Props = {
     isAuthenticated: boolean
@@ -60,7 +61,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
             return (
                 <>
                     <CoinsIcon className="size-4" />
-                    Buy tokens to generate
+                    Buy credits to generate
                 </>
             )
         }
@@ -171,7 +172,10 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                                                     aria-hidden="true"
                                                                     className="size-3"
                                                                 />
-                                                                <span>{option.cost} credits</span>
+                                                                <span>
+                                                                    {option.cost}{' '}
+                                                                    {pluralizeCredits(option.cost)}
+                                                                </span>
                                                             </span>
                                                         </span>
                                                     </SelectItem>

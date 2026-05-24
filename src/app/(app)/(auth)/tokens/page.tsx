@@ -7,9 +7,9 @@ import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
-const META_TITLE = 'Buy Tokens'
+const META_TITLE = 'Buy Credits'
 const META_DESCRIPTION =
-    'Buy StockBrewAI tokens to unlock AI-powered stock analysis reports. Pay-as-you-go — tokens never expire and each analysis costs just 1–2 tokens.'
+    'Buy StockBrewAI credits to unlock AI-powered stock analysis reports. Pay-as-you-go — credits never expire and each analysis costs just 1–2 credits.'
 const META_URL = `${SITE_URL}/tokens`
 
 export const metadata: Metadata = {
@@ -45,17 +45,17 @@ export default async function TokensPage({ searchParams }: Props) {
             <main className="max-w-7xl mx-auto px-6 py-10 space-y-8">
                 <div className="space-y-1">
                     <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                        Buy Tokens
+                        Buy Credits
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        Each analysis costs 1–2 tokens depending on depth. Tokens never expire.
+                        Each analysis costs 1–2 credits depending on depth. Credits never expire.
                     </p>
                 </div>
 
                 {params.success && (
                     <div className="flex items-center gap-3 rounded-none border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400">
                         <CheckIcon className="w-4 h-4 shrink-0" />
-                        Payment successful! Your tokens have been added to your account.
+                        Payment successful! Your credits have been added to your account.
                     </div>
                 )}
 

@@ -32,7 +32,7 @@ import { getAdminUsers, type AdminUser } from '@/services/admin/get-admin-users'
 import { getAdminReports, type AdminReport } from '@/services/admin/get-admin-reports'
 import { ReportStatus } from '@/types/ReportDTO'
 import { PROMPT_OPTIONS } from '@/lib/constants'
-import { parseReportDate } from '@/lib/utils'
+import { parseReportDate } from '@/lib/formatters'
 import { isSuperAdmin } from '@/services/admin/is-super-admin'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL

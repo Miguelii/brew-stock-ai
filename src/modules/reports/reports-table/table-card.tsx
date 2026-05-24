@@ -17,7 +17,7 @@ import type { ReportListItem } from '@/types/ReportDTO'
 import { ReportStatus } from '@/types/ReportDTO'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PROMPT_OPTIONS } from '@/lib/constants'
-import { parseReportDate } from '@/lib/utils'
+import { parseReportDate } from '@/lib/formatters'
 
 type Props = {
     reports: ReportListItem[]

@@ -17,7 +17,7 @@ export function TokenBalanceCard() {
                 ) : (
                     <span className="font-semibold tabular-nums text-foreground">{credits}</span>
                 )}{' '}
-                Tokens
+                Credits
             </span>
         </div>
     )

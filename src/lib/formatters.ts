@@ -46,3 +46,7 @@ export function formatAmount(amount: number, currency: string) {
         currency: currency.toUpperCase(),
     }).format(amount / 100)
 }
+
+export const parseReportDate = (date: string) => {
+    return date.slice(0, 16).replace('T', ' ')
+}

@@ -57,7 +57,7 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
                         price_data: {
                             currency: 'eur',
                             product_data: {
-                                name: `${pkg.credits} Analysis Tokens — ${pkg.label}`,
+                                name: `${pkg.credits} Analysis Credits — ${pkg.label}`,
                             },
                             unit_amount: pkg.amount,
                         },

@@ -86,7 +86,7 @@ export default function PrivacyPage() {
                         <ul className="list-disc list-inside space-y-1 pl-1">
                             <li>To authenticate you and manage your account.</li>
                             <li>To generate AI-powered financial analysis reports.</li>
-                            <li>To process payments and manage your token balance.</li>
+                            <li>To process payments and manage your credit balance.</li>
                             <li>
                                 To send push notifications about your reports (only if you opt in).
                             </li>

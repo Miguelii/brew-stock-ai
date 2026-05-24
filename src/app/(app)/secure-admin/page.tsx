@@ -5,6 +5,8 @@ import { Effect } from 'effect'
 import {
     FileTextIcon,
     UsersIcon,
+    UserCheckIcon,
+    MailIcon,
     CheckCircle2Icon,
     XCircleIcon,
     Loader2Icon,
@@ -135,6 +137,9 @@ export default async function SecureAdminPage() {
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
 
+    const googleUsers = users.filter((u) => u.provider === 'google').length
+    const emailUsers = users.filter((u) => u.provider === 'email').length
+
     return (
         <>
             <BreadcrumbSchema
@@ -153,39 +158,17 @@ export default async function SecureAdminPage() {
 
                 <Separator />
 
-                {/* Stats */}
-                <section className="space-y-4">
-                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                        Stats
-                    </h2>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <StatCard
-                            label="Total Reports"
-                            value={stats.totalReports}
-                            icon={FileTextIcon}
-                        />
-                        <StatCard label="Users" value={stats.totalUsers} icon={UsersIcon} />
-                        <StatCard
-                            label="Completed"
-                            value={stats.completedReports}
-                            icon={CheckCircle2Icon}
-                        />
-                        <StatCard
-                            label="Failed"
-                            value={stats.failedReports}
-                            icon={XCircleIcon}
-                            accent
-                        />
-                    </div>
-                </section>
-
-                <Separator />
-
                 {/* Users */}
                 <section className="space-y-4">
                     <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                         Users
                     </h2>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <StatCard label="Total Users" value={stats.totalUsers} icon={UsersIcon} />
+                        <StatCard label="By Google" value={googleUsers} icon={UserCheckIcon} />
+                        <StatCard label="By Email" value={emailUsers} icon={MailIcon} />
+                    </div>
 
                     <Card className="pt-0">
                         <CardContent className="p-0">
@@ -237,6 +220,25 @@ export default async function SecureAdminPage() {
                     <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                         Reports
                     </h2>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <StatCard
+                            label="Total Reports"
+                            value={stats.totalReports}
+                            icon={FileTextIcon}
+                        />
+                        <StatCard
+                            label="Completed"
+                            value={stats.completedReports}
+                            icon={CheckCircle2Icon}
+                        />
+                        <StatCard
+                            label="Failed"
+                            value={stats.failedReports}
+                            icon={XCircleIcon}
+                            accent
+                        />
+                    </div>
 
                     <Card className="pt-0">
                         <CardContent className="p-0">

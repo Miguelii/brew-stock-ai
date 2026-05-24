@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { CoinsIcon } from 'lucide-react'
 import { useGetCredits } from '@/hooks/use-get-credits'
 import { Skeleton } from '@/components/ui/skeleton'
+import { pluralizeCredits } from '@/lib/utils'
 
 export function CreditsDisplay() {
     const { isLoading, credits } = useGetCredits()
@@ -20,7 +21,7 @@ export function CreditsDisplay() {
             ) : (
                 <span className="font-semibold">{credits}</span>
             )}
-            <span>Tokens</span>
+            <span>{pluralizeCredits(credits)}</span>
         </Link>
     )
 }

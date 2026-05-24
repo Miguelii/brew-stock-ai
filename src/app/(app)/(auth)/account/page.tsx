@@ -11,7 +11,7 @@ import { getCachedSession } from '@/services/auth/get-cached-session'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Account'
 const META_DESCRIPTION =
-    'Manage your StockBrewAI account — view your profile, billing history, and token balance all in one place.'
+    'Manage your StockBrewAI account — view your profile, billing history, and credit balance all in one place.'
 const META_URL = `${SITE_URL}/account`
 
 export const metadata: Metadata = {

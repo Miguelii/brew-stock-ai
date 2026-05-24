@@ -15,6 +15,4 @@ export const isPathFromStaticFiles = (pathname: string): boolean => {
     return STATIC_PREFIXES.some((prefix) => pathname.startsWith(prefix))
 }
 
-export const parseReportDate = (date: string) => {
-    return date.slice(0, 16).replace('T', ' ')
-}
+export const pluralizeCredits = (count: number) => (count === 1 ? 'credit' : 'credits')

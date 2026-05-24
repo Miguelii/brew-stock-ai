@@ -23,7 +23,7 @@ export function PricingCard() {
                         Simple, Pay-as-you-go Pricing
                     </h2>
                     <p className="text-primary-muted leading-relaxed max-w-2xl text-lg">
-                        No subscriptions. Buy tokens once, use them whenever you need.
+                        No subscriptions. Buy credits once, use them whenever you need.
                     </p>
                 </motion.div>
 

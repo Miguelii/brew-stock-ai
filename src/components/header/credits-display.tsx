@@ -16,12 +16,11 @@ export function CreditsDisplay() {
         >
             <CoinsIcon className="w-4 h-4 text-accent-blue shrink-0" />
             {isLoading ? (
-                <Skeleton className="w-4 h-3.5 rounded bg-muted-foreground/20 animate-pulse" />
+                <Skeleton className="w-4 h-3.5 rounded bg-muted-foreground/20" />
             ) : (
-                <>
-                    <span className="font-semibold">{credits}</span> <span>Tokens</span>
-                </>
+                <span className="font-semibold">{credits}</span>
             )}
+            <span>Tokens</span>
         </Link>
     )
 }

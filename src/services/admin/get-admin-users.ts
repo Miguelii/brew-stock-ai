@@ -11,6 +11,7 @@ export type AdminUser = {
     email: string
     created_at: string
     last_sign_in_at: string | null
+    provider: string | null
 }
 
 export const getAdminUsers = Effect.fn('getAdminUsers')(function* (callerEmail: string) {
@@ -30,5 +31,6 @@ export const getAdminUsers = Effect.fn('getAdminUsers')(function* (callerEmail: 
         email: u.email ?? '—',
         created_at: u.created_at,
         last_sign_in_at: u.last_sign_in_at ?? null,
+        provider: (u.app_metadata?.provider as string | undefined) ?? null,
     })) satisfies AdminUser[]
 })

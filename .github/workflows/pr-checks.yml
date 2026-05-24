@@ -4,6 +4,7 @@ on:
     pull_request:
         branches:
             - main
+        types: [opened, synchronize, reopened, ready_for_review]
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -19,6 +20,7 @@ env:
 jobs:
     lint:
         name: Lint & Knip
+        if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -28,6 +30,7 @@ jobs:
 
     typecheck:
         name: Typecheck
+        if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -37,6 +40,7 @@ jobs:
 
     unit:
         name: Unit Tests
+        if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -45,6 +49,7 @@ jobs:
 
     build:
         name: Build
+        if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4

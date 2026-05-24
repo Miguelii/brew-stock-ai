@@ -355,6 +355,12 @@ export function MyComponent({ name, email }: Props) { ... }
 - Inputs that should be uppercase: add `className="uppercase"` and `onChange={e => field.onChange(e.target.value.toUpperCase())}`
 
 
+## E2E Tests
+
+Before creating or modifying any file under `e2e/` or `playwright.config.ts`, read `spec/e2e.md` to understand the mock architecture, cookie format, tRPC batch response shape, and the two-layer interception pattern (mock server for server-side calls, `page.route()` for browser-side calls).
+
+---
+
 <!-- TRIGGER.DEV basic START -->
 # Trigger.dev Basic Tasks (v4)
 

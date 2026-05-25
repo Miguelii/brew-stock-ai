@@ -20,15 +20,15 @@ export const getYahooTicker = Effect.fn('getYahooTicker')(function* (stockSymbol
             new YahooSearchError({ cause, error_hash: ErrorCode.YAHOO_SEARCH_REQUEST }),
     })
 
-    // Extract symbol strings from EQUITY results only
-    const equitySymbols = result.quotes
-        .filter((q) => 'quoteType' in q && q.quoteType === 'EQUITY' && q.isYahooFinance === true)
-        .map((q) => ('symbol' in q && typeof q.symbol === 'string' ? q.symbol : null))
-        .filter((s): s is string => s !== null)
+    const filterByType = (type: string) =>
+        result.quotes
+            .filter((q) => 'quoteType' in q && q.quoteType === type && q.isYahooFinance === true)
+            .map((q) => q.symbol as string)
 
-    if (equitySymbols.length === 0) return stockSymbol
+    const allSymbols = result.quotes.map((q) => q.symbol as string)
 
-    const ticker = equitySymbols?.at(0) as string
+    const ticker =
+        filterByType('EQUITY').at(0) ?? filterByType('ETF').at(0) ?? allSymbols.at(0) ?? stockSymbol
 
     return ticker
 })

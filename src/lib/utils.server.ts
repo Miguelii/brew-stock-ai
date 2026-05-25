@@ -31,8 +31,7 @@ export async function createSbServerClient(
         onSetAll?: SetAllCookies
     }
 ) {
-    const cookieStore = await cookies()
-    const headersStore = await headers()
+    const [cookieStore, headersStore] = await Promise.all([cookies(), headers()])
 
     return createServerClient(
         ServerEnv.NEXT_SUPABASE_URL,

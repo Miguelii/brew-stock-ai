@@ -11,6 +11,8 @@ import { getYahooTtlData } from '@/services/analysis/get-yahoo-ttl-data'
 import { buildYahooContext } from '@/services/analysis/helpers/build-yahoo-context'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { PROMPTS_MAP, stockAnalysisSchema } from '@/services/analysis/helpers/constants'
+import { calculateTokenCost } from '@/services/analysis/helpers/calculate-token-cost'
+import { logger } from '@trigger.dev/sdk'
 
 export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     stockSymbol: string,
@@ -37,7 +39,9 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     const FREE_MODEL = 'claude-haiku-4-5'
     const PROD_MODEL = 'claude-sonnet-4-5-20250929'
 
-    const { analysis, sentiment } = yield* Effect.tryPromise({
+    const model = useBaseModel ? FREE_MODEL : PROD_MODEL
+
+    const { output, usage } = yield* Effect.tryPromise({
         try: async () => {
             const [{ generateText, Output }, { createAnthropic }] = await Promise.all([
                 import('ai'),
@@ -47,7 +51,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                 apiKey: process.env.NEXT_ANTHROPIC_AI_KEY,
             })
             return generateText({
-                model: anthropicClient(useBaseModel ? FREE_MODEL : PROD_MODEL),
+                model: anthropicClient(model),
                 ...(useBaseModel
                     ? {}
                     : {
@@ -61,13 +65,19 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                 system: SystemPrompt,
                 prompt: resolvedPrompt,
                 maxOutputTokens: useBaseModel ? 4000 : 5000,
-            }).then((result) => result.output)
+            }).then((result) => ({ output: result.output, usage: result.usage }))
         },
         catch: (cause) => {
             console.error('[getStockAnalysis] raw AI error:', cause)
             return new AiGenerationError({ cause, error_hash: ErrorCode.ANALYSIS_AI_GENERATION })
         },
     })
+
+    const { analysis, sentiment } = output
+
+    const tokenUsdCost = calculateTokenCost(model, usage.inputTokens, usage.outputTokens)
+
+    logger.log('Analysis completed', { reportId: reportId, tokenUsdCost: tokenUsdCost })
 
     if (!analysis) {
         return yield* new AiGenerationError({
@@ -80,7 +90,14 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
 
     yield* Effect.all(
         [
-            saveAnalysisToReport(reportId, analysis, finalTicker, sentiment, supabaseClient),
+            saveAnalysisToReport(
+                reportId,
+                analysis,
+                finalTicker,
+                tokenUsdCost,
+                sentiment,
+                supabaseClient
+            ),
 
             yahooPreFetch?.isFresh
                 ? saveStockData(finalTicker, yahooPreFetch.data, supabaseClient).pipe(

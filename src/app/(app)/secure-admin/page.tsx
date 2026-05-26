@@ -249,6 +249,7 @@ export default async function SecureAdminPage() {
                                         <TableHead>Analysis Type</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>User</TableHead>
+                                        <TableHead>Cost</TableHead>
                                         <TableHead>Date</TableHead>
                                         <TableHead className="pr-5 text-right">Action</TableHead>
                                     </TableRow>
@@ -278,6 +279,9 @@ export default async function SecureAdminPage() {
                                                 </TableCell>
                                                 <TableCell className="py-3 text-sm text-muted-foreground">
                                                     {userEmailById.get(r.user_id) ?? r.user_id}
+                                                </TableCell>
+                                                <TableCell className="py-3 text-sm text-muted-foreground">
+                                                    {r.cost ? `${r.cost}$` : 'N/A'}
                                                 </TableCell>
                                                 <TableCell className="py-3 text-sm text-muted-foreground">
                                                     {parseReportDate(r.created_at)}

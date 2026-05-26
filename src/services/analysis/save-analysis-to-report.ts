@@ -12,6 +12,7 @@ export const saveAnalysisToReport = Effect.fn('saveAnalysisToReport')(function* 
     reportId: ReportDTO['id'],
     analysis: string,
     ticker: string | null,
+    tokenUsdCost: number | 'N/A',
     sentiment?: number,
     prebuiltClient?: SupabaseClient
 ) {
@@ -32,6 +33,7 @@ export const saveAnalysisToReport = Effect.fn('saveAnalysisToReport')(function* 
                     ai_response: analysis,
                     sentiment: sentiment ?? 'NULL',
                     ticker: ticker ?? 'NULL',
+                    cost: tokenUsdCost ?? 'N/A',
                 })
                 .eq('id', reportId),
         catch: (cause) =>

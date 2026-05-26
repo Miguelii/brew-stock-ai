@@ -16,6 +16,7 @@ export type AdminReport = {
     type: PropmptsEnum
     status: ReportStatus
     ticker: string
+    cost: string
 }
 
 export const getAdminReports = Effect.fn('getAdminReports')(function* (callerEmail: string) {
@@ -29,7 +30,7 @@ export const getAdminReports = Effect.fn('getAdminReports')(function* (callerEma
         try: () =>
             supabase
                 .from('reports')
-                .select('id, created_at, user_id, stock, type, status, ticker')
+                .select('id, created_at, user_id, stock, type, status, ticker, cost')
                 .order('created_at', { ascending: false })
                 .limit(200),
         catch: (cause) => new AdminStatsError({ cause, error_hash: ErrorCode.ADMIN_STATS_FETCH }),

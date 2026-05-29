@@ -1,3 +1,5 @@
+# BrewStockAI
+
 AI-powered stock analysis — get institutional-grade financial insights, market sentiment, and technical indicators for any equity. For less than a coffee ☕
 
 ## Technical Tools

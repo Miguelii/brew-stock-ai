@@ -20,7 +20,7 @@ export const sbVerifyOtp = Effect.fn('sbVerifyOtp')(function* (email: string, to
     })
 
     if (error) {
-        Logger({ level: 'error', error, context: `[sbVerifyOtp]` })
+        Logger({ level: 'error', prefix: 'sbVerifyOtp', error })
 
         return yield* Effect.fail(
             new VerifyOtpError({ cause: error, error_hash: ErrorCode.AUTH_OTP_VERIFY_ERR })

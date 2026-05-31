@@ -7,9 +7,8 @@ type LogLevel = 'log' | 'warn' | 'error' | 'info'
 
 type Props = {
     level: LogLevel
+    prefix: string
     error?: unknown
-    context?: string
-    prefix?: string
     message?: string
     metadata?: Record<string, unknown>
     userId?: string
@@ -44,9 +43,9 @@ function serializeError(error: unknown): unknown {
 }
 
 export function Logger(props: Props): void {
-    const { level, prefix = 'Logger', context, error, message, metadata } = props
+    const { level, prefix, error, message, metadata } = props
 
-    const header = `[${prefix}]${context ? ` ${context}` : ''}${message ? ` ${message}` : ''}`
+    const header = message ? `[${prefix}] ${message}` : `[${prefix}]`
     const details: Record<string, unknown> = { timestamp: new Date().toISOString() }
 
     if (error !== undefined) details.error = serializeError(error)
@@ -74,8 +73,7 @@ async function persistLog(props: Props): Promise<void> {
     const supabase = createSbAdminClient()
     const { error } = await supabase.from('logs').insert({
         level: props.level,
-        prefix: props.prefix ?? null,
-        context: props.context ?? null,
+        prefix: props.prefix,
         message: props.message ?? null,
         error: props.error !== undefined ? serializeError(props.error) : null,
         metadata: props.metadata ?? null,

@@ -24,6 +24,8 @@ export async function POST(request: Request) {
 
     const session = event.data.object as Stripe.Checkout.Session
 
+    const userId = session.metadata?.userId
+
     const isCompletedAndPaid =
         event.type === 'checkout.session.completed' && session.payment_status === 'paid'
     const isAsyncPaymentSucceeded = event.type === 'checkout.session.async_payment_succeeded'
@@ -34,12 +36,12 @@ export async function POST(request: Request) {
             level: 'info',
             message: 'skipping checkout.session.completed',
             metadata: { payment_status: session.payment_status, session_id: session.id },
+            userId: userId ?? undefined,
         })
         return NextResponse.json({ received: true })
     }
 
     if (isCompletedAndPaid || isAsyncPaymentSucceeded) {
-        const userId = session.metadata?.userId
         const credits = Number(session.metadata?.credits)
 
         if (!userId || !credits || credits <= 0) {
@@ -60,6 +62,7 @@ export async function POST(request: Request) {
                 message: 'add_credits failed',
                 error: response.error,
                 metadata: { user_id: userId, credits, session_id: session.id },
+                userId: userId ?? undefined,
             })
             return NextResponse.json({ error: 'Failed to add credits' }, { status: 500 })
         }
@@ -74,7 +77,7 @@ export async function POST(request: Request) {
                 event_type: event.type,
                 session_id: session.id,
             },
-            userId: userId,
+            userId: userId ?? undefined,
         })
     }
 

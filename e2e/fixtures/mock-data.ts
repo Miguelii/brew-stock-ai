@@ -1,5 +1,6 @@
 import type { NewsItem } from '@/types/news'
 import type { StockFinancials, StockScores, StockData, ReportDTO } from '@/types/ReportDTO'
+import type { Invoice } from '@/types/Invoice'
 
 export const MOCK_REPORT_ID = 'pw-test-report-id'
 export const MOCK_TICKER = 'AAPL'
@@ -124,3 +125,27 @@ export const MOCK_NEWS_ITEMS: NewsItem[] = [
 
 // Minimal valid-looking PDF base64
 export const MOCK_EXPORT_PDF = 'JVBERi0xLjMKJcTl8uXrp/Og0MTGCg=='
+
+// Redirects back to the tokens page so Playwright can intercept the navigation
+export const MOCK_STRIPE_URL = 'http://localhost:3001/tokens?success=true'
+
+export const MOCK_INVOICES: Invoice[] = [
+    {
+        id: 'cs_test_paid',
+        date: 1706745600,
+        amount: 99,
+        currency: 'eur',
+        description: '5 Analysis Tokens',
+        status: 'paid',
+        paymentMethod: 'card',
+    },
+]
+
+export const MOCK_PENDING_INVOICE: Invoice = {
+    id: 'cs_test_pending',
+    date: 1706832000,
+    amount: 249,
+    currency: 'eur',
+    description: '15 Analysis Tokens',
+    status: 'pending',
+}

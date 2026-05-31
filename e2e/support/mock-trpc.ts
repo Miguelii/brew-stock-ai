@@ -1,9 +1,12 @@
 import type { Page } from '@playwright/test'
+import type { Invoice } from '@/types/Invoice'
 import {
     MOCK_CREDITS,
     MOCK_EXPORT_PDF,
+    MOCK_INVOICES,
     MOCK_NEWS_ITEMS,
     MOCK_REPORT_ID,
+    MOCK_STRIPE_URL,
 } from '../fixtures/mock-data'
 
 // tRPC v11 with httpBatchLink wraps all responses as an array
@@ -53,5 +56,17 @@ export async function mockVerifyOtp(page: Page) {
 export async function mockGetLatestNews(page: Page, items = MOCK_NEWS_ITEMS) {
     await page.route('**/api/trpc/getLatestNews**', (route) =>
         route.fulfill({ contentType: 'application/json', body: batchResponse(items) })
+    )
+}
+
+export async function mockCreateCheckoutSession(page: Page, url = MOCK_STRIPE_URL) {
+    await page.route('**/api/trpc/createCheckoutSession**', (route) =>
+        route.fulfill({ contentType: 'application/json', body: batchResponse(url) })
+    )
+}
+
+export async function mockGetInvoices(page: Page, invoices: Invoice[] = MOCK_INVOICES) {
+    await page.route('**/api/trpc/getInvoices**', (route) =>
+        route.fulfill({ contentType: 'application/json', body: batchResponse(invoices) })
     )
 }

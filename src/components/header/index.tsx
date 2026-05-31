@@ -32,7 +32,7 @@ export async function Header({ userPromise }: Props) {
     const navLinks = user ? [...PUBLIC_NAV_LINKS, ...AUTH_NAV_LINKS] : PUBLIC_NAV_LINKS
 
     return (
-        <nav className="sticky top-0 z-50 border-b border-border bg-card backdrop-blur-md">
+        <nav className="sticky top-0 z-[99] border-b border-border bg-card backdrop-blur-md">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <Logo />
                 <div className="flex flex-row gap-5 items-center">

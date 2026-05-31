@@ -1,14 +1,14 @@
 'use client'
 
 import { formatAmount, formatDate, formatPaymentMethod } from '@/lib/formatters'
-import { trpc } from '@/server/trpc-client'
 import { ReceiptIcon } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'
 import type { Invoice } from '@/types/Invoice'
+import { useGetInvoices } from '@/hooks/use-get-invoices'
 
 export function AccountInvoicesTable() {
-    const { data: invoices = [], isLoading } = trpc.getInvoices.useQuery()
+    const { invoices, isLoading } = useGetInvoices()
 
     if (isLoading) {
         return (

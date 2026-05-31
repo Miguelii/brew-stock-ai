@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { StockPriceChartSkeleton } from './stock-price-chart-skeleton'
 
 export const StockPriceChart = dynamic(
     () =>
@@ -9,6 +10,6 @@ export const StockPriceChart = dynamic(
         })),
     {
         ssr: false,
-        loading: () => <div className="h-52 animate-pulse rounded-sm bg-muted" />,
+        loading: () => <StockPriceChartSkeleton />,
     }
 )

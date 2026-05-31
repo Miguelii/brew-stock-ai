@@ -11,13 +11,10 @@ import {
     YAxis,
 } from 'recharts'
 import { cn } from '@/lib/utils'
-import { fmtPrice } from '@/lib/formatters'
-import { trpc } from '@/server/trpc-client'
-
-const RANGES = ['1M', '3M', '6M', '1Y'] as const
-type Range = (typeof RANGES)[number]
-
-const RANGE_DAYS: Record<Range, number> = { '1M': 30, '3M': 90, '6M': 180, '1Y': 365 }
+import { fmtDate, fmtPrice, formatXAxis } from '@/lib/formatters'
+import { RANGE_DAYS, RANGES, type Range } from './constants'
+import { StockPriceChartSkeleton } from './stock-price-chart-skeleton'
+import { useGetPriceHistory } from '@/hooks/use-get-price-history'
 
 type Props = {
     ticker: string
@@ -31,19 +28,11 @@ type TooltipProps = {
     label?: number
 }
 
-const formatXAxis = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { month: 'short' })
-
 function PriceTooltip({ active, payload, label }: TooltipProps) {
     if (!active || !payload?.length || label == null) return null
     return (
         <div className="rounded border bg-card px-3 py-2 shadow text-xs">
-            <p className="text-muted-foreground">
-                {new Date(label).toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                })}
-            </p>
+            <p className="text-muted-foreground">{fmtDate(label, 'short')}</p>
             <p className="font-semibold text-primary">{fmtPrice(payload[0].value)}</p>
         </div>
     )
@@ -51,7 +40,7 @@ function PriceTooltip({ active, payload, label }: TooltipProps) {
 
 export function StockPriceChart({ ticker, low, high }: Props) {
     const [range, setRange] = useState<Range>('1Y')
-    const { data, isLoading } = trpc.priceHistory.useQuery({ ticker })
+    const { data, isLoading } = useGetPriceHistory(ticker)
 
     const filtered = useMemo(() => {
         if (!data) return []
@@ -59,9 +48,19 @@ export function StockPriceChart({ ticker, low, high }: Props) {
         return data.filter((p) => p.date >= cutoff)
     }, [data, range])
 
-    if (isLoading) {
-        return <div className="h-52 animate-pulse rounded-sm bg-muted" />
-    }
+    const monthTicks = useMemo(() => {
+        const seen = new Set<string>()
+        return filtered
+            .filter(({ date }) => {
+                const key = new Date(date).toISOString().slice(0, 7)
+                if (seen.has(key)) return false
+                seen.add(key)
+                return true
+            })
+            .map(({ date }) => date)
+    }, [filtered])
+
+    if (isLoading) return <StockPriceChartSkeleton />
 
     if (!data?.length) {
         return (
@@ -107,11 +106,12 @@ export function StockPriceChart({ ticker, low, high }: Props) {
 
                     <XAxis
                         dataKey="date"
+                        ticks={monthTicks}
                         tickFormatter={formatXAxis}
                         tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
                         axisLine={false}
                         tickLine={false}
-                        minTickGap={40}
+                        minTickGap={20}
                     />
                     <YAxis
                         tickFormatter={(v: number) => fmtPrice(v)}

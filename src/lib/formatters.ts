@@ -29,7 +29,7 @@ export function fmtPrice(n: number | null | undefined): string {
     return `$${n.toFixed(2)}`
 }
 
-export const fmtDate = (d: string, month: 'long' | 'short' = 'long') =>
+export const fmtDate = (d: string | number, month: 'long' | 'short' = 'long') =>
     new Date(d).toLocaleDateString('en-US', { year: 'numeric', month, day: 'numeric' })
 
 export function formatDate(ts: number): string {
@@ -66,3 +66,6 @@ export function formatPaymentMethod(method: string | undefined): string {
     if (!method) return '—'
     return PAYMENT_METHOD_LABELS[method] ?? method
 }
+
+export const formatXAxis = (ms: number) =>
+    new Date(ms).toLocaleDateString('en-GB', { month: 'short' })

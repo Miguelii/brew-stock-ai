@@ -3,7 +3,7 @@ import type { MetricTile } from '@/modules/report-view/report-financials-card/ty
 
 const signColor = (n: number | null | undefined): string => {
     if (n == null) return ''
-    return n >= 0 ? 'text-green-600 dark:text-green-500' : 'text-red-500'
+    return n >= 0 ? 'text-positive' : 'text-destructive'
 }
 
 export function Tile({ label, value, colored, rawValue }: MetricTile) {

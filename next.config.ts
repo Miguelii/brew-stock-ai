@@ -32,6 +32,7 @@ const nextConfig: NextConfig = {
             'vaul',
             'yahoo-finance2',
             'input-otp',
+            'recharts',
         ],
     },
     images: {

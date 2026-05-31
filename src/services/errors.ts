@@ -16,6 +16,9 @@ export class YahooSearchError extends Data.TaggedError('YahooSearchError')<Servi
 export class YahooQuoteSummaryError extends Data.TaggedError(
     'YahooQuoteSummaryError'
 )<ServiceErrorFields> {}
+export class YahooPriceHistoryError extends Data.TaggedError(
+    'YahooPriceHistoryError'
+)<ServiceErrorFields> {}
 export class SaveStockDataError extends Data.TaggedError(
     'SaveStockDataError'
 )<ServiceErrorFields> {}

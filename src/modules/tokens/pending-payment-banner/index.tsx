@@ -1,11 +1,11 @@
 'use client'
 
+import { useGetInvoices } from '@/hooks/use-get-invoices'
 import { formatAmount } from '@/lib/formatters'
-import { trpc } from '@/server/trpc-client'
 import { ClockIcon } from 'lucide-react'
 
 export function PendingPaymentBanner() {
-    const { data: invoices } = trpc.getInvoices.useQuery()
+    const { invoices } = useGetInvoices()
 
     const pending = invoices?.filter((i) => i.status === 'pending') ?? []
 

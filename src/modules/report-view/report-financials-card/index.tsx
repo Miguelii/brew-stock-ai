@@ -1,22 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { fmtLarge, fmtPct, fmtX, fmtNum, fmtPrice } from '@/lib/formatters'
+import { fmtLarge, fmtPct, fmtX, fmtNum } from '@/lib/formatters'
 import type { StockFinancials } from '@/types/ReportDTO'
-import { RangeBar } from '@/modules/report-view/report-financials-card/range-bar'
 import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
 import { Group } from '@/modules/report-view/report-financials-card/group'
+import { AnalystTargets } from '@/modules/report-view/report-financials-card/analyst-targets'
+import { StockPriceChart } from '@/modules/report-view/report-financials-card/stock-price-chart-lazy'
 
 type Props = {
     financials: StockFinancials | null
+    ticker: string | null | undefined
 }
 
-export function ReportFinancialsCard({ financials }: Props) {
+export function ReportFinancialsCard({ financials, ticker }: Props) {
     const f = financials
-
-    const upside =
-        f?.targetMeanPrice != null && f?.currentPrice != null && f.currentPrice > 0
-            ? (((f.targetMeanPrice - f.currentPrice) / f.currentPrice) * 100).toFixed(1)
-            : null
 
     const growthStory: MetricTile[] = [
         { label: 'Total Revenue', value: fmtLarge(f?.totalRevenue) },
@@ -112,125 +108,21 @@ export function ReportFinancialsCard({ financials }: Props) {
         },
     ]
 
-    const hasRangeData =
-        f?.fiftyTwoWeekLow != null && f?.fiftyTwoWeekHigh != null && f?.currentPrice != null
-
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">Key Financial Metrics</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-                {/* 52-Week Price Range */}
-                <div className="flex flex-col gap-3">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Where the stock has traded in the last year
-                    </span>
-                    <RangeBar
+                {ticker ? (
+                    <StockPriceChart
+                        ticker={ticker}
                         low={f?.fiftyTwoWeekLow}
                         high={f?.fiftyTwoWeekHigh}
-                        current={f?.currentPrice}
-                        lowLabel={fmtPrice(f?.fiftyTwoWeekLow)}
-                        highLabel={fmtPrice(f?.fiftyTwoWeekHigh)}
                     />
-                    <div className="flex items-center gap-4 flex-wrap">
-                        {hasRangeData ? (
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-3 h-0.5 bg-accent-blue" />
-                                <span className="text-xs text-muted-foreground">
-                                    Current price {fmtPrice(f!.currentPrice)}
-                                </span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-1.5">
-                                <div
-                                    className="size-2.5 rounded-full"
-                                    style={{
-                                        backgroundImage:
-                                            'repeating-linear-gradient(45deg, #d1d5db 0px, #d1d5db 3px, transparent 3px, transparent 8px)',
-                                    }}
-                                />
-                                <span className="text-xs text-muted-foreground">
-                                    Data not available
-                                </span>
-                            </div>
-                        )}
-                        {f?.beta != null && (
-                            <span className="text-xs text-muted-foreground">
-                                Volatility (Beta) {fmtNum(f.beta)}
-                            </span>
-                        )}
-                    </div>
-                </div>
+                ) : null}
 
-                {/* Analyst Price Targets */}
-                <div className="flex flex-col gap-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0">
-                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            What analysts think the stock is worth
-                        </span>
-                        {upside !== null && (
-                            <span
-                                className={cn(
-                                    'text-xs font-semibold',
-                                    Number.parseFloat(upside) >= 0
-                                        ? 'text-green-600 dark:text-green-500'
-                                        : 'text-red-500'
-                                )}
-                            >
-                                {Number.parseFloat(upside) >= 0 ? '+' : ''}
-                                {upside}% to consensus
-                            </span>
-                        )}
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
-                            <span className="text-[11px] leading-none text-muted-foreground">
-                                Lowest analyst target
-                            </span>
-                            <span
-                                className={cn(
-                                    'text-sm font-semibold leading-tight',
-                                    f?.targetLowPrice == null
-                                        ? 'text-muted-foreground'
-                                        : 'text-primary'
-                                )}
-                            >
-                                {fmtPrice(f?.targetLowPrice)}
-                            </span>
-                        </div>
-                        <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
-                            <span className="text-[11px] leading-none text-muted-foreground">
-                                Average analyst target
-                            </span>
-                            <span
-                                className={cn(
-                                    'text-sm font-semibold leading-tight',
-                                    f?.targetMeanPrice == null
-                                        ? 'text-muted-foreground'
-                                        : 'text-primary'
-                                )}
-                            >
-                                {fmtPrice(f?.targetMeanPrice)}
-                            </span>
-                        </div>
-                        <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-sm">
-                            <span className="text-[11px] leading-none text-muted-foreground">
-                                Highest analyst target
-                            </span>
-                            <span
-                                className={cn(
-                                    'text-sm font-semibold leading-tight',
-                                    f?.targetHighPrice == null
-                                        ? 'text-muted-foreground'
-                                        : 'text-primary'
-                                )}
-                            >
-                                {fmtPrice(f?.targetHighPrice)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <AnalystTargets financials={financials} />
 
                 <Group title="Revenue &amp; Profitability" tiles={growthStory} cols={3} />
                 <Group title="Valuation &amp; Returns" tiles={worthIt} cols={4} />

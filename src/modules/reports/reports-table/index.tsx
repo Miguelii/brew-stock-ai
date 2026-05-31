@@ -1,16 +1,10 @@
 'use client'
 
-import { trpc } from '@/server/trpc-client'
 import { TableCard } from '@/modules/reports/reports-table/table-card'
+import { useGetReports } from '@/hooks/use-get-reports'
 
 export function ReportsTable() {
-    const query = trpc.getReports.useQuery(undefined, {
-        staleTime: 1000 * 60 * 1, // 1m
-        gcTime: 1000 * 60 * 1, // 1m
-        refetchInterval: 1000 * 20, // 20s
-    })
+    const { reports, isLoading } = useGetReports()
 
-    const reports = query.data
-
-    return <TableCard reports={reports ?? []} isLoading={query.isLoading} />
+    return <TableCard reports={reports} isLoading={isLoading} />
 }

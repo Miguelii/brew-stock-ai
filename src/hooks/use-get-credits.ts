@@ -1,4 +1,6 @@
+import { toastError } from '@/lib/toast-error'
 import { trpc } from '@/server/trpc-client'
+import { useEffect } from 'react'
 
 type Props = {
     enabled?: boolean
@@ -11,11 +13,16 @@ export const useGetCredits = (props: Props = {}) => {
         isLoading,
         isSuccess,
         data: credits = 0,
+        error,
     } = trpc.getCredits.useQuery(undefined, {
         staleTime: 0,
         gcTime: 0,
         enabled: enabled ?? undefined,
     })
+
+    useEffect(() => {
+        if (error) toastError('An error occurred while trying to get your credits', error)
+    }, [error])
 
     return {
         credits,

@@ -90,10 +90,24 @@ export const getInvoices = Effect.fn('getInvoices')(function* () {
                 .autoPagingToArray({ limit: 10_000 }),
         catch: (cause) =>
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_FETCH }),
-    })
+    }).pipe(
+        Effect.catchAll((error) => {
+            const message: string = (error.cause as any)?.message ?? ''
+            const isDevModeConflict =
+                message.includes(
+                    'a similar object exists in live mode, but a test mode key was used to make this request.'
+                ) ||
+                message.includes(
+                    'a similar object exists in test mode, but a live mode key was used to make this request.'
+                )
+            return isDevModeConflict
+                ? Effect.succeed([] as Stripe.Checkout.Session[])
+                : Effect.fail(error)
+        })
+    )
 
     return allCompleted
-        .filter((s) => s.amount_total)
+        ?.filter((s) => s.amount_total)
         .map((s) => mapSession(s))
         .toSorted((a) => (a.status === 'pending' ? -1 : 1))
 })

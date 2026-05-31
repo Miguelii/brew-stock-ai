@@ -8,7 +8,7 @@ import { ClientEnv } from '@/env/client'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'AI Stock Analysis'
 const META_DESCRIPTION =
-    'Get a free AI-powered stock analysis in under 1 minute. Enter any stock ticker — financial health, risk assessment, and growth potential included. No credit card needed.'
+    'Get a free AI-powered stock analysis in under 2 minutes. Enter any stock ticker — financial health, risk assessment, and growth potential included. No credit card needed.'
 const META_URL = `${SITE_URL}/analysis`
 
 export const metadata: Metadata = {

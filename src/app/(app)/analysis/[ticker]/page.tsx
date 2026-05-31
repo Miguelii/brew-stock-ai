@@ -95,7 +95,7 @@ export default async function TickerPage({ params }: Props) {
                     },
                     {
                         question: `How does AI stock analysis work for ${page.name}?`,
-                        answer: `StockBrewAI processes ${page.name}'s earnings reports, balance sheets, cash flow statements, and market data using AI to produce institutional-grade analysis in under 1 minute. The result is a structured report covering financials, sentiment, technicals, and competitive positioning.`,
+                        answer: `StockBrewAI processes ${page.name}'s earnings reports, balance sheets, cash flow statements, and market data using AI to produce institutional-grade analysis in under 2 minutes. The result is a structured report covering financials, sentiment, technicals, and competitive positioning.`,
                     },
                     {
                         question: `What is the difference between StockBrewAI analysis types for ${page.name}?`,

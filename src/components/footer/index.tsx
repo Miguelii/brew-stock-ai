@@ -15,10 +15,17 @@ const footerLinks = [
         links: [{ label: 'Education Hub', href: '/education-hub' }],
     },
     {
+        label: 'Company',
+        links: [
+            { label: 'About', href: '/about' },
+            { label: 'Contact Us', href: '/contact' },
+        ],
+    },
+    {
         label: 'Legal',
         links: [
+            { label: 'Risk Disclosure', href: '/disclaimer' },
             { label: 'Privacy Notice', href: '/privacy' },
-            { label: 'Contact Us', href: '/contact' },
         ],
     },
 ] as const
@@ -27,7 +34,7 @@ export function Footer() {
     return (
         <footer className="border-t border-border bg-card">
             <div className="max-w-7xl mx-auto px-6 py-16">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
                     <div className="col-span-2 md:col-span-1">
                         <Logo />
                         <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xs">
@@ -54,9 +61,10 @@ export function Footer() {
                         </div>
                     ))}
                 </div>
-                <div className="border-t border-border pt-6">
+
+                <div className="border-t border-border pt-6 space-y-4">
                     <p className="text-xs text-muted-foreground">
-                        © {new Date().getFullYear()} StockBrewAI. All rights reserved.
+                        © {new Date().getFullYear()} BrewStockAI. All rights reserved.
                     </p>
                 </div>
             </div>

@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 import { notFound } from 'next/navigation'
-import { UserIcon, ReceiptTextIcon } from 'lucide-react'
+import { UserIcon, ReceiptTextIcon, LifeBuoyIcon } from 'lucide-react'
 import { AccountInvoicesTable } from '@/modules/account/invoices-table'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { getCachedSession } from '@/services/auth/get-cached-session'
@@ -80,6 +81,30 @@ export default async function AccountPage() {
                             )}
                         </div>
                         <p className="text-sm font-medium">{user.email}</p>
+                    </div>
+                </section>
+
+                <Separator />
+
+                {/* Support */}
+                <section className="space-y-4">
+                    <div className="flex items-center gap-2">
+                        <LifeBuoyIcon className="size-4 text-muted-foreground" />
+                        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                            Support
+                        </h2>
+                    </div>
+                    <div className="rounded-none border border-border px-4 py-4 space-y-3">
+                        <p className="text-sm text-muted-foreground">
+                            Need help? Reach out and we&lsquo;ll get back to you as soon as
+                            possible.
+                        </p>
+                        <Link
+                            href="/contact"
+                            className="inline-flex items-center gap-2 text-sm font-medium text-accent-blue hover:underline"
+                        >
+                            Contact us →
+                        </Link>
                     </div>
                 </section>
 

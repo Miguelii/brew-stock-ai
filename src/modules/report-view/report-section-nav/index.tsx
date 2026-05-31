@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useActiveSection } from '@/modules/report-view/report-section-nav/use-active-section'
 import { useCloseDropdownClick } from '@/modules/report-view/report-section-nav/use-close-dropdown-click'
 import { useUpdateSliding } from '@/modules/report-view/report-section-nav/use-update-sliding'
 
@@ -16,14 +17,12 @@ const SECTIONS = [
     { id: 'sector-scores', label: 'Sector Scores' },
 ] as const
 
-type SectionId = (typeof SECTIONS)[number]['id']
-
 type Props = {
     className?: string
 }
 
 export function ReportSectionNav({ className }: Props) {
-    const [activeId, setActiveId] = useState<SectionId>(SECTIONS[0].id)
+    const [activeId, scrollTo] = useActiveSection(SECTIONS, 120)
     const [isOpen, setIsOpen] = useState(false)
     const [indicator, setIndicator] = useState({ left: 0, width: 0 })
     const dropdownRef = useRef<HTMLDivElement>(null)
@@ -36,14 +35,6 @@ export function ReportSectionNav({ className }: Props) {
     useCloseDropdownClick(dropdownRef, isOpen, closeDropdown)
 
     useUpdateSliding(activeId, SECTIONS, buttonRefs, setIndicator)
-
-    const scrollTo = (id: SectionId) => {
-        const el = document.getElementById(id)
-        if (!el) return
-        setActiveId(id)
-        const top = el.getBoundingClientRect().top + window.scrollY - 120
-        window.scrollTo({ top, behavior: 'smooth' })
-    }
 
     return (
         <div

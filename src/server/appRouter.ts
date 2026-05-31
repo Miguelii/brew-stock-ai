@@ -44,13 +44,13 @@ async function runEffect<A, E extends { _tag: string; error_hash: string }>(
 
     if (Option.isNone(maybeError)) {
         const defects = Cause.defects(exit.cause)
-        Logger({ level: 'error', error: defects, context: `[${context}] defect` })
+        Logger({ level: 'error', prefix: context, message: 'defect', error: defects })
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'unexpected_defect' })
     }
 
     const error = maybeError.value
 
-    Logger({ level: 'error', error, context: `[${context}] ${error._tag}` })
+    Logger({ level: 'error', prefix: context, error })
 
     throw new TRPCError({ code: mapCode(error), message: error.error_hash })
 }

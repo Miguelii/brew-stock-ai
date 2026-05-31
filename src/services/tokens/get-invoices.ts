@@ -28,11 +28,10 @@ export const getInvoices = Effect.fn('getInvoices')(function* () {
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_INIT }),
     })
 
-    // List completed checkout sessions and then filter by userId.
-    // This covers both existing payments (metadata only on session) and future ones.
-    // Stripe's API does not support filtering by metadata server-side, so we must fetch all sessions and
-    // autoPagingToArray handles cursor pagination automatically — avoids the 100-item cap.
-    const allSessions = yield* Effect.tryPromise({
+    // Only query `complete` sessions — `open` sessions are abandoned checkouts (user went back),
+    // not real pending payments. The distinction between settled and async-pending is in
+    // `payment_status`: 'paid' = settled, 'unpaid' = async method submitted but not yet cleared.
+    const allCompleted = yield* Effect.tryPromise({
         try: () =>
             stripe.checkout.sessions
                 .list({ limit: 100, status: 'complete' })
@@ -41,7 +40,7 @@ export const getInvoices = Effect.fn('getInvoices')(function* () {
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_FETCH }),
     })
 
-    const invoices: Invoice[] = allSessions
+    const invoices: Invoice[] = allCompleted
         .filter((s) => s.metadata?.userId === user.id && s.amount_total)
         .map((s) => ({
             id: s.id,
@@ -51,7 +50,9 @@ export const getInvoices = Effect.fn('getInvoices')(function* () {
             description: s.metadata?.credits
                 ? `${s.metadata.credits} Analysis Tokens`
                 : 'Token purchase',
+            status: s.payment_status === 'paid' ? 'paid' : 'pending',
+            paymentMethod: s.payment_method_types[0] ?? undefined,
         }))
 
-    return invoices
+    return invoices.toSorted((a) => (a.status === 'pending' ? -1 : 1))
 })

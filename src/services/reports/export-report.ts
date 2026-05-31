@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createSbServerClient, getIsDev } from '@/lib/utils.server'
 import { CHROMIUM_PACK_PATH } from '@/lib/constants'
 import { CreateSbClientError, ExportReportError, UnauthenticatedError } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
@@ -78,7 +78,7 @@ export const exportReport = Effect.fn('exportReport')(function* (id: ReportDTO['
         })
     }
 
-    const isDev = process.env.NODE_ENV === 'development'
+    const isDev = getIsDev()
 
     // Fetch stock_data and resolve the Chromium path in parallel — neither depends on the other
     const [stockData, chromiumPath] = yield* Effect.all(

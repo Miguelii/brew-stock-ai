@@ -3,6 +3,7 @@ import { Separator } from '@/components/ui/separator'
 import { TokenPackages } from '@/modules/tokens/token-packages'
 import { CheckIcon } from 'lucide-react'
 import { TokenBalanceCard } from '@/modules/tokens/token-balance-card'
+import { PendingPaymentBanner } from '@/modules/tokens/pending-payment-banner'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
 
@@ -66,6 +67,8 @@ export default async function TokensPage({ searchParams }: Props) {
                 )}
 
                 <TokenBalanceCard />
+
+                <PendingPaymentBanner />
 
                 <Separator />
 

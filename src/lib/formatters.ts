@@ -50,3 +50,19 @@ export function formatAmount(amount: number, currency: string) {
 export const parseReportDate = (date: string) => {
     return date.slice(0, 16).replace('T', ' ')
 }
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+    card: 'Card',
+    multibanco: 'Multibanco',
+    sepa_debit: 'SEPA Debit',
+    amazon_pay: 'Amazon Pay',
+    ideal: 'iDEAL',
+    bancontact: 'Bancontact',
+    klarna: 'Klarna',
+    link: 'Link',
+}
+
+export function formatPaymentMethod(method: string | undefined): string {
+    if (!method) return '—'
+    return PAYMENT_METHOD_LABELS[method] ?? method
+}

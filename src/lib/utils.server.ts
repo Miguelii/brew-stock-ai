@@ -143,3 +143,7 @@ export function safeRedirectUrl(next: string, siteUrl: string): URL {
     }
     return resolved
 }
+
+export const getIsDev = (): boolean => {
+    return process.env.NODE_ENV === 'development'
+}

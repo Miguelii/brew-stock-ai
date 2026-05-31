@@ -8,7 +8,7 @@ import {
     UnauthenticatedError,
 } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createSbServerClient, getIsDev } from '@/lib/utils.server'
 import { ReportStatus } from '@/types/ReportDTO'
 import { getSession } from '@/services/auth/get-session'
 import { deductCredit } from '@/services/tokens/deduct-credit'
@@ -73,7 +73,7 @@ export const createReport = Effect.fn('createReport')(function* (
         try: () =>
             tasks.trigger<typeof processReportTask>('process-report', {
                 reportId: report.id,
-                useBaseModel: process.env.NODE_ENV === 'development',
+                useBaseModel: getIsDev(),
             }),
         catch: (cause) => cause,
     }).pipe(Effect.orElse(() => Effect.void))

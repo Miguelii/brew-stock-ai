@@ -4,4 +4,6 @@ export type Invoice = {
     amount: number
     currency: string
     description: string
+    status: 'paid' | 'pending'
+    paymentMethod?: string
 }

@@ -31,6 +31,8 @@ type TooltipProps = {
     label?: number
 }
 
+const formatXAxis = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { month: 'short' })
+
 function PriceTooltip({ active, payload, label }: TooltipProps) {
     if (!active || !payload?.length || label == null) return null
     return (
@@ -56,8 +58,6 @@ export function StockPriceChart({ ticker, low, high }: Props) {
         const cutoff = Date.now() - RANGE_DAYS[range] * 86_400_000
         return data.filter((p) => p.date >= cutoff)
     }, [data, range])
-
-    const formatXAxis = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { month: 'short' })
 
     if (isLoading) {
         return <div className="h-52 animate-pulse rounded-sm bg-muted" />

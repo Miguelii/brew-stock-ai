@@ -46,29 +46,38 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         const title = report.ticker ?? report.stock ?? 'Report'
 
         const META_TITLE = title.toUpperCase()
+        const META_DESCRIPTION = `AI-driven fundamental analysis and sentiment report for ${report.ticker ?? report.stock}. Key metrics, analyst targets, and sector scores.`
 
         return {
             title: META_TITLE,
+            description: META_DESCRIPTION,
             alternates: {
                 canonical: META_URL,
             },
             openGraph: {
                 title: META_TITLE,
+                description: META_DESCRIPTION,
                 url: META_URL,
             },
             twitter: {
                 title: META_TITLE,
+                description: META_DESCRIPTION,
             },
         }
     }
 
+    const NOT_FOUND_DESC = 'This report does not exist or has been removed.'
+
     return {
         title: 'Report Not Found',
+        description: NOT_FOUND_DESC,
         openGraph: {
             title: 'Report Not Found',
+            description: NOT_FOUND_DESC,
         },
         twitter: {
             title: 'Report Not Found',
+            description: NOT_FOUND_DESC,
         },
     }
 }

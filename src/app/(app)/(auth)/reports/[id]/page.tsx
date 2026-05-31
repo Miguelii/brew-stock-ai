@@ -43,8 +43,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (report?.stock) {
         const META_URL = `${SITE_URL}/reports/${report.id}`
 
-        const META_TITLE =
-            report.stock.charAt(0).toUpperCase() + report.stock.slice(1).toLowerCase()
+        const title = report.ticker ?? report.stock ?? 'Report'
+
+        const META_TITLE = title.toUpperCase()
 
         return {
             title: META_TITLE,

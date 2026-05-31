@@ -61,6 +61,10 @@ export default async function ContactPage() {
                                 report, or just want to share feedback — send us a message and
                                 we&apos;ll get back to you as soon as possible.
                             </p>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                You'll receive a reply within a few days. If you don't receive our
+                                email, please check your spam folder.
+                            </p>
                         </div>
                     </div>
 

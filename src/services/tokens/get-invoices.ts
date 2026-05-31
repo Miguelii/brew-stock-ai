@@ -22,26 +22,44 @@ export const getInvoices = Effect.fn('getInvoices')(function* () {
         return yield* new UnauthenticatedError({ error_hash: ErrorCode.INVOICES_UNAUTH })
     }
 
+    //return yield* new GetInvoicesError({ cause: 'test', error_hash: ErrorCode.INVOICES_STRIPE_INIT });
+
     const stripe = yield* Effect.try({
         try: () => new StripeClient(ServerEnv.STRIPE_SECRET_KEY!),
         catch: (cause) =>
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_INIT }),
     })
 
-    // Only query `complete` sessions — `open` sessions are abandoned checkouts (user went back),
-    // not real pending payments. The distinction between settled and async-pending is in
-    // `payment_status`: 'paid' = settled, 'unpaid' = async method submitted but not yet cleared.
+    const { data: userCredits } = yield* Effect.tryPromise({
+        try: () =>
+            supabase
+                .from('user_credits')
+                .select('stripe_customer_id')
+                .eq('user_id', user.id)
+                .single(),
+        catch: (cause) =>
+            new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_CREDITS_FETCH }),
+    })
+
+    // User has never purchased — skip Stripe call entirely
+    if (!userCredits?.stripe_customer_id) return []
+
+    // Query filtered by customer — Stripe only returns this user's sessions
     const allCompleted = yield* Effect.tryPromise({
         try: () =>
             stripe.checkout.sessions
-                .list({ limit: 100, status: 'complete' })
+                .list({
+                    customer: userCredits.stripe_customer_id!,
+                    status: 'complete',
+                    limit: 100,
+                })
                 .autoPagingToArray({ limit: 10_000 }),
         catch: (cause) =>
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_FETCH }),
     })
 
     const invoices: Invoice[] = allCompleted
-        .filter((s) => s.metadata?.userId === user.id && s.amount_total)
+        .filter((s) => s.amount_total)
         .map((s) => ({
             id: s.id,
             date: s.created,

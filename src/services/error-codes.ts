@@ -88,10 +88,14 @@ export enum ErrorCode {
     CHECKOUT_UNAUTH = 'd8hx1v6t',
     CHECKOUT_STRIPE_INIT = 'k4nj9r3w',
     CHECKOUT_STRIPE_CREATE = 'g6yb2f5p',
+    CHECKOUT_CREDITS_FETCH = 'h2nw5k8v',
+    CHECKOUT_CUSTOMER_CREATE = 'j4xt9m3c',
+    CHECKOUT_CUSTOMER_SAVE = 'k7pf1r6b',
     INVOICES_SB_CLIENT = 'x3tv8m1k',
     INVOICES_UNAUTH = 'j7wc4h9n',
     INVOICES_STRIPE_INIT = 'p2xf6b3d',
     INVOICES_STRIPE_FETCH = 'n5kv1t7y',
+    INVOICES_CREDITS_FETCH = 'q8wm2j5t',
 
     // Notifications
     PUSH_SUBSCRIBE_SB_CLIENT = 'c9mj4w2g',

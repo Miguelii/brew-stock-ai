@@ -13,6 +13,7 @@ import { createSbServerClient } from '@/lib/utils.server'
 import { getSession } from '@/services/auth/get-session'
 import { ClientEnv } from '@/env/client'
 import { TOKEN_PACKAGES } from '@/services/tokens/helpers/constants'
+import { Logger } from '@/lib/logger'
 
 export type TokenPackageId = (typeof TOKEN_PACKAGES)[number]['id']
 
@@ -31,7 +32,7 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
     }
 
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createSbServerClient(true),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.CHECKOUT_SB_CLIENT }),
     })
@@ -48,9 +49,74 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
             new CreateCheckoutSessionError({ cause, error_hash: ErrorCode.CHECKOUT_STRIPE_INIT }),
     })
 
+    const userCreditsSelectResponse = yield* Effect.tryPromise({
+        try: () =>
+            supabase
+                .from('user_credits')
+                .select('stripe_customer_id')
+                .eq('user_id', user.id)
+                .single(),
+        catch: (cause) =>
+            new CreateCheckoutSessionError({
+                cause,
+                error_hash: ErrorCode.CHECKOUT_CREDITS_FETCH,
+            }),
+    })
+
+    if (userCreditsSelectResponse.error) {
+        Logger({
+            prefix: 'createCheckoutSession',
+            level: 'error',
+            message: 'userCreditsSelectResponse error',
+            metadata: { error: JSON.stringify(userCreditsSelectResponse.error) },
+            userId: user?.id ?? undefined,
+        })
+    }
+
+    const userCredits = userCreditsSelectResponse.data
+
+    let stripeCustomerId = userCredits?.stripe_customer_id ?? null
+
+    if (!stripeCustomerId) {
+        const customer = yield* Effect.tryPromise({
+            try: () => stripe.customers.create({ email: user.email ?? undefined }),
+            catch: (cause) =>
+                new CreateCheckoutSessionError({
+                    cause,
+                    error_hash: ErrorCode.CHECKOUT_CUSTOMER_CREATE,
+                }),
+        })
+
+        stripeCustomerId = customer.id
+
+        const userCreditsUpdateResponse = yield* Effect.tryPromise({
+            try: () =>
+                supabase
+                    .from('user_credits')
+                    .update({ stripe_customer_id: stripeCustomerId })
+                    .eq('user_id', user.id),
+            catch: (cause) =>
+                new CreateCheckoutSessionError({
+                    cause,
+                    error_hash: ErrorCode.CHECKOUT_CUSTOMER_SAVE,
+                }),
+        })
+
+        if (userCreditsUpdateResponse.error) {
+            Logger({
+                prefix: 'createCheckoutSession',
+                level: 'error',
+                message: 'userCreditsUpdateResponse error',
+                metadata: { error: JSON.stringify(userCreditsUpdateResponse.error) },
+                userId: user?.id ?? undefined,
+            })
+        }
+    }
+
     const session = yield* Effect.tryPromise({
         try: () =>
             stripe.checkout.sessions.create({
+                customer: stripeCustomerId,
                 mode: 'payment',
                 line_items: [
                     {

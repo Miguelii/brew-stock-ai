@@ -58,7 +58,7 @@ describe('buildPdfHtml', () => {
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Apple announces new product')
-        expect(html).toContain('Recent Significant Development')
+        expect(html).toContain("What's Happening Now")
     })
 
     it('includes news reports when provided', () => {
@@ -79,7 +79,7 @@ describe('buildPdfHtml', () => {
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Q3 Results')
         expect(html).toContain('Reuters')
-        expect(html).toContain('Analyst Coverage')
+        expect(html).toContain('What Experts Are Saying')
     })
 
     it('includes scores section when provided', () => {
@@ -94,17 +94,17 @@ describe('buildPdfHtml', () => {
             financials: null,
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
-        expect(html).toContain('Company vs Sector Scores')
+        expect(html).toContain('How It Compares')
         expect(html).toContain('Innovation')
-        expect(html).toContain('Hiring Velocity')
+        expect(html).toContain('Workforce Growth')
         expect(html).toContain('Sustainability')
     })
 
     it('renders without stockData', () => {
         const html = buildPdfHtml(baseParams)
-        expect(html).not.toContain('Recent Significant Development')
-        expect(html).not.toContain('Analyst Coverage')
-        expect(html).not.toContain('Company vs Sector Scores')
+        expect(html).not.toContain("What's Happening Now")
+        expect(html).not.toContain('What Experts Are Saying')
+        expect(html).not.toContain('How It Compares')
     })
 
     it('includes brand name', () => {
@@ -163,12 +163,12 @@ describe('buildFinancialsSection', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
         expect(html).toContain('Revenue &amp; Profitability')
         expect(html).toContain('Valuation &amp; Returns')
-        expect(html).toContain('Cash Flow &amp; Debt')
+        expect(html).toContain('Financial Health')
     })
 
-    it('renders the 52-Week Range section with formatted prices', () => {
+    it('renders the 52-week range section with formatted prices', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
-        expect(html).toContain('52-Week Range')
+        expect(html).toContain('Where the stock has traded in the last year')
         expect(html).toContain('$124.17')
         expect(html).toContain('$199.62')
         expect(html).toContain('Current $189.50')
@@ -182,12 +182,12 @@ describe('buildFinancialsSection', () => {
         expect(html).toContain('Data N/A')
     })
 
-    it('always renders the Analyst Price Targets section', () => {
+    it('always renders the analyst price targets section', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
-        expect(html).toContain('Analyst Price Targets')
-        expect(html).toContain('Bear target')
-        expect(html).toContain('Analyst consensus')
-        expect(html).toContain('Bull target')
+        expect(html).toContain('What analysts think the stock is worth')
+        expect(html).toContain('Lowest analyst target')
+        expect(html).toContain('Average analyst target')
+        expect(html).toContain('Highest analyst target')
     })
 
     it('renders the 3 analyst target prices when all are provided', () => {
@@ -207,7 +207,7 @@ describe('buildFinancialsSection', () => {
                 targetHighPrice: null,
             }),
         })
-        expect(html).toContain('Analyst Price Targets')
+        expect(html).toContain('What analysts think the stock is worth')
         // 3 N/A tiles from targets + any nulls already present — at least 3
         const matches = html.match(/N\/A/g) ?? []
         expect(matches.length).toBeGreaterThanOrEqual(3)
@@ -240,7 +240,7 @@ describe('buildFinancialsSection', () => {
             ...baseParams,
             stockData: withFinancials({ ...baseFinancials, targetMeanPrice: null }),
         })
-        expect(html).toContain('Analyst Price Targets')
+        expect(html).toContain('What analysts think the stock is worth')
         expect(html).not.toContain('% to consensus')
     })
 

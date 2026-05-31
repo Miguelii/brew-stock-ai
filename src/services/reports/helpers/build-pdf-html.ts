@@ -14,7 +14,7 @@ import type {
 
 const SCORE_ROW_DEFS = [
     { label: 'Innovation', key: 'innovativeness' },
-    { label: 'Hiring Velocity', key: 'hiring' },
+    { label: 'Workforce Growth', key: 'hiring' },
     { label: 'Sustainability', key: 'sustainability' },
 ] as const
 
@@ -131,17 +131,17 @@ function buildFinancialsSection(f: StockFinancials): string {
             : ''
 
     return `
-    <div class="fin-group-title">52-Week Range</div>
+    <div class="fin-group-title">Where the stock has traded in the last year</div>
     ${rangeBar}
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <div class="fin-group-title" style="margin:0;">Analyst Price Targets</div>
+        <div class="fin-group-title" style="margin:0;">What analysts think the stock is worth</div>
         ${upsideBadge}
     </div>
     <div class="fin-grid">
-        ${tile('Bear target', fmtPrice(f.targetLowPrice), 'fin-tile-3')}
-        ${tile('Analyst consensus', fmtPrice(f.targetMeanPrice), 'fin-tile-3')}
-        ${tile('Bull target', fmtPrice(f.targetHighPrice), 'fin-tile-3')}
+        ${tile('Lowest analyst target', fmtPrice(f.targetLowPrice), 'fin-tile-3')}
+        ${tile('Average analyst target', fmtPrice(f.targetMeanPrice), 'fin-tile-3')}
+        ${tile('Highest analyst target', fmtPrice(f.targetHighPrice), 'fin-tile-3')}
     </div>
 
     <div class="fin-group-title">Revenue &amp; Profitability</div>
@@ -166,7 +166,7 @@ function buildFinancialsSection(f: StockFinancials): string {
         ${tile('ROE', fmtPct(f.returnOnEquity), 'fin-tile', true, f.returnOnEquity)}
     </div>
 
-    <div class="fin-group-title">Cash Flow &amp; Debt</div>
+    <div class="fin-group-title">Financial Health</div>
     <div class="fin-grid">
         ${tile('Free Cash Flow', fmtLarge(f.freeCashflow), 'fin-tile', true, f.freeCashflow)}
         ${tile('Operating Cash Flow', fmtLarge(f.operatingCashflow), 'fin-tile', true, f.operatingCashflow)}
@@ -178,7 +178,8 @@ function buildFinancialsSection(f: StockFinancials): string {
 function buildSigDevSection(sigDev: StockSigDev): string {
     return `
     <div class="extra-section">
-        <div class="extra-section-title">Recent Significant Development</div>
+        <div class="extra-section-title">What's Happening Now</div>
+        <div class="extra-section-subtitle">The most notable recent event our AI identified for this company</div>
         <p class="sig-dev-headline">${sigDev.headline}</p>
         ${sigDev.date ? `<span class="sig-dev-date">${fmtDate(sigDev.date)}</span>` : ''}
     </div>`
@@ -187,7 +188,8 @@ function buildSigDevSection(sigDev: StockSigDev): string {
 function buildNewsSection(reports: StockReports[]): string {
     return `
     <div class="extra-section">
-        <div class="extra-section-title">Analyst Coverage</div>
+        <div class="extra-section-title">What Experts Are Saying</div>
+        <div class="extra-section-subtitle">Recent reports and research from professional investors and analysts</div>
         <ul class="news-list">
             ${reports
                 .map(
@@ -206,8 +208,8 @@ function buildNewsSection(reports: StockReports[]): string {
 function buildScoresSection(scores: StockScores): string {
     return `
     <div class="extra-section">
-        <div class="extra-section-title">Company vs Sector Scores</div>
-        <p class="scores-desc">Comparison of AI-derived metrics against industry sector averages (Scale 0.0 – 1.0).</p>
+        <div class="extra-section-title">How It Compares</div>
+        <div class="extra-section-subtitle">How this company stacks up against others in the same sector (scale 0–1, higher is better)</div>
         ${buildScoreRows(scores)}
     </div>`
 }
@@ -348,12 +350,18 @@ const PDF_CSS = `
             border-top: 1px solid #e8e8e8;
         }
         .extra-section-title {
-            font-size: 10px;
+            font-size: 15px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: -0.01em;
+            color: #262626;
+        }
+        .extra-section-subtitle {
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0;
             color: #909097;
-            margin-bottom: 16px;
+            margin-top: 3px;
+            margin-bottom: 14px;
         }
         .sig-dev-headline {
             font-size: 13px;
@@ -432,7 +440,7 @@ export function buildPdfHtml(params: {
         stockData?.financials
             ? `
     <div class="extra-section">
-        <div class="extra-section-title">Key Financial Metrics</div>
+        <div class="extra-section-title" style="margin-bottom: 14px;">Key Financial Metrics</div>
         ${buildFinancialsSection(stockData.financials)}
     </div>`
             : ''

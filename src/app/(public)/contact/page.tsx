@@ -62,8 +62,8 @@ export default async function ContactPage() {
                                 we&apos;ll get back to you as soon as possible.
                             </p>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                You'll receive a reply within a few days. If you don't receive our
-                                email, please check your spam folder.
+                                You&apos;ll receive a reply within a few days. If you don&apos;t
+                                receive our email, please check your spam folder.
                             </p>
                         </div>
                     </div>

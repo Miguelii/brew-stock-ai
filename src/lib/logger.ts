@@ -59,10 +59,8 @@ export function Logger(props: Props): void {
     console[level](header, details)
 
     const run = async () => {
-        await persistLog({
-            ...props,
-            prefix: parsedPrefix,
-        }).catch((err) => {
+        if (isDev) return
+        await persistLog(props).catch((err) => {
             console.error('[Logger] persist failed', err instanceof Error ? err.message : err)
         })
     }

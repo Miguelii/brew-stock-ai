@@ -38,7 +38,7 @@ export function MarketingCard() {
                     </h2>
                     <p className="text-primary-muted leading-relaxed max-w-2xl text-lg">
                         StockBrewAI processes earnings reports, balance sheets, and market data the
-                        same way professional analysts do. You get the output in under 1 minute for
+                        same way professional analysts do. You get the output in under 2 minutes for
                         less than a coffee.
                     </p>
                 </motion.div>

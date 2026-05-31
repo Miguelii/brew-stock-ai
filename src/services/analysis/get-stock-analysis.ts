@@ -68,7 +68,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
             }).then((result) => ({ output: result.output, usage: result.usage }))
         },
         catch: (cause) => {
-            console.error('[getStockAnalysis] raw AI error:', cause)
+            logger.error('getStockAnalysis error', { error: cause })
             return new AiGenerationError({ cause, error_hash: ErrorCode.ANALYSIS_AI_GENERATION })
         },
     })

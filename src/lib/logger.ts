@@ -1,3 +1,8 @@
+import 'server-only'
+
+import { after } from 'next/server'
+import { createSbAdminClient } from '@/lib/utils.server'
+
 type LogLevel = 'log' | 'warn' | 'error' | 'info'
 
 type Props = {
@@ -5,6 +10,9 @@ type Props = {
     error?: unknown
     context?: string
     prefix?: string
+    message?: string
+    metadata?: Record<string, unknown>
+    userId?: string
 }
 
 function serializeError(error: unknown): unknown {
@@ -35,9 +43,43 @@ function serializeError(error: unknown): unknown {
     return error
 }
 
-export function Logger({ prefix = 'Logger', level, error, context }: Props): void {
+export function Logger(props: Props): void {
+    const { level, prefix = 'Logger', context, error } = props
+
     console[level](`[${prefix}]${context ? ` ${context}` : ''}`, {
         error: serializeError(error),
         timestamp: new Date().toISOString(),
     })
+
+    const run = async () => {
+        await persistLog(props).catch((err) => {
+            console.error('[Logger] persist failed', err instanceof Error ? err.message : err)
+        })
+    }
+
+    try {
+        after(run)
+    } catch {
+        // Not inside a Next.js request scope (e.g., Trigger.dev task).
+        // Trigger.dev awaits the run function so the floating promise resolves.
+        void run()
+    }
+}
+
+async function persistLog(props: Props): Promise<void> {
+    const supabase = createSbAdminClient()
+    const { error } = await supabase.from('logs').insert({
+        level: props.level,
+        prefix: props.prefix ?? null,
+        context: props.context ?? null,
+        message: props.message ?? null,
+        error: props.error !== undefined ? serializeError(props.error) : null,
+        metadata: props.metadata ?? null,
+        user_id: props?.userId ?? null,
+    })
+
+    if (error) {
+        console.error('persistLog', { error })
+        throw new Error(error.message)
+    }
 }

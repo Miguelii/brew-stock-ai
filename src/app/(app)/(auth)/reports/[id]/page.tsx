@@ -134,7 +134,10 @@ export default async function ReportsIdPage(props: Props) {
                 </section>
 
                 <section id="key-metrics">
-                    <ReportFinancialsCard financials={stockData?.financials ?? null} />
+                    <ReportFinancialsCard
+                        financials={stockData?.financials ?? null}
+                        ticker={stockData?.id}
+                    />
                 </section>
 
                 <section id="analysis">

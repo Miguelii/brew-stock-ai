@@ -23,6 +23,7 @@ import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
 import { createConsentCookie } from '@/services/consent/create-consent-cookie'
 import { submitFeedback } from '@/services/feedback/submit-feedback'
 import { getLatestNews } from '@/services/analysis/get-latest-news'
+import { getPriceHistory } from '@/services/analysis/get-price-history'
 import {
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
     CONTACT_FORM_MAX_NAME_LENGTH,
@@ -289,6 +290,23 @@ export const appRouter = router({
             runEffect(getLatestNews(input.ticker), 'getLatestNews', (error) =>
                 Match.value(error).pipe(
                     Match.tag('LatestNewsError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.exhaustive
+                )
+            )
+        ),
+
+    priceHistory: publicProcedure
+        .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
+        .query(({ input }) =>
+            runEffect(getPriceHistory(input.ticker), 'getPriceHistory', (error) =>
+                Match.value(error).pipe(
+                    Match.tag('YahooPriceHistoryError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
+                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.exhaustive
                 )
             )

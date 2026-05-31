@@ -2,11 +2,13 @@ import 'server-only'
 
 import { unstable_cache } from 'next/cache'
 import { Effect } from 'effect'
-import { LatestNewsError } from '@/services/errors'
+import { CreateSbClientError, LatestNewsError, UnauthenticatedError } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
 import { ServerEnv } from '@/env/server'
 import type { NewsItem } from '@/types/news'
 import { LATEST_NEWS_CACHE_KEY, LATEST_NEWS_TTL } from '@/services/analysis/helpers/constants'
+import { createSbServerClient } from '@/lib/utils.server'
+import { getSession } from '@/services/auth/get-session'
 
 const fetchLatestNewsFn = (ticker: string) =>
     unstable_cache(
@@ -37,6 +39,19 @@ export const getLatestNews = Effect.fn('getLatestNews')(function* (ticker: strin
             cause: 'NO API KEY',
             error_hash: ErrorCode.LATEST_NEWS_API_KEY_MISSING,
         })
+    }
+
+    // To avoid spaming this endpoint, we verify if the session is active
+    const supabase = yield* Effect.tryPromise({
+        try: () => createSbServerClient(),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.REPORT_CREATE_SB_CLIENT }),
+    })
+
+    const user = yield* getSession(supabase)
+
+    if (!user) {
+        return yield* new UnauthenticatedError({ error_hash: ErrorCode.REPORT_CREATE_UNAUTH })
     }
 
     return yield* Effect.tryPromise({

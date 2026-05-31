@@ -15,6 +15,7 @@ export enum ErrorCode {
     YAHOO_QUOTE_SUMMARY = 'f5bz1h3t',
     YAHOO_SEARCH_CLIENT = 'n4yw6r9g',
     YAHOO_SEARCH_REQUEST = 'd1kp7m2x',
+    YAHOO_PRICE_HISTORY = 'h8kt3x5p',
 
     // Analysis - Save
     SAVE_ANALYSIS_SB_CLIENT = 'v9tj3f8c',

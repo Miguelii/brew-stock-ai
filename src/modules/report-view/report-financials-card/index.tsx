@@ -2,15 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { fmtLarge, fmtPct, fmtX, fmtNum, fmtPrice } from '@/lib/formatters'
 import type { StockFinancials } from '@/types/ReportDTO'
-import { RangeBar } from '@/modules/report-view/report-financials-card/range-bar'
+import { StockPriceChart } from '@/modules/report-view/report-financials-card/stock-price-chart'
 import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
 import { Group } from '@/modules/report-view/report-financials-card/group'
 
 type Props = {
     financials: StockFinancials | null
+    ticker: string | null | undefined
 }
 
-export function ReportFinancialsCard({ financials }: Props) {
+export function ReportFinancialsCard({ financials, ticker }: Props) {
     const f = financials
 
     const upside =
@@ -112,56 +113,20 @@ export function ReportFinancialsCard({ financials }: Props) {
         },
     ]
 
-    const hasRangeData =
-        f?.fiftyTwoWeekLow != null && f?.fiftyTwoWeekHigh != null && f?.currentPrice != null
-
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">Key Financial Metrics</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-                {/* 52-Week Price Range */}
-                <div className="flex flex-col gap-3">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Where the stock has traded in the last year
-                    </span>
-                    <RangeBar
+                {/* 52-Week Price Chart */}
+                {ticker ? (
+                    <StockPriceChart
+                        ticker={ticker}
                         low={f?.fiftyTwoWeekLow}
                         high={f?.fiftyTwoWeekHigh}
-                        current={f?.currentPrice}
-                        lowLabel={fmtPrice(f?.fiftyTwoWeekLow)}
-                        highLabel={fmtPrice(f?.fiftyTwoWeekHigh)}
                     />
-                    <div className="flex items-center gap-4 flex-wrap">
-                        {hasRangeData ? (
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-3 h-0.5 bg-accent-blue" />
-                                <span className="text-xs text-muted-foreground">
-                                    Current price {fmtPrice(f!.currentPrice)}
-                                </span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-1.5">
-                                <div
-                                    className="size-2.5 rounded-full"
-                                    style={{
-                                        backgroundImage:
-                                            'repeating-linear-gradient(45deg, #d1d5db 0px, #d1d5db 3px, transparent 3px, transparent 8px)',
-                                    }}
-                                />
-                                <span className="text-xs text-muted-foreground">
-                                    Data not available
-                                </span>
-                            </div>
-                        )}
-                        {f?.beta != null && (
-                            <span className="text-xs text-muted-foreground">
-                                Volatility (Beta) {fmtNum(f.beta)}
-                            </span>
-                        )}
-                    </div>
-                </div>
+                ) : null}
 
                 {/* Analyst Price Targets */}
                 <div className="flex flex-col gap-2">

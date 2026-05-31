@@ -44,12 +44,16 @@ function serializeError(error: unknown): unknown {
 }
 
 export function Logger(props: Props): void {
-    const { level, prefix = 'Logger', context, error } = props
+    const { level, prefix = 'Logger', context, error, message, metadata } = props
 
-    console[level](`[${prefix}]${context ? ` ${context}` : ''}`, {
-        error: serializeError(error),
-        timestamp: new Date().toISOString(),
-    })
+    const header = `[${prefix}]${context ? ` ${context}` : ''}${message ? ` ${message}` : ''}`
+    const details: Record<string, unknown> = { timestamp: new Date().toISOString() }
+
+    if (error !== undefined) details.error = serializeError(error)
+
+    if (metadata !== undefined) details.metadata = metadata
+
+    console[level](header, details)
 
     const run = async () => {
         await persistLog(props).catch((err) => {

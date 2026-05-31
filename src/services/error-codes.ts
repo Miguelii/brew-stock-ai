@@ -119,6 +119,8 @@ export enum ErrorCode {
     // Admin
     ADMIN_STATS_FETCH = 'admn_s7f3',
     ADMIN_UNAUTH = 'admn_unth',
+    ADMIN_FEEDBACK_FETCH = 'admn_fbfch',
+    ADMIN_FEEDBACK_FETCH_ERR = 'admn_fberr',
 
     // Consent
     CONSENT_COOKIE_CREATE = 't1yj6r9b',

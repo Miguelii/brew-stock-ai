@@ -75,6 +75,9 @@ export class GetInvoicesError extends Data.TaggedError('GetInvoicesError')<Servi
 
 // Admin
 export class AdminStatsError extends Data.TaggedError('AdminStatsError')<ServiceErrorFields> {}
+export class GetAdminFeedbackError extends Data.TaggedError(
+    'GetAdminFeedbackError'
+)<ServiceErrorFields> {}
 
 // Feedback
 export class SubmitFeedbackError extends Data.TaggedError(

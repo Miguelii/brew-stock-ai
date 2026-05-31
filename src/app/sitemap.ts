@@ -58,6 +58,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'weekly',
             priority: 0.8,
         },
+        {
+            url: `${siteUrl}/about`,
+            changeFrequency: 'monthly',
+            lastModified: new Date(),
+            priority: 0.8,
+        },
         ...tickerRoutes,
         ...educationHubRoutes,
         {
@@ -68,6 +74,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
         {
             url: `${siteUrl}/privacy`,
+            changeFrequency: 'monthly',
+            lastModified: new Date(),
+            priority: 0.2,
+        },
+        {
+            url: `${siteUrl}/disclaimer`,
             changeFrequency: 'monthly',
             lastModified: new Date(),
             priority: 0.2,

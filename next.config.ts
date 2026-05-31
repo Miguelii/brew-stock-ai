@@ -6,6 +6,12 @@ loadSystemEnvs()
 const buildTimestamp = Date.now().toString()
 
 const nextConfig: NextConfig = {
+    /* logging: {
+        fetches: {
+            fullUrl: true
+        },
+        serverFunctions: true,
+    }, */
     reactCompiler: true,
     // Prevent Next.js from bundling these packages (they contain native binaries)
     serverExternalPackages: ['@sparticuz/chromium', '@sparticuz/chromium-min', 'puppeteer-core'],

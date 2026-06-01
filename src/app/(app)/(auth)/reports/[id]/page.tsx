@@ -91,6 +91,10 @@ export default async function ReportsIdPage(props: Props) {
 
     const stockData = response?.stockData
 
+    const stockTicker = stockData?.id ?? report?.ticker ?? report?.stock ?? undefined
+
+    console.log({ stockTicker })
+
     if (!report) return notFound()
 
     const META_URL = `${SITE_URL}/reports/${report.id}`
@@ -145,7 +149,7 @@ export default async function ReportsIdPage(props: Props) {
                 <section id="key-metrics">
                     <ReportFinancialsCard
                         financials={stockData?.financials ?? null}
-                        ticker={stockData?.id}
+                        ticker={stockTicker}
                     />
                 </section>
 
@@ -162,7 +166,7 @@ export default async function ReportsIdPage(props: Props) {
 
                 <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
                     <section id="latest-news">
-                        <ReportLatestNewsServer ticker={stockData?.id} />
+                        <ReportLatestNewsServer ticker={stockTicker} />
                     </section>
                 </Suspense>
 

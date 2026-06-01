@@ -1,4 +1,5 @@
-import type { EducationHubArticle } from '@/types/EducationHubArticle'
+// oxlint-disable max-lines
+import type { ArticleTheme, EducationHubArticle } from '@/types/EducationHubArticle'
 
 export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
     {
@@ -8,6 +9,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'Most investors read a research report back to front and miss the point. Here is the order a professional reads it in, and the three numbers that decide everything.',
         publishedAt: '2025-04-01',
         readingTimeMinutes: 6,
+        theme: 'stock-analysis',
         sections: [
             {
                 body: 'A good analyst does not read a research report top to bottom. They read it in a specific order, looking for the places where the story and the numbers disagree. That gap — between what the narrative claims and what the financials prove — is where the real insight lives. Once you know which sections answer which question, a 20-page report takes ten minutes to read and you walk away knowing whether the thesis holds.',
@@ -41,6 +43,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             "The Price-to-Earnings ratio is the most cited number in investing — and one of the most misunderstood. Here's what it measures, how to read it, and exactly when it lies.",
         publishedAt: '2025-04-05',
         readingTimeMinutes: 5,
+        theme: 'stock-analysis',
         sections: [
             {
                 body: 'Open any financial news site and you will see stocks described as trading at "20x earnings" or "50x forward earnings." The P/E ratio is the single most quoted number in markets — and also the one most often used without thinking. Understanding what it actually says, and what it conveniently leaves out, separates investors who use it well from those it quietly misleads.',
@@ -70,6 +73,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'A moat is the difference between a company that earns 25% on capital for a decade and one that gets competed down to nothing. Learn the five types, how to spot them in the numbers, and how they erode.',
         publishedAt: '2025-04-10',
         readingTimeMinutes: 6,
+        theme: 'stock-analysis',
         sections: [
             {
                 body: 'In capitalism, high profits are supposed to attract competition until those profits disappear. A "moat" is whatever stops that from happening — the structural reason a company can keep earning unusually high returns while rivals try and fail to take them away. It is the single most important question in long-term investing, because without a moat, even a great year is just a head start that competitors will eventually erase.',
@@ -99,6 +103,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'The goal is not to avoid risk — it is to get paid enough for taking it. Here is how professionals separate the risks that dent a quarter from the ones that destroy a thesis.',
         publishedAt: '2025-04-15',
         readingTimeMinutes: 5,
+        theme: 'stock-analysis',
         sections: [
             {
                 body: 'Picture a stock that could fall 40% in a recession but could also triple over five years. Is it risky? The honest answer is: it depends entirely on the price you pay and the odds you assign. Risk is not a thing to flee — it is a thing to price. The investors who do well are not the ones who avoid risk; they are the ones who refuse to take it unless the potential reward clearly justifies it.',
@@ -128,6 +133,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'Stocks can swing 15% in minutes on earnings day — and the trigger is rarely the EPS number itself. Here is what the figure measures, and what the market is really reacting to.',
         publishedAt: '2025-04-20',
         readingTimeMinutes: 5,
+        theme: 'stock-analysis',
         sections: [
             {
                 body: 'On an earnings day, a stock can move 15% in the first minute of trading. Newcomers assume the company must have made or lost a fortune overnight. It did not. What moved is the gap between the earnings the company reported and the earnings the market had already priced in. EPS is the headline number — but the reaction is all about expectations, and understanding that gap is the difference between watching the chart in confusion and knowing why it moved.',
@@ -157,6 +163,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'These two philosophies are usually framed as enemies. The more useful question is which one the current interest-rate environment is quietly rewarding — and why.',
         publishedAt: '2025-04-25',
         readingTimeMinutes: 6,
+        theme: 'investing-strategy',
         sections: [
             {
                 body: 'Growth and value are the two great schools of stock picking, and they are almost always presented as a rivalry. In practice the rivalry is overblown — most strong investors borrow from both. What is genuinely useful is understanding the underlying logic of each, and recognising that the market environment, especially interest rates, can favour one for years at a time before the pendulum swings back.',
@@ -190,6 +197,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'Profit is an opinion; cash is a fact. Learn what free cash flow reveals that the income statement hides — and the famous cases where the two told opposite stories.',
         publishedAt: '2025-05-01',
         readingTimeMinutes: 6,
+        theme: 'stock-analysis',
         sections: [
             {
                 body: '"Revenue is vanity, profit is sanity, cash flow is reality." The adage survives because it keeps being proven right: companies report healthy profits and run out of cash, and companies report losses while quietly generating mountains of it. Learning to read cash flow is the closest thing investing has to a lie detector for the income statement.',
@@ -223,6 +231,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'Two companies can have the same market cap and be worth completely different amounts. The number that actually tells you what a business costs is the one most beginners ignore.',
         publishedAt: '2025-05-05',
         readingTimeMinutes: 5,
+        theme: 'stock-analysis',
         sections: [
             {
                 body: 'Market cap is the first number anyone learns about a stock, and the one that quietly causes the most confused valuations. It looks like the price of the company — but it is only the price of the equity. Imagine buying a house listed at $400,000 that comes with a $300,000 mortgage you must assume. The sticker says $400,000; your actual cost is $700,000. Companies work exactly the same way, and the number that captures the full cost has a different name.',
@@ -252,6 +261,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'Two people invest the same amount each month. One starts ten years earlier and contributes less in total — yet ends up with nearly twice as much. Here is the math that makes it happen.',
         publishedAt: '2025-05-10',
         readingTimeMinutes: 6,
+        theme: 'personal-finance',
         sections: [
             {
                 body: 'Almost everyone knows they should "start early." Almost no one has seen what that phrase is actually worth in numbers — and the numbers are far more dramatic than the cliché suggests. The reason is that compounding is not a straight line. It is a curve that stays flat and boring for years, then bends upward so steeply that the final decade does more work than the first three combined. The earlier you begin, the more of that explosive late curve you get to keep.',
@@ -285,6 +295,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'These three are constantly confused, and the differences cost real money. A 1% annual fee sounds trivial — over 30 years it can quietly eat roughly a quarter of your returns.',
         publishedAt: '2025-05-14',
         readingTimeMinutes: 6,
+        theme: 'personal-finance',
         sections: [
             {
                 body: 'The terms ETF, index fund, and mutual fund get used almost interchangeably, which hides the fact that they answer two completely separate questions. One is about how a fund is built and traded. The other — the one that actually determines how much money reaches your account — is about how much you pay to be in it. Confusing the two is how investors end up paying active fees for what is effectively a passive product.',
@@ -318,6 +329,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'How much do you actually need to never work again? A famous study turned that question into a single multiplier — and a single number that is more nuanced than the internet admits.',
         publishedAt: '2025-05-18',
         readingTimeMinutes: 6,
+        theme: 'personal-finance',
         sections: [
             {
                 body: 'The question at the heart of the financial independence movement sounds impossibly vague: how much money is "enough" to stop working? In 1998 a study out of Trinity University turned that vagueness into a startlingly simple rule of thumb — one that lets you convert your annual spending into a concrete savings target. It is not gospel, and it has real limitations, but understanding it changes how you think about money from "how much do I earn?" to "how much freedom have I bought?"',
@@ -351,6 +363,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'A sky-high dividend yield looks like free money. More often it is the market telling you a cut is coming. Here is how to tell a bargain from a trap before the payout disappears.',
         publishedAt: '2025-05-22',
         readingTimeMinutes: 5,
+        theme: 'dividends-income',
         sections: [
             {
                 body: 'You screen for income stocks and one jumps out: a 9% dividend yield while everything around it pays 3%. It looks like the market is handing you three times the income for free. It almost never is. A yield that high is usually not a reward the market overlooked — it is a warning the market is broadcasting. Understanding why requires seeing what the yield is actually made of.',
@@ -380,6 +393,7 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
             'Got a windfall? Conventional wisdom says drip it in slowly to reduce risk. The historical data says the opposite wins about two-thirds of the time — but the smart choice is more subtle.',
         publishedAt: '2025-05-26',
         readingTimeMinutes: 5,
+        theme: 'investing-strategy',
         sections: [
             {
                 body: 'You inherit $60,000, or a bonus lands, or you finally have savings to invest. The instinct, drilled in by years of cautious advice, is to spread it out — invest a little each month to avoid the nightmare of putting it all in the day before a crash. It feels obviously safer. The historical data, however, says that the "obviously safer" approach usually leaves you poorer. This is one of the cleanest examples in investing of intuition pointing the wrong way.',
@@ -405,3 +419,14 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
 ]
 
 export const EDUCATION_HUB_ARTICLE_MAP = new Map(EDUCATION_HUB_ARTICLES.map((a) => [a.slug, a]))
+
+export const EDUCATION_HUB_THEMES: { value: ArticleTheme; label: string }[] = [
+    { value: 'stock-analysis', label: 'Stock Analysis' },
+    { value: 'investing-strategy', label: 'Investing Strategy' },
+    { value: 'personal-finance', label: 'Personal Finance' },
+    { value: 'dividends-income', label: 'Dividends & Income' },
+]
+
+export const EDUCATION_HUB_THEME_LABELS: Record<ArticleTheme, string> = Object.fromEntries(
+    EDUCATION_HUB_THEMES.map((t) => [t.value, t.label])
+) as Record<ArticleTheme, string>

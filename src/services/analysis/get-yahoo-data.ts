@@ -11,7 +11,12 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
             const { default: YahooFinance } = await import('yahoo-finance2')
             return new YahooFinance({ suppressNotices: ['yahooSurvey'] })
         },
-        catch: (cause) => new YahooClientError({ cause, error_hash: ErrorCode.YAHOO_CLIENT_INIT }),
+        catch: (cause) =>
+            new YahooClientError({
+                symbol: `|${ticker}|`,
+                cause,
+                error_hash: ErrorCode.YAHOO_CLIENT_INIT,
+            }),
     })
 
     const insights = yield* Effect.tryPromise({
@@ -20,7 +25,11 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                 reportsCount: 3,
             }),
         catch: (cause) =>
-            new YahooInsightsError({ cause, error_hash: ErrorCode.YAHOO_INSIGHTS_FETCH }),
+            new YahooInsightsError({
+                ticker: `|${ticker}|`,
+                cause,
+                error_hash: ErrorCode.YAHOO_INSIGHTS_FETCH,
+            }),
     })
 
     // Recent significant development
@@ -64,7 +73,11 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                 modules: ['financialData', 'summaryDetail', 'defaultKeyStatistics'],
             }),
         catch: (cause) =>
-            new YahooQuoteSummaryError({ cause, error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY }),
+            new YahooQuoteSummaryError({
+                ticker: `|${ticker}|`,
+                cause,
+                error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
+            }),
     }).pipe(
         Effect.map((summary) => {
             const fd = summary.financialData

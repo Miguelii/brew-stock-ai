@@ -6,7 +6,9 @@ import type { ErrorCode } from '@/services/error-codes'
 type ServiceErrorFields = { cause: unknown; error_hash: ErrorCode }
 
 // Analysis
-export class AiGenerationError extends Data.TaggedError('AiGenerationError')<ServiceErrorFields> {}
+export class AiGenerationError extends Data.TaggedError('AiGenerationError')<
+    ServiceErrorFields & { symbol: string }
+> {}
 export class LatestNewsError extends Data.TaggedError('LatestNewsError')<
     ServiceErrorFields & { ticker: string }
 > {}

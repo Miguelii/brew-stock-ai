@@ -36,6 +36,7 @@ const fetchLatestNewsFn = (ticker: string) =>
 export const getLatestNews = Effect.fn('getLatestNews')(function* (ticker: string) {
     if (!ServerEnv.NEXT_FINNHUB_API_KEY || ServerEnv.NEXT_FINNHUB_API_KEY === '') {
         return yield* new LatestNewsError({
+            ticker: `|${ticker}|`,
             cause: 'NO API KEY',
             error_hash: ErrorCode.LATEST_NEWS_API_KEY_MISSING,
         })
@@ -56,6 +57,11 @@ export const getLatestNews = Effect.fn('getLatestNews')(function* (ticker: strin
 
     return yield* Effect.tryPromise({
         try: () => fetchLatestNewsFn(ticker)(),
-        catch: (cause) => new LatestNewsError({ cause, error_hash: ErrorCode.LATEST_NEWS_FETCH }),
+        catch: (cause) =>
+            new LatestNewsError({
+                ticker: `|${ticker}|`,
+                cause,
+                error_hash: ErrorCode.LATEST_NEWS_FETCH,
+            }),
     })
 })

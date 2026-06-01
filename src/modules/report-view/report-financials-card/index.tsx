@@ -1,14 +1,16 @@
+import { Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { fmtLarge, fmtPct, fmtX, fmtNum } from '@/lib/formatters'
-import type { StockFinancials } from '@/types/ReportDTO'
+import type { ReportDTO, StockFinancials } from '@/types/ReportDTO'
 import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
 import { Group } from '@/modules/report-view/report-financials-card/group'
 import { AnalystTargets } from '@/modules/report-view/report-financials-card/analyst-targets'
-import { StockPriceChart } from '@/modules/report-view/report-financials-card/stock-price-chart-lazy'
+import { StockPriceChartServer } from '@/modules/report-view/report-financials-card/stock-price-chart-server'
+import { StockPriceChartSkeleton } from '@/modules/report-view/report-financials-card/stock-price-chart-skeleton'
 
 type Props = {
     financials: StockFinancials | null
-    ticker: string | null | undefined
+    ticker: ReportDTO['ticker'] | undefined
 }
 
 export function ReportFinancialsCard({ financials, ticker }: Props) {
@@ -114,13 +116,13 @@ export function ReportFinancialsCard({ financials, ticker }: Props) {
                 <CardTitle className="text-base font-semibold">Key Financial Metrics</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-                {ticker ? (
-                    <StockPriceChart
+                <Suspense fallback={<StockPriceChartSkeleton />}>
+                    <StockPriceChartServer
                         ticker={ticker}
                         low={f?.fiftyTwoWeekLow}
                         high={f?.fiftyTwoWeekHigh}
                     />
-                ) : null}
+                </Suspense>
 
                 <AnalystTargets financials={financials} />
 

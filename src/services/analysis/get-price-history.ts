@@ -38,7 +38,10 @@ export const getPriceHistory = Effect.fn('getPriceHistory')(function* (ticker: s
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
         catch: (cause) =>
-            new CreateSbClientError({ cause, error_hash: ErrorCode.REPORT_CREATE_SB_CLIENT }),
+            new CreateSbClientError({
+                cause,
+                error_hash: ErrorCode.REPORT_CREATE_SB_CLIENT,
+            }),
     })
 
     const user = yield* getSession(supabase)
@@ -50,6 +53,10 @@ export const getPriceHistory = Effect.fn('getPriceHistory')(function* (ticker: s
     return yield* Effect.tryPromise({
         try: () => fetchHistory(ticker)(),
         catch: (cause) =>
-            new YahooPriceHistoryError({ cause, error_hash: ErrorCode.YAHOO_PRICE_HISTORY }),
+            new YahooPriceHistoryError({
+                ticker: `|${ticker}|`,
+                cause: cause,
+                error_hash: ErrorCode.YAHOO_PRICE_HISTORY,
+            }),
     })
 })

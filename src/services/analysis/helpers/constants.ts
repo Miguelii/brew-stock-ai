@@ -27,14 +27,14 @@ export const stockAnalysisSchema = z.object({
     sentiment: z
         .number()
         .describe(
-            'Integer from 0 to 100. 0–30 bearish, 31–69 neutral, 70–100 bullish. Must be between 0 and 100.'
+            'Integer from 0 to 100. 0–24 extreme bearish, 25–42 bearish, 43–57 neutral, 58–75 bullish, 76–100 extreme bullish. Must be between 0 and 100.'
         ),
 })
 
 export const YAHOO_DATA_TTL = 3 * 24 * 60 * 60 * 1000 // 3 days
 
 export const LATEST_NEWS_CACHE_KEY = 'latest-news'
-export const LATEST_NEWS_TTL = 3 * 24 * 60 * 60 // 3 days in seconds (for unstable_cache)
+export const LATEST_NEWS_TTL = 24 * 60 * 60 // 1 day in seconds (for unstable_cache)
 
 export const GET_PRICE_HISTORY_CACHE_KEY = 'price-history'
-export const GET_PRICE_HISTORY_TTL = 60 * 60 * 4 // 4h in seconds (for unstable_cache)
+export const GET_PRICE_HISTORY_TTL = 60 * 60 * 12 // 12h in seconds (for unstable_cache)

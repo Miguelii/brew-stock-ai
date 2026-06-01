@@ -69,7 +69,11 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         },
         catch: (cause) => {
             logger.error('getStockAnalysis error', { error: cause })
-            return new AiGenerationError({ cause, error_hash: ErrorCode.ANALYSIS_AI_GENERATION })
+            return new AiGenerationError({
+                symbol: `|${stockSymbol}|`,
+                cause,
+                error_hash: ErrorCode.ANALYSIS_AI_GENERATION,
+            })
         },
     })
 
@@ -81,6 +85,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
 
     if (!analysis) {
         return yield* new AiGenerationError({
+            symbol: `|${stockSymbol}|`,
             cause: 'Model returned incomplete output',
             error_hash: ErrorCode.ANALYSIS_AI_NO_OUTPUT,
         })

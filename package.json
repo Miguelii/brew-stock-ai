@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "next dev",
+        "dev:low": "NODE_OPTIONS='--max-old-space-size=2048' next dev",
         "dev:https": "next dev --experimental-https",
         "build": "next build",
         "start": "next start",

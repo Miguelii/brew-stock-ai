@@ -11,13 +11,21 @@ export const getYahooTicker = Effect.fn('getYahooTicker')(function* (stockSymbol
             return new YahooFinance({ suppressNotices: ['yahooSurvey'] })
         },
         catch: (cause) =>
-            new YahooClientError({ cause, error_hash: ErrorCode.YAHOO_SEARCH_CLIENT }),
+            new YahooClientError({
+                symbol: `|${stockSymbol}|`,
+                cause,
+                error_hash: ErrorCode.YAHOO_SEARCH_CLIENT,
+            }),
     })
 
     const result = yield* Effect.tryPromise({
         try: () => yahooClient.search(stockSymbol, { quotesCount: 5, newsCount: 0 }),
         catch: (cause) =>
-            new YahooSearchError({ cause, error_hash: ErrorCode.YAHOO_SEARCH_REQUEST }),
+            new YahooSearchError({
+                symbol: `|${stockSymbol}|`,
+                cause,
+                error_hash: ErrorCode.YAHOO_SEARCH_REQUEST,
+            }),
     })
 
     const filterByType = (type: string) =>

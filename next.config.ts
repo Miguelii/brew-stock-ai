@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
     serverExternalPackages: ['@sparticuz/chromium', '@sparticuz/chromium-min', 'puppeteer-core'],
     experimental: {
         viewTransition: true,
+        webpackBuildWorker: process.env.NODE_ENV === 'development',
         optimizePackageImports: [
             '@base-ui/react',
             '@hookform/resolvers',

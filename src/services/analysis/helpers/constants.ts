@@ -34,7 +34,7 @@ export const stockAnalysisSchema = z.object({
 export const YAHOO_DATA_TTL = 3 * 24 * 60 * 60 * 1000 // 3 days
 
 export const LATEST_NEWS_CACHE_KEY = 'latest-news'
-export const LATEST_NEWS_TTL = 3 * 24 * 60 * 60 // 3 days in seconds (for unstable_cache)
+export const LATEST_NEWS_TTL = 24 * 60 * 60 // 1 day in seconds (for unstable_cache)
 
 export const GET_PRICE_HISTORY_CACHE_KEY = 'price-history'
-export const GET_PRICE_HISTORY_TTL = 60 * 60 * 4 // 4h in seconds (for unstable_cache)
+export const GET_PRICE_HISTORY_TTL = 60 * 60 * 12 // 12h in seconds (for unstable_cache)

@@ -1,26 +1,65 @@
 import 'server-only'
 
+import { cache } from 'react'
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { CreateSbClientError, GetUserError } from '@/services/errors'
 import { ErrorCode } from '@/services/error-codes'
-import type { SupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient, User } from '@supabase/supabase-js'
 
-export const getSession = Effect.fn('getSession')(function* (client?: SupabaseClient) {
-    const supabase =
-        client ??
-        (yield* Effect.tryPromise({
-            try: () => createSbServerClient(),
-            catch: (cause) =>
-                new CreateSbClientError({ cause, error_hash: ErrorCode.AUTH_SESSION_SB_CLIENT }),
-        }))
+type SessionResult =
+    | { ok: true; user: User | null }
+    | { ok: false; kind: 'sb-client'; cause: unknown }
+    | { ok: false; kind: 'get-user'; cause: unknown }
 
-    const { data, error: userError } = yield* Effect.tryPromise({
-        try: () => supabase.auth.getUser(),
-        catch: (cause) => new GetUserError({ cause, error_hash: ErrorCode.AUTH_SESSION_GET_USER }),
-    })
+/**
+ * Resolves the current user once per request.
+ *
+ * Wrapped in React `cache()` with no arguments, so every `getSession()` call
+ * within the same server request shares a single `supabase.auth.getUser()`
+ * round-trip (it revalidates the JWT against Supabase Auth, which is a network
+ * call). The cache is request-scoped — isolated across requests, so there is no
+ * risk of leaking one user's session into another.
+ *
+ * Never rejects: infrastructure failures are returned as a tagged result so the
+ * Effect layer can map them back to the same error types as before.
+ */
+const resolveUser = cache(async (): Promise<SessionResult> => {
+    let supabase: SupabaseClient
 
-    const user = userError ? null : (data?.user ?? null)
+    try {
+        supabase = await createSbServerClient()
+    } catch (cause) {
+        return { ok: false, kind: 'sb-client', cause }
+    }
 
-    return user
+    try {
+        const { data, error } = await supabase.auth.getUser()
+        return { ok: true, user: error ? null : (data?.user ?? null) }
+    } catch (cause) {
+        return { ok: false, kind: 'get-user', cause }
+    }
+})
+
+// `client` is kept for call-site compatibility. The auth check always goes
+// through the request-cached `resolveUser` so it can be deduplicated regardless
+// of which client a caller passes.
+export const getSession = Effect.fn('getSession')(function* (_client?: SupabaseClient) {
+    const result = yield* Effect.promise(() => resolveUser())
+
+    if (!result.ok) {
+        if (result.kind === 'sb-client') {
+            return yield* new CreateSbClientError({
+                cause: result.cause,
+                error_hash: ErrorCode.AUTH_SESSION_SB_CLIENT,
+            })
+        }
+
+        return yield* new GetUserError({
+            cause: result.cause,
+            error_hash: ErrorCode.AUTH_SESSION_GET_USER,
+        })
+    }
+
+    return result.user
 })

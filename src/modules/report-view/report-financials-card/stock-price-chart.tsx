@@ -13,11 +13,11 @@ import {
 import { cn } from '@/lib/utils'
 import { fmtDate, fmtPrice, formatXAxis } from '@/lib/formatters'
 import { RANGE_DAYS, RANGES, type Range } from './constants'
-import { StockPriceChartSkeleton } from './stock-price-chart-skeleton'
-import { useGetPriceHistory } from '@/hooks/use-get-price-history'
+
+type PricePoint = { date: number; close: number }
 
 type Props = {
-    ticker: string
+    data: PricePoint[]
     low?: number | null
     high?: number | null
 }
@@ -38,9 +38,8 @@ function PriceTooltip({ active, payload, label }: TooltipProps) {
     )
 }
 
-export function StockPriceChart({ ticker, low, high }: Props) {
+export function StockPriceChart({ data, low, high }: Props) {
     const [range, setRange] = useState<Range>('1Y')
-    const { data, isLoading } = useGetPriceHistory(ticker)
 
     const filtered = useMemo(() => {
         if (!data) return []
@@ -59,8 +58,6 @@ export function StockPriceChart({ ticker, low, high }: Props) {
             })
             .map(({ date }) => date)
     }, [filtered])
-
-    if (isLoading) return <StockPriceChartSkeleton />
 
     if (!data?.length) {
         return (

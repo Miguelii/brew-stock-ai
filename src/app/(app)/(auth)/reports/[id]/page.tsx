@@ -19,8 +19,8 @@ import { ReportSectionNav } from '@/modules/report-view/report-section-nav'
 import { ReportFinancialsCard } from '@/modules/report-view/report-financials-card'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
-import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-server'
-import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-server/report-latest-news-card-skeleton'
+import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-card/report-latest-news-server'
+import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-card/report-latest-news-card-skeleton'
 import { PROMPT_OPTIONS } from '@/lib/constants'
 
 type Props = PageProps<'/reports/[id]'>
@@ -93,8 +93,6 @@ export default async function ReportsIdPage(props: Props) {
 
     const stockTicker = stockData?.id ?? report?.ticker ?? report?.stock ?? undefined
 
-    console.log({ stockTicker })
-
     if (!report) return notFound()
 
     const META_URL = `${SITE_URL}/reports/${report.id}`
@@ -164,11 +162,11 @@ export default async function ReportsIdPage(props: Props) {
                     />
                 </section>
 
-                <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
-                    <section id="latest-news">
+                <section id="latest-news">
+                    <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
                         <ReportLatestNewsServer ticker={stockTicker} />
-                    </section>
-                </Suspense>
+                    </Suspense>
+                </section>
 
                 <section id="media-mentions">
                     <ReportMediaMentions news={stockData?.reports ?? []} />

@@ -43,7 +43,7 @@ function serializeError(error: unknown): unknown {
 }
 
 export function Logger(props: Props): void {
-    const { level, prefix, error, message, metadata } = props
+    const { level, prefix, error, message, metadata, userId } = props
 
     const isDev = getIsDev()
 
@@ -51,6 +51,8 @@ export function Logger(props: Props): void {
 
     const header = message ? `[${parsedPrefix}] ${message}` : `[${parsedPrefix}]`
     const details: Record<string, unknown> = { timestamp: new Date().toISOString() }
+
+    if (userId !== undefined) details.userId = userId
 
     if (error !== undefined) details.error = serializeError(error)
 

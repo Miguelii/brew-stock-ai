@@ -9,6 +9,7 @@ import { sbLogin } from '@/services/auth/sb-login'
 import { sbLogout } from '@/services/auth/sb-logout'
 import { sbSendOtp } from '@/services/auth/sb-send-otp'
 import { sbVerifyOtp } from '@/services/auth/sb-verify-otp'
+import { getCachedUserId } from '@/services/auth/get-session'
 import { createReport } from '@/services/reports/create-report'
 import { getReports } from '@/services/reports/get-reports'
 import { getReportById } from '@/services/reports/get-report-by-id'
@@ -41,17 +42,19 @@ async function runEffect<A, E extends { _tag: string; error_hash: string }>(
 
     if (Exit.isSuccess(exit)) return exit.value
 
+    const userId = await getCachedUserId()
+
     const maybeError = Cause.failureOption(exit.cause)
 
     if (Option.isNone(maybeError)) {
         const defects = Cause.defects(exit.cause)
-        Logger({ level: 'error', prefix: context, message: 'defect', error: defects })
+        Logger({ level: 'error', prefix: context, message: 'defect', error: defects, userId })
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'unexpected_defect' })
     }
 
     const error = maybeError.value
 
-    Logger({ level: 'error', prefix: context, error })
+    Logger({ level: 'error', prefix: context, error, userId })
 
     throw new TRPCError({ code: mapCode(error), message: error.error_hash })
 }

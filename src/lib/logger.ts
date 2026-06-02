@@ -76,12 +76,18 @@ export function Logger(props: Props): void {
 
 async function persistLog(props: Props): Promise<void> {
     const supabase = createSbAdminClient()
+
+    const combinedMetadata: Record<string, unknown> = { ...props.metadata }
+
+    if (props.error !== undefined) combinedMetadata.error = serializeError(props.error)
+
+    const hasMetadata = Object.keys(combinedMetadata).length > 0
+
     const { error } = await supabase.from('logs').insert({
         level: props.level,
         prefix: props.prefix,
         message: props.message ?? null,
-        error: props.error !== undefined ? serializeError(props.error) : null,
-        metadata: props.metadata ?? null,
+        metadata: hasMetadata ? combinedMetadata : null,
         user_id: props?.userId ?? null,
     })
 

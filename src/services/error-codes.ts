@@ -92,6 +92,7 @@ export enum ErrorCode {
     CHECKOUT_CREDITS_FETCH = 'h2nw5k8v',
     CHECKOUT_CUSTOMER_CREATE = 'j4xt9m3c',
     CHECKOUT_CUSTOMER_SAVE = 'k7pf1r6b',
+    CHECKOUT_DATAFAST_COOKIES = 'c8df3k1w',
     INVOICES_SB_CLIENT = 'x3tv8m1k',
     INVOICES_UNAUTH = 'j7wc4h9n',
     INVOICES_STRIPE_INIT = 'p2xf6b3d',

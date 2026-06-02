@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next'
-import Script from 'next/script'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '@/styles/globals.css'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
@@ -10,13 +9,14 @@ import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
 import { CookiePrompt } from '@/modules/cookie-prompt'
-import { GtmScript } from '@/components/gtm-script'
 import {
     OrganizationSchema,
     WebApplicationSchema,
     WebSiteSchema,
 } from '@/components/structured-data'
 import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
+import { GtmScript } from '@/components/scripts/gtm-script'
+import { AdsenseScript } from '@/components/scripts/adsence-script'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -118,17 +118,17 @@ export default function RootLayout({ children }: Props) {
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <meta name="apple-mobile-web-app-title" content="StockBrewAI" />
                 <meta name="google-adsense-account" content={GOOGLE_ADSENSE_ACCOUNT_ID} />
+                <script
+                    defer
+                    data-website-id="dfid_MsT1XaqrlyOQW7l5eAsic"
+                    data-domain="brewstockai.com"
+                    src="https://datafa.st/js/script.cookieless.js"
+                />
             </head>
             <VercelAnalytics />
             <VercelSpeedInsights />
             <GtmScript />
-            <Script
-                id="adsense"
-                async
-                src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ACCOUNT_ID}`}
-                crossOrigin="anonymous"
-                strategy="lazyOnload"
-            />
+            <AdsenseScript />
             <body className="min-h-screen flex flex-col">
                 <Providers>
                     <WebSiteSchema />

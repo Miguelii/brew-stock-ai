@@ -122,7 +122,7 @@ export default function RootLayout({ children }: Props) {
                     defer
                     data-website-id="dfid_MsT1XaqrlyOQW7l5eAsic"
                     data-domain="brewstockai.com"
-                    src="https://datafa.st/js/script.cookieless.js"
+                    src="https://datafa.st/js/script.js"
                 />
             </head>
             <VercelAnalytics />

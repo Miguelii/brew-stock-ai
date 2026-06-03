@@ -2,15 +2,15 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { SystemPrompt } from '@/services/analysis/helpers/prompts'
-import { AiGenerationError, InvalidPromptTypeError } from '@/services/errors'
-import { ErrorCode } from '@/services/error-codes'
+import { AiGenerationError, InvalidPromptTypeError } from '@/services/lib/errors'
+import { ErrorCode } from '@/services/lib/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
-import { saveAnalysisToReport } from '@/services/analysis/save-analysis-to-report'
-import { saveStockData } from '@/services/analysis/save-stock-data'
-import { getYahooTtlData } from '@/services/analysis/get-yahoo-ttl-data'
-import { buildYahooContext } from '@/services/analysis/helpers/build-yahoo-context'
+import { saveAnalysisToReport } from '@/services/reports/save-analysis-to-report'
+import { saveYahooDataToTTL } from '@/services/yahoo/save-yahoo-data-to-ttl'
+import { getYahooTtlData } from '@/services/yahoo/get-yahoo-ttl-data'
+import { buildYahooContext } from '@/services/yahoo/helpers/build-yahoo-context'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { PROMPTS_MAP, stockAnalysisSchema } from '@/services/analysis/helpers/constants'
+import { PROMPTS_MAP, stockAnalysisSchema } from '@/services/analysis/constants'
 import { calculateTokenCost } from '@/services/analysis/helpers/calculate-token-cost'
 import { logger } from '@trigger.dev/sdk'
 
@@ -105,7 +105,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
             ),
 
             yahooPreFetch?.isFresh
-                ? saveStockData(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
+                ? saveYahooDataToTTL(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
                       Effect.orElse(() => Effect.void)
                   )
                 : Effect.void,

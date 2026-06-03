@@ -2,10 +2,10 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, GetReportsError, UnauthenticatedError } from '@/services/errors'
-import { ErrorCode } from '@/services/error-codes'
+import { CreateSbClientError, GetReportsError, UnauthenticatedError } from '@/services/lib/errors'
+import { ErrorCode } from '@/services/lib/error-codes'
 import type { ReportListItem } from '@/types/ReportDTO'
-import { getSession } from '@/services/auth/get-session'
+import { getSession } from '@/services/core/auth/get-session'
 
 export const getReports = Effect.fn('getReports')(function* () {
     const supabase = yield* Effect.tryPromise({

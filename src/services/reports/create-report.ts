@@ -6,14 +6,14 @@ import {
     CreateSbClientError,
     InvalidPromptTypeError,
     UnauthenticatedError,
-} from '@/services/errors'
-import { ErrorCode } from '@/services/error-codes'
+} from '@/services/lib/errors'
+import { ErrorCode } from '@/services/lib/error-codes'
 import { createSbServerClient, getIsDev } from '@/lib/utils.server'
 import { ReportStatus } from '@/types/ReportDTO'
-import { getSession } from '@/services/auth/get-session'
-import { deductCredit } from '@/services/tokens/deduct-credit'
+import { getSession } from '@/services/core/auth/get-session'
+import { deductCredit } from '@/services/core/tokens/deduct-credit'
 import { tasks } from '@trigger.dev/sdk/v3'
-import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/services/analysis/helpers/constants'
+import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/services/analysis/constants'
 import type { processReportTask } from '@/services/trigger/process-report'
 
 export const createReport = Effect.fn('createReport')(function* (

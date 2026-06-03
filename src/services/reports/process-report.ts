@@ -9,9 +9,9 @@ import {
     CreateSbClientError,
     FetchReportForTaskError,
     MarkReportFailedError,
-} from '@/services/errors'
-import { ErrorCode } from '@/services/error-codes'
-import { sendPushNotificationToUser } from '@/services/notifications/send-push-notification'
+} from '@/services/lib/errors'
+import { ErrorCode } from '@/services/lib/error-codes'
+import { sendPushNotificationToUser } from '@/services/core/notifications/send-push-notification'
 
 export const processReport = Effect.fn('processReport')(function* (
     reportId: string,

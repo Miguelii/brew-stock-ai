@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-    PROMPTS_MAP,
-    PROMPT_COSTS_MAP,
-    stockAnalysisSchema,
-    YAHOO_DATA_TTL,
-} from '@/services/analysis/helpers/constants'
+import { PROMPTS_MAP, PROMPT_COSTS_MAP, stockAnalysisSchema } from '@/services/analysis/constants'
 
 describe('PROMPTS_MAP', () => {
     it('contains all expected prompt types', () => {
@@ -38,17 +33,6 @@ describe('PROMPT_COSTS_MAP', () => {
         for (const cost of Object.values(PROMPT_COSTS_MAP)) {
             expect(cost).toBeGreaterThan(0)
         }
-    })
-})
-
-describe('YAHOO_DATA_TTL', () => {
-    it('equals exactly 3 days in milliseconds', () => {
-        const threeDaysMs = 3 * 24 * 60 * 60 * 1000
-        expect(YAHOO_DATA_TTL).toBe(threeDaysMs)
-    })
-
-    it('is a positive number', () => {
-        expect(YAHOO_DATA_TTL).toBeGreaterThan(0)
     })
 })
 

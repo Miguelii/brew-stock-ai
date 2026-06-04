@@ -9,6 +9,7 @@ import { useUpdateSliding } from '@/modules/report-view/report-section-nav/use-u
 
 const SECTIONS = [
     { id: 'overview', label: 'Summary' },
+    { id: 'market-outlook', label: 'Market & Analyst Outlook' },
     { id: 'key-metrics', label: 'Key Financial Metrics' },
     { id: 'analysis', label: 'Full AI Report' },
     { id: 'sig-dev', label: 'Happening Now' },
@@ -45,7 +46,7 @@ export function ReportSectionNav({ className }: Props) {
         >
             <div className="max-w-8xl mx-auto px-6">
                 {/* ── Mobile: dropdown ── */}
-                <div ref={dropdownRef} className="relative lg:hidden">
+                <div ref={dropdownRef} className="relative xl:hidden">
                     <button
                         onClick={() => setIsOpen((o) => !o)}
                         className="flex w-full items-center gap-2 py-3 text-sm font-medium"
@@ -83,7 +84,7 @@ export function ReportSectionNav({ className }: Props) {
                 </div>
 
                 {/* ── Desktop: flex row with sliding indicator ── */}
-                <nav className="relative hidden lg:flex lg:flex-wrap">
+                <nav className="relative hidden xl:flex xl:flex-wrap">
                     {SECTIONS.map(({ id, label }, i) => (
                         <button
                             key={id}
@@ -92,7 +93,7 @@ export function ReportSectionNav({ className }: Props) {
                             }}
                             onClick={() => scrollTo(id)}
                             className={cn(
-                                'shrink-0 px-4 py-3 text-sm font-medium transition-colors',
+                                'shrink-0 px-4 py-3 text-xs xl:text-sm font-medium transition-colors',
                                 activeId === id
                                     ? 'text-accent-blue'
                                     : 'text-muted-foreground hover:text-accent-blue'

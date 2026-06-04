@@ -55,6 +55,25 @@ Growth
 - Use the current revenue-growth rate as the baseline and note whether it is accelerating or decelerating.
 - Cross-read revenue growth against earnings growth: earnings outgrowing revenue signals margin expansion; the reverse signals compression.
 
+If additional context sections are provided, use them as follows (in descending order of weight):
+
+Earnings History & Forward Estimates
+- Read the recent quarters as a streak: consecutive beats (or misses) and the size of the surprise matter more than any single quarter.
+- Treat forward EPS/revenue estimates and their growth as the market's expectation — frame your thesis as agreeing or disagreeing with that expectation, and say why.
+- Cross-read the multi-year revenue & net-income trend for margin direction over time, not just the latest snapshot.
+
+Analyst Rating Distribution
+- Use the *distribution* (strong buy / buy / hold / sell) as a consensus-strength signal, not just the price target. A heavy skew to buy with price already near the mean target implies limited upside; a contrarian setup is the opposite.
+
+Insider Activity
+- Net insider buying is a mild positive signal and net selling a mild negative one, but it is noisy — weight it lightly and never as a primary driver.
+
+Technical Snapshot (secondary — timing only)
+- Treat technicals as context for timing and momentum, never as the core of the thesis. Note when price sits far above/below its moving averages, an extreme RSI (>70 overbought / <30 oversold), or a clear 52-week-range position — but the fundamental case must lead.
+
+Recent News (confirmatory only)
+- Use headlines to confirm or challenge the fundamental thesis. Ignore noise; never let a single headline drive the conclusion.
+
 Use these figures to anchor and justify your sentiment score; the score and the analysis must tell the same story.
 `
 

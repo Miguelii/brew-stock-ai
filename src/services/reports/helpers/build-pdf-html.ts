@@ -1,13 +1,22 @@
 // oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/lib/sentiment'
-import { fmtLarge, fmtPct, fmtX, fmtNum, fmtPrice, fmtDate } from '@/lib/formatters'
+import {
+    fmtLarge,
+    fmtPct,
+    fmtX,
+    fmtNum,
+    fmtPrice,
+    fmtDate,
+    fmtEstimatePeriod,
+} from '@/lib/formatters'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type {
     ReportDTO,
     StockData,
     StockScores,
     StockFinancials,
+    StockFundamentals,
     StockSigDev,
     StockReports,
 } from '@/types/ReportDTO'
@@ -107,7 +116,8 @@ function buildRangeBar(
     </div>`
 }
 
-function buildFinancialsSection(f: StockFinancials): string {
+// "Market & Analyst Outlook" portion: 52-week range + analyst target prices.
+function buildAnalystOutlookFinancials(f: StockFinancials): string {
     const hasRange =
         f.fiftyTwoWeekLow != null && f.fiftyTwoWeekHigh != null && f.currentPrice != null
     const upsideNum =
@@ -142,8 +152,12 @@ function buildFinancialsSection(f: StockFinancials): string {
         ${tile('Lowest analyst target', fmtPrice(f.targetLowPrice), 'fin-tile-3')}
         ${tile('Average analyst target', fmtPrice(f.targetMeanPrice), 'fin-tile-3')}
         ${tile('Highest analyst target', fmtPrice(f.targetHighPrice), 'fin-tile-3')}
-    </div>
+    </div>`
+}
 
+// "Key Financial Metrics" portion: the three metric groups.
+function buildFinancialMetricsGroups(f: StockFinancials): string {
+    return `
     <div class="fin-group-title">Revenue &amp; Profitability</div>
     <div class="fin-grid">
         ${tile('Total Revenue', fmtLarge(f.totalRevenue), 'fin-tile-3')}
@@ -173,6 +187,131 @@ function buildFinancialsSection(f: StockFinancials): string {
         ${tile('Total Debt', fmtLarge(f.totalDebt), 'fin-tile')}
         ${tile('Debt/Equity', fmtNum(f.debtToEquity), 'fin-tile')}
     </div>`
+}
+
+const RATING_SEGMENTS = [
+    { key: 'strongBuy', label: 'Strong Buy', color: '#16a34a' },
+    { key: 'buy', label: 'Buy', color: '#4ade80' },
+    { key: 'hold', label: 'Hold', color: '#9ca3af' },
+    { key: 'sell', label: 'Sell', color: '#f87171' },
+    { key: 'strongSell', label: 'Strong Sell', color: '#ef4444' },
+] as const
+
+function buildAnalystRatingsBlock(ratings: StockFundamentals['analystRatings']): string {
+    if (!ratings) return ''
+    const total = ratings.strongBuy + ratings.buy + ratings.hold + ratings.sell + ratings.strongSell
+    if (total === 0) return ''
+
+    const bar = RATING_SEGMENTS.filter((s) => ratings[s.key] > 0)
+        .map(
+            (s) =>
+                `<div style="width:${((ratings[s.key] / total) * 100).toFixed(1)}%;background:${s.color};"></div>`
+        )
+        .join('')
+
+    const legend = RATING_SEGMENTS.map(
+        (s) =>
+            `<span style="margin-right:12px;white-space:nowrap;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${s.color};vertical-align:middle;margin-right:4px;"></span>${s.label} <strong>${ratings[s.key]}</strong></span>`
+    ).join('')
+
+    return `
+    <div class="fin-group-title">Analyst recommendations (${total})</div>
+    <div style="display:flex;height:10px;width:100%;border-radius:4px;overflow:hidden;background:#e5e7eb;margin-bottom:6px;">${bar}</div>
+    <div style="font-size:11px;color:#262626;margin-bottom:4px;">${legend}</div>`
+}
+
+function buildEarningsHistoryBlock(history: StockFundamentals['earningsHistory']): string {
+    if (history.length === 0) return ''
+
+    const rows = history
+        .map((q) => {
+            const beat =
+                q.epsActual != null && q.epsEstimate != null ? q.epsActual >= q.epsEstimate : null
+            const badge =
+                beat == null
+                    ? ''
+                    : `<span style="font-weight:600;${beat ? 'color:#16a34a;' : 'color:#ef4444;'}">${beat ? 'Beat' : 'Miss'} ${fmtPct(q.surprisePercent)}</span>`
+            return `
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px solid #eee;">
+                <span style="color:#909097;">${q.quarter ?? q.period}</span>
+                <span style="color:#262626;">Act ${fmtNum(q.epsActual)} / Est ${fmtNum(q.epsEstimate)} &nbsp; ${badge}</span>
+            </div>`
+        })
+        .join('')
+
+    return `
+    <div class="fin-group-title">Earnings vs estimates</div>
+    <div style="margin-bottom:4px;">${rows}</div>`
+}
+
+function buildFundamentalsSection(f: StockFundamentals): string {
+    const forwardTiles = f.forwardEstimates
+        .map((e) => {
+            const epsValue =
+                e.epsAvg != null
+                    ? `${fmtNum(e.epsAvg)}${e.epsGrowth != null ? ` · ${fmtPct(e.epsGrowth)}` : ''}`
+                    : 'N/A'
+            const revValue =
+                e.revenueAvg != null
+                    ? `${fmtLarge(e.revenueAvg)}${e.revenueGrowth != null ? ` · ${fmtPct(e.revenueGrowth)}` : ''}`
+                    : 'N/A'
+            return (
+                tile(
+                    `${fmtEstimatePeriod(e.period)} EPS`,
+                    epsValue,
+                    'fin-tile',
+                    true,
+                    e.epsGrowth
+                ) +
+                tile(
+                    `${fmtEstimatePeriod(e.period)} Revenue`,
+                    revValue,
+                    'fin-tile',
+                    true,
+                    e.revenueGrowth
+                )
+            )
+        })
+        .join('')
+
+    const revenueTiles = f.revenueTrend
+        .map((r) => {
+            const year = r.endDate ? r.endDate.slice(0, 4) : '—'
+            return (
+                tile(`Revenue ${year}`, fmtLarge(r.totalRevenue), 'fin-tile') +
+                tile(`Net Income ${year}`, fmtLarge(r.netIncome), 'fin-tile', true, r.netIncome)
+            )
+        })
+        .join('')
+
+    const forwardBlock = forwardTiles
+        ? `<div class="fin-group-title">Forward Estimates</div><div class="fin-grid">${forwardTiles}</div>`
+        : ''
+    const revenueBlock = revenueTiles
+        ? `<div class="fin-group-title">Revenue Trend</div><div class="fin-grid">${revenueTiles}</div>`
+        : ''
+
+    const insiders = f.insiders
+    const insiderBlock = insiders
+        ? (() => {
+              const isNeutral = insiders.netShares == null || insiders.netShares === 0
+              const direction = isNeutral
+                  ? 'Roughly neutral'
+                  : insiders.netShares! > 0
+                    ? 'Net buying'
+                    : 'Net selling'
+              const color = isNeutral
+                  ? 'color:#909097;'
+                  : insiders.netShares! > 0
+                    ? 'color:#16a34a;'
+                    : 'color:#ef4444;'
+              return `
+        <div class="fin-group-title">Insider activity</div>
+        <div style="font-size:11px;color:#262626;margin-bottom:4px;">${insiders.buyCount} buys / ${insiders.sellCount} sells — <span style="font-weight:600;${color}">${direction} (${fmtNum(insiders.netShares, 0)} shares)</span></div>`
+          })()
+        : ''
+
+    return `${forwardBlock}${buildEarningsHistoryBlock(f.earningsHistory)}${revenueBlock}${insiderBlock}`
 }
 
 function buildSigDevSection(sigDev: StockSigDev): string {
@@ -409,6 +548,18 @@ export function buildPdfHtml(params: {
         : getSentimentInfo(sentiment)
     const date = fmtDate(created_at)
 
+    // Two sections mirroring the on-screen split: "Market & Analyst Outlook" then
+    // "Key Financial Metrics". Each wrapper only renders when it has content.
+    const marketOutlookInner =
+        (stockData?.financials ? buildAnalystOutlookFinancials(stockData.financials) : '') +
+        (stockData?.fundamentals
+            ? buildAnalystRatingsBlock(stockData.fundamentals.analystRatings)
+            : '')
+
+    const keyMetricsInner =
+        (stockData?.financials ? buildFinancialMetricsGroups(stockData.financials) : '') +
+        (stockData?.fundamentals ? buildFundamentalsSection(stockData.fundamentals) : '')
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -437,11 +588,21 @@ export function buildPdfHtml(params: {
     </div>
 
     ${
-        stockData?.financials
+        marketOutlookInner
+            ? `
+    <div class="extra-section">
+        <div class="extra-section-title" style="margin-bottom: 14px;">Market &amp; Analyst Outlook</div>
+        ${marketOutlookInner}
+    </div>`
+            : ''
+    }
+
+    ${
+        keyMetricsInner
             ? `
     <div class="extra-section">
         <div class="extra-section-title" style="margin-bottom: 14px;">Key Financial Metrics</div>
-        ${buildFinancialsSection(stockData.financials)}
+        ${keyMetricsInner}
     </div>`
             : ''
     }

@@ -160,7 +160,7 @@ export const Lid = ({
                 <Image
                     src={src as string}
                     alt="aceternity logo"
-                    className="absolute inset-0 h-full w-full rounded-lg object-cover aspect-square object-center"
+                    className="absolute inset-0 h-full w-full rounded-lg object-cover aspect-square object-[40%_center]"
                     width={600}
                     height={600}
                     unoptimized

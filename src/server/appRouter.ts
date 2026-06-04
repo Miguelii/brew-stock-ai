@@ -5,26 +5,26 @@ import { Cause, Effect, Exit, Match, Option } from 'effect'
 import { z } from 'zod'
 import { Logger } from '@/lib/logger'
 import { publicProcedure, router } from '@/server/trpc'
-import { sbLogin } from '@/services/auth/sb-login'
-import { sbLogout } from '@/services/auth/sb-logout'
-import { sbSendOtp } from '@/services/auth/sb-send-otp'
-import { sbVerifyOtp } from '@/services/auth/sb-verify-otp'
-import { getCachedUserId } from '@/services/auth/get-session'
+import { sbLogin } from '@/services/core/auth/sb-login'
+import { sbLogout } from '@/services/core/auth/sb-logout'
+import { sbSendOtp } from '@/services/core/auth/sb-send-otp'
+import { sbVerifyOtp } from '@/services/core/auth/sb-verify-otp'
+import { getCachedUserId } from '@/services/core/auth/get-session'
 import { createReport } from '@/services/reports/create-report'
 import { getReports } from '@/services/reports/get-reports'
 import { getReportById } from '@/services/reports/get-report-by-id'
 import { exportReport } from '@/services/reports/export-report'
-import { subscribePush } from '@/services/notifications/subscribe-push'
-import { unsubscribePush } from '@/services/notifications/unsubscribe-push'
-import { sendPushNotification } from '@/services/notifications/send-push-notification'
-import { getCredits } from '@/services/tokens/get-credits'
-import { getInvoices } from '@/services/tokens/get-invoices'
-import { createCheckoutSession } from '@/services/tokens/create-checkout-session'
-import type { TokenPackageId } from '@/services/tokens/create-checkout-session'
-import { createConsentCookie } from '@/services/consent/create-consent-cookie'
-import { submitFeedback } from '@/services/feedback/submit-feedback'
-import { getLatestNews } from '@/services/analysis/get-latest-news'
-import { getPriceHistory } from '@/services/analysis/get-price-history'
+import { subscribePush } from '@/services/core/notifications/subscribe-push'
+import { unsubscribePush } from '@/services/core/notifications/unsubscribe-push'
+import { sendPushNotification } from '@/services/core/notifications/send-push-notification'
+import { getCredits } from '@/services/core/tokens/get-credits'
+import { getInvoices } from '@/services/core/tokens/get-invoices'
+import { createCheckoutSession } from '@/services/core/tokens/create-checkout-session'
+import type { TokenPackageId } from '@/services/core/tokens/create-checkout-session'
+import { createConsentCookie } from '@/services/core/consent/create-consent-cookie'
+import { submitFeedback } from '@/services/core/feedback/submit-feedback'
+import { getCachedLatestNews } from '@/services/finnhub/get-latest-news'
+import { getCachedPriceHistory } from '@/services/yahoo/get-price-history'
 import {
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
     CONTACT_FORM_MAX_NAME_LENGTH,
@@ -290,7 +290,7 @@ export const appRouter = router({
     getLatestNews: publicProcedure
         .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
         .query(({ input }) =>
-            runEffect(getLatestNews(input.ticker), 'getLatestNews', (error) =>
+            runEffect(getCachedLatestNews(input.ticker), 'getCachedLatestNews', (error) =>
                 Match.value(error).pipe(
                     Match.tag('LatestNewsError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
@@ -304,7 +304,7 @@ export const appRouter = router({
     priceHistory: publicProcedure
         .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
         .query(({ input }) =>
-            runEffect(getPriceHistory(input.ticker), 'getPriceHistory', (error) =>
+            runEffect(getCachedPriceHistory(input.ticker), 'getCachedPriceHistory', (error) =>
                 Match.value(error).pipe(
                     Match.tag('YahooPriceHistoryError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),

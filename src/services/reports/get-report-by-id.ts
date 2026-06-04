@@ -2,11 +2,15 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, GetReportByIdError, UnauthenticatedError } from '@/services/errors'
-import { ErrorCode } from '@/services/error-codes'
+import {
+    CreateSbClientError,
+    GetReportByIdError,
+    UnauthenticatedError,
+} from '@/services/lib/errors'
+import { ErrorCode } from '@/services/lib/error-codes'
 import type { ReportDTO, ReportWithStockData, StockData } from '@/types/ReportDTO'
-import { getSession } from '@/services/auth/get-session'
-import { isSuperAdmin } from '@/services/admin/is-super-admin'
+import { getSession } from '@/services/core/auth/get-session'
+import { isSuperAdmin } from '@/services/core/admin/is-super-admin'
 
 export const getReportById = Effect.fn('getReportById')(function* (id: ReportDTO['id']) {
     const supabase = yield* Effect.tryPromise({

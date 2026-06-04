@@ -1,5 +1,5 @@
 import * as motion from 'motion/react-client'
-import { BarChart3, FileText, Newspaper, Scale, Zap } from 'lucide-react'
+import { BarChart3, FileText, Newspaper, Rss, Scale, Sparkles, TrendingUp, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const reportSections = [
@@ -11,7 +11,21 @@ const reportSections = [
         featured: false,
     },
     {
+        icon: TrendingUp,
+        title: 'Market & Analyst Outlook',
+        description:
+            "Where the stock has traded over the past year, what Wall Street analysts think it's worth, and how their buy, hold, and sell recommendations break down.",
+        featured: false,
+    },
+    {
         icon: BarChart3,
+        title: 'Key Financial Metrics',
+        description:
+            'The numbers that matter — revenue and profitability, valuation, financial health, forward estimates, and insider activity, all in plain English.',
+        featured: false,
+    },
+    {
+        icon: Sparkles,
         title: 'Full AI Report',
         description:
             'A complete, in-depth analysis of the company — growth, profitability, cash flow, and financial health, explained in clear terms.',
@@ -22,6 +36,13 @@ const reportSections = [
         title: "What's Happening Now",
         description:
             'The most notable recent event our AI identified — a big announcement, leadership change, or market-moving news — and why it matters.',
+        featured: false,
+    },
+    {
+        icon: Rss,
+        title: 'Latest News',
+        description:
+            "The most recent headlines about the company, pulled in real time so the analysis reflects what's happening today.",
         featured: false,
     },
     {
@@ -55,7 +76,7 @@ export function ReportMarketingCard() {
                         Every section. Every metric.
                     </h2>
                     <p className="text-muted-foreground leading-relaxed max-w-2xl text-lg">
-                        A full Wall Street Analysis covers six distinct report sections — each
+                        A full Wall Street Analysis covers eight distinct report sections — each
                         answering a different question about the stock.
                     </p>
                 </motion.div>

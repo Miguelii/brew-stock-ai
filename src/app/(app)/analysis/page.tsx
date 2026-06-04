@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { AnalysisHero } from '@/components/analysis-hero'
 import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
-import { getCachedSession } from '@/services/auth/get-cached-session'
+import { getCachedSession } from '@/services/core/auth/get-cached-session'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 

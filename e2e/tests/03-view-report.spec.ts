@@ -55,6 +55,33 @@ test.describe('View report page', () => {
         await expect(section.getByText('Financial Health')).toBeVisible()
     })
 
+    test('"Key Financial Metrics" section renders the fundamentals blocks', async ({ page }) => {
+        await page.goto(`/reports/${MOCK_REPORT_ID}`)
+
+        const section = page.locator('#key-metrics')
+
+        // Analyst recommendations bar (counts in MOCK_FUNDAMENTALS sum to 35)
+        await expect(section.getByText('Analyst recommendations (35)')).toBeVisible()
+        await expect(section.getByText('Strong Buy')).toBeVisible()
+        await expect(section.getByText('Hold', { exact: true })).toBeVisible()
+
+        // Forward estimates — the '+1q' period maps to a friendly "Next Quarter" label
+        await expect(section.getByText('Forward Estimates')).toBeVisible()
+        await expect(section.getByText('Next Quarter EPS')).toBeVisible()
+
+        // Earnings history with a beat badge (epsActual > epsEstimate)
+        await expect(section.getByText('Earnings vs estimates')).toBeVisible()
+        await expect(section.getByText(/Beat/i)).toBeVisible()
+
+        // Multi-year revenue trend — endDate 2025-09-30 yields a "Revenue 2025" tile
+        await expect(section.getByText('Revenue Trend')).toBeVisible()
+        await expect(section.getByText('Revenue 2025')).toBeVisible()
+
+        // Insider activity — negative net shares reads as net selling
+        await expect(section.getByText('Insider activity')).toBeVisible()
+        await expect(section.getByText(/Net selling/i)).toBeVisible()
+    })
+
     test('"AI Sentiment Score" gauge is visible', async ({ page }) => {
         await page.goto(`/reports/${MOCK_REPORT_ID}`)
 

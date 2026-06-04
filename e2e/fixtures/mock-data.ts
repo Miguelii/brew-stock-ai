@@ -1,5 +1,11 @@
 import type { NewsItem } from '@/types/news'
-import type { StockFinancials, StockScores, StockData, ReportDTO } from '@/types/ReportDTO'
+import type {
+    StockFinancials,
+    StockFundamentals,
+    StockScores,
+    StockData,
+    ReportDTO,
+} from '@/types/ReportDTO'
 import type { Invoice } from '@/types/Invoice'
 
 export const MOCK_REPORT_ID = 'pw-test-report-id'
@@ -52,6 +58,33 @@ export const MOCK_SCORES: StockScores = {
     sector: { innovativeness: 0.7, hiring: 0.6, sustainability: 0.55 },
 }
 
+export const MOCK_FUNDAMENTALS: StockFundamentals = {
+    earningsHistory: [
+        {
+            period: '-1q',
+            quarter: '2024-03-31',
+            epsActual: 2.18,
+            epsEstimate: 2.1,
+            surprisePercent: 0.038,
+        },
+    ],
+    forwardEstimates: [
+        {
+            period: '+1q',
+            epsAvg: 2.35,
+            epsGrowth: 0.12,
+            revenueAvg: 124_000_000_000,
+            revenueGrowth: 0.08,
+        },
+    ],
+    revenueTrend: [
+        { endDate: '2025-09-30', totalRevenue: 416_161_000_000, netIncome: 112_010_000_000 },
+    ],
+    // Counts intentionally sum to 35 so the bar header reads "Analyst recommendations (35)".
+    analystRatings: { period: '0m', strongBuy: 18, buy: 10, hold: 6, sell: 1, strongSell: 0 },
+    insiders: { netShares: -120_000, buyCount: 1, sellCount: 5 },
+}
+
 export const MOCK_STOCK_DATA: StockData = {
     id: MOCK_TICKER,
     financials: MOCK_FINANCIALS,
@@ -74,7 +107,7 @@ export const MOCK_STOCK_DATA: StockData = {
             reportTitle: 'Outperform',
         },
     ],
-    fundamentals: null,
+    fundamentals: MOCK_FUNDAMENTALS,
 }
 
 export const MOCK_REPORT: ReportDTO = {

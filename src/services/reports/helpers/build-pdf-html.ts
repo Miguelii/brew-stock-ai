@@ -357,7 +357,7 @@ const PDF_CSS = `
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             background: #ffffff;
             color: #262626;
             padding: 48px 56px;

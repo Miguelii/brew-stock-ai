@@ -17,6 +17,7 @@ import { ReportMediaMentions } from '@/modules/report-view/report-media-mentions
 import { ReportSectorScores } from '@/modules/report-view/report-sector-scores'
 import { ReportSectionNav } from '@/modules/report-view/report-section-nav'
 import { ReportFinancialsCard } from '@/modules/report-view/report-financials-card'
+import { ReportMarketOutlookCard } from '@/modules/report-view/report-market-outlook-card'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-card/report-latest-news-server'
@@ -144,11 +145,18 @@ export default async function ReportsIdPage(props: Props) {
                     </div>
                 </section>
 
+                <section id="market-outlook">
+                    <ReportMarketOutlookCard
+                        financials={stockData?.financials ?? null}
+                        fundamentals={stockData?.fundamentals ?? null}
+                        ticker={stockTicker}
+                    />
+                </section>
+
                 <section id="key-metrics">
                     <ReportFinancialsCard
                         financials={stockData?.financials ?? null}
                         fundamentals={stockData?.fundamentals ?? null}
-                        ticker={stockTicker}
                     />
                 </section>
 

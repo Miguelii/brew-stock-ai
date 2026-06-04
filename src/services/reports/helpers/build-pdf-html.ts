@@ -116,7 +116,8 @@ function buildRangeBar(
     </div>`
 }
 
-function buildFinancialsSection(f: StockFinancials): string {
+// "Market & Analyst Outlook" portion: 52-week range + analyst target prices.
+function buildAnalystOutlookFinancials(f: StockFinancials): string {
     const hasRange =
         f.fiftyTwoWeekLow != null && f.fiftyTwoWeekHigh != null && f.currentPrice != null
     const upsideNum =
@@ -151,8 +152,12 @@ function buildFinancialsSection(f: StockFinancials): string {
         ${tile('Lowest analyst target', fmtPrice(f.targetLowPrice), 'fin-tile-3')}
         ${tile('Average analyst target', fmtPrice(f.targetMeanPrice), 'fin-tile-3')}
         ${tile('Highest analyst target', fmtPrice(f.targetHighPrice), 'fin-tile-3')}
-    </div>
+    </div>`
+}
 
+// "Key Financial Metrics" portion: the three metric groups.
+function buildFinancialMetricsGroups(f: StockFinancials): string {
+    return `
     <div class="fin-group-title">Revenue &amp; Profitability</div>
     <div class="fin-grid">
         ${tile('Total Revenue', fmtLarge(f.totalRevenue), 'fin-tile-3')}
@@ -306,7 +311,7 @@ function buildFundamentalsSection(f: StockFundamentals): string {
           })()
         : ''
 
-    return `${buildAnalystRatingsBlock(f.analystRatings)}${forwardBlock}${buildEarningsHistoryBlock(f.earningsHistory)}${revenueBlock}${insiderBlock}`
+    return `${forwardBlock}${buildEarningsHistoryBlock(f.earningsHistory)}${revenueBlock}${insiderBlock}`
 }
 
 function buildSigDevSection(sigDev: StockSigDev): string {
@@ -543,6 +548,18 @@ export function buildPdfHtml(params: {
         : getSentimentInfo(sentiment)
     const date = fmtDate(created_at)
 
+    // Two sections mirroring the on-screen split: "Market & Analyst Outlook" then
+    // "Key Financial Metrics". Each wrapper only renders when it has content.
+    const marketOutlookInner =
+        (stockData?.financials ? buildAnalystOutlookFinancials(stockData.financials) : '') +
+        (stockData?.fundamentals
+            ? buildAnalystRatingsBlock(stockData.fundamentals.analystRatings)
+            : '')
+
+    const keyMetricsInner =
+        (stockData?.financials ? buildFinancialMetricsGroups(stockData.financials) : '') +
+        (stockData?.fundamentals ? buildFundamentalsSection(stockData.fundamentals) : '')
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -571,12 +588,21 @@ export function buildPdfHtml(params: {
     </div>
 
     ${
-        stockData?.financials || stockData?.fundamentals
+        marketOutlookInner
+            ? `
+    <div class="extra-section">
+        <div class="extra-section-title" style="margin-bottom: 14px;">Market &amp; Analyst Outlook</div>
+        ${marketOutlookInner}
+    </div>`
+            : ''
+    }
+
+    ${
+        keyMetricsInner
             ? `
     <div class="extra-section">
         <div class="extra-section-title" style="margin-bottom: 14px;">Key Financial Metrics</div>
-        ${stockData?.financials ? buildFinancialsSection(stockData.financials) : ''}
-        ${stockData?.fundamentals ? buildFundamentalsSection(stockData.fundamentals) : ''}
+        ${keyMetricsInner}
     </div>`
             : ''
     }

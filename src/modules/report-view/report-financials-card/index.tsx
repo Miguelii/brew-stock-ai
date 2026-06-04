@@ -1,23 +1,17 @@
-import { Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { fmtLarge, fmtPct, fmtX, fmtNum, fmtEstimatePeriod } from '@/lib/formatters'
-import type { ReportDTO, StockFinancials, StockFundamentals } from '@/types/ReportDTO'
+import type { StockFinancials, StockFundamentals } from '@/types/ReportDTO'
 import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
 import { Group } from '@/modules/report-view/report-financials-card/group'
-import { AnalystTargets } from '@/modules/report-view/report-financials-card/analyst-targets'
-import { AnalystRatingsBar } from '@/modules/report-view/report-financials-card/analyst-ratings'
 import { EarningsHistory } from '@/modules/report-view/report-financials-card/earnings-history'
 import { InsiderActivitySummary } from '@/modules/report-view/report-financials-card/insider-activity'
-import { StockPriceChartServer } from '@/modules/report-view/report-financials-card/stock-price-chart-server'
-import { StockPriceChartSkeleton } from '@/modules/report-view/report-financials-card/stock-price-chart-skeleton'
 
 type Props = {
     financials: StockFinancials | null
     fundamentals: StockFundamentals | null
-    ticker: ReportDTO['ticker'] | undefined
 }
 
-export function ReportFinancialsCard({ financials, fundamentals, ticker }: Props) {
+export function ReportFinancialsCard({ financials, fundamentals }: Props) {
     const f = financials
 
     const growthStory: MetricTile[] = [
@@ -155,7 +149,6 @@ export function ReportFinancialsCard({ financials, fundamentals, ticker }: Props
     })
 
     const earningsHistory = fundamentals?.earningsHistory ?? []
-    const analystRatings = fundamentals?.analystRatings ?? null
     const insiders = fundamentals?.insiders ?? null
 
     return (
@@ -164,18 +157,6 @@ export function ReportFinancialsCard({ financials, fundamentals, ticker }: Props
                 <CardTitle className="text-base font-semibold">Key Financial Metrics</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-                <Suspense fallback={<StockPriceChartSkeleton />}>
-                    <StockPriceChartServer
-                        ticker={ticker}
-                        low={f?.fiftyTwoWeekLow}
-                        high={f?.fiftyTwoWeekHigh}
-                    />
-                </Suspense>
-
-                <AnalystTargets financials={financials} />
-
-                {analystRatings && <AnalystRatingsBar ratings={analystRatings} />}
-
                 <Group title="Revenue &amp; Profitability" tiles={growthStory} cols={3} />
                 <Group title="Valuation &amp; Returns" tiles={worthIt} cols={4} />
                 <Group title="Financial Health" tiles={financialHealth} cols={4} />

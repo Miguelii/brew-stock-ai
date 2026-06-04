@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildPdfHtml } from '@/services/reports/helpers/build-pdf-html'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
-import type { StockData, StockFinancials } from '@/types/ReportDTO'
+import type { StockData, StockFinancials, StockFundamentals } from '@/types/ReportDTO'
 
 const baseParams = {
     stock: 'AAPL',
@@ -273,5 +273,65 @@ describe('buildFinancialsSection', () => {
         // each null field produces an N/A tile — at least three present
         const matches = html.match(/N\/A/g) ?? []
         expect(matches.length).toBeGreaterThanOrEqual(3)
+    })
+})
+
+describe('buildPdfHtml fundamentals section', () => {
+    const baseFundamentals: StockFundamentals = {
+        earningsHistory: [
+            {
+                period: '-1q',
+                quarter: '2024-03-31',
+                epsActual: 1.53,
+                epsEstimate: 1.5,
+                surprisePercent: 0.02,
+            },
+        ],
+        forwardEstimates: [
+            {
+                period: '+1q',
+                epsAvg: 1.6,
+                epsGrowth: 0.1,
+                revenueAvg: 90_000_000_000,
+                revenueGrowth: 0.08,
+            },
+        ],
+        revenueTrend: [
+            { endDate: '2023-12-31', totalRevenue: 380_000_000_000, netIncome: 95_000_000_000 },
+        ],
+        analystRatings: { period: '0m', strongBuy: 12, buy: 20, hold: 8, sell: 1, strongSell: 0 },
+        insiders: { netShares: -50000, buyCount: 1, sellCount: 4 },
+    }
+
+    const withFundamentals = (fundamentals: StockFundamentals | null): StockData => ({
+        id: 'AAPL',
+        reports: null,
+        scores: null,
+        sig_dev: null,
+        financials: null,
+        fundamentals,
+    })
+
+    it('renders the Key Financial Metrics section when only fundamentals are present', () => {
+        const html = buildPdfHtml({ ...baseParams, stockData: withFundamentals(baseFundamentals) })
+        expect(html).toContain('Key Financial Metrics')
+    })
+
+    it('renders all fundamentals blocks with friendly period labels', () => {
+        const html = buildPdfHtml({ ...baseParams, stockData: withFundamentals(baseFundamentals) })
+        expect(html).toContain('Analyst recommendations (41)')
+        expect(html).toContain('Strong Buy')
+        expect(html).toContain('Forward Estimates')
+        expect(html).toContain('Next Quarter EPS')
+        expect(html).toContain('Earnings vs estimates')
+        expect(html).toContain('Beat')
+        expect(html).toContain('Revenue Trend')
+        expect(html).toContain('Insider activity')
+        expect(html).toContain('Net selling')
+    })
+
+    it('omits the section entirely when both financials and fundamentals are null', () => {
+        const html = buildPdfHtml({ ...baseParams, stockData: withFundamentals(null) })
+        expect(html).not.toContain('Key Financial Metrics')
     })
 })

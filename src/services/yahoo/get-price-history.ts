@@ -11,27 +11,46 @@ import { ErrorCode } from '@/services/lib/error-codes'
 import { GET_PRICE_HISTORY_CACHE_KEY, GET_PRICE_HISTORY_TTL } from '@/services/yahoo/constants'
 import { createSbServerClient } from '@/lib/utils.server'
 import { getSession } from '@/services/core/auth/get-session'
+import type { PricePoint } from '@/services/yahoo/types'
 
-type PricePoint = { date: number; close: number }
+const fetchHistoryRaw = async (ticker: string): Promise<PricePoint[]> => {
+    const { default: YahooFinance } = await import('yahoo-finance2')
+    const yf = new YahooFinance({ suppressNotices: ['yahooSurvey', 'ripHistorical'] })
+    const period1 = new Date()
+    period1.setFullYear(period1.getFullYear() - 1)
+    const result = await yf.chart(ticker, { period1, interval: '1d' })
+    return result.quotes
+        .filter((r) => r.close != null)
+        .map((r) => ({ date: r.date.getTime(), close: r.close! }))
+}
 
-const fetchHistory = (ticker: string) =>
-    unstable_cache(
-        async (): Promise<PricePoint[]> => {
-            const { default: YahooFinance } = await import('yahoo-finance2')
-            const yf = new YahooFinance({ suppressNotices: ['yahooSurvey', 'ripHistorical'] })
-            const period1 = new Date()
-            period1.setFullYear(period1.getFullYear() - 1)
-            const result = await yf.chart(ticker, { period1, interval: '1d' })
-            return result.quotes
-                .filter((r) => r.close != null)
-                .map((r) => ({ date: r.date.getTime(), close: r.close! }))
-        },
-        [GET_PRICE_HISTORY_CACHE_KEY, ticker],
-        { revalidate: GET_PRICE_HISTORY_TTL }
-    )
+const fetchHistoryCached = (ticker: string) =>
+    unstable_cache(() => fetchHistoryRaw(ticker), [GET_PRICE_HISTORY_CACHE_KEY, ticker], {
+        revalidate: GET_PRICE_HISTORY_TTL,
+    })
 
+/**
+ * Raw fetcher — no session guard, no `unstable_cache`. Used inside the analysis
+ * pipeline (Trigger.dev runtime), where there is no user session and the Next.js
+ * data cache is not available.
+ */
 export const getPriceHistory = Effect.fn('getPriceHistory')(function* (ticker: string) {
-    // To avoid spaming this endpoint, we verify if the session is active
+    return yield* Effect.tryPromise({
+        try: () => fetchHistoryRaw(ticker),
+        catch: (cause) =>
+            new YahooPriceHistoryError({
+                ticker: `|${ticker}|`,
+                cause,
+                error_hash: ErrorCode.YAHOO_PRICE_HISTORY,
+            }),
+    })
+})
+
+/**
+ * Cached, session-gated wrapper exposed to the user via tRPC. The session check
+ * avoids spamming the upstream endpoint and `unstable_cache` serves the user.
+ */
+export const getCachedPriceHistory = Effect.fn('getCachedPriceHistory')(function* (ticker: string) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
         catch: (cause) =>
@@ -48,11 +67,11 @@ export const getPriceHistory = Effect.fn('getPriceHistory')(function* (ticker: s
     }
 
     return yield* Effect.tryPromise({
-        try: () => fetchHistory(ticker)(),
+        try: () => fetchHistoryCached(ticker)(),
         catch: (cause) =>
             new YahooPriceHistoryError({
                 ticker: `|${ticker}|`,
-                cause: cause,
+                cause,
                 error_hash: ErrorCode.YAHOO_PRICE_HISTORY,
             }),
     })

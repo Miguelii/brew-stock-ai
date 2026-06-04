@@ -120,6 +120,27 @@ This applies to all files — services, components, modules, helpers, types, etc
 
 ---
 
+### Formatters — ALWAYS live in `src/lib/formatters.ts`
+
+**Every** value-formatting helper (numbers, percentages, currency, dates, large numbers, labels, etc.) **must** be defined and exported from `src/lib/formatters.ts` and imported from there. **Never** define a formatter inline in a service, component, or helper file — even a one-liner.
+
+```ts
+// ❌ Wrong — formatter defined locally in some other file
+const pct1 = (n: number | null | undefined): string => (n == null ? 'N/A' : `${n.toFixed(1)}%`)
+const toIso = (d: Date | null | undefined): string | null =>
+    d ? new Date(d).toISOString().split('T')[0] : null
+
+// ✅ Correct — define once in src/lib/formatters.ts, import everywhere
+import { pct1, toIso } from '@/lib/formatters'
+```
+
+Rules:
+- If a formatter you need does not exist yet, **add it to `src/lib/formatters.ts`** and import it — do not inline it.
+- Keep formatters pure (input → string), null/undefined-safe (return `'N/A'` or `null`), and documented with a one-line comment when the behaviour is non-obvious.
+- Reuse existing formatters (`fmtNum`, `fmtPct`, `pct1`, `fmtPrice`, `fmtLarge`, `fmtX`, `toIso`, `formatDate`, …) before adding a new one.
+
+---
+
 ## Forms (react-hook-form + shadcn)
 
 All forms follow this structure — logic in a dedicated hook, UI in the component.

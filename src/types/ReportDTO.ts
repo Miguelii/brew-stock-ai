@@ -38,6 +38,72 @@ type PickSnapshot = {
     sustainability: InsightsCompanySnapshot['company']['innovativeness'] | null
 }
 
+// Expanded Yahoo fundamentals — stored as JSON, so dates are serialised to ISO strings.
+export type EarningsQuarter = {
+    period: string
+    quarter: string | null
+    epsActual: number | null
+    epsEstimate: number | null
+    surprisePercent: number | null
+}
+
+export type ForwardEstimate = {
+    period: string
+    epsAvg: number | null
+    epsGrowth: number | null
+    revenueAvg: number | null
+    revenueGrowth: number | null
+}
+
+export type RevenueTrendPoint = {
+    endDate: string | null
+    totalRevenue: number | null
+    netIncome: number | null
+}
+
+export type AnalystRatings = {
+    period: string
+    strongBuy: number
+    buy: number
+    hold: number
+    sell: number
+    strongSell: number
+}
+
+export type InsiderActivity = {
+    netShares: number | null
+    buyCount: number
+    sellCount: number
+}
+
+export type StockFundamentals = {
+    earningsHistory: EarningsQuarter[]
+    forwardEstimates: ForwardEstimate[]
+    revenueTrend: RevenueTrendPoint[]
+    analystRatings: AnalystRatings | null
+    insiders: InsiderActivity | null
+}
+
+// Derived technical indicators computed from the 1y daily price history.
+export type StockTechnicals = {
+    currentPrice: number | null
+    sma50: number | null
+    sma200: number | null
+    priceVsSma50Pct: number | null
+    priceVsSma200Pct: number | null
+    trend: 'golden-cross' | 'death-cross' | 'neutral'
+    rsi14: number | null
+    high52w: number | null
+    low52w: number | null
+    pctFrom52wHigh: number | null
+    pctFrom52wLow: number | null
+    return1m: number | null
+    return3m: number | null
+    return6m: number | null
+    return12m: number | null
+    annualizedVolatilityPct: number | null
+}
+
 export enum ReportStatus {
     GENERATING = 'GENERATING',
     COMPLETED = 'COMPLETED',
@@ -81,6 +147,7 @@ export type StockData = {
     scores: StockScores | null
     sig_dev: StockSigDev | null
     financials: StockFinancials | null
+    fundamentals: StockFundamentals | null
 }
 
 export type ReportWithStockData = {

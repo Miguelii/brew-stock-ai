@@ -30,6 +30,7 @@ export const saveYahooDataToTTL = Effect.fn('saveYahooDataToTTL')(function* (
                     scores: data.scores,
                     sig_dev: data.sigDev,
                     financials: data.financials ?? null,
+                    fundamentals: data.fundamentals ?? null,
                     last_update_at: new Date().toISOString(),
                 },
                 { onConflict: 'id' }

@@ -6,7 +6,7 @@ import { ReportStatus } from '@/types/ReportDTO'
 
 export const processReportTask = task({
     id: 'process-report',
-    maxDuration: 180,
+    maxDuration: 300,
     retry: {
         maxAttempts: 1,
     },

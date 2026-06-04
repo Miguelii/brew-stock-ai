@@ -55,6 +55,7 @@ describe('buildPdfHtml', () => {
             scores: null,
             sig_dev: { headline: 'Apple announces new product', date: '2024-06-10' },
             financials: null,
+            fundamentals: null,
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Apple announces new product')
@@ -75,6 +76,7 @@ describe('buildPdfHtml', () => {
             scores: null,
             sig_dev: null,
             financials: null,
+            fundamentals: null,
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('Q3 Results')
@@ -92,6 +94,7 @@ describe('buildPdfHtml', () => {
             },
             sig_dev: null,
             financials: null,
+            fundamentals: null,
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).toContain('How It Compares')
@@ -147,6 +150,7 @@ describe('buildFinancialsSection', () => {
         scores: null,
         sig_dev: null,
         financials,
+        fundamentals: null,
     })
 
     it('renders the Key Financial Metrics section when financials are provided', () => {

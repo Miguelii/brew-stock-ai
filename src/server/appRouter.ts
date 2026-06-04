@@ -23,8 +23,8 @@ import { createCheckoutSession } from '@/services/core/tokens/create-checkout-se
 import type { TokenPackageId } from '@/services/core/tokens/create-checkout-session'
 import { createConsentCookie } from '@/services/core/consent/create-consent-cookie'
 import { submitFeedback } from '@/services/core/feedback/submit-feedback'
-import { getLatestNews } from '@/services/finnhub/get-latest-news'
-import { getPriceHistory } from '@/services/yahoo/get-price-history'
+import { getCachedLatestNews } from '@/services/finnhub/get-latest-news'
+import { getCachedPriceHistory } from '@/services/yahoo/get-price-history'
 import {
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
     CONTACT_FORM_MAX_NAME_LENGTH,
@@ -290,7 +290,7 @@ export const appRouter = router({
     getLatestNews: publicProcedure
         .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
         .query(({ input }) =>
-            runEffect(getLatestNews(input.ticker), 'getLatestNews', (error) =>
+            runEffect(getCachedLatestNews(input.ticker), 'getCachedLatestNews', (error) =>
                 Match.value(error).pipe(
                     Match.tag('LatestNewsError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
@@ -304,7 +304,7 @@ export const appRouter = router({
     priceHistory: publicProcedure
         .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
         .query(({ input }) =>
-            runEffect(getPriceHistory(input.ticker), 'getPriceHistory', (error) =>
+            runEffect(getCachedPriceHistory(input.ticker), 'getCachedPriceHistory', (error) =>
                 Match.value(error).pipe(
                     Match.tag('YahooPriceHistoryError', () => 'INTERNAL_SERVER_ERROR' as const),
                     Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),

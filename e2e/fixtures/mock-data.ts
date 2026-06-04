@@ -74,6 +74,7 @@ export const MOCK_STOCK_DATA: StockData = {
             reportTitle: 'Outperform',
         },
     ],
+    fundamentals: null,
 }
 
 export const MOCK_REPORT: ReportDTO = {

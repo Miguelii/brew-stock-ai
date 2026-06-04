@@ -3,7 +3,15 @@ import 'server-only'
 import { Effect } from 'effect'
 import { YahooClientError, YahooInsightsError, YahooQuoteSummaryError } from '@/services/lib/errors'
 import { ErrorCode } from '@/services/lib/error-codes'
-import type { StockFinancials, StockReports, StockScores, StockSigDev } from '@/types/ReportDTO'
+import type {
+    RevenueTrendPoint,
+    StockFinancials,
+    StockFundamentals,
+    StockReports,
+    StockScores,
+    StockSigDev,
+} from '@/types/ReportDTO'
+import { mapFundamentals, mapRevenueTrend } from '@/services/yahoo/helpers/map-fundamentals'
 
 export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string) {
     const yahooClient = yield* Effect.tryPromise({
@@ -114,10 +122,65 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
         Effect.orElse(() => Effect.succeed(null))
     )
 
+    // Expanded fundamentals — fetched independently of the core `financials`
+    // above so a failure here never compromises it. Earnings/estimates/ratings/
+    // insiders come from quoteSummary; the revenue trend comes from
+    // fundamentalsTimeSeries (the quoteSummary income-statement modules have been
+    // emptied by Yahoo for most tickers since late 2024). Both are non-fatal.
+    const fundamentalsPeriod1 = new Date()
+    fundamentalsPeriod1.setFullYear(fundamentalsPeriod1.getFullYear() - 5)
+
+    const [fundamentalsSummary, revenueTrend] = yield* Effect.all(
+        [
+            Effect.tryPromise({
+                try: () =>
+                    yahooClient.quoteSummary(ticker, {
+                        modules: [
+                            'earningsHistory',
+                            'earningsTrend',
+                            'recommendationTrend',
+                            'insiderTransactions',
+                        ],
+                    }),
+                catch: (cause) =>
+                    new YahooQuoteSummaryError({
+                        ticker: `|${ticker}|`,
+                        cause,
+                        error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
+                    }),
+            }).pipe(Effect.orElse(() => Effect.succeed(null))),
+
+            Effect.tryPromise({
+                try: () =>
+                    yahooClient.fundamentalsTimeSeries(ticker, {
+                        period1: fundamentalsPeriod1,
+                        type: 'annual',
+                        module: 'financials',
+                    }),
+                catch: (cause) =>
+                    new YahooQuoteSummaryError({
+                        ticker: `|${ticker}|`,
+                        cause,
+                        error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
+                    }),
+            }).pipe(
+                Effect.map(mapRevenueTrend),
+                Effect.orElse(() => Effect.succeed([] as RevenueTrendPoint[]))
+            ),
+        ],
+        { concurrency: 'unbounded' }
+    )
+
+    const fundamentals: StockFundamentals | null =
+        fundamentalsSummary || revenueTrend.length > 0
+            ? mapFundamentals(fundamentalsSummary, revenueTrend)
+            : null
+
     return {
         scores,
         reports,
         sigDev,
         financials,
+        fundamentals,
     }
 })

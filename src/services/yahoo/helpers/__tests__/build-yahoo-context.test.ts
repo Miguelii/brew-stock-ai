@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { buildYahooContext } from '@/services/yahoo/helpers/build-yahoo-context'
 import type { GetYahooDataResult } from '@/services/yahoo/types'
-import type { StockFinancials } from '@/types/ReportDTO'
+import type { StockFinancials, StockFundamentals, StockTechnicals } from '@/types/ReportDTO'
+import type { NewsItem } from '@/types/news'
 
 const mockFinancials: StockFinancials = {
     currentPrice: 150.25,
@@ -35,6 +36,7 @@ const baseData: GetYahooDataResult = {
     reports: [],
     sigDev: null,
     financials: null,
+    fundamentals: null,
 }
 
 describe('buildYahooContext', () => {
@@ -153,5 +155,104 @@ describe('buildYahooContext', () => {
         const financials = { ...mockFinancials, freeCashflow: 500_000_000 }
         const result = buildYahooContext({ ...baseData, financials })
         expect(result).toContain('$500.00M')
+    })
+
+    it('includes fundamentals sections when provided', () => {
+        const fundamentals: StockFundamentals = {
+            earningsHistory: [
+                {
+                    period: '-1q',
+                    quarter: '2024-03-31',
+                    epsActual: 1.53,
+                    epsEstimate: 1.5,
+                    surprisePercent: 0.02,
+                },
+            ],
+            forwardEstimates: [
+                {
+                    period: '+1q',
+                    epsAvg: 1.6,
+                    epsGrowth: 0.1,
+                    revenueAvg: 90_000_000_000,
+                    revenueGrowth: 0.08,
+                },
+            ],
+            revenueTrend: [
+                { endDate: '2023-12-31', totalRevenue: 380_000_000_000, netIncome: 95_000_000_000 },
+            ],
+            analystRatings: {
+                period: '0m',
+                strongBuy: 12,
+                buy: 20,
+                hold: 8,
+                sell: 1,
+                strongSell: 0,
+            },
+            insiders: { netShares: -50000, buyCount: 1, sellCount: 4 },
+        }
+        const result = buildYahooContext({ ...baseData, fundamentals })
+        expect(result).toContain('**Earnings History')
+        expect(result).toContain('→ beat')
+        expect(result).toContain('**Forward Estimates')
+        expect(result).toContain('**Revenue & Net Income Trend')
+        expect(result).toContain('**Analyst Rating Distribution (0m):**')
+        expect(result).toContain('Strong Buy 12')
+        expect(result).toContain('**Insider Activity')
+        expect(result).toContain('net selling')
+    })
+
+    it('includes technical snapshot when provided', () => {
+        const technicals: StockTechnicals = {
+            currentPrice: 150,
+            sma50: 140,
+            sma200: 130,
+            priceVsSma50Pct: 7.1,
+            priceVsSma200Pct: 15.4,
+            trend: 'golden-cross',
+            rsi14: 62,
+            high52w: 180,
+            low52w: 120,
+            pctFrom52wHigh: -16.7,
+            pctFrom52wLow: 25,
+            return1m: 3.2,
+            return3m: 8.5,
+            return6m: 12,
+            return12m: 22,
+            annualizedVolatilityPct: 28.4,
+        }
+        const result = buildYahooContext(baseData, technicals)
+        expect(result).toContain('**Technical Snapshot')
+        expect(result).toContain('bullish regime')
+        expect(result).toContain('RSI(14): 62')
+        expect(result).toContain('1m 3.2%')
+    })
+
+    it('omits technical snapshot when price is null', () => {
+        const technicals = {
+            ...({} as StockTechnicals),
+            currentPrice: null,
+            trend: 'neutral' as const,
+        }
+        const result = buildYahooContext(baseData, technicals)
+        expect(result).not.toContain('**Technical Snapshot')
+    })
+
+    it('includes recent news when provided', () => {
+        const news: NewsItem[] = [
+            {
+                category: 'company',
+                datetime: 1_710_000_000,
+                headline: 'Company beats earnings',
+                id: 1,
+                image: '',
+                source: 'Reuters',
+                summary: 'The company reported strong quarterly results.',
+                url: 'https://example.com',
+            },
+        ]
+        const result = buildYahooContext(baseData, null, news)
+        expect(result).toContain('**Recent News')
+        expect(result).toContain('Company beats earnings [Reuters]')
+        expect(result).toContain('strong quarterly results')
     })
 })

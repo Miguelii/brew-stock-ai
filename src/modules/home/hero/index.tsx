@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, FileText } from 'lucide-react'
 import * as motion from 'motion/react-client'
+import { ReleaseBanner } from '@/modules/home/hero/release-banner'
 
 const stats = [
     { label: '999+ Reports Generated' },
@@ -19,6 +20,7 @@ export function Hero() {
                 transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col items-center text-center max-w-7xl mx-auto relative z-20"
             >
+                <ReleaseBanner />
                 <h1 className="bg-clip-text text-transparent bg-linear-to-b from-foreground to-foreground/70 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] py-3">
                     AI-Powered Stock Analysis
                     <br />

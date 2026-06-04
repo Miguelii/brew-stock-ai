@@ -8,6 +8,7 @@ const footerLinks = [
             { label: 'Analysis', href: '/analysis' },
             { label: 'Pricing', href: '/pricing' },
             { label: 'Reports', href: '/example-report' },
+            { label: 'Change Log', href: '/changelog' },
         ],
     },
     {

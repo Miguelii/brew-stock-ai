@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { getCachedSession } from '@/services/core/auth/get-cached-session'
@@ -59,20 +60,39 @@ export default async function SecureAdminPage() {
 
                 <Separator />
 
-                <Suspense fallback={<SectionSkeleton />}>
-                    <AdminFeedbackSection email={email} />
-                </Suspense>
+                <Tabs defaultValue="feedback">
+                    <TabsList>
+                        <TabsTrigger value="feedback">Feedback</TabsTrigger>
+                        <TabsTrigger value="users">Users</TabsTrigger>
+                        <TabsTrigger value="reports">Reports</TabsTrigger>
+                        <TabsTrigger value="actions">Actions</TabsTrigger>
+                    </TabsList>
 
-                <Separator />
+                    <TabsContent value="feedback">
+                        <Suspense fallback={<SectionSkeleton />}>
+                            <AdminFeedbackSection email={email} />
+                        </Suspense>
+                    </TabsContent>
 
-                <Suspense fallback={<SectionSkeleton />}>
-                    <AdminUsersSection email={email} />
-                </Suspense>
+                    <TabsContent value="users">
+                        <Suspense fallback={<SectionSkeleton />}>
+                            <AdminUsersSection email={email} />
+                        </Suspense>
+                    </TabsContent>
 
-                <Separator />
-                <Suspense fallback={<SectionSkeleton />}>
-                    <AdminReportsSection email={email} />
-                </Suspense>
+                    <TabsContent value="reports">
+                        <Suspense fallback={<SectionSkeleton />}>
+                            <AdminReportsSection email={email} />
+                        </Suspense>
+                    </TabsContent>
+
+                    <TabsContent value="actions">
+                        <div className="flex min-h-48 flex-col items-center justify-center gap-1 rounded-none border border-dashed border-border text-center">
+                            <p className="text-sm font-medium">Actions</p>
+                            <p className="text-sm text-muted-foreground">Coming soon.</p>
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </main>
         </>
     )

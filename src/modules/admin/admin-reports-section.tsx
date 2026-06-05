@@ -121,7 +121,9 @@ export async function AdminReportsSection({ email }: Props) {
                                             {userEmailById.get(r.user_id) ?? r.user_id}
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">
-                                            {r.cost ? `${r.cost}$` : 'N/A'}
+                                            {r.cost
+                                                ? `${Number(parseFloat(r.cost).toFixed(4))}$`
+                                                : 'N/A'}
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">
                                             {parseReportDate(r.created_at)}

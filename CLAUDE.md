@@ -18,21 +18,22 @@ All services must use Effect-TS. Follow this exact pattern:
 import 'server-only'
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, SomeError } from '@/services/utils/constants'
+import { CreateSbClientError, SomeError } from '@/backend/lib/errors'
+import { ErrorCode } from '@/backend/lib/error-codes'
 
 export const myService = Effect.fn('myService')(function* (param: string) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
-        catch: (cause) => new CreateSbClientError({ cause, error_hash: 'unique_hash' }),
+        catch: (cause) => new CreateSbClientError({ cause, error_hash: ErrorCode.SOME_UNIQUE_CODE }),
     })
 
     const { data, error } = yield* Effect.tryPromise({
         try: () => supabase.from('table').select('*'),
-        catch: (cause) => new SomeError({ cause, error_hash: 'unique_hash' }),
+        catch: (cause) => new SomeError({ cause, error_hash: ErrorCode.SOME_UNIQUE_CODE }),
     })
 
     if (error) {
-        return yield* new SomeError({ cause: error, error_hash: 'unique_hash' })
+        return yield* new SomeError({ cause: error, error_hash: ErrorCode.SOME_UNIQUE_CODE })
     }
 
     return data
@@ -42,49 +43,82 @@ export const myService = Effect.fn('myService')(function* (param: string) {
 ### Rules
 - Always `import 'server-only'` at the top
 - Use `Effect.fn('serviceName')` for automatic telemetry
-- All errors must extend `Data.TaggedError` and live in `src/services/utils/constants.ts`
-- Every error must have `cause: unknown` and `error_hash: string` fields
-- `error_hash` must be a unique short string identifier (e.g. `'ecrtrptsbclnt'`)
+- All errors must extend `Data.TaggedError` and live in `src/backend/lib/errors.ts`
+- Every error must have `cause: unknown` and `error_hash: ErrorCode` fields
+- `error_hash` must be an `ErrorCode` member defined in `src/backend/lib/error-codes.ts` (e.g. `ErrorCode.REPORT_CREATE_SB_CLIENT`)
 - Use `return yield*` when failing (makes termination explicit)
 - Never use try-catch inside `Effect.gen` — Effect failures are not thrown
 - Supabase queries always check both the `Effect.tryPromise` catch AND the `error` field returned
 
-### Error types location
-All error classes live in `src/services/utils/constants.ts`. Add new ones there before creating a service.
-
-### File structure
-```
-src/services/
-  analysis/        # AI analysis services
-  reports/         # Report CRUD services
-  supabase/        # Auth services
-  utils/
-    constants.ts   # All error classes + shared schemas
-    prompts.ts     # AI prompts
-```
-
 ### tRPC — exposing a service
-Every service is exposed via `src/server/appRouter.ts` using the `runEffect` helper:
+Each tRPC route lives in its module's `procedures/` folder as
+`src/backend/modules/<module>/procedures/<name>.procedure.ts`. The `Effect.fn(...)` service stays
+**private (never exported)**; the file exports a single screaming-snake constant —
+`<NAME>_PROTECTED_PROCEDURE` or `<NAME>_PUBLIC_PROCEDURE` — built with the `runEffect` helper:
 
 ```typescript
-myProcedure: publicProcedure
-    .input(z.object({ param: z.string().min(1) }))
-    .query(({ input }) =>                               // or .mutation()
-        runEffect(myService(input.param), 'myService', (error) =>
+// src/backend/modules/credits/procedures/get-credits.procedure.ts
+import 'server-only'
+import { Effect, Match } from 'effect'
+import { createSbServerClient } from '@/lib/utils.server'
+import { CreateSbClientError, GetCreditsError } from '@/backend/lib/errors'
+import { ErrorCode } from '@/backend/lib/error-codes'
+import { protectedProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
+import { z } from 'zod'
+import type { User } from '@supabase/supabase-js'
+
+// 1) Private Effect service — NEVER exported from a procedure file
+const getCredits = Effect.fn('getCredits')(function* (user: User) {
+    const supabase = yield* Effect.tryPromise({
+        try: () => createSbServerClient(),
+        catch: (cause) =>
+            new CreateSbClientError({ cause, error_hash: ErrorCode.TOKENS_GET_SB_CLIENT }),
+    })
+    // ...query with user.id...
+})
+
+// 2) Exported procedure constant — <NAME>_<PROTECTED|PUBLIC>_PROCEDURE
+export const GET_CREDITS_PROTECTED_PROCEDURE = protectedProcedure
+    .query(({ ctx }) =>                                 // or .input(z.object({...})).mutation(({ input, ctx }) => ...)
+        runEffect(getCredits(ctx.user), 'getCredits', (error) =>
             Match.value(error).pipe(
-                Match.tag('SomeError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                Match.exhaustive                         // required — fails to compile if a case is missing
+                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('GetCreditsError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.exhaustive                       // required — fails to compile if a case is missing
             )
         )
-    ),
+    )
 ```
+
+Then register the exported constant in `src/_trpc/api/index.ts`, grouped by module:
+
+```typescript
+import { GET_CREDITS_PROTECTED_PROCEDURE } from '@/backend/modules/credits/procedures/get-credits.procedure'
+
+export const appRouter = router({
+    /** CREDITS **/
+    getCredits: GET_CREDITS_PROTECTED_PROCEDURE,
+    // ...
+})
+```
+
+#### Rules
+- Procedure files **must** be named `src/backend/modules/<module>/procedures/<name>.procedure.ts`.
+- The `Effect.fn(...)` service is a **private `const` — never exported** from a procedure file. Reusable Effect functions needed outside tRPC (e.g. Trigger.dev jobs) go in `*.service.ts` / `*.processor.ts` and **are** exported.
+- Each procedure file exports exactly **one** constant in `UPPER_SNAKE_CASE`: `<NAME>_PROTECTED_PROCEDURE` or `<NAME>_PUBLIC_PROCEDURE`.
+- Use `protectedProcedure` (from `@/_trpc/server`) for authenticated routes — `ctx.user` is guaranteed; pass it into the service. Auth is enforced by the middleware, so **never** map `UnauthenticatedError` / `GetUserError` in the `Match`.
+- Use `publicProcedure` for unauthenticated routes (auth flows, public forms).
+- `runEffect` comes from `@/_trpc/utils`; the `Match.value(error).pipe(… Match.exhaustive)` mapping lives in the procedure file.
+- Register every exported constant in `src/_trpc/api/index.ts` under `appRouter`, grouped by module with `/** MODULE **/` comments.
+
+`protectedProcedure` runs `getSession()` once per request (cached) and injects `ctx.user`: it throws `401` when there is no user and `500` on infrastructure failure. Services still create their own Supabase client, so each one controls whether it uses the publishable or service-role key.
 
 ### Calling from Server Components
 Use the caller — no HTTP overhead:
 
 ```typescript
-import { createCaller } from '@/server/caller'
+import { createCaller } from '@/_trpc/server/caller'
 
 const caller = await createCaller()
 const data = await caller.myProcedure({ param: 'value' })
@@ -100,6 +134,16 @@ const promise: Promise<ReturnType> = mutation.mutateAsync({ param: 'value' })
 
 Always assign `mutateAsync` to an explicitly typed `Promise<T>` variable before passing to Effect to avoid TypeScript deep instantiation errors.
 
+### Backend module layout
+All backend code lives under `src/backend/modules/<module>/`, split by responsibility:
+- `procedures/<name>.procedure.ts` — tRPC-exposed; private `Effect.fn` + exported `<NAME>_<PROTECTED|PUBLIC>_PROCEDURE` constant.
+- `processors/<name>.processor.ts` — internal pipeline / business steps reused by procedures and Trigger.dev jobs (exported).
+- `services/<name>.service.ts` — reusable Effect services used outside tRPC, e.g. the Trigger.dev runtime where there is no user session (exported).
+- `helpers/<name>.helper.ts` — pure helpers (fetchers, builders, mappers).
+- `constants/index.ts`, `types/index.ts` — module constants and types.
+
+Shared error classes live in `src/backend/lib/errors.ts`; their `ErrorCode` values in `src/backend/lib/error-codes.ts`. tRPC infra lives in `src/_trpc/`: `server` (procedures, router, auth middleware), `utils` (`runEffect`), `context`, `api` (`appRouter`), and `server/caller` (`createCaller`).
+
 ---
 
 ### Imports — ALWAYS use the `@/` alias
@@ -112,8 +156,8 @@ import { getSession } from './get-session'
 import { getStockAnalysis } from '../analysis/get-stock-analysis'
 
 // ✅ Correct — alias paths
-import { getSession } from '@/services/auth/get-session'
-import { getStockAnalysis } from '@/services/analysis/get-stock-analysis'
+import { getSession } from '@/backend/modules/auth/get-session'
+import { getStockAnalysis } from '@/backend/modules/analysis/processors/get-stock-analysis.processor'
 ```
 
 This applies to all files — services, components, modules, helpers, types, etc. No exceptions.

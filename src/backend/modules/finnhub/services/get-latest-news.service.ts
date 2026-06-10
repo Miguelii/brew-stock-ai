@@ -4,14 +4,14 @@ import { Effect } from 'effect'
 import { ServerEnv } from '@/env/server'
 import { LatestNewsError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
-import { fetchLatestNewsRaw } from '@/backend/modules/finnhub/helpers/fetch-latest-news.helper'
+import { fetchLatestNewsRaw } from '@/backend/modules/finnhub/processors/fetch-latest-news.processor'
 
 /**
  * Raw fetcher — no session guard, no `unstable_cache`. Used inside the analysis
  * pipeline (Trigger.dev runtime), where there is no user session and the Next.js
  * data cache is not available.
  */
-export const getLatestNewsService = Effect.fn('getLatestNews')(function* (ticker: string) {
+export const getLatestNewsService = Effect.fn('getLatestNewsService')(function* (ticker: string) {
     if (!ServerEnv.NEXT_FINNHUB_API_KEY || ServerEnv.NEXT_FINNHUB_API_KEY === '') {
         return yield* new LatestNewsError({
             ticker: `|${ticker}|`,

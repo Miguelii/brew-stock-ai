@@ -1,5 +1,3 @@
-import 'server-only'
-
 // Set to false to restore original pricing
 const LAUNCH_PROMO_ACTIVE = true
 

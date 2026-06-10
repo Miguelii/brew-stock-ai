@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Effect } from 'effect'
 import { YahooClientError, YahooInsightsError, YahooQuoteSummaryError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'

@@ -1,3 +1,5 @@
+import 'server-only'
+
 import { createSbServerClient } from '@/lib/utils.server'
 import { cache } from 'react'
 

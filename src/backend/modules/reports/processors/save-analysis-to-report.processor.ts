@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { CreateSbClientError, SaveAnalysisError } from '@/backend/lib/errors'

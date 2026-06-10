@@ -6,11 +6,9 @@ import {
 } from '@/backend/lib/errors'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { Effect } from 'effect'
-import {
-    fetchSubscriptions,
-    sendToSubscriptions,
-    setupVapid,
-} from '../helpers/push-notification.helper'
+import { setupVapid } from '../helpers/setup-valid.helper'
+import { sendToSubscriptions } from './send-to-subscriptions.processor'
+import { fetchSubscriptions } from './fetch-subscriptions.processor'
 
 /**
  * Send a push notification to a specific user by ID.

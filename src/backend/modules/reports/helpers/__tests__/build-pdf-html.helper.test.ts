@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type { StockData, StockFinancials, StockFundamentals } from '@/types/ReportDTO'
-import { buildPdfHtml } from '../build-pdf-html'
+import { buildPdfHtml } from '../build-pdf-html.helper'
 
 const baseParams = {
     stock: 'AAPL',

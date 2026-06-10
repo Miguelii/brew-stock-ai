@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { PROMPT_TYPES } from '@/lib/constants'
 import { z } from 'zod'
 import {

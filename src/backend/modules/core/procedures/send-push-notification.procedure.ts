@@ -8,11 +8,9 @@ import type { User } from '@supabase/supabase-js'
 import { protectedProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
-import {
-    fetchSubscriptions,
-    sendToSubscriptions,
-    setupVapid,
-} from '../helpers/push-notification.helper'
+import { setupVapid } from '../helpers/setup-valid.helper'
+import { fetchSubscriptions } from '../processors/fetch-subscriptions.processor'
+import { sendToSubscriptions } from '../processors/send-to-subscriptions.processor'
 
 /**
  * Send a push notification to the currently logged-in user.

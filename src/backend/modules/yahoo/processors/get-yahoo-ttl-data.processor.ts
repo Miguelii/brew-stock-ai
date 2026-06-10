@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getYahooData } from '@/backend/modules/yahoo/processors/get-yahoo-data.processor'

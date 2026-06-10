@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { createSbAdminClient } from '@/lib/utils.server'
 import { type ReportDTO, ReportStatus } from '@/types/ReportDTO'
 import { logger } from '@trigger.dev/sdk'
@@ -11,7 +9,7 @@ import {
 } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import { getStockAnalysis } from '@/backend/modules/analysis/processors/get-stock-analysis.processor'
-import { sendPushNotificationToUser } from '@/backend/modules/core/processors/send-push-notification-to-user.processors'
+import { sendPushNotificationToUser } from '@/backend/modules/core/processors/send-push-notification-to-user.processor'
 
 export const processReport = Effect.fn('processReport')(function* (
     reportId: string,

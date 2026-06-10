@@ -1,15 +1,12 @@
 // oxlint-disable import/max-dependencies
 
-import { TRPCError } from '@trpc/server'
-import { Cause, Effect, Exit, Match, Option } from 'effect'
+import { Match } from 'effect'
 import { z } from 'zod'
-import { Logger } from '@/lib/logger'
 import { publicProcedure, router } from '@/server/trpc'
 import { sbLogin } from '@/services/core/auth/sb-login'
 import { sbLogout } from '@/services/core/auth/sb-logout'
 import { sbSendOtp } from '@/services/core/auth/sb-send-otp'
 import { sbVerifyOtp } from '@/services/core/auth/sb-verify-otp'
-import { getCachedUserId } from '@/services/core/auth/get-session'
 import { createReport } from '@/services/reports/create-report'
 import { getReports } from '@/services/reports/get-reports'
 import { getReportById } from '@/services/reports/get-report-by-id'
@@ -32,32 +29,7 @@ import {
     MAX_STOCK_INPUT_LENGHT,
     SB_OTP_TOKEN_LENGTH,
 } from '@/lib/constants'
-
-async function runEffect<A, E extends { _tag: string; error_hash: string }>(
-    effect: Effect.Effect<A, E>,
-    context: string,
-    mapCode: (error: E) => TRPCError['code']
-): Promise<A> {
-    const exit = await Effect.runPromiseExit(effect)
-
-    if (Exit.isSuccess(exit)) return exit.value
-
-    const userId = await getCachedUserId()
-
-    const maybeError = Cause.failureOption(exit.cause)
-
-    if (Option.isNone(maybeError)) {
-        const defects = Cause.defects(exit.cause)
-        Logger({ level: 'error', prefix: context, message: 'defect', error: defects, userId })
-        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'unexpected_defect' })
-    }
-
-    const error = maybeError.value
-
-    Logger({ level: 'error', prefix: context, error, userId })
-
-    throw new TRPCError({ code: mapCode(error), message: error.error_hash })
-}
+import { runEffect } from '@/server/utils'
 
 export const appRouter = router({
     createReport: publicProcedure

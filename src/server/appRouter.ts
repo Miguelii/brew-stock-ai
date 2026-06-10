@@ -1,302 +1,51 @@
-// oxlint-disable import/max-dependencies
-
-import { Match } from 'effect'
-import { z } from 'zod'
-import { publicProcedure, router } from '@/server/trpc'
-import { sbLogin } from '@/services/core/auth/sb-login'
-import { sbLogout } from '@/services/core/auth/sb-logout'
-import { sbSendOtp } from '@/services/core/auth/sb-send-otp'
-import { sbVerifyOtp } from '@/services/core/auth/sb-verify-otp'
-import { createReport } from '@/services/reports/create-report'
-import { getReports } from '@/services/reports/get-reports'
-import { getReportById } from '@/services/reports/get-report-by-id'
-import { exportReport } from '@/services/reports/export-report'
-import { subscribePush } from '@/services/core/notifications/subscribe-push'
-import { unsubscribePush } from '@/services/core/notifications/unsubscribe-push'
-import { sendPushNotification } from '@/services/core/notifications/send-push-notification'
-import { getCredits } from '@/services/core/tokens/get-credits'
-import { getInvoices } from '@/services/core/tokens/get-invoices'
-import { createCheckoutSession } from '@/services/core/tokens/create-checkout-session'
-import type { TokenPackageId } from '@/services/core/tokens/create-checkout-session'
-import { createConsentCookie } from '@/services/core/consent/create-consent-cookie'
-import { submitFeedback } from '@/services/core/feedback/submit-feedback'
-import { getCachedLatestNews } from '@/services/finnhub/get-latest-news'
-import { getCachedPriceHistory } from '@/services/yahoo/get-price-history'
-import {
-    CONTACT_FORM_MAX_MESSAGE_LENGTH,
-    CONTACT_FORM_MAX_NAME_LENGTH,
-    CONTACT_FORM_MIN_MESSAGE_LENGTH,
-    MAX_STOCK_INPUT_LENGHT,
-    SB_OTP_TOKEN_LENGTH,
-} from '@/lib/constants'
-import { runEffect } from '@/server/utils'
+import { router } from '@/server/trpc'
+import { SUBSCRIBE_PUSH_PROTECTED_PROCEDURE } from '@/backend/modules/core/procedures/subscribe-push'
+import { UNSUBSCRIBE_PUSH_PROTECTED_PROCEDURE } from '@/backend/modules/core/procedures/unsubscribe-push'
+import { SEND_PUSH_NOTIFICATION_PROTECTED_PROCEDURE } from '@/backend/modules/core/procedures/send-push-notification'
+import { GET_LATEST_NEWS_PROTECTED_PROCEDURE } from '@/backend/modules/finnhub/procedures/get-latest-news.procedure'
+import { CREATE_REPORT_PROTECTED_PROCEDURE } from '@/backend/modules/reports/procedures/create-report.procedure'
+import { GET_REPORTS_PROTECTED_PROCEDURE } from '@/backend/modules/reports/procedures/get-reports.procedure'
+import { EXPORT_REPORT_PROTECTED_PROCEDURE } from '@/backend/modules/reports/procedures/export-report.procedure'
+import { GET_REPORT_BY_ID_PROTECTED_PROCEDURE } from '@/backend/modules/reports/procedures/get-report-by-id.procedure'
+import { SB_LOGIN_PUBLIC_PROCEDURE } from '@/backend/modules/auth/procedures/sb-login.procedure'
+import { SB_LOGOUT_PUBLIC_PROCEDURE } from '@/backend/modules/auth/procedures/sb-logout.procedure'
+import { SB_SEND_OTP_PUBLIC_PROCEDURE } from '@/backend/modules/auth/procedures/sb-send-otp.procedure'
+import { SB_VERIFY_OTP_PUBLIC_PROCEDURE } from '@/backend/modules/auth/procedures/sb-verify-otp.procedure'
+import { GET_CREDITS_PROTECTED_PROCEDURE } from '@/backend/modules/credits/procedures/get-credits.procedure'
+import { GET_INVOICES_PROTECTED_PROCEDURE } from '@/backend/modules/credits/procedures/get-invoices.procedure'
+import { CREATE_CHECKOUT_SESSION_PROTECTED_PROCEDURE } from '@/backend/modules/credits/procedures/create-checkout-session.procedure'
+import { GET_PRICE_HISTORY_PROTECTED_PROCEDURE } from '@/backend/modules/yahoo/procedures/get-price-history.procedure'
+import { CREATE_CONSENT_COOKIE_PUBLIC_PROCEDURE } from '@/backend/modules/core/procedures/create-consent-cookie'
+import { SUBMIT_FEEDBACK_PUBLIC_PROCEDURE } from '@/backend/modules/core/procedures/submit-feedback'
 
 export const appRouter = router({
-    createReport: publicProcedure
-        .input(
-            z.object({
-                stockSymbol: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT),
-                promptType: z.string().min(1),
-            })
-        )
-        .mutation(({ input }) =>
-            runEffect(createReport(input.stockSymbol, input.promptType), 'createReport', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('InvalidPromptTypeError', () => 'BAD_REQUEST' as const),
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                    Match.tag('DeductCreditError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('InsufficientCreditsError', () => 'PAYMENT_REQUIRED' as const),
-                    Match.tag('CreateReportError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
+    /** REPORTS **/
+    createReport: CREATE_REPORT_PROTECTED_PROCEDURE,
+    exportReport: EXPORT_REPORT_PROTECTED_PROCEDURE,
+    getReportById: GET_REPORT_BY_ID_PROTECTED_PROCEDURE,
+    getReports: GET_REPORTS_PROTECTED_PROCEDURE,
+    getLatestNews: GET_LATEST_NEWS_PROTECTED_PROCEDURE,
+    priceHistory: GET_PRICE_HISTORY_PROTECTED_PROCEDURE,
 
-    signIn: publicProcedure
-        .input(z.object({ email: z.email(), password: z.string() }))
-        .mutation(({ input }) =>
-            runEffect(sbLogin(input.email, input.password), 'sbLogin', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('SignInWithPasswordError', () => 'UNAUTHORIZED' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
+    /** AUTH **/
+    signIn: SB_LOGIN_PUBLIC_PROCEDURE,
+    sbLogout: SB_LOGOUT_PUBLIC_PROCEDURE,
+    sendOtp: SB_SEND_OTP_PUBLIC_PROCEDURE,
+    verifyOtp: SB_VERIFY_OTP_PUBLIC_PROCEDURE,
 
-    sendOtp: publicProcedure.input(z.object({ email: z.email() })).mutation(({ input }) =>
-        runEffect(sbSendOtp(input.email), 'sbSendOtp', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('SendOtpError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.exhaustive
-            )
-        )
-    ),
+    /** CREDITS **/
+    getCredits: GET_CREDITS_PROTECTED_PROCEDURE,
+    getInvoices: GET_INVOICES_PROTECTED_PROCEDURE,
+    createCheckoutSession: CREATE_CHECKOUT_SESSION_PROTECTED_PROCEDURE,
 
-    verifyOtp: publicProcedure
-        .input(z.object({ email: z.email(), token: z.string().length(SB_OTP_TOKEN_LENGTH) }))
-        .mutation(({ input }) =>
-            runEffect(sbVerifyOtp(input.email, input.token), 'sbVerifyOtp', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('VerifyOtpError', () => 'UNAUTHORIZED' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
+    /** PUSH **/
+    subscribePush: SUBSCRIBE_PUSH_PROTECTED_PROCEDURE,
+    unsubscribePush: UNSUBSCRIBE_PUSH_PROTECTED_PROCEDURE,
+    sendPushNotification: SEND_PUSH_NOTIFICATION_PROTECTED_PROCEDURE,
 
-    getReports: publicProcedure.query(() =>
-        runEffect(getReports(), 'getReports', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                Match.tag('GetReportsError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.exhaustive
-            )
-        )
-    ),
-
-    sbLogout: publicProcedure.mutation(() =>
-        runEffect(sbLogout(), 'sbLogout', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('LogoutError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.exhaustive
-            )
-        )
-    ),
-
-    getReportById: publicProcedure.input(z.object({ id: z.string().min(1) })).query(({ input }) =>
-        runEffect(getReportById(input.id), 'getReportById', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                Match.tag('GetReportByIdError', () => 'NOT_FOUND' as const),
-                Match.exhaustive
-            )
-        )
-    ),
-
-    exportReport: publicProcedure.input(z.object({ id: z.string().min(1) })).mutation(({ input }) =>
-        runEffect(exportReport(input.id), 'exportReport', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                Match.tag('ExportReportError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.exhaustive
-            )
-        )
-    ),
-
-    subscribePush: publicProcedure
-        .input(
-            z.object({
-                subscription: z.object({
-                    endpoint: z.string(),
-                    expirationTime: z.number().nullable(),
-                    keys: z.object({ p256dh: z.string(), auth: z.string() }),
-                }),
-            })
-        )
-        .mutation(({ input }) =>
-            runEffect(subscribePush(input.subscription), 'subscribePush', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                    Match.tag('SavePushSubscriptionError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
-
-    unsubscribePush: publicProcedure.mutation(() =>
-        runEffect(unsubscribePush(), 'unsubscribePush', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                Match.tag('DeletePushSubscriptionError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.exhaustive
-            )
-        )
-    ),
-
-    sendPushNotification: publicProcedure
-        .input(z.object({ title: z.string().min(1), body: z.string().min(1) }))
-        .mutation(({ input }) =>
-            runEffect(
-                sendPushNotification(input.title, input.body),
-                'sendPushNotification',
-                (error) =>
-                    Match.value(error).pipe(
-                        Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                        Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                        Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                        Match.tag(
-                            'GetPushSubscriptionError',
-                            () => 'INTERNAL_SERVER_ERROR' as const
-                        ),
-                        Match.tag(
-                            'SendPushNotificationError',
-                            () => 'INTERNAL_SERVER_ERROR' as const
-                        ),
-                        Match.exhaustive
-                    )
-            )
-        ),
-
-    getCredits: publicProcedure.query(() =>
-        runEffect(getCredits(), 'getCredits', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                Match.tag('GetCreditsError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.exhaustive
-            )
-        )
-    ),
-
-    getInvoices: publicProcedure.query(() =>
-        runEffect(getInvoices(), 'getInvoices', (error) =>
-            Match.value(error).pipe(
-                Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                Match.tag('GetInvoicesError', () => 'INTERNAL_SERVER_ERROR' as const),
-                Match.exhaustive
-            )
-        )
-    ),
-
-    createCheckoutSession: publicProcedure
-        .input(z.object({ packageId: z.enum(['starter', 'pro', 'expert']) }))
-        .mutation(({ input }) =>
-            runEffect(
-                createCheckoutSession(input.packageId as TokenPackageId),
-                'createCheckoutSession',
-                (error) =>
-                    Match.value(error).pipe(
-                        Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                        Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                        Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                        Match.tag(
-                            'CreateCheckoutSessionError',
-                            () => 'INTERNAL_SERVER_ERROR' as const
-                        ),
-                        Match.exhaustive
-                    )
-            )
-        ),
-    submitFeedback: publicProcedure
-        .input(
-            z.object({
-                name: z.string().min(1).max(CONTACT_FORM_MAX_NAME_LENGTH),
-                email: z.email(),
-                message: z
-                    .string()
-                    .min(CONTACT_FORM_MIN_MESSAGE_LENGTH)
-                    .max(CONTACT_FORM_MAX_MESSAGE_LENGTH),
-            })
-        )
-        .mutation(({ input }) =>
-            runEffect(
-                submitFeedback(input.name, input.email, input.message),
-                'submitFeedback',
-                (error) =>
-                    Match.value(error).pipe(
-                        Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                        Match.tag('SubmitFeedbackError', () => 'INTERNAL_SERVER_ERROR' as const),
-                        Match.exhaustive
-                    )
-            )
-        ),
-
-    getLatestNews: publicProcedure
-        .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
-        .query(({ input }) =>
-            runEffect(getCachedLatestNews(input.ticker), 'getCachedLatestNews', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('LatestNewsError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
-
-    priceHistory: publicProcedure
-        .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
-        .query(({ input }) =>
-            runEffect(getCachedPriceHistory(input.ticker), 'getCachedPriceHistory', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('YahooPriceHistoryError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.tag('UnauthenticatedError', () => 'UNAUTHORIZED' as const),
-                    Match.tag('GetUserError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
-
-    createConsentCookie: publicProcedure
-        .input(z.object({ allowAnalytics: z.boolean() }))
-        .mutation(({ input }) =>
-            runEffect(createConsentCookie(input.allowAnalytics), 'createConsentCookie', (error) =>
-                Match.value(error).pipe(
-                    Match.tag('CreateConsentCookieError', () => 'INTERNAL_SERVER_ERROR' as const),
-                    Match.exhaustive
-                )
-            )
-        ),
+    /** CORE **/
+    submitFeedback: SUBMIT_FEEDBACK_PUBLIC_PROCEDURE,
+    createConsentCookie: CREATE_CONSENT_COOKIE_PUBLIC_PROCEDURE,
 })
 
 export type AppRouter = typeof appRouter

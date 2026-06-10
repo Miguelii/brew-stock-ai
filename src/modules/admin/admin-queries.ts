@@ -2,10 +2,10 @@ import 'server-only'
 
 import { cache } from 'react'
 import { Effect } from 'effect'
-import { getAdminStats, type AdminStats } from '@/services/core/admin/get-admin-stats'
-import { getAdminUsers, type AdminUser } from '@/services/core/admin/get-admin-users'
-import { getAdminReports, type AdminReport } from '@/services/core/admin/get-admin-reports'
-import { getAdminFeedback, type AdminFeedback } from '@/services/core/admin/get-admin-feedback'
+import { getAdminStats, type AdminStats } from '@/backend/modules/admin/get-admin-stats'
+import { getAdminUsers, type AdminUser } from '@/backend/modules/admin/get-admin-users'
+import { getAdminReports, type AdminReport } from '@/backend/modules/admin/get-admin-reports'
+import { getAdminFeedback, type AdminFeedback } from '@/backend/modules/admin/get-admin-feedback'
 
 const EMPTY_STATS: AdminStats = {
     totalReports: 0,

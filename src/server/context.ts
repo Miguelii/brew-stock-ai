@@ -8,5 +8,4 @@ export const createContext = async (opts: FetchCreateContextFnOptions) => {
     return opts
 }
 
-// oxlint-disable-next-line no-unused-vars
-type Context = Awaited<ReturnType<typeof createContext>>
+export type Context = Awaited<ReturnType<typeof createContext>>

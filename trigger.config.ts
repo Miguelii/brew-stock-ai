@@ -18,5 +18,5 @@ export default defineConfig({
             randomize: true,
         },
     },
-    dirs: ['./src/services/trigger'],
+    dirs: ['./src/backend/modules/trigger-dev'],
 })

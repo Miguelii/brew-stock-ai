@@ -5,8 +5,8 @@ import { cookies } from 'next/headers'
 import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/lib/constants'
 import { CreateConsentCookieError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
-import { publicProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { publicProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
 
 const createConsentCookie = Effect.fn('createConsentCookie')(function* (allowAnalytics: boolean) {

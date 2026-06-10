@@ -1,9 +1,9 @@
 import { toastError } from '@/lib/toast-error'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { useEffect } from 'react'
 
 export const useGetReports = () => {
-    const { data, isLoading, error } = trpc.getReports.useQuery(undefined, {
+    const { data, isLoading, error } = trpcClient.getReports.useQuery(undefined, {
         staleTime: 1000 * 60 * 1, // 1m
         gcTime: 1000 * 60 * 1, // 1m
         refetchInterval: 1000 * 20, // 20s

@@ -6,8 +6,8 @@ import { CreateSbClientError, LogoutError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import { revalidatePath } from 'next/cache'
 import { HOME_PAGE_PATH } from '@/lib/constants'
-import { runEffect } from '@/server/utils'
-import { publicProcedure } from '@/server/trpc'
+import { runEffect } from '@/_trpc/utils'
+import { publicProcedure } from '@/_trpc/server'
 
 const sbLogout = Effect.fn('sbLogout')(function* () {
     const supabase = yield* Effect.tryPromise({

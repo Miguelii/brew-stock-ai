@@ -5,8 +5,8 @@ import { Effect, Match } from 'effect'
 import { CreateSbClientError, SignInWithPasswordError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import { z } from 'zod'
-import { publicProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { publicProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 
 const sbLogin = Effect.fn('sbLogin')(function* (email: string, password: string) {
     const supabase = yield* Effect.tryPromise({

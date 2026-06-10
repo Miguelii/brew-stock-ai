@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useContactForm, type ContactFormValues } from '@/modules/contact/use-contact-form'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
 import { Loader2Icon } from 'lucide-react'
@@ -29,7 +29,7 @@ type Props = {
 
 export function ContactForm({ name, email }: Props) {
     const form = useContactForm({ name, email })
-    const mutation = trpc.submitFeedback.useMutation()
+    const mutation = trpcClient.submitFeedback.useMutation()
 
     const onSubmit = async (values: ContactFormValues) => {
         try {

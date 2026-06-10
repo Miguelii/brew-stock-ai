@@ -5,8 +5,8 @@ import { createSbServerClient } from '@/lib/utils.server'
 import { CreateSbClientError, DeletePushSubscriptionError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import type { User } from '@supabase/supabase-js'
-import { protectedProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { protectedProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 
 const unsubscribePush = Effect.fn('unsubscribePush')(function* (user: User) {
     const supabase = yield* Effect.tryPromise({

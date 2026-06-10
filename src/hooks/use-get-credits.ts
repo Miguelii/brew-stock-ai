@@ -1,5 +1,5 @@
 import { toastError } from '@/lib/toast-error'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { useEffect } from 'react'
 
 type Props = {
@@ -14,7 +14,7 @@ export const useGetCredits = (props: Props = {}) => {
         isSuccess,
         data: credits = 0,
         error,
-    } = trpc.getCredits.useQuery(undefined, {
+    } = trpcClient.getCredits.useQuery(undefined, {
         staleTime: 0,
         gcTime: 0,
         enabled: enabled ?? undefined,

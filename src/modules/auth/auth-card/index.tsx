@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -38,8 +38,8 @@ export function AuthCard({ returnTo }: Props) {
     const [pending, startTransition] = useTransition()
 
     const emailForm = useEmailForm()
-    const sendOtp = trpc.sendOtp.useMutation()
-    const verifyOtp = trpc.verifyOtp.useMutation()
+    const sendOtp = trpcClient.sendOtp.useMutation()
+    const verifyOtp = trpcClient.verifyOtp.useMutation()
 
     const onOAuthClick = () => {
         const url = returnTo

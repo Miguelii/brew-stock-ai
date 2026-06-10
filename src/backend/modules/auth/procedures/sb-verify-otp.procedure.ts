@@ -6,8 +6,8 @@ import { CreateSbClientError, VerifyOtpError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import { Logger } from '@/lib/logger'
 import { SB_OTP_TOKEN_LENGTH } from '@/lib/constants'
-import { publicProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { publicProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
 
 const sbVerifyOtp = Effect.fn('sbVerifyOtp')(function* (email: string, token: string) {

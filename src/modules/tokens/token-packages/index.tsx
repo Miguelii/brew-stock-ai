@@ -1,6 +1,6 @@
 'use client'
 
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CoinsIcon, ZapIcon, StarIcon, TrophyIcon, Loader2Icon } from 'lucide-react'
@@ -72,7 +72,7 @@ type Props = {
 export function TokenPackages({ showFree = false, showBuyButton = true, className }: Props) {
     const [pending, startTransition] = useTransition()
 
-    const checkout = trpc.createCheckoutSession.useMutation({
+    const checkout = trpcClient.createCheckoutSession.useMutation({
         onSuccess: (url) => {
             startTransition(() => {
                 window.location.href = url

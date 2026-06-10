@@ -1,4 +1,4 @@
-import { router } from '@/server/trpc'
+import { router } from '@/_trpc/server'
 import { SUBSCRIBE_PUSH_PROTECTED_PROCEDURE } from '@/backend/modules/core/procedures/subscribe-push'
 import { UNSUBSCRIBE_PUSH_PROTECTED_PROCEDURE } from '@/backend/modules/core/procedures/unsubscribe-push'
 import { SEND_PUSH_NOTIFICATION_PROTECTED_PROCEDURE } from '@/backend/modules/core/procedures/send-push-notification'

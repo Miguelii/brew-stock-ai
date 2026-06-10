@@ -9,7 +9,7 @@
  */
 import { initTRPC, TRPCError } from '@trpc/server'
 import { Effect, Exit } from 'effect'
-import type { Context } from '@/server/context'
+import type { Context } from '@/_trpc/context'
 import { getSession } from '@/backend/modules/auth/get-session'
 
 const t = initTRPC.context<Context>().create()

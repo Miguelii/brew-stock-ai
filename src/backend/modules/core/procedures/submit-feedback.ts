@@ -10,8 +10,8 @@ import {
     CONTACT_FORM_MIN_MESSAGE_LENGTH,
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
 } from '@/lib/constants'
-import { publicProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { publicProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
 
 const submitFeedback = Effect.fn('submitFeedback')(function* (

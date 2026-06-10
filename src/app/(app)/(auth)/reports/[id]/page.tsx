@@ -21,7 +21,7 @@ import { ClientEnv } from '@/env/client'
 import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-card/report-latest-news-server'
 import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-card/report-latest-news-card-skeleton'
 import { PROMPT_OPTIONS } from '@/lib/constants'
-import { createCaller } from '@/server/caller'
+import { createCaller } from '@/_trpc/server/caller'
 
 type Props = PageProps<'/reports/[id]'>
 

@@ -9,8 +9,8 @@ import type { ReportDTO, StockData } from '@/types/ReportDTO'
 import type { User } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
 import { buildPdfHtml } from '../helpers/build-pdf-html'
-import { protectedProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { protectedProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
 
 const CHROMIUM_PACK_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${CHROMIUM_PACK_PATH}`

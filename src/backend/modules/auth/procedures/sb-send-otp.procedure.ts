@@ -4,8 +4,8 @@ import { Effect, Match } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { CreateSbClientError, SendOtpError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
-import { publicProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { publicProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
 
 const sbSendOtp = Effect.fn('sbSendOtp')(function* (email: string) {

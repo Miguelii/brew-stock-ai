@@ -6,8 +6,8 @@ import { CreateSbClientError, GetReportsError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import type { ReportListItem } from '@/types/ReportDTO'
 import type { User } from '@supabase/supabase-js'
-import { protectedProcedure } from '@/server/trpc'
-import { runEffect } from '@/server/utils'
+import { protectedProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
 
 const getReports = Effect.fn('getReports')(function* (user: User) {
     const supabase = yield* Effect.tryPromise({

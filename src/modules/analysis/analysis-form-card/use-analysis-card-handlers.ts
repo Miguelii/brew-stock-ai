@@ -1,6 +1,6 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { FormValues } from '@/modules/analysis/analysis-form-card/use-analysis-form'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const useAnalysisCardHandlers = ({ form }: Props) => {
-    const utils = trpc.useUtils()
+    const utils = trpcClient.useUtils()
     const router = useRouter()
 
     // oxlint-disable-next-line no-unused-vars
@@ -23,7 +23,7 @@ export const useAnalysisCardHandlers = ({ form }: Props) => {
         })
     }
 
-    const createReport = trpc.createReport.useMutation({
+    const createReport = trpcClient.createReport.useMutation({
         onSuccess: async () => {
             refetch()
         },

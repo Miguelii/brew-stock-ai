@@ -8,8 +8,8 @@ import { ErrorCode } from '@/backend/lib/error-codes'
 import { createSbServerClient } from '@/lib/utils.server'
 import type { User } from '@supabase/supabase-js'
 import type { Invoice } from '@/types/Invoice'
-import { runEffect } from '@/server/utils'
-import { protectedProcedure } from '@/server/trpc'
+import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_trpc/server'
 
 // Users who purchased via guest checkout before Stripe Customer ID was introduced.
 // For these users a full session scan is performed, filtered by metadata.userId.

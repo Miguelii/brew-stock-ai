@@ -3,7 +3,6 @@
     "tags": ["-lintignore"],
     "entry": [
         "public/sw.js",
-        "src/server/caller.ts",
         "trigger.config.ts",
         "src/env/server.ts",
         "src/env/client.ts",

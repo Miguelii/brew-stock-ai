@@ -8,9 +8,7 @@ import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/component
 import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
 import { TickerAbout } from '@/components/ticker-about'
-
-// Replace with your real AdSense slot ID from https://adsense.google.com
-const AD_SLOT_TICKER = 'REPLACE_WITH_SLOT_ID'
+import { AD_SLOT_TICKER } from '@/lib/constants'
 
 type Props = PageProps<'/analysis/[ticker]'>
 
@@ -33,9 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
         title: META_TITLE,
         description: META_DESCRIPTION,
-        alternates: {
-            canonical: pageUrl,
-        },
+        // TEMP (2026-06): noindex until AdSense approval — revisit once the site is approved
+        robots: { index: false, follow: true },
         openGraph: {
             title: META_TITLE,
             description: META_DESCRIPTION,

@@ -9,11 +9,9 @@ import { ClientEnv } from '@/env/client'
 import * as motion from 'motion/react-client'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
 import { StartAnalysisPreviewCard } from '@/modules/education-hub/start-analysis-preview-card'
+import { AD_SLOT_ARTICLE_BOTTOM } from '@/lib/constants'
 
 export const dynamic = 'force-static'
-
-// Replace these with your real AdSense slot IDs from https://adsense.google.com
-const AD_SLOT_BOTTOM = 'REPLACE_WITH_SLOT_ID'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
@@ -98,7 +96,11 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
 
                         <EducationHubArticle article={article} />
 
-                        <AdBlock slot={AD_SLOT_BOTTOM} format="rectangle" className="mt-10" />
+                        <AdBlock
+                            slot={AD_SLOT_ARTICLE_BOTTOM}
+                            format="rectangle"
+                            className="mt-10"
+                        />
 
                         <StartAnalysisPreviewCard />
                     </motion.div>

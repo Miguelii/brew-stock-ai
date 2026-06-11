@@ -1,6 +1,6 @@
 import { Hero } from '@/modules/home/hero'
 import { AnalysisCard } from '@/modules/home/analysis-card'
-import { MarketingCard } from '@/modules/home/marketing-card'
+import { HowItWorks } from '@/modules/home/how-it-works'
 import { WordRevealCard } from '@/modules/home/word-reveal-card'
 import { PricingCard } from '@/modules/home/pricing-card'
 import { FinalCTA } from '@/modules/home/final-cta'
@@ -24,7 +24,10 @@ export default function HomePage() {
                 <AnalysisCard />
 
                 {/* Features */}
-                <MarketingCard />
+                {/* <MarketingCard /> */}
+
+                {/* What the product does + how it works (static prose) */}
+                <HowItWorks />
 
                 {/* Scrubbing text reveal */}
                 <WordRevealCard words={HOME_REVEAL_WORDS} />

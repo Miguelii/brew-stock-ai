@@ -81,6 +81,15 @@ export const CONSENT_COOKIE = 'brew_stock_cookie_consent'
 
 export const GOOGLE_ADSENSE_ACCOUNT_ID = 'ca-pub-1939312153475109' as const
 
+// Flip to true only after AdSense approval and after replacing the placeholder slot IDs below
+export const ADS_ENABLED = false
+
+export const AD_SLOT_TICKER = 'REPLACE_WITH_SLOT_ID'
+
+export const AD_SLOT_ARTICLE_BOTTOM = 'REPLACE_WITH_SLOT_ID'
+
+export const AD_SLOT_IN_ARTICLE = 'REPLACE_WITH_SLOT_ID'
+
 export const SB_OTP_TOKEN_LENGTH = 6
 
 export const ENABLE_OTP_LOGIN = true

@@ -1,13 +1,13 @@
 'use client'
 
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { Button } from '@/components/ui/button'
 import { RefreshCcwIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTransition } from 'react'
 
 export function ReportsRefetch() {
-    const utils = trpc.useUtils()
+    const utils = trpcClient.useUtils()
 
     const [isPending, startTransition] = useTransition()
 

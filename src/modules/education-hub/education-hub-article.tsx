@@ -2,12 +2,11 @@ import { Fragment } from 'react'
 import { AdBlock } from '@/components/ad-block'
 import * as motion from 'motion/react-client'
 import type { EducationHubArticle } from '@/types/EducationHubArticle'
+import { AD_SLOT_IN_ARTICLE } from '@/lib/constants'
 
 type Props = {
     article: EducationHubArticle
 }
-
-const AD_SLOT_IN_ARTICLE = 'REPLACE_WITH_SLOT_ID'
 
 export function EducationHubArticle({ article }: Props) {
     return (

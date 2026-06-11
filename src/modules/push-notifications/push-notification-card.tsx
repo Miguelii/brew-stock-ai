@@ -5,7 +5,7 @@ import { BellIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
 import { ClientEnv } from '@/env/client'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY, SW_PATH } from '@/lib/constants'
 import { PromptCard } from '@/components/ui/prompt-card'
 
@@ -24,7 +24,7 @@ export function PushNotificationCard() {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
-    const subscribeMutation = trpc.subscribePush.useMutation({
+    const subscribeMutation = trpcClient.subscribePush.useMutation({
         onSuccess: () => {
             toast.success('Notifications enabled.')
             setOpen(false)

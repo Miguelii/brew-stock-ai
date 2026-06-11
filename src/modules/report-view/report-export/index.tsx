@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { DownloadIcon, Loader2Icon } from 'lucide-react'
 import { toastError } from '@/lib/toast-error'
 
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export function ReportExport({ reportId }: Props) {
-    const exportMutation = trpc.exportReport.useMutation({
+    const exportMutation = trpcClient.exportReport.useMutation({
         onSuccess: ({ pdf, stock }) => {
             const bytes = Uint8Array.from(atob(pdf), (c) => c.codePointAt(0) ?? 0)
             const blob = new Blob([bytes], { type: 'application/pdf' })

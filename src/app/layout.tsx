@@ -4,7 +4,6 @@ import '@/styles/globals.css'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
 import { SpeedInsights as VercelSpeedInsights } from '@vercel/speed-insights/next'
 import { Footer } from '@/components/footer'
-import { Providers } from '@/providers'
 import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
@@ -17,6 +16,7 @@ import {
 import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
 import { GtmScript } from '@/components/scripts/gtm-script'
 import { AdsenseScript } from '@/components/scripts/adsence-script'
+import { TrpcContextProvider } from '@/_trpc/context/trpc-context.provider'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -130,7 +130,7 @@ export default function RootLayout({ children }: Props) {
             <GtmScript />
             <AdsenseScript />
             <body className="min-h-screen flex flex-col">
-                <Providers>
+                <TrpcContextProvider>
                     <WebSiteSchema />
                     <WebApplicationSchema />
                     <OrganizationSchema />
@@ -138,7 +138,7 @@ export default function RootLayout({ children }: Props) {
                     <CookiePrompt />
                     <div className="flex-1">{children}</div>
                     <Footer />
-                </Providers>
+                </TrpcContextProvider>
                 <ServiceWorkerRegister />
             </body>
         </html>

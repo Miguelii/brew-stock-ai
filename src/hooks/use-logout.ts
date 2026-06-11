@@ -1,13 +1,13 @@
 'use client'
 
 import { HOME_PAGE_PATH } from '@/lib/constants'
-import { trpc } from '@/server/trpc-client'
+import { trpcClient } from '@/_trpc/client'
 import { useRouter } from 'next/navigation'
 
 export const useLogout = () => {
     const router = useRouter()
 
-    const logout = trpc.sbLogout.useMutation({
+    const logout = trpcClient.sbLogout.useMutation({
         onSuccess: () => {
             router.refresh()
             router.push(HOME_PAGE_PATH)

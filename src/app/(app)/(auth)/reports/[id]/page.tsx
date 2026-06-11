@@ -7,8 +7,6 @@ import { ReportAnalysisCard } from '@/modules/report-view/report-analysis-card'
 import { ReportSentimentCard } from '@/modules/report-view/report-sentiment-card'
 import { ReportExport } from '@/modules/report-view/report-export'
 import { notFound } from 'next/navigation'
-import { Effect } from 'effect'
-import { getReportById } from '@/services/reports/get-report-by-id'
 import { cache, Suspense } from 'react'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { ReportTldrCard } from '@/modules/report-view/report-tldr-card'
@@ -23,15 +21,15 @@ import { ClientEnv } from '@/env/client'
 import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-card/report-latest-news-server'
 import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-card/report-latest-news-card-skeleton'
 import { PROMPT_OPTIONS } from '@/lib/constants'
+import { createCaller } from '@/_trpc/server/caller'
 
 type Props = PageProps<'/reports/[id]'>
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 const getCachedReportById = cache(async (id: ReportDTO['id']) => {
-    return await Effect.runPromise(
-        getReportById(id).pipe(Effect.catchAll(() => Effect.succeed(null)))
-    )
+    const caller = await createCaller()
+    return await caller.getReportById({ id }).catch(() => null)
 })
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -113,7 +113,7 @@ export default async function ReportsIdPage(props: Props) {
                     { name: report.stock, url: META_URL },
                 ]}
             />
-            <main className="max-w-7xl mx-auto px-6 py-10 space-y-8">
+            <main className="main-container-lg">
                 <div className="flex flex-col gap-6">
                     <Link href="/reports" prefetch={false} className="w-fit">
                         <Button variant="outline" size="sm" className="rounded-none">

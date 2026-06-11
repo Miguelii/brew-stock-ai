@@ -62,7 +62,7 @@ export default async function ChangelogEntryPage({ params }: PageProps<'/changel
             />
 
             <main className="flex-1">
-                <div className="max-w-3xl mx-auto px-6 py-12 lg:py-16">
+                <div className="main-container">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}

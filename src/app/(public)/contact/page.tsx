@@ -40,7 +40,7 @@ export default async function ContactPage() {
                 ]}
             />
 
-            <main className="max-w-5xl mx-auto px-6 py-12 lg:pb-24">
+            <main className="main-container">
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold tracking-tight">Contact</h1>
                     <p className="text-sm text-muted-foreground">

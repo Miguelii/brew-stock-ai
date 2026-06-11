@@ -39,7 +39,7 @@ export default function EducationHubPage() {
                 ]}
             />
 
-            <main className="flex-1">
+            <main className="flex-1 main-container-lg">
                 <section className="border-b border-border bg-card/50">
                     <div className="max-w-7xl mx-auto px-6 py-12 lg:py-12">
                         <motion.div

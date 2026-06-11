@@ -39,7 +39,7 @@ export default function ChangelogPage() {
                 ]}
             />
 
-            <main className="max-w-3xl mx-auto px-6 py-12 lg:py-16">
+            <main className="main-container">
                 <motion.header
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

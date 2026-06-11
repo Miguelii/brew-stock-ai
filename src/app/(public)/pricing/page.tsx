@@ -63,7 +63,7 @@ export default function PricingPage() {
                 ]}
             />
 
-            <main className="max-w-7xl mx-auto px-6 py-12 space-y-8 lg:pb-24">
+            <main className="main-container-lg">
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}

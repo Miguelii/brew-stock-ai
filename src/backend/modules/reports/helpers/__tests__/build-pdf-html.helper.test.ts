@@ -1,3 +1,5 @@
+// oxlint-disable max-lines
+
 import { describe, it, expect } from 'vitest'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type { StockData, StockFinancials, StockFundamentals } from '@/types/ReportDTO'

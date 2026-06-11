@@ -4,6 +4,7 @@ import { sanitizeReportHtml } from '@/backend/modules/reports/helpers/sanitize-r
 describe('sanitizeReportHtml', () => {
     it('returns empty string for nullish input', () => {
         expect(sanitizeReportHtml(null)).toBe('')
+        // oxlint-disable-next-line unicorn/no-useless-undefined
         expect(sanitizeReportHtml(undefined)).toBe('')
         expect(sanitizeReportHtml('')).toBe('')
     })

@@ -12,6 +12,7 @@ describe('isSuperAdmin', () => {
     })
 
     it('returns false when the email is missing', () => {
+        // oxlint-disable-next-line unicorn/no-useless-undefined
         expect(isSuperAdmin(undefined)).toBe(false)
         expect(isSuperAdmin('')).toBe(false)
     })

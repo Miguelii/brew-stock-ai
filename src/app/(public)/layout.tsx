@@ -4,7 +4,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
     return (
         <>
             <PublicHeader />
-            {children}
+            <div className="pt-8 lg:pt-12">{children}</div>
         </>
     )
 }

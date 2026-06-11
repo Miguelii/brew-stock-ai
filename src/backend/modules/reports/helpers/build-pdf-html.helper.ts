@@ -9,7 +9,9 @@ import {
     fmtPrice,
     fmtDate,
     fmtEstimatePeriod,
+    escapeHtml,
 } from '@/lib/formatters'
+import { sanitizeReportHtml } from '@/backend/modules/reports/helpers/sanitize-report-html.helper'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type {
     ReportDTO,
@@ -233,7 +235,7 @@ function buildEarningsHistoryBlock(history: StockFundamentals['earningsHistory']
                     : `<span style="font-weight:600;${beat ? 'color:#16a34a;' : 'color:#ef4444;'}">${beat ? 'Beat' : 'Miss'} ${fmtPct(q.surprisePercent)}</span>`
             return `
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px solid #eee;">
-                <span style="color:#909097;">${q.quarter ?? q.period}</span>
+                <span style="color:#909097;">${escapeHtml(q.quarter ?? q.period)}</span>
                 <span style="color:#262626;">Act ${fmtNum(q.epsActual)} / Est ${fmtNum(q.epsEstimate)} &nbsp; ${badge}</span>
             </div>`
         })
@@ -257,14 +259,14 @@ function buildFundamentalsSection(f: StockFundamentals): string {
                     : 'N/A'
             return (
                 tile(
-                    `${fmtEstimatePeriod(e.period)} EPS`,
+                    `${escapeHtml(fmtEstimatePeriod(e.period))} EPS`,
                     epsValue,
                     'fin-tile',
                     true,
                     e.epsGrowth
                 ) +
                 tile(
-                    `${fmtEstimatePeriod(e.period)} Revenue`,
+                    `${escapeHtml(fmtEstimatePeriod(e.period))} Revenue`,
                     revValue,
                     'fin-tile',
                     true,
@@ -319,7 +321,7 @@ function buildSigDevSection(sigDev: StockSigDev): string {
     <div class="extra-section">
         <div class="extra-section-title">What's Happening Now</div>
         <div class="extra-section-subtitle">The most notable recent event our AI identified for this company</div>
-        <p class="sig-dev-headline">${sigDev.headline}</p>
+        <p class="sig-dev-headline">${escapeHtml(sigDev.headline)}</p>
         ${sigDev.date ? `<span class="sig-dev-date">${fmtDate(sigDev.date)}</span>` : ''}
     </div>`
 }
@@ -334,9 +336,9 @@ function buildNewsSection(reports: StockReports[]): string {
                 .map(
                     (item) => `
             <li class="news-item">
-                <p class="news-headline">${item.title ?? ''}</p>
-                <p class="news-text">${item.reportTitle ?? ''}</p>
-                <span class="news-meta">${item.provider ?? ''}${item.reportDate ? ` · ${fmtDate(item.reportDate, 'short')}` : ''}</span>
+                <p class="news-headline">${escapeHtml(item.title)}</p>
+                <p class="news-text">${escapeHtml(item.reportTitle)}</p>
+                <span class="news-meta">${escapeHtml(item.provider)}${item.reportDate ? ` · ${fmtDate(item.reportDate, 'short')}` : ''}</span>
             </li>`
                 )
                 .join('')}
@@ -578,8 +580,8 @@ export function buildPdfHtml(params: {
 
     <div class="title-section">
         <div>
-            <div class="stock-ticker">${stock}</div>
-            <div class="report-type">${label}</div>
+            <div class="stock-ticker">${escapeHtml(stock)}</div>
+            <div class="report-type">${escapeHtml(label)}</div>
         </div>
         <div class="sentiment-badge">
             <span class="sentiment-label">${isRiskAnalysis ? 'Risk Level' : 'Sentiment'}</span>
@@ -610,7 +612,7 @@ export function buildPdfHtml(params: {
     <hr class="divider" />
 
     <div class="analysis">
-        ${ai_response}
+        ${sanitizeReportHtml(ai_response)}
     </div>
 
     ${stockData?.sig_dev?.headline ? buildSigDevSection(stockData.sig_dev) : ''}

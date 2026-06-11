@@ -119,7 +119,7 @@ export default function FaqPage() {
             />
             <FAQSchema questions={ALL_QUESTIONS} />
 
-            <main className="max-w-5xl mx-auto px-6 py-12 lg:pb-24">
+            <main className="main-container">
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}

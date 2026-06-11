@@ -116,6 +116,64 @@ describe('buildPdfHtml', () => {
     })
 })
 
+describe('buildPdfHtml escaping and sanitization', () => {
+    it('escapes HTML in the user-provided stock string', () => {
+        const html = buildPdfHtml({ ...baseParams, stock: '<img src=x onerror=alert(1)>' })
+        expect(html).not.toContain('<img')
+        expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;')
+    })
+
+    it('escapes HTML in the sig dev headline', () => {
+        const stockData: StockData = {
+            id: 'AAPL',
+            reports: null,
+            scores: null,
+            sig_dev: { headline: '<script>alert(1)</script>Apple event', date: '2024-06-10' },
+            financials: null,
+            fundamentals: null,
+        }
+        const html = buildPdfHtml({ ...baseParams, stockData })
+        expect(html).not.toContain('<script>alert(1)</script>')
+        expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;Apple event')
+    })
+
+    it('escapes HTML in news titles and providers', () => {
+        const stockData: StockData = {
+            id: 'AAPL',
+            reports: [
+                {
+                    title: '<script>alert(1)</script>Q3',
+                    provider: '<b onmouseover=x>Reuters</b>',
+                    reportDate: '2024-06-12',
+                    reportTitle: '"><svg onload=alert(1)>',
+                },
+            ],
+            scores: null,
+            sig_dev: null,
+            financials: null,
+            fundamentals: null,
+        }
+        const html = buildPdfHtml({ ...baseParams, stockData })
+        expect(html).not.toContain('<script>')
+        expect(html).not.toContain('<svg')
+        expect(html).not.toContain('onmouseover=x>')
+        expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;Q3')
+    })
+
+    it('strips script tags and unsafe attributes from the AI response but keeps formatting', () => {
+        const html = buildPdfHtml({
+            ...baseParams,
+            ai_response:
+                '<h2>Analysis</h2><p onclick="alert(1)">Apple is <strong>strong</strong>.</p><script>alert(1)</script><a href="javascript:alert(1)">link</a>',
+        })
+        expect(html).not.toContain('<script>alert(1)</script>')
+        expect(html).not.toContain('onclick')
+        expect(html).not.toContain('javascript:alert(1)')
+        expect(html).toContain('<h2>Analysis</h2>')
+        expect(html).toContain('<strong>strong</strong>')
+    })
+})
+
 describe('buildFinancialsSection', () => {
     const baseFinancials: StockFinancials = {
         currentPrice: 189.5,

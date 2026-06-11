@@ -13,6 +13,14 @@ html {
     scroll-behavior: smooth !important;
 }
 
+.main-container {
+    @apply max-w-5xl mx-auto px-6 py-6 md:py-10 space-y-8 lg:pb-24;
+}
+
+.main-container-lg {
+    @apply max-w-7xl mx-auto px-6 py-6 md:py-10 space-y-8 lg:pb-24;
+}
+
 @layer base {
     ::-webkit-scrollbar {
         width: 5px;

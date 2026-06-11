@@ -43,7 +43,7 @@ export default async function TokensPage({ searchParams }: Props) {
                     { name: META_TITLE, url: META_URL },
                 ]}
             />
-            <main className="max-w-7xl mx-auto px-6 py-10 space-y-8">
+            <main className="main-container-lg">
                 <div className="space-y-1">
                     <h1 className="text-2xl font-bold tracking-tight text-foreground">
                         Buy Credits

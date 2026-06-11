@@ -64,6 +64,22 @@ export const fmtEstimatePeriod = (period: string): string =>
     ESTIMATE_PERIOD_LABELS[period] ?? period
 
 /**
+ * Escape `&`, `<`, `>`, `"` and `'` for safe interpolation into HTML.
+ *
+ * @param value - The raw string to escape.
+ * @returns The escaped string, or `''` when nullish.
+ */
+export const escapeHtml = (value: string | null | undefined): string =>
+    value == null
+        ? ''
+        : String(value)
+              .replaceAll('&', '&amp;')
+              .replaceAll('<', '&lt;')
+              .replaceAll('>', '&gt;')
+              .replaceAll('"', '&quot;')
+              .replaceAll("'", '&#39;')
+
+/**
  * Format a multiple with a trailing `x` (e.g. `12.5 → "12.5x"`).
  *
  * @param n - The multiple to format.

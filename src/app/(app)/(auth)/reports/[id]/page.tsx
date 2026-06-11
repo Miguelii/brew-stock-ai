@@ -22,6 +22,7 @@ import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news
 import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-card/report-latest-news-card-skeleton'
 import { PROMPT_OPTIONS } from '@/lib/constants'
 import { createCaller } from '@/_trpc/server/caller'
+import { sanitizeReportHtml } from '@/backend/modules/reports/helpers/sanitize-report-html.helper'
 
 type Props = PageProps<'/reports/[id]'>
 
@@ -29,7 +30,12 @@ const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 const getCachedReportById = cache(async (id: ReportDTO['id']) => {
     const caller = await createCaller()
-    return await caller.getReportById({ id }).catch(() => null)
+    const response = await caller.getReportById({ id }).catch(() => null)
+    // ai_response is rendered via dangerouslySetInnerHTML — sanitize at the trust boundary
+    if (response?.report?.ai_response) {
+        response.report.ai_response = sanitizeReportHtml(response.report.ai_response)
+    }
+    return response
 })
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

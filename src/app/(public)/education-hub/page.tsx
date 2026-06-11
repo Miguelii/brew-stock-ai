@@ -39,9 +39,9 @@ export default function EducationHubPage() {
                 ]}
             />
 
-            <main className="flex-1 main-container-lg">
+            <main className="flex-1 main-container ">
                 <section className="border-b border-border bg-card/50">
-                    <div className="max-w-7xl mx-auto px-6 py-12 lg:py-12">
+                    <div className="pb-12 lg:pb-12">
                         <motion.div
                             initial={{ opacity: 0, y: 24 }}
                             animate={{ opacity: 1, y: 0 }}

@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
 
 const NAV_LINKS = [
-    { label: 'Pricing', href: '/pricing' },
     { label: 'Reports', href: '/example-report' },
+    { label: 'Pricing', href: '/pricing' },
     { label: 'Education Hub', href: '/education-hub' },
 ]
 

@@ -56,7 +56,7 @@ export default function ExampleReport() {
             <main className="overflow-x-hidden w-full">
                 {/* Hero — Editorial Split */}
                 <section className="main-container-lg border-b border-border">
-                    <div className="px-6 py-24 lg:py-32">
+                    <div className="px-6 pb-24 lg:pb-32">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                             <motion.div
                                 initial={{ opacity: 0, y: 28 }}

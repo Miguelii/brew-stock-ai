@@ -4,7 +4,7 @@ import { MessageSquareIcon } from 'lucide-react'
 import { AdminStatCard } from '@/modules/admin/admin-stat-card'
 import { fetchAdminFeedback } from '@/modules/admin/admin-queries'
 import { parseReportDate } from '@/lib/formatters'
-import type { AdminFeedback } from '@/backend/modules/admin/get-admin-feedback'
+import type { AdminFeedback } from '@/backend/modules/admin/services/get-admin-feedback.service'
 
 type Props = {
     email: string

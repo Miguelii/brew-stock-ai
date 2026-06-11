@@ -12,7 +12,7 @@ export async function ReportLatestNewsServer({ ticker }: Props) {
 
     if (ticker) {
         const caller = await createCaller()
-        news = (await caller.getLatestNews({ ticker }).catch(() => null)) ?? []
+        news = (await caller.finnhub.getLatestNews({ ticker }).catch(() => null)) ?? []
     }
 
     return <ReportLatestNewsCard news={news} />

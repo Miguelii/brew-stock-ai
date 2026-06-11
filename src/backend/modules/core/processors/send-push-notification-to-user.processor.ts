@@ -6,9 +6,9 @@ import {
 } from '@/backend/lib/errors'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { Effect } from 'effect'
-import { setupVapid } from '../helpers/setup-valid.helper'
-import { sendToSubscriptions } from './send-to-subscriptions.processor'
-import { fetchSubscriptions } from './fetch-subscriptions.processor'
+import { setupVapid } from '@/backend/modules/core/helpers/setup-valid.helper'
+import { sendToSubscriptions } from '@/backend/modules/core/processors/send-to-subscriptions.processor'
+import { selectPushSubscriptions } from '@/backend/modules/core/repositories/push-subscriptions.repository'
 
 /**
  * Send a push notification to a specific user by ID.
@@ -31,7 +31,7 @@ export const sendPushNotificationToUser = Effect.fn('sendPushNotificationToUser'
             new CreateSbClientError({ cause, error_hash: ErrorCode.PUSH_SEND_TO_USER_SB_CLIENT }),
     })
 
-    const { data: rows, error } = yield* fetchSubscriptions(supabase, userId)
+    const { data: rows, error } = yield* selectPushSubscriptions(supabase, userId)
 
     if (error)
         return yield* new GetPushSubscriptionError({

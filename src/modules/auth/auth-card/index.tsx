@@ -38,8 +38,8 @@ export function AuthCard({ returnTo }: Props) {
     const [pending, startTransition] = useTransition()
 
     const emailForm = useEmailForm()
-    const sendOtp = trpcClient.sendOtp.useMutation()
-    const verifyOtp = trpcClient.verifyOtp.useMutation()
+    const sendOtp = trpcClient.auth.sendOtp.useMutation()
+    const verifyOtp = trpcClient.auth.verifyOtp.useMutation()
 
     const onOAuthClick = () => {
         const url = returnTo

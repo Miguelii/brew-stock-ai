@@ -6,7 +6,7 @@ import {
     MoatAnalysisPrompt,
     RiskAnalysisPrompt,
     GrowthPotentialAnalysisPrompt,
-} from '../prompts/analysis.prompt'
+} from '@/backend/modules/analysis/prompts/analysis.prompt'
 
 export const PROMPTS_MAP: Record<string, string> = {
     [PROMPT_TYPES.STOCK_ANALYSIS.type]: WallStreetStyleStockAnalysisPrompt,

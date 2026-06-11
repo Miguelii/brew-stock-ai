@@ -3,7 +3,7 @@ import { trpcClient } from '@/_trpc/client'
 import { useEffect } from 'react'
 
 export const useGetReports = () => {
-    const { data, isLoading, error } = trpcClient.getReports.useQuery(undefined, {
+    const { data, isLoading, error } = trpcClient.reports.getAll.useQuery(undefined, {
         staleTime: 1000 * 60 * 1, // 1m
         gcTime: 1000 * 60 * 1, // 1m
         refetchInterval: 1000 * 20, // 20s

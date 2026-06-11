@@ -72,7 +72,7 @@ type Props = {
 export function TokenPackages({ showFree = false, showBuyButton = true, className }: Props) {
     const [pending, startTransition] = useTransition()
 
-    const checkout = trpcClient.createCheckoutSession.useMutation({
+    const checkout = trpcClient.credits.createCheckoutSession.useMutation({
         onSuccess: (url) => {
             startTransition(() => {
                 window.location.href = url

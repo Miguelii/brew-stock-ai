@@ -15,7 +15,7 @@ export async function StockPriceChartServer({ ticker, low, high }: Props) {
 
     if (ticker) {
         const caller = await createCaller()
-        data = await caller.priceHistory({ ticker }).catch(() => [])
+        data = await caller.yahoo.getPriceHistory({ ticker }).catch(() => [])
     }
 
     return <StockPriceChart data={data} low={low} high={high} />

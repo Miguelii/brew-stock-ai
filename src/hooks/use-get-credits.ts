@@ -14,7 +14,7 @@ export const useGetCredits = (props: Props = {}) => {
         isSuccess,
         data: credits = 0,
         error,
-    } = trpcClient.getCredits.useQuery(undefined, {
+    } = trpcClient.credits.get.useQuery(undefined, {
         staleTime: 0,
         gcTime: 0,
         enabled: enabled ?? undefined,

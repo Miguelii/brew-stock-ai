@@ -50,36 +50,64 @@ export const myService = Effect.fn('myService')(function* (param: string) {
 - Never use try-catch inside `Effect.gen` — Effect failures are not thrown
 - Supabase queries always check both the `Effect.tryPromise` catch AND the `error` field returned
 
-### tRPC — exposing a service
-Each tRPC route lives in its module's `procedures/` folder as
-`src/backend/modules/<module>/procedures/<name>.procedure.ts`. The `Effect.fn(...)` service stays
-**private (never exported)**; the file exports a single screaming-snake constant —
-`<NAME>_PROTECTED_PROCEDURE` or `<NAME>_PUBLIC_PROCEDURE` — built with the `runEffect` helper:
+### tRPC — controllers, services, repositories (NestJS-style layering)
+Each tRPC route is a **controller**: a thin binding in
+`src/backend/modules/<module>/controllers/<name>.controller.ts` that delegates to an exported
+**service** in `services/<name>.service.ts`. Data access lives in **repositories**
+(`repositories/<table>.repository.ts`). Controllers contain **no business logic and no Supabase
+queries** — only the zod input schema, the `runEffect` call, and the error→TRPC-code `Match` map.
 
 ```typescript
-// src/backend/modules/credits/procedures/get-credits.procedure.ts
+// 1) src/backend/modules/credits/services/get-credits.service.ts — exported business logic
 import 'server-only'
-import { Effect, Match } from 'effect'
+import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, GetCreditsError } from '@/backend/lib/errors'
+import { CreateSbClientError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
-import { z } from 'zod'
+import { selectCredits } from '@/backend/modules/credits/repositories/credits.repository'
 import type { User } from '@supabase/supabase-js'
 
-// 1) Private Effect service — NEVER exported from a procedure file
-const getCredits = Effect.fn('getCredits')(function* (user: User) {
+export const getCredits = Effect.fn('getCredits')(function* (user: User) {
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.TOKENS_GET_SB_CLIENT }),
     })
-    // ...query with user.id...
-})
 
-// 2) Exported procedure constant — <NAME>_<PROTECTED|PUBLIC>_PROCEDURE
-export const GET_CREDITS_PROTECTED_PROCEDURE = protectedProcedure
+    return yield* selectCredits(supabase, user.id)
+})
+```
+
+```typescript
+// 2) src/backend/modules/credits/repositories/credits.repository.ts — exported data access
+//    Repositories RECEIVE the Supabase client as a parameter — the service decides which key to use.
+export const selectCredits = Effect.fn('selectCredits')(function* (
+    supabase: SupabaseClient,
+    userId: string
+) {
+    const { data, error } = yield* Effect.tryPromise({
+        try: () =>
+            supabase.from('user_credits').select('credits').eq('user_id', userId).maybeSingle(),
+        catch: (cause) => new GetCreditsError({ cause, error_hash: ErrorCode.TOKENS_GET_FETCH }),
+    })
+
+    if (error) {
+        return yield* new GetCreditsError({ cause: error, error_hash: ErrorCode.TOKENS_GET_FETCH })
+    }
+
+    return (data?.credits ?? 0) as number
+})
+```
+
+```typescript
+// 3) src/backend/modules/credits/controllers/get-credits.controller.ts — thin tRPC binding
+import 'server-only'
+import { Match } from 'effect'
+import { protectedProcedure } from '@/_trpc/server'
+import { runEffect } from '@/_trpc/utils'
+import { getCredits } from '@/backend/modules/credits/services/get-credits.service'
+
+export const GET_CREDITS_PROTECTED_CONTROLLER = protectedProcedure
     .query(({ ctx }) =>                                 // or .input(z.object({...})).mutation(({ input, ctx }) => ...)
         runEffect(getCredits(ctx.user), 'getCredits', (error) =>
             Match.value(error).pipe(
@@ -91,26 +119,38 @@ export const GET_CREDITS_PROTECTED_PROCEDURE = protectedProcedure
     )
 ```
 
-Then register the exported constant in `src/_trpc/api/index.ts`, grouped by module:
+Each module composes its controllers in a router file at the module root, and `appRouter`
+namespaces the module routers:
 
 ```typescript
-import { GET_CREDITS_PROTECTED_PROCEDURE } from '@/backend/modules/credits/procedures/get-credits.procedure'
+// 4) src/backend/modules/credits/credits.router.ts — module composition root
+import 'server-only'
+import { router } from '@/_trpc/server'
+import { GET_CREDITS_PROTECTED_CONTROLLER } from '@/backend/modules/credits/controllers/get-credits.controller'
 
+export const CREDITS_ROUTER = router({
+    get: GET_CREDITS_PROTECTED_CONTROLLER,
+    // ...
+})
+
+// 5) src/_trpc/api/index.ts — appRouter composes module routers (namespaced)
 export const appRouter = router({
-    /** CREDITS **/
-    getCredits: GET_CREDITS_PROTECTED_PROCEDURE,
+    credits: CREDITS_ROUTER,   // → trpcClient.credits.get.useQuery()
+    reports: REPORTS_ROUTER,   // → trpcClient.reports.create.useMutation()
     // ...
 })
 ```
 
 #### Rules
-- Procedure files **must** be named `src/backend/modules/<module>/procedures/<name>.procedure.ts`.
-- The `Effect.fn(...)` service is a **private `const` — never exported** from a procedure file. Reusable Effect functions needed outside tRPC (e.g. Trigger.dev jobs) go in `*.service.ts` / `*.processor.ts` and **are** exported.
-- Each procedure file exports exactly **one** constant in `UPPER_SNAKE_CASE`: `<NAME>_PROTECTED_PROCEDURE` or `<NAME>_PUBLIC_PROCEDURE`.
+- Controller files **must** be named `src/backend/modules/<module>/controllers/<name>.controller.ts` and export exactly **one** constant: `<NAME>_PROTECTED_CONTROLLER` or `<NAME>_PUBLIC_CONTROLLER`.
+- Controllers are **thin**: zod input schema + `runEffect(...)` + `Match` error map. No `Effect.fn`, no business logic, no Supabase access.
+- Services (`services/<name>.service.ts`) are **exported** `Effect.fn(...)` functions holding the business logic. They create the Supabase client (choosing publishable vs service-role key) and pass it into repositories.
+- Repositories (`repositories/<table>.repository.ts`) are **exported** `Effect.fn(...)` functions that receive `supabase: SupabaseClient` as their first parameter and wrap queries with the dual error check (catch + `error` field). One file per table/domain. **No cross-module imports.**
+- **Dependency direction**: controller → service → (repository | processor | helper). Cross-module imports go through `services/` or `processors/` only — never another module's controller or repository.
 - Use `protectedProcedure` (from `@/_trpc/server`) for authenticated routes — `ctx.user` is guaranteed; pass it into the service. Auth is enforced by the middleware, so **never** map `UnauthenticatedError` / `GetUserError` in the `Match`.
 - Use `publicProcedure` for unauthenticated routes (auth flows, public forms).
-- `runEffect` comes from `@/_trpc/utils`; the `Match.value(error).pipe(… Match.exhaustive)` mapping lives in the procedure file.
-- Register every exported constant in `src/_trpc/api/index.ts` under `appRouter`, grouped by module with `/** MODULE **/` comments.
+- `runEffect` comes from `@/_trpc/utils`; the `Match.value(error).pipe(… Match.exhaustive)` mapping lives in the controller file.
+- Register controllers in the module's `<module>.router.ts` (exporting `<MODULE>_ROUTER`), and register that router under its namespace in `src/_trpc/api/index.ts`.
 
 `protectedProcedure` runs `getSession()` once per request (cached) and injects `ctx.user`: it throws `401` when there is no user and `500` on infrastructure failure. Services still create their own Supabase client, so each one controls whether it uses the publishable or service-role key.
 
@@ -121,26 +161,31 @@ Use the caller — no HTTP overhead:
 import { createCaller } from '@/_trpc/server/caller'
 
 const caller = await createCaller()
-const data = await caller.myProcedure({ param: 'value' })
+const data = await caller.reports.getById({ id })
 ```
 
 ### Calling from Client Components
-Use `trpc.<procedure>.useMutation()` or `trpc.<procedure>.useQuery()`:
+Use `trpcClient.<module>.<procedure>.useMutation()` or `trpcClient.<module>.<procedure>.useQuery()`:
 
 ```typescript
-const mutation = trpc.myProcedure.useMutation()
+const mutation = trpcClient.reports.create.useMutation()
 const promise: Promise<ReturnType> = mutation.mutateAsync({ param: 'value' })
 ```
 
 Always assign `mutateAsync` to an explicitly typed `Promise<T>` variable before passing to Effect to avoid TypeScript deep instantiation errors.
 
 ### Backend module layout
-All backend code lives under `src/backend/modules/<module>/`, split by responsibility:
-- `procedures/<name>.procedure.ts` — tRPC-exposed; private `Effect.fn` + exported `<NAME>_<PROTECTED|PUBLIC>_PROCEDURE` constant.
-- `processors/<name>.processor.ts` — internal pipeline / business steps reused by procedures and Trigger.dev jobs (exported).
-- `services/<name>.service.ts` — reusable Effect services used outside tRPC, e.g. the Trigger.dev runtime where there is no user session (exported).
+All backend code lives under `src/backend/modules/<module>/`, split by responsibility (NestJS-style):
+- `<module>.router.ts` — module composition root; exports `<MODULE>_ROUTER` composing the module's controllers. Registered under its namespace in `src/_trpc/api/index.ts`.
+- `controllers/<name>.controller.ts` — thin tRPC binding (zod schema + `runEffect` + `Match` error map); exports `<NAME>_<PROTECTED|PUBLIC>_CONTROLLER`. No logic, no Supabase.
+- `services/<name>.service.ts` — exported `Effect.fn` business logic; creates the Supabase client and orchestrates repositories/processors/helpers. The cross-module entry point (also used by Trigger.dev jobs).
+- `repositories/<table>.repository.ts` — exported `Effect.fn` data access; receives `supabase: SupabaseClient` as a parameter. One file per table/domain. Never imported across modules.
+- `processors/<name>.processor.ts` — multi-step pipeline steps reused by services and Trigger.dev jobs (exported).
+- `jobs/<name>.job.ts` — Trigger.dev tasks owned by this module (each `jobs/` dir must be listed in `trigger.config.ts` `dirs`).
 - `helpers/<name>.helper.ts` — pure helpers (fetchers, builders, mappers).
 - `constants/index.ts`, `types/index.ts` — module constants and types.
+
+**Dependency direction**: controller → service → (repository | processor | helper); jobs → services/processors of their own module. Cross-module imports only via `services/` or `processors/` — never another module's controller or repository.
 
 Shared error classes live in `src/backend/lib/errors.ts`; their `ErrorCode` values in `src/backend/lib/error-codes.ts`. tRPC infra lives in `src/_trpc/`: `server` (procedures, router, auth middleware), `utils` (`runEffect`), `context`, `api` (`appRouter`), and `server/caller` (`createCaller`).
 

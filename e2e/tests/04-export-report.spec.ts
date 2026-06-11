@@ -24,7 +24,7 @@ test.describe('Export report', () => {
         await mockGetLatestNews(page)
 
         // Delay the export response so we can observe the loading state
-        await page.route('**/api/trpc/exportReport**', async (route) => {
+        await page.route('**/api/trpc/reports.export**', async (route) => {
             // oxlint-disable-next-line no-promise-executor-return
             await new Promise((resolve) => setTimeout(resolve, 1500))
             await route.fulfill({

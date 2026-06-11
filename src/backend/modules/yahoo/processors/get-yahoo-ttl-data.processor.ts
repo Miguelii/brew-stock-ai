@@ -4,6 +4,7 @@ import { getYahooData } from '@/backend/modules/yahoo/processors/get-yahoo-data.
 import { getYahooTicker } from '@/backend/modules/yahoo/processors/get-yahoo-ticker.processor'
 import type { GetYahooDataResult, YahooTtlResult } from '@/backend/modules/yahoo/types'
 import { YAHOO_DATA_TTL } from '@/backend/modules/yahoo/constants'
+import { selectStockDataWithTtl } from '@/backend/modules/yahoo/repositories/stock-data.repository'
 
 export const getYahooTtlData = Effect.fn('getYahooTtlData')(function* (
     stockSymbol: string,
@@ -20,15 +21,7 @@ export const getYahooTtlData = Effect.fn('getYahooTtlData')(function* (
                     }))
                 )
 
-            return Effect.tryPromise({
-                try: () =>
-                    supabaseClient
-                        .from('stock_data')
-                        .select('*, last_update_at')
-                        .eq('id', yahoo_ticker)
-                        .maybeSingle(),
-                catch: (cause) => cause,
-            }).pipe(
+            return selectStockDataWithTtl(supabaseClient, yahoo_ticker).pipe(
                 Effect.flatMap((res) => {
                     const row = res.data
                     const isStale =

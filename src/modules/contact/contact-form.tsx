@@ -29,7 +29,7 @@ type Props = {
 
 export function ContactForm({ name, email }: Props) {
     const form = useContactForm({ name, email })
-    const mutation = trpcClient.submitFeedback.useMutation()
+    const mutation = trpcClient.core.submitFeedback.useMutation()
 
     const onSubmit = async (values: ContactFormValues) => {
         try {

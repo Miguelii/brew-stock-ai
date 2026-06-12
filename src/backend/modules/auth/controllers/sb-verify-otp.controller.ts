@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Match } from 'effect'
 import { z } from 'zod'
 import { SB_OTP_TOKEN_LENGTH } from '@/lib/constants'

@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Match } from 'effect'
 import { z } from 'zod'
 import { publicProcedure } from '@/_trpc/server'

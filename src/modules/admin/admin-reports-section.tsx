@@ -1,5 +1,3 @@
-import 'server-only'
-
 import Link from 'next/link'
 import { FileTextIcon, CheckCircle2Icon, XCircleIcon, Loader2Icon } from 'lucide-react'
 import {

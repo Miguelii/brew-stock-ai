@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Match } from 'effect'
 import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 import { protectedProcedure } from '@/_trpc/server'

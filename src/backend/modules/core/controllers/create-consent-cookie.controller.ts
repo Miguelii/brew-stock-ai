@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Match } from 'effect'
 import { publicProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'

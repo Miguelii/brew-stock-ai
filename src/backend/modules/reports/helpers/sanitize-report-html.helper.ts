@@ -1,5 +1,3 @@
-import 'server-only'
-
 import sanitizeHtml from 'sanitize-html'
 
 const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {

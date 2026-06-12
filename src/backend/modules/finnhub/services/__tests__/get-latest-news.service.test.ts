@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import { getLatestNewsService } from '@/backend/modules/finnhub/services/get-latest-news.service'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { fetchLatestNewsRawMock, serverEnvMock } = vi.hoisted(() => ({
     fetchLatestNewsRawMock: vi.fn(),
@@ -11,13 +12,6 @@ vi.mock('@/env/server', () => ({ ServerEnv: serverEnvMock }))
 vi.mock('@/backend/modules/finnhub/processors/fetch-latest-news.processor', () => ({
     fetchLatestNewsRaw: fetchLatestNewsRawMock,
 }))
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('getLatestNewsService (raw)', () => {
     beforeEach(() => {

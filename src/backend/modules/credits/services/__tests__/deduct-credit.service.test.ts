@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { deductCredit } from '@/backend/modules/credits/services/deduct-credit.service'
+import { failureTag } from '@/backend/__tests__/utils'
 
 // The processor only reaches createSbServerClient when no client is passed;
 // every test passes one, so the env-validating module is mocked away.
@@ -9,13 +10,6 @@ vi.mock('@/lib/utils.server', () => ({ createSbServerClient: vi.fn() }))
 
 const makeClient = (rpc: ReturnType<typeof vi.fn>): SupabaseClient =>
     ({ rpc }) as unknown as SupabaseClient
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('deductCredit', () => {
     it('returns the new balance and calls the RPC with a default amount of 1', async () => {

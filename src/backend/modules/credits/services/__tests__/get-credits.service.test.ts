@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { getCredits } from '@/backend/modules/credits/services/get-credits.service'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { createSbServerClientMock, selectCreditsMock } = vi.hoisted(() => ({
     createSbServerClientMock: vi.fn(),
@@ -15,13 +16,6 @@ vi.mock('@/backend/modules/credits/repositories/credits.repository', () => ({
 
 const USER = { id: 'user-1' } as User
 const SUPABASE = { from: vi.fn() }
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('getCredits', () => {
     beforeEach(() => {

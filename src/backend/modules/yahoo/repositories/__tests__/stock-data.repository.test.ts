@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import {
     selectStockDataWithTtl,
     upsertStockData,
 } from '@/backend/modules/yahoo/repositories/stock-data.repository'
 import type { GetYahooDataResult } from '@/backend/modules/yahoo/types'
+import { failureTag } from '@/backend/__tests__/utils'
 
 vi.mock('@trigger.dev/sdk', () => ({ logger: { log: vi.fn() } }))
 
@@ -16,13 +17,6 @@ const DATA: GetYahooDataResult = {
     financials: null,
     fundamentals: null,
 } as unknown as GetYahooDataResult
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('selectStockDataWithTtl', () => {
     it('returns the raw response with the TTL column', async () => {

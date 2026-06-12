@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import { sbVerifyOtp } from '@/backend/modules/auth/services/sb-verify-otp.service'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { createSbServerClientMock, loggerMock } = vi.hoisted(() => ({
     createSbServerClientMock: vi.fn(),
@@ -11,13 +12,6 @@ vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClien
 vi.mock('@/lib/logger', () => ({ Logger: loggerMock }))
 
 const verifyOtp = vi.fn()
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('sbVerifyOtp', () => {
     beforeEach(() => {

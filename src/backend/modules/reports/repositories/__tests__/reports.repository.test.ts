@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
-import type { SupabaseClient } from '@supabase/supabase-js'
+import { Effect } from 'effect'
 import { ReportStatus } from '@/types/ReportDTO'
+import { failureTag, asClient } from '@/backend/__tests__/utils'
 import {
     insertReport,
     markReportFailed,
@@ -12,16 +12,6 @@ import {
     selectUserReports,
     updateReportWithAnalysis,
 } from '@/backend/modules/reports/repositories/reports.repository'
-
-const asClient = (from: Record<string, unknown>): SupabaseClient =>
-    ({ from: () => from }) as unknown as SupabaseClient
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('insertReport', () => {
     const makeInsertChain = (result: { data: unknown; error: unknown }) => {

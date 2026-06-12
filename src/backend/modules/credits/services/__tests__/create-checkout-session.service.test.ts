@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { createCheckoutSession } from '@/backend/modules/credits/services/create-checkout-session.service'
 import { TOKEN_PACKAGES } from '@/backend/modules/credits/constants'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const {
     createSbServerClientMock,
@@ -40,13 +41,6 @@ const makeSupabase = (selectResult: { data: unknown; error: unknown }) => {
     const updateEq = vi.fn().mockResolvedValue({ error: null })
     const update = vi.fn(() => ({ eq: updateEq }))
     return { update, supabase: { from: () => ({ select, update }) } }
-}
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
 }
 
 describe('createCheckoutSession', () => {

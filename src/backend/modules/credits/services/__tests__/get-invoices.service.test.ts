@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { getInvoices } from '@/backend/modules/credits/services/get-invoices.service'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { createSbServerClientMock, selectStripeCustomerIdMock, sessionsListMock } = vi.hoisted(
     () => ({
@@ -38,13 +39,6 @@ const PAID_SESSION = {
 
 const listResolving = (sessions: unknown[]) =>
     sessionsListMock.mockReturnValue({ autoPagingToArray: () => Promise.resolve(sessions) })
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('getInvoices', () => {
     beforeEach(() => {

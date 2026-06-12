@@ -1,20 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import { createConsentCookie } from '@/backend/modules/core/services/create-consent-cookie.service'
 import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/lib/constants'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { cookiesMock } = vi.hoisted(() => ({ cookiesMock: vi.fn() }))
 
 vi.mock('next/headers', () => ({ cookies: cookiesMock }))
 
 const cookieStore = { set: vi.fn(), delete: vi.fn() }
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('createConsentCookie', () => {
     beforeEach(() => {

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import { sendPushNotificationToUser } from '@/backend/modules/core/processors/send-push-notification-to-user.processor'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { createSbAdminClientMock, setupVapidMock, selectSubscriptionsMock, sendToSubsMock } =
     vi.hoisted(() => ({
@@ -23,13 +24,6 @@ vi.mock('@/backend/modules/core/processors/send-to-subscriptions.processor', () 
 
 const SUPABASE = { from: vi.fn() }
 const ROWS = [{ subscription: { endpoint: 'https://push.example' } }]
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('sendPushNotificationToUser', () => {
     beforeEach(() => {

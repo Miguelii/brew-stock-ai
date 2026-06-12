@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import { getAdminUsers } from '@/backend/modules/admin/services/get-admin-users.service'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { createSbAdminClientMock, isSuperAdminMock, listUsersMock } = vi.hoisted(() => ({
     createSbAdminClientMock: vi.fn(),
@@ -15,13 +16,6 @@ vi.mock('@/backend/modules/admin/helpers/is-super-admin.helper', () => ({
 vi.mock('@/backend/modules/admin/repositories/admin.repository', () => ({
     listUsers: listUsersMock,
 }))
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('getAdminUsers', () => {
     beforeEach(() => {

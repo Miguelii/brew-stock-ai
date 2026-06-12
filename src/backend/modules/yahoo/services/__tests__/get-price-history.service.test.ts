@@ -1,19 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import { getPriceHistory } from '@/backend/modules/yahoo/services/get-price-history.service'
+import { failureTag } from '@/backend/__tests__/utils'
 
 const { fetchHistoryCachedMock } = vi.hoisted(() => ({ fetchHistoryCachedMock: vi.fn() }))
 
 vi.mock('@/backend/modules/yahoo/processors/fetch-history.processor', () => ({
     fetchHistoryCached: fetchHistoryCachedMock,
 }))
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('getPriceHistory', () => {
     beforeEach(() => {

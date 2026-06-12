@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
-import { Cause, Effect, Exit, Option } from 'effect'
+import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { ReportStatus } from '@/types/ReportDTO'
+import { failureTag } from '@/backend/__tests__/utils'
 import {
     countReports,
     countUsers,
@@ -9,13 +10,6 @@ import {
     selectAdminFeedback,
     selectAdminReports,
 } from '@/backend/modules/admin/repositories/admin.repository'
-
-// Extracts the tagged failure of an Exit, or null when the effect succeeded.
-const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
-    if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
-    return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
-}
 
 describe('countReports', () => {
     const makeCountChain = (count: number | null) => {

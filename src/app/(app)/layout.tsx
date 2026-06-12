@@ -1,4 +1,4 @@
-import { getCachedSession } from '@/backend/modules/auth/get-cached-session'
+import { getCachedSession } from '@/backend/modules/auth/services/get-cached-session.service'
 import { Header } from '@/components/header'
 import { PushNotificationShell } from '@/modules/push-notifications/push-notification-shell'
 

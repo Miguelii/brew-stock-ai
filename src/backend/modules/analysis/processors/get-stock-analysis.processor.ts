@@ -16,9 +16,9 @@ import {
     PROMPTS_MAP,
     stockAnalysisSchema,
     THINKING_BUDGET_TOKENS,
-} from '../constants'
-import { SystemPrompt } from '../prompts/system.prompt'
-import { calculateTokenCost } from '../helpers/calculate-token-cost.helper'
+} from '@/backend/modules/analysis/constants'
+import { SystemPrompt } from '@/backend/modules/analysis/prompts/system.prompt'
+import { calculateTokenCost } from '@/backend/modules/analysis/helpers/calculate-token-cost.helper'
 import { saveYahooDataToTTL } from '@/backend/modules/yahoo/processors/save-yahoo-data-to-ttl.processor'
 import { saveAnalysisToReport } from '@/backend/modules/reports/processors/save-analysis-to-report.processor'
 import { getPriceHistory } from '@/backend/modules/yahoo/processors/get-price-history.processor'

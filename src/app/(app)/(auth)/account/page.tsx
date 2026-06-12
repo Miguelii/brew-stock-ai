@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
-import { getCachedSession } from '@/backend/modules/auth/get-cached-session'
+import { getCachedSession } from '@/backend/modules/auth/services/get-cached-session.service'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Account'

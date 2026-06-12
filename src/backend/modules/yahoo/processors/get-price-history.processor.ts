@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import { YahooPriceHistoryError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
-import { fetchHistoryRaw } from './fetch-history.processor'
+import { fetchHistoryRaw } from '@/backend/modules/yahoo/processors/fetch-history.processor'
 
 /**
  * Raw fetcher — no session guard, no `unstable_cache`. Used inside the analysis

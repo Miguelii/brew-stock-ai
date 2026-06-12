@@ -10,7 +10,7 @@ type Props = {
 }
 
 export function ReportExport({ reportId }: Props) {
-    const exportMutation = trpcClient.exportReport.useMutation({
+    const exportMutation = trpcClient.reports.export.useMutation({
         onSuccess: ({ pdf, stock }) => {
             const bytes = Uint8Array.from(atob(pdf), (c) => c.codePointAt(0) ?? 0)
             const blob = new Blob([bytes], { type: 'application/pdf' })

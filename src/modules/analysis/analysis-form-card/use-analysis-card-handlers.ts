@@ -19,11 +19,11 @@ export const useAnalysisCardHandlers = ({ form }: Props) => {
 
     function refetch() {
         startTransition(async () => {
-            await Promise.all([utils.getReports.invalidate(), utils.getCredits.refetch()])
+            await Promise.all([utils.reports.getAll.invalidate(), utils.credits.get.refetch()])
         })
     }
 
-    const createReport = trpcClient.createReport.useMutation({
+    const createReport = trpcClient.reports.create.useMutation({
         onSuccess: async () => {
             refetch()
         },

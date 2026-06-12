@@ -14,7 +14,7 @@ export function CookiePrompt() {
 
     const router = useRouter()
 
-    const consentMutation = trpcClient.createConsentCookie.useMutation({
+    const consentMutation = trpcClient.core.createConsentCookie.useMutation({
         onSuccess: () => setOpen(false),
         onError: (error) =>
             toastError('Could not save your cookie preference.', error, 'Please try again later.'),

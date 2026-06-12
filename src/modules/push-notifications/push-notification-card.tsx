@@ -24,7 +24,7 @@ export function PushNotificationCard() {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
-    const subscribeMutation = trpcClient.subscribePush.useMutation({
+    const subscribeMutation = trpcClient.core.subscribePush.useMutation({
         onSuccess: () => {
             toast.success('Notifications enabled.')
             setOpen(false)

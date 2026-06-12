@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 export const useLogout = () => {
     const router = useRouter()
 
-    const logout = trpcClient.sbLogout.useMutation({
+    const logout = trpcClient.auth.logout.useMutation({
         onSuccess: () => {
             router.refresh()
             router.push(HOME_PAGE_PATH)

@@ -1,10 +1,10 @@
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, SaveAnalysisError } from '@/backend/lib/errors'
+import { CreateSbClientError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
-import { ReportStatus } from '@/types/ReportDTO'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { updateReportWithAnalysis } from '@/backend/modules/reports/repositories/reports.repository'
 
 export const saveAnalysisToReport = Effect.fn('saveAnalysisToReport')(function* (
     reportId: ReportDTO['id'],
@@ -22,26 +22,10 @@ export const saveAnalysisToReport = Effect.fn('saveAnalysisToReport')(function* 
                 new CreateSbClientError({ cause, error_hash: ErrorCode.SAVE_ANALYSIS_SB_CLIENT }),
         }))
 
-    const response = yield* Effect.tryPromise({
-        try: () =>
-            supabase
-                .from('reports')
-                .update({
-                    status: ReportStatus.COMPLETED,
-                    ai_response: analysis,
-                    sentiment: sentiment ?? 'NULL',
-                    ticker: ticker ?? 'NULL',
-                    cost: tokenUsdCost ?? 'N/A',
-                })
-                .eq('id', reportId),
-        catch: (cause) =>
-            new SaveAnalysisError({ cause, error_hash: ErrorCode.SAVE_ANALYSIS_UPDATE }),
+    yield* updateReportWithAnalysis(supabase, reportId, {
+        analysis,
+        ticker,
+        tokenUsdCost,
+        sentiment,
     })
-
-    if (response.error) {
-        return yield* new SaveAnalysisError({
-            cause: response.error,
-            error_hash: ErrorCode.SAVE_ANALYSIS_UPDATE_ERR,
-        })
-    }
 })

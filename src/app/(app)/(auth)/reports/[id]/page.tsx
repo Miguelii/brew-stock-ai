@@ -30,7 +30,7 @@ const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 const getCachedReportById = cache(async (id: ReportDTO['id']) => {
     const caller = await createCaller()
-    const response = await caller.getReportById({ id }).catch(() => null)
+    const response = await caller.reports.getById({ id }).catch(() => null)
     // ai_response is rendered via dangerouslySetInnerHTML — sanitize at the trust boundary
     if (response?.report?.ai_response) {
         response.report.ai_response = sanitizeReportHtml(response.report.ai_response)

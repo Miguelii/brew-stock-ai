@@ -1,6 +1,9 @@
 import { unstable_cache } from 'next/cache'
-import { GET_PRICE_HISTORY_CACHE_KEY, GET_PRICE_HISTORY_TTL } from '../constants'
-import type { PricePoint } from '../types'
+import {
+    GET_PRICE_HISTORY_CACHE_KEY,
+    GET_PRICE_HISTORY_TTL,
+} from '@/backend/modules/yahoo/constants'
+import type { PricePoint } from '@/backend/modules/yahoo/types'
 
 export const fetchHistoryRaw = async (ticker: string): Promise<PricePoint[]> => {
     const { default: YahooFinance } = await import('yahoo-finance2')

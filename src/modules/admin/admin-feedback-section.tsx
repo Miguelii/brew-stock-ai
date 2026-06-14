@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { MessageSquareIcon } from 'lucide-react'
 import { AdminStatCard } from '@/modules/admin/admin-stat-card'
 import { fetchAdminFeedback } from '@/modules/admin/admin-queries'

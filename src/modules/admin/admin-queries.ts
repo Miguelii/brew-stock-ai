@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { cache } from 'react'
 import { Effect } from 'effect'
 import {

@@ -14,6 +14,7 @@ const ROWS = [
 
 describe('sendToSubscriptions', () => {
     beforeEach(() => {
+        // oxlint-disable-next-line unicorn/no-useless-undefined
         sendNotificationMock.mockReset().mockResolvedValue(undefined)
     })
 

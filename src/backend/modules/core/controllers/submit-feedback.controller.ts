@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { Match } from 'effect'
 import {
     CONTACT_FORM_MAX_NAME_LENGTH,

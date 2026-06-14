@@ -46,6 +46,7 @@ const makeSupabase = (selectResult: { data: unknown; error: unknown }) => {
 describe('createCheckoutSession', () => {
     beforeEach(() => {
         createSbServerClientMock.mockReset()
+        // oxlint-disable-next-line unicorn/no-useless-undefined
         cookiesMock.mockReset().mockResolvedValue({ get: () => undefined })
         loggerMock.mockReset()
         customersCreateMock.mockReset().mockResolvedValue({ id: 'cus_new' })

@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { UsersIcon, UserCheckIcon, MailIcon } from 'lucide-react'
 import {
     Table,

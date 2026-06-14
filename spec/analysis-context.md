@@ -32,9 +32,13 @@ not from chaining calls.
 
 ## Pipeline
 
-The entry point is `getStockAnalysis` in `src/services/analysis/get-stock-analysis.ts`. It runs in
-the **Trigger.dev** background runtime (`src/services/trigger/process-report.ts` →
-`src/services/reports/process-report.ts`), with an admin Supabase client and **no user session**.
+The backend is organised NestJS-style under `src/backend/modules/<module>/`
+(controllers → services → processors/repositories/helpers). The analysis entry point is the
+`getStockAnalysis` **processor** in
+`src/backend/modules/analysis/processors/get-stock-analysis.processor.ts`. It runs in the
+**Trigger.dev** background runtime (`src/backend/modules/reports/jobs/process-report.job.ts` →
+`src/backend/modules/reports/processors/process-report.processor.ts`), with an admin Supabase client
+and **no user session**.
 
 ```
 getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient?, useBaseModel?)
@@ -46,8 +50,8 @@ getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient?, useBaseMode
   ├─ tickerForData     = yahooPreFetch?.ticker ?? stockSymbol
   │
   ├─ Effect.all (parallel, both NON-FATAL → null on failure)
-  │    ├─ priceHistory = getPriceHistory(tickerForData)     // raw 1y daily closes (Yahoo chart)
-  │    └─ news         = getLatestNews(tickerForData)        // Finnhub company-news (top 3)
+  │    ├─ priceHistory = getPriceHistory(tickerForData)        // RAW 1y daily closes (yahoo/processors)
+  │    └─ news         = getLatestNewsService(tickerForData)   // RAW Finnhub company-news (finnhub/services)
   │
   ├─ technicals        = priceHistory?.length ? computeTechnicalIndicators(priceHistory) : null
   │
@@ -64,9 +68,14 @@ Key properties:
 - **Price history and news are non-fatal.** A failure in either resolves to `null` and the analysis
   proceeds without that block. Yahoo data itself (`getYahooTtlData`) also resolves to `null` on
   failure — the analysis still runs on whatever context survives.
-- **Raw (uncached, session-less) fetchers** are used here. The user-facing tRPC endpoints use
-  separate cached + session-gated wrappers (`getCachedPriceHistory`, `getCachedLatestNews`); see
-  `spec/e2e.md` and the source for the split rationale.
+- **Raw (uncached, session-less) fetchers** are used here — `getPriceHistory`
+  (`yahoo/processors/get-price-history.processor.ts`) and `getLatestNewsService`
+  (`finnhub/services/get-latest-news.service.ts`). The user-facing tRPC endpoints use separate
+  cached + session-gated wrappers — `getPriceHistory` (`yahoo/services/get-price-history.service.ts`,
+  exposed by `yahoo/controllers/get-price-history.controller.ts`) and `getLatestNews`
+  (`finnhub/services/get-latest-news-cached.service.ts`, exposed by
+  `finnhub/controllers/get-latest-news.controller.ts`); see `spec/e2e.md` and the source for the
+  split rationale.
 - **Same `ticker`** (resolved once by `getYahooTtlData`) is reused for news and price history so all
   blocks refer to the same symbol.
 
@@ -76,7 +85,7 @@ Key properties:
 
 The model receives three things:
 
-### 1. System prompt — `SystemPrompt` (`src/services/analysis/helpers/prompts.ts`)
+### 1. System prompt — `SystemPrompt` (`src/backend/modules/analysis/prompts/system.prompt.ts`)
 
 Defines the persona (senior equity research analyst), the writing rules (interpret don't describe,
 anchor every claim in numbers, never fabricate, stay balanced), the **required JSON output shape**,
@@ -88,7 +97,10 @@ and — critically — the **hierarchy of signals**:
 
 ### 2. Per-type prompt — one of five (`PROMPTS_MAP`)
 
-Selected by `promptType`. Each contains `##TICKER##`, replaced with the symbol at runtime.
+Selected by `promptType`. The five prompt strings live in
+`src/backend/modules/analysis/prompts/analysis.prompt.ts`; `PROMPTS_MAP` (which keys them by type)
+lives in `src/backend/modules/analysis/constants/index.ts`. Each contains `##TICKER##`, replaced with
+the symbol at runtime.
 
 | Prompt constant                      | Focus                                                                                 |
 | ------------------------------------ | ------------------------------------------------------------------------------------- |
@@ -101,8 +113,10 @@ Selected by `promptType`. Each contains `##TICKER##`, replaced with the symbol a
 ### 3. Injected context — the `## Current Market Context` block
 
 Built by `buildYahooContext(data, technicals?, news?)`
-(`src/services/yahoo/helpers/build-yahoo-context.ts`) and appended to the per-type prompt. Each
-section renders **only when its data is present**, in this exact order:
+(`src/backend/modules/yahoo/helpers/build-yahoo-context.helper.ts`) and appended to the per-type
+prompt. The processor only assembles this block when at least one source survived (`hasContext`);
+otherwise the prompt is sent with no context appended. Each section renders **only when its data is
+present**, in this exact order:
 
 ```
 ## Current Market Context
@@ -125,19 +139,21 @@ Live data from Yahoo Finance — incorporate these insights into your analysis w
 
 ## Context blocks — master table
 
-| Block                          | Status   | Source                         | Service / file                                                                 | Cache (TTL)           |
-| ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ | --------------------- |
-| Key Financial Indicators       | EXISTING | Yahoo `quoteSummary`           | `get-yahoo-data.ts` (`financialData`, `summaryDetail`, `defaultKeyStatistics`) | `stock_data` (3 days) |
-| Earnings History               | NEW      | Yahoo `quoteSummary`           | `get-yahoo-data.ts` + `map-fundamentals.ts` (`earningsHistory`)                | `stock_data` (3 days) |
-| Forward Estimates              | NEW      | Yahoo `quoteSummary`           | `map-fundamentals.ts` (`earningsTrend`)                                        | `stock_data` (3 days) |
-| Revenue & Net Income Trend     | NEW      | Yahoo `fundamentalsTimeSeries` | `map-fundamentals.ts` (`financials`, annual)                                   | `stock_data` (3 days) |
-| Analyst Rating Distribution    | NEW      | Yahoo `quoteSummary`           | `map-fundamentals.ts` (`recommendationTrend`)                                  | `stock_data` (3 days) |
-| Insider Activity               | NEW      | Yahoo `quoteSummary`           | `map-fundamentals.ts` (`insiderTransactions`)                                  | `stock_data` (3 days) |
-| Technical Snapshot             | NEW      | Yahoo `chart` (1y daily)       | `get-price-history.ts` → `compute-technical-indicators.ts`                     | price-history (12 h)  |
-| Recent Significant Development | EXISTING | Yahoo `insights`               | `get-yahoo-data.ts` (`sigDevs[0]`)                                             | `stock_data` (3 days) |
-| Analyst Coverage               | EXISTING | Yahoo `insights`               | `get-yahoo-data.ts` (`reports`, 3)                                             | `stock_data` (3 days) |
-| Company vs Sector Scores       | EXISTING | Yahoo `insights`               | `get-yahoo-data.ts` (`companySnapshot`)                                        | `stock_data` (3 days) |
-| Recent News                    | NEW      | Finnhub `company-news`         | `get-latest-news.ts` (top 3)                                                   | latest-news (1 day)   |
+All file paths below are relative to `src/backend/modules/`.
+
+| Block                          | Status   | Source                         | Service / file                                                                                                  | Cache (TTL)           |
+| ------------------------------ | -------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Key Financial Indicators       | EXISTING | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` (`financialData`, `summaryDetail`, `defaultKeyStatistics`)       | `stock_data` (3 days) |
+| Earnings History               | NEW      | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` + `yahoo/helpers/map-fundamentals.helper.ts` (`earningsHistory`) | `stock_data` (3 days) |
+| Forward Estimates              | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`earningsTrend`)                                                    | `stock_data` (3 days) |
+| Revenue & Net Income Trend     | NEW      | Yahoo `fundamentalsTimeSeries` | `yahoo/helpers/map-fundamentals.helper.ts` (`financials`, annual)                                               | `stock_data` (3 days) |
+| Analyst Rating Distribution    | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`recommendationTrend`)                                              | `stock_data` (3 days) |
+| Insider Activity               | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`insiderTransactions`)                                              | `stock_data` (3 days) |
+| Technical Snapshot             | NEW      | Yahoo `chart` (1y daily)       | `yahoo/processors/get-price-history.processor.ts` → `yahoo/helpers/compute-technical-indicators.helper.ts`      | price-history (12 h)  |
+| Recent Significant Development | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`sigDevs[0]`)                                                   | `stock_data` (3 days) |
+| Analyst Coverage               | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`reports`, 3)                                                   | `stock_data` (3 days) |
+| Company vs Sector Scores       | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`companySnapshot`)                                              | `stock_data` (3 days) |
+| Recent News                    | NEW      | Finnhub `company-news`         | `finnhub/services/get-latest-news.service.ts` (top 3)                                                           | latest-news (1 day)   |
 
 All field shapes live in `src/types/ReportDTO.ts`.
 
@@ -163,7 +179,7 @@ FCF yield, forward-vs-trailing P/E, price-vs-target range).
 ### Fundamentals — NEW
 
 Type `StockFundamentals`. Fetched independently of `financials` so a failure here never compromises
-the snapshot above. Mapped in `src/services/yahoo/helpers/map-fundamentals.ts`.
+the snapshot above. Mapped in `src/backend/modules/yahoo/helpers/map-fundamentals.helper.ts`.
 
 - **`earningsHistory: EarningsQuarter[]`** (last 4 quarters, from `earningsHistory`) —
   `period`, `quarter`, `epsActual`, `epsEstimate`, `surprisePercent`. Rendered with a beat/miss
@@ -183,8 +199,8 @@ the snapshot above. Mapped in `src/services/yahoo/helpers/map-fundamentals.ts`.
 
 ### Technical Snapshot — NEW
 
-Type `StockTechnicals`. Computed by `compute-technical-indicators.ts` (pure function) from the 1-year
-daily close series returned by `getPriceHistory`. A **compact summary is injected — never the ~252
+Type `StockTechnicals`. Computed by `compute-technical-indicators.helper.ts` (pure function) from the
+1-year daily close series returned by `getPriceHistory`. A **compact summary is injected — never the ~252
 raw points.** Framed in the prompt as a secondary timing/momentum signal.
 
 - **Moving averages / regime:** `sma50`, `sma200`, `priceVsSma50Pct`, `priceVsSma200Pct`,
@@ -223,7 +239,8 @@ Framed as a confirmatory signal — used to confirm or challenge the thesis, nev
 
 ## Model & output
 
-Selected in `get-stock-analysis.ts`, constants in `src/services/analysis/constants.ts`.
+Selected in `get-stock-analysis.processor.ts`, constants in
+`src/backend/modules/analysis/constants/index.ts`.
 
 | Tier | Model (`useBaseModel`)                      | Thinking                                 | `maxOutputTokens`                |
 | ---- | ------------------------------------------- | ---------------------------------------- | -------------------------------- |
@@ -270,28 +287,59 @@ $0.80/$4.00, Sonnet $3.00/$15.00 per 1M input/output tokens).
 
 ## File map
 
+All backend code lives under `src/backend/modules/<module>/`, split NestJS-style
+(controllers → services → processors/repositories/helpers).
+
 ```
-src/services/analysis/
-├── get-stock-analysis.ts          # orchestration: assemble context → generateText
-├── constants.ts                   # models, token budgets, stockAnalysisSchema, PROMPTS_MAP
+src/backend/modules/analysis/
+├── processors/
+│   └── get-stock-analysis.processor.ts     # orchestration: assemble context → generateText → save
+├── constants/index.ts                      # models, token budgets, stockAnalysisSchema, PROMPTS_MAP
+├── prompts/
+│   ├── system.prompt.ts                    # SystemPrompt (persona, rules, signal hierarchy)
+│   └── analysis.prompt.ts                  # the 5 per-type prompt strings
 └── helpers/
-    ├── prompts.ts                 # SystemPrompt + 5 per-type prompts
-    └── calculate-token-cost.ts    # per-call USD cost
+    └── calculate-token-cost.helper.ts      # per-call USD cost
 
-src/services/yahoo/
-├── get-yahoo-ttl-data.ts          # TTL read/refresh of stock_data
-├── get-yahoo-data.ts              # quoteSummary (financials + fundamentals) + fundamentalsTimeSeries + insights
-├── get-price-history.ts           # raw 1y daily closes (+ cached wrapper for tRPC)
-├── save-yahoo-data-to-ttl.ts      # persist financials + fundamentals
-├── constants.ts                   # YAHOO_DATA_TTL, GET_PRICE_HISTORY_TTL
+src/backend/modules/yahoo/
+├── yahoo.router.ts                         # YAHOO_ROUTER (price-history controller)
+├── controllers/
+│   └── get-price-history.controller.ts     # tRPC binding → cached price-history service
+├── services/
+│   └── get-price-history.service.ts        # cached, session-gated price history (tRPC)
+├── processors/
+│   ├── get-yahoo-ttl-data.processor.ts     # TTL read/refresh of stock_data (accepts a client)
+│   ├── get-yahoo-data.processor.ts         # quoteSummary + fundamentalsTimeSeries + insights
+│   ├── get-yahoo-ticker.processor.ts       # symbol → canonical ticker
+│   ├── get-price-history.processor.ts      # RAW 1y daily closes (analysis pipeline)
+│   ├── fetch-history.processor.ts          # fetchHistoryRaw / fetchHistoryCached
+│   └── save-yahoo-data-to-ttl.processor.ts # persist financials + fundamentals
+├── repositories/
+│   └── stock-data.repository.ts            # stock_data table access
+├── constants/index.ts                      # YAHOO_DATA_TTL, GET_PRICE_HISTORY_TTL, cache key
+├── types/index.ts
 └── helpers/
-    ├── build-yahoo-context.ts     # assembles the "## Current Market Context" block
-    ├── map-fundamentals.ts        # quoteSummary/time-series → StockFundamentals
-    └── compute-technical-indicators.ts  # price series → StockTechnicals
+    ├── build-yahoo-context.helper.ts       # assembles the "## Current Market Context" block
+    ├── map-fundamentals.helper.ts          # quoteSummary/time-series → StockFundamentals
+    └── compute-technical-indicators.helper.ts  # price series → StockTechnicals
 
-src/services/finnhub/
-├── get-latest-news.ts             # raw Finnhub news (+ cached wrapper for tRPC)
-└── constants.ts                   # LATEST_NEWS_TTL
+src/backend/modules/finnhub/
+├── finnhub.router.ts                       # FINNHUB_ROUTER (latest-news controller)
+├── controllers/
+│   └── get-latest-news.controller.ts       # tRPC binding → cached news service
+├── services/
+│   ├── get-latest-news.service.ts          # RAW Finnhub news (analysis pipeline)
+│   └── get-latest-news-cached.service.ts   # cached, session-gated news (tRPC)
+├── processors/
+│   └── fetch-latest-news.processor.ts      # fetchLatestNewsRaw / fetchLatestNewsCached
+└── constants/index.ts                      # LATEST_NEWS_TTL, cache key
 
-src/types/ReportDTO.ts             # StockFinancials, StockFundamentals, StockTechnicals, ...
+src/backend/modules/reports/
+├── jobs/process-report.job.ts              # Trigger.dev task — entry into the pipeline
+├── processors/
+│   ├── process-report.processor.ts         # loads report → getStockAnalysis → notify
+│   └── save-analysis-to-report.processor.ts # persist analysis HTML + sentiment + cost
+└── repositories/reports.repository.ts      # reports table access
+
+src/types/ReportDTO.ts                      # StockFinancials, StockFundamentals, StockTechnicals, ...
 ```

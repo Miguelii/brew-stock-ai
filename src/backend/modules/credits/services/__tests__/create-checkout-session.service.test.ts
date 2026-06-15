@@ -98,29 +98,6 @@ describe('createCheckoutSession', () => {
         )
     })
 
-    it('attaches DataFast attribution cookies to the session metadata when present', async () => {
-        const { supabase } = makeSupabase({
-            data: { stripe_customer_id: 'cus_existing' },
-            error: null,
-        })
-        createSbServerClientMock.mockResolvedValue(supabase)
-        cookiesMock.mockResolvedValue({
-            get: (name: string) =>
-                name === 'datafast_visitor_id' ? { value: 'v-1' } : { value: 's-1' },
-        })
-
-        await Effect.runPromise(createCheckoutSession(USER, PKG.id))
-
-        expect(sessionsCreateMock).toHaveBeenCalledWith(
-            expect.objectContaining({
-                metadata: expect.objectContaining({
-                    datafast_visitor_id: 'v-1',
-                    datafast_session_id: 's-1',
-                }),
-            })
-        )
-    })
-
     it('still creates the checkout session when reading cookies fails', async () => {
         const { supabase } = makeSupabase({
             data: { stripe_customer_id: 'cus_existing' },

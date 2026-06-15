@@ -1,7 +1,6 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { cookies } from 'next/headers'
 import StripeClient from 'stripe'
 import { ServerEnv } from '@/env/server'
 import { CreateCheckoutSessionError, CreateSbClientError } from '@/backend/lib/errors'
@@ -105,23 +104,6 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
         }
     }
 
-    // DataFast attribution cookies are best-effort: never fail checkout if
-    // they are missing or unreadable — just omit them from the metadata.
-    const datafast = yield* Effect.tryPromise({
-        try: async () => {
-            const cookieStore = await cookies()
-            return {
-                visitorId: cookieStore.get('datafast_visitor_id')?.value,
-                sessionId: cookieStore.get('datafast_session_id')?.value,
-            }
-        },
-        catch: (cause) =>
-            new CreateCheckoutSessionError({
-                cause,
-                error_hash: ErrorCode.CHECKOUT_DATAFAST_COOKIES,
-            }),
-    }).pipe(Effect.orElseSucceed(() => ({ visitorId: undefined, sessionId: undefined })))
-
     const session = yield* Effect.tryPromise({
         try: () =>
             stripe.checkout.sessions.create({
@@ -142,8 +124,6 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
                 metadata: {
                     userId: user.id,
                     credits: String(pkg.credits),
-                    ...(datafast.visitorId && { datafast_visitor_id: datafast.visitorId }),
-                    ...(datafast.sessionId && { datafast_session_id: datafast.sessionId }),
                 },
                 payment_intent_data: {
                     metadata: {

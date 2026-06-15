@@ -118,12 +118,6 @@ export default function RootLayout({ children }: Props) {
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <meta name="apple-mobile-web-app-title" content="StockBrewAI" />
                 <meta name="google-adsense-account" content={GOOGLE_ADSENSE_ACCOUNT_ID} />
-                <script
-                    defer
-                    data-website-id="dfid_MsT1XaqrlyOQW7l5eAsic"
-                    data-domain="brewstockai.com"
-                    src="https://datafa.st/js/script.js"
-                />
             </head>
             <VercelAnalytics />
             <VercelSpeedInsights />

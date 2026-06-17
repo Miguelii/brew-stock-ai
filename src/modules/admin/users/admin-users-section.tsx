@@ -8,8 +8,8 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
-import { AdminStatCard } from '@/modules/admin/admin-stat-card'
-import { fetchAdminStats, fetchAdminUsers } from '@/modules/admin/admin-queries'
+import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
+import { fetchAdminStats, fetchAdminUsers } from '@/modules/admin/shared/admin-queries'
 import { parseReportDate } from '@/lib/formatters'
 
 type Props = {

@@ -7,9 +7,10 @@ import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { getCachedSession } from '@/backend/modules/auth/services/get-cached-session.service'
 import { isSuperAdmin } from '@/backend/modules/admin/helpers/is-super-admin.helper'
-import { AdminUsersSection } from '@/modules/admin/admin-users-section'
-import { AdminReportsSection } from '@/modules/admin/admin-reports-section'
-import { AdminFeedbackSection } from '@/modules/admin/admin-feedback-section'
+import { AdminUsersSection } from '@/modules/admin/users/admin-users-section'
+import { AdminReportsSection } from '@/modules/admin/reports/admin-reports-section'
+import { AdminFeedbackSection } from '@/modules/admin/feedback/admin-feedback-section'
+import { AdminLogsSection } from '@/modules/admin/logs/admin-logs-section'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Admin'
@@ -65,6 +66,7 @@ export default async function SecureAdminPage() {
                         <TabsTrigger value="feedback">Feedback</TabsTrigger>
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="reports">Reports</TabsTrigger>
+                        <TabsTrigger value="logs">Logs</TabsTrigger>
                         <TabsTrigger value="actions">Actions</TabsTrigger>
                     </TabsList>
 
@@ -86,11 +88,10 @@ export default async function SecureAdminPage() {
                         </Suspense>
                     </TabsContent>
 
-                    <TabsContent value="actions">
-                        <div className="flex min-h-48 flex-col items-center justify-center gap-1 rounded-none border border-dashed border-border text-center">
-                            <p className="text-sm font-medium">Actions</p>
-                            <p className="text-sm text-muted-foreground">Coming soon.</p>
-                        </div>
+                    <TabsContent value="logs">
+                        <Suspense fallback={<SectionSkeleton />}>
+                            <AdminLogsSection email={email} />
+                        </Suspense>
                     </TabsContent>
                 </Tabs>
             </main>

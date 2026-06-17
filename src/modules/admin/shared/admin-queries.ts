@@ -16,6 +16,10 @@ import {
     getAdminFeedback,
     type AdminFeedback,
 } from '@/backend/modules/admin/services/get-admin-feedback.service'
+import {
+    getAdminLogs,
+    type AdminLog,
+} from '@/backend/modules/admin/services/get-admin-logs.service'
 
 const EMPTY_STATS: AdminStats = {
     totalReports: 0,
@@ -43,5 +47,11 @@ export const fetchAdminReports = cache((email: string) =>
 export const fetchAdminFeedback = cache((email: string) =>
     Effect.runPromise(
         getAdminFeedback(email).pipe(Effect.catchAll(() => Effect.succeed([] as AdminFeedback[])))
+    )
+)
+
+export const fetchAdminLogs = cache((email: string) =>
+    Effect.runPromise(
+        getAdminLogs(email).pipe(Effect.catchAll(() => Effect.succeed([] as AdminLog[])))
     )
 )

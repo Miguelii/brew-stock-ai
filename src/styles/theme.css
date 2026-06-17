@@ -12,6 +12,7 @@
     --accent-green-light: #e3f0ed;
 
     --positive: oklch(0.527 0.154 150.069);
+    --warning: #b45309;
 
     --background: #fbfbfd;
     --foreground: oklch(0.145 0 0);
@@ -57,6 +58,7 @@
     --color-accent-green: var(--accent-green);
     --color-accent-green-light: var(--accent-green-light);
     --color-positive: var(--positive);
+    --color-warning: var(--warning);
 
     --font-heading: var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);

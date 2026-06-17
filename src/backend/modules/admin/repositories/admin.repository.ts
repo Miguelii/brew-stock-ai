@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { AdminStatsError, GetAdminFeedbackError } from '@/backend/lib/errors'
+import { AdminStatsError, GetAdminFeedbackError, GetAdminLogsError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { ReportStatus } from '@/types/ReportDTO'
@@ -75,6 +75,27 @@ export const selectAdminFeedback = Effect.fn('selectAdminFeedback')(function* (
         return yield* new GetAdminFeedbackError({
             cause: error,
             error_hash: ErrorCode.ADMIN_FEEDBACK_FETCH_ERR,
+        })
+    }
+
+    return data ?? []
+})
+
+export const selectAdminLogs = Effect.fn('selectAdminLogs')(function* (supabase: SupabaseClient) {
+    const { data, error } = yield* Effect.tryPromise({
+        try: () =>
+            supabase
+                .from('logs')
+                .select('id, created_at, level, prefix, message, metadata, user_id')
+                .order('created_at', { ascending: false })
+                .limit(300),
+        catch: (cause) => new GetAdminLogsError({ cause, error_hash: ErrorCode.ADMIN_LOGS_FETCH }),
+    })
+
+    if (error) {
+        return yield* new GetAdminLogsError({
+            cause: error,
+            error_hash: ErrorCode.ADMIN_LOGS_FETCH_ERR,
         })
     }
 

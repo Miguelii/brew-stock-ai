@@ -11,8 +11,12 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { AdminStatCard } from '@/modules/admin/admin-stat-card'
-import { fetchAdminStats, fetchAdminUsers, fetchAdminReports } from '@/modules/admin/admin-queries'
+import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
+import {
+    fetchAdminStats,
+    fetchAdminUsers,
+    fetchAdminReports,
+} from '@/modules/admin/shared/admin-queries'
 import { parseReportDate } from '@/lib/formatters'
 import { PROMPT_OPTIONS } from '@/lib/constants'
 import { ReportStatus } from '@/types/ReportDTO'

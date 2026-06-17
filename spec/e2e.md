@@ -1,4 +1,4 @@
-# E2E Test Suite
+# Smoke (E2E) Test Suite
 
 Playwright-based end-to-end tests that run against the full Next.js application with **zero real database or external API calls**. Everything is intercepted by a local mock server or Playwright's `page.route()`.
 

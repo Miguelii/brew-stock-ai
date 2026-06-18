@@ -38,7 +38,8 @@ export async function AdminUsersSection() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="pl-5">Email</TableHead>
+                                <TableHead className="pl-5">ID</TableHead>
+                                <TableHead>Email</TableHead>
                                 <TableHead>Registered</TableHead>
                                 <TableHead className="pr-5">Last Sign In</TableHead>
                             </TableRow>
@@ -57,6 +58,9 @@ export async function AdminUsersSection() {
                                 sortedUsers.map((u) => (
                                     <TableRow key={u.id}>
                                         <TableCell className="pl-5 py-3 font-medium">
+                                            {u.id}
+                                        </TableCell>
+                                        <TableCell className="py-3 font-medium">
                                             {u.email}
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">

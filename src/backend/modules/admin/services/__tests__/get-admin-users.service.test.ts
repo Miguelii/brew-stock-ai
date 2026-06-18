@@ -3,15 +3,15 @@ import { Effect } from 'effect'
 import { getAdminUsers } from '@/backend/modules/admin/services/get-admin-users.service'
 import { failureTag } from '@/backend/__tests__/utils'
 
-const { createSbAdminClientMock, isSuperAdminMock, listUsersMock } = vi.hoisted(() => ({
+const { createSbAdminClientMock, isAdminMock, listUsersMock } = vi.hoisted(() => ({
     createSbAdminClientMock: vi.fn(),
-    isSuperAdminMock: vi.fn(),
+    isAdminMock: vi.fn(),
     listUsersMock: vi.fn(),
 }))
 
 vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
-vi.mock('@/backend/modules/admin/helpers/is-super-admin.helper', () => ({
-    isSuperAdmin: isSuperAdminMock,
+vi.mock('@/backend/modules/admin/services/is-admin.service', () => ({
+    isAdmin: isAdminMock,
 }))
 vi.mock('@/backend/modules/admin/repositories/admin.repository', () => ({
     listUsers: listUsersMock,
@@ -20,7 +20,7 @@ vi.mock('@/backend/modules/admin/repositories/admin.repository', () => ({
 describe('getAdminUsers', () => {
     beforeEach(() => {
         createSbAdminClientMock.mockReset().mockReturnValue({ from: vi.fn() })
-        isSuperAdminMock.mockReset().mockReturnValue(true)
+        isAdminMock.mockReset().mockReturnValue(Effect.succeed(true))
         listUsersMock.mockReset().mockReturnValue(Effect.succeed([]))
     })
 
@@ -38,7 +38,7 @@ describe('getAdminUsers', () => {
             ])
         )
 
-        const users = await Effect.runPromise(getAdminUsers('andremcga3@gmail.com'))
+        const users = await Effect.runPromise(getAdminUsers())
 
         expect(users).toEqual([
             {
@@ -59,9 +59,9 @@ describe('getAdminUsers', () => {
     })
 
     it('fails with UnauthenticatedError for non-admin callers', async () => {
-        isSuperAdminMock.mockReturnValue(false)
+        isAdminMock.mockReturnValue(Effect.succeed(false))
 
-        const exit = await Effect.runPromiseExit(getAdminUsers('user@example.com'))
+        const exit = await Effect.runPromiseExit(getAdminUsers())
         expect(failureTag(exit)).toBe('UnauthenticatedError')
         expect(listUsersMock).not.toHaveBeenCalled()
     })

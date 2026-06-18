@@ -4,10 +4,6 @@ import { fetchAdminFeedback } from '@/modules/admin/shared/admin-queries'
 import { parseReportDate } from '@/lib/formatters'
 import type { AdminFeedback } from '@/backend/modules/admin/services/get-admin-feedback.service'
 
-type Props = {
-    email: string
-}
-
 function FeedbackItem({ item }: { item: AdminFeedback }) {
     return (
         <div className="border border-border p-5 space-y-3">
@@ -25,8 +21,8 @@ function FeedbackItem({ item }: { item: AdminFeedback }) {
     )
 }
 
-export async function AdminFeedbackSection({ email }: Props) {
-    const feedback = await fetchAdminFeedback(email)
+export async function AdminFeedbackSection() {
+    const feedback = await fetchAdminFeedback()
 
     return (
         <section className="space-y-4">

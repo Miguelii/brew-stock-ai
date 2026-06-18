@@ -52,7 +52,9 @@ export default function ChangelogPage() {
                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-4">
                         What&apos;s new
                     </h1>
-                    <p className="text-primary-muted text-lg leading-relaxed">{META_DESCRIPTION}</p>
+                    <p className="text-primary-muted text-lg leading-relaxed">
+                        Product updates and improvements to our AI stock analysis.
+                    </p>
                 </motion.header>
 
                 <ChangelogList />

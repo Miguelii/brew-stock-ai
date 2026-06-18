@@ -4,7 +4,7 @@ import { Effect } from 'effect'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { UnauthenticatedError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
-import { isSuperAdmin } from '@/backend/modules/admin/helpers/is-super-admin.helper'
+import { isAdmin } from '@/backend/modules/admin/services/is-admin.service'
 import { selectAdminLogs } from '@/backend/modules/admin/repositories/admin.repository'
 
 export type LogLevel = 'log' | 'info' | 'warn' | 'error'
@@ -19,8 +19,8 @@ export type AdminLog = {
     user_id: string | null
 }
 
-export const getAdminLogs = Effect.fn('getAdminLogs')(function* (callerEmail: string) {
-    if (!isSuperAdmin(callerEmail)) {
+export const getAdminLogs = Effect.fn('getAdminLogs')(function* () {
+    if (!(yield* isAdmin())) {
         return yield* new UnauthenticatedError({ error_hash: ErrorCode.ADMIN_UNAUTH })
     }
 

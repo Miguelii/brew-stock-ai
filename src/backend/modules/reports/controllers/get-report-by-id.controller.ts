@@ -10,6 +10,7 @@ export const GET_REPORT_BY_ID_PROTECTED_CONTROLLER = protectedProcedure
         runEffect(getReportById(ctx.user, input.id), 'getReportById', (error) =>
             Match.value(error).pipe(
                 Match.tag('CreateSbClientError', () => 'INTERNAL_SERVER_ERROR' as const),
+                Match.tag('IsAdminError', () => 'INTERNAL_SERVER_ERROR' as const),
                 Match.tag('GetReportByIdError', () => 'NOT_FOUND' as const),
                 Match.exhaustive
             )

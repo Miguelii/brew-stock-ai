@@ -12,12 +12,8 @@ import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
 import { fetchAdminStats, fetchAdminUsers } from '@/modules/admin/shared/admin-queries'
 import { parseReportDate } from '@/lib/formatters'
 
-type Props = {
-    email: string
-}
-
-export async function AdminUsersSection({ email }: Props) {
-    const [stats, users] = await Promise.all([fetchAdminStats(email), fetchAdminUsers(email)])
+export async function AdminUsersSection() {
+    const [stats, users] = await Promise.all([fetchAdminStats(), fetchAdminUsers()])
 
     const sortedUsers = users.toSorted(
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -42,9 +38,11 @@ export async function AdminUsersSection({ email }: Props) {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="pl-5">Email</TableHead>
+                                <TableHead className="pl-5">ID</TableHead>
+                                <TableHead>Email</TableHead>
                                 <TableHead>Registered</TableHead>
-                                <TableHead className="pr-5">Last Sign In</TableHead>
+                                <TableHead>Last Sign In</TableHead>
+                                <TableHead className="pr-5">Provider</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -61,6 +59,9 @@ export async function AdminUsersSection({ email }: Props) {
                                 sortedUsers.map((u) => (
                                     <TableRow key={u.id}>
                                         <TableCell className="pl-5 py-3 font-medium">
+                                            {u.id}
+                                        </TableCell>
+                                        <TableCell className="py-3 font-medium">
                                             {u.email}
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">
@@ -70,6 +71,9 @@ export async function AdminUsersSection({ email }: Props) {
                                             {u.last_sign_in_at
                                                 ? parseReportDate(u.last_sign_in_at)
                                                 : '—'}
+                                        </TableCell>
+                                        <TableCell className="py-3 uppercase text-sm text-muted-foreground">
+                                            {u.provider}
                                         </TableCell>
                                     </TableRow>
                                 ))

@@ -4,7 +4,7 @@ import { Effect } from 'effect'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { UnauthenticatedError } from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
-import { isSuperAdmin } from '@/backend/modules/admin/helpers/is-super-admin.helper'
+import { isAdmin } from '@/backend/modules/admin/services/is-admin.service'
 import { countReports, countUsers } from '@/backend/modules/admin/repositories/admin.repository'
 import { ReportStatus } from '@/types/ReportDTO'
 
@@ -15,8 +15,8 @@ export type AdminStats = {
     totalUsers: number
 }
 
-export const getAdminStats = Effect.fn('getAdminStats')(function* (callerEmail: string) {
-    if (!isSuperAdmin(callerEmail)) {
+export const getAdminStats = Effect.fn('getAdminStats')(function* () {
+    if (!(yield* isAdmin())) {
         return yield* new UnauthenticatedError({ error_hash: ErrorCode.ADMIN_UNAUTH })
     }
 

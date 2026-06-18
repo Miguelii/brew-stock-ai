@@ -20,6 +20,7 @@ import {
     getAdminLogs,
     type AdminLog,
 } from '@/backend/modules/admin/services/get-admin-logs.service'
+import { isAdmin } from '@/backend/modules/admin/services/is-admin.service'
 
 const EMPTY_STATS: AdminStats = {
     totalReports: 0,
@@ -28,30 +29,32 @@ const EMPTY_STATS: AdminStats = {
     totalUsers: 0,
 }
 
-export const fetchAdminStats = cache((email: string) =>
-    Effect.runPromise(getAdminStats(email).pipe(Effect.catchAll(() => Effect.succeed(EMPTY_STATS))))
+export const fetchIsAdmin = cache(() =>
+    Effect.runPromise(isAdmin().pipe(Effect.catchAll(() => Effect.succeed(false))))
 )
 
-export const fetchAdminUsers = cache((email: string) =>
+export const fetchAdminStats = cache(() =>
+    Effect.runPromise(getAdminStats().pipe(Effect.catchAll(() => Effect.succeed(EMPTY_STATS))))
+)
+
+export const fetchAdminUsers = cache(() =>
     Effect.runPromise(
-        getAdminUsers(email).pipe(Effect.catchAll(() => Effect.succeed([] as AdminUser[])))
+        getAdminUsers().pipe(Effect.catchAll(() => Effect.succeed([] as AdminUser[])))
     )
 )
 
-export const fetchAdminReports = cache((email: string) =>
+export const fetchAdminReports = cache(() =>
     Effect.runPromise(
-        getAdminReports(email).pipe(Effect.catchAll(() => Effect.succeed([] as AdminReport[])))
+        getAdminReports().pipe(Effect.catchAll(() => Effect.succeed([] as AdminReport[])))
     )
 )
 
-export const fetchAdminFeedback = cache((email: string) =>
+export const fetchAdminFeedback = cache(() =>
     Effect.runPromise(
-        getAdminFeedback(email).pipe(Effect.catchAll(() => Effect.succeed([] as AdminFeedback[])))
+        getAdminFeedback().pipe(Effect.catchAll(() => Effect.succeed([] as AdminFeedback[])))
     )
 )
 
-export const fetchAdminLogs = cache((email: string) =>
-    Effect.runPromise(
-        getAdminLogs(email).pipe(Effect.catchAll(() => Effect.succeed([] as AdminLog[])))
-    )
+export const fetchAdminLogs = cache(() =>
+    Effect.runPromise(getAdminLogs().pipe(Effect.catchAll(() => Effect.succeed([] as AdminLog[]))))
 )

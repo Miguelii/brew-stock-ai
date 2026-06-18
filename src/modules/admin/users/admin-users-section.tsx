@@ -41,7 +41,8 @@ export async function AdminUsersSection() {
                                 <TableHead className="pl-5">ID</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Registered</TableHead>
-                                <TableHead className="pr-5">Last Sign In</TableHead>
+                                <TableHead>Last Sign In</TableHead>
+                                <TableHead className="pr-5">Provider</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -70,6 +71,9 @@ export async function AdminUsersSection() {
                                             {u.last_sign_in_at
                                                 ? parseReportDate(u.last_sign_in_at)
                                                 : '—'}
+                                        </TableCell>
+                                        <TableCell className="py-3 uppercase text-sm text-muted-foreground">
+                                            {u.provider}
                                         </TableCell>
                                     </TableRow>
                                 ))

@@ -1,8 +1,26 @@
 import { Effect } from 'effect'
-import { AdminStatsError, GetAdminFeedbackError, GetAdminLogsError } from '@/backend/lib/errors'
+import {
+    AdminStatsError,
+    GetAdminFeedbackError,
+    GetAdminLogsError,
+    IsAdminError,
+} from '@/backend/lib/errors'
 import { ErrorCode } from '@/backend/lib/error-codes'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { ReportStatus } from '@/types/ReportDTO'
+
+export const checkIsAdmin = Effect.fn('checkIsAdmin')(function* (supabase: SupabaseClient) {
+    const { data, error } = yield* Effect.tryPromise({
+        try: () => supabase.rpc('is_admin'),
+        catch: (cause) => new IsAdminError({ cause, error_hash: ErrorCode.ADMIN_IS_ADMIN_RPC }),
+    })
+
+    if (error) {
+        return yield* new IsAdminError({ cause: error, error_hash: ErrorCode.ADMIN_IS_ADMIN_RPC })
+    }
+
+    return (data ?? false) as boolean
+})
 
 export const countReports = Effect.fn('countReports')(function* (
     supabase: SupabaseClient,

@@ -90,6 +90,7 @@ export class GetAdminFeedbackError extends Data.TaggedError(
     'GetAdminFeedbackError'
 )<ServiceErrorFields> {}
 export class GetAdminLogsError extends Data.TaggedError('GetAdminLogsError')<ServiceErrorFields> {}
+export class IsAdminError extends Data.TaggedError('IsAdminError')<ServiceErrorFields> {}
 
 // Feedback
 export class SubmitFeedbackError extends Data.TaggedError(

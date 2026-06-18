@@ -21,10 +21,6 @@ import { parseReportDate } from '@/lib/formatters'
 import { PROMPT_OPTIONS } from '@/lib/constants'
 import { ReportStatus } from '@/types/ReportDTO'
 
-type Props = {
-    email: string
-}
-
 function StatusBadge({ status }: { status: ReportStatus }) {
     if (status === ReportStatus.COMPLETED) {
         return (
@@ -48,11 +44,11 @@ function StatusBadge({ status }: { status: ReportStatus }) {
     )
 }
 
-export async function AdminReportsSection({ email }: Props) {
+export async function AdminReportsSection() {
     const [stats, reports, users] = await Promise.all([
-        fetchAdminStats(email),
-        fetchAdminReports(email),
-        fetchAdminUsers(email),
+        fetchAdminStats(),
+        fetchAdminReports(),
+        fetchAdminUsers(),
     ])
 
     const userEmailById = new Map(users.map((u) => [u.id, u.email]))
@@ -124,7 +120,7 @@ export async function AdminReportsSection({ email }: Props) {
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">
                                             {r.cost
-                                                ? `${Number(parseFloat(r.cost).toFixed(4))}$`
+                                                ? `${Number(Number.parseFloat(r.cost).toFixed(4))}$`
                                                 : 'N/A'}
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">

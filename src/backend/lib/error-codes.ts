@@ -128,6 +128,8 @@ export enum ErrorCode {
     ADMIN_FEEDBACK_FETCH_ERR = 'admn_fberr',
     ADMIN_LOGS_FETCH = 'admn_lgfch',
     ADMIN_LOGS_FETCH_ERR = 'admn_lgerr',
+    ADMIN_IS_ADMIN_SB_CLIENT = 'admn_iasbc',
+    ADMIN_IS_ADMIN_RPC = 'admn_iarpc',
 
     // Consent
     CONSENT_COOKIE_CREATE = 't1yj6r9b',

@@ -5,12 +5,12 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
-import { getCachedSession } from '@/backend/modules/auth/services/get-cached-session.service'
-import { isSuperAdmin } from '@/backend/modules/admin/helpers/is-super-admin.helper'
+import { fetchIsAdmin } from '@/modules/admin/shared/admin-queries'
 import { AdminUsersSection } from '@/modules/admin/users/admin-users-section'
 import { AdminReportsSection } from '@/modules/admin/reports/admin-reports-section'
 import { AdminFeedbackSection } from '@/modules/admin/feedback/admin-feedback-section'
 import { AdminLogsSection } from '@/modules/admin/logs/admin-logs-section'
+import { SectionSkeleton } from '@/modules/admin/shared/section-skeleton'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Admin'
@@ -23,26 +23,8 @@ export const metadata: Metadata = {
     robots: { index: false, follow: false },
 }
 
-function SectionSkeleton() {
-    return (
-        <div className="space-y-4 animate-pulse">
-            <div className="h-3 w-20 bg-muted rounded" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {[0, 1, 2].map((i) => (
-                    <div key={i} className="h-20 bg-muted border border-border rounded-none" />
-                ))}
-            </div>
-            <div className="h-48 bg-muted border border-border rounded-none" />
-        </div>
-    )
-}
-
 export default async function SecureAdminPage() {
-    const user = await getCachedSession()
-
-    if (!isSuperAdmin(user?.email)) return notFound()
-
-    const email = user!.email!
+    if (!(await fetchIsAdmin())) return notFound()
 
     return (
         <>
@@ -72,25 +54,25 @@ export default async function SecureAdminPage() {
 
                     <TabsContent value="feedback">
                         <Suspense fallback={<SectionSkeleton />}>
-                            <AdminFeedbackSection email={email} />
+                            <AdminFeedbackSection />
                         </Suspense>
                     </TabsContent>
 
                     <TabsContent value="users">
                         <Suspense fallback={<SectionSkeleton />}>
-                            <AdminUsersSection email={email} />
+                            <AdminUsersSection />
                         </Suspense>
                     </TabsContent>
 
                     <TabsContent value="reports">
                         <Suspense fallback={<SectionSkeleton />}>
-                            <AdminReportsSection email={email} />
+                            <AdminReportsSection />
                         </Suspense>
                     </TabsContent>
 
                     <TabsContent value="logs">
                         <Suspense fallback={<SectionSkeleton />}>
-                            <AdminLogsSection email={email} />
+                            <AdminLogsSection />
                         </Suspense>
                     </TabsContent>
                 </Tabs>

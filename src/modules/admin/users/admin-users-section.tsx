@@ -12,12 +12,8 @@ import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
 import { fetchAdminStats, fetchAdminUsers } from '@/modules/admin/shared/admin-queries'
 import { parseReportDate } from '@/lib/formatters'
 
-type Props = {
-    email: string
-}
-
-export async function AdminUsersSection({ email }: Props) {
-    const [stats, users] = await Promise.all([fetchAdminStats(email), fetchAdminUsers(email)])
+export async function AdminUsersSection() {
+    const [stats, users] = await Promise.all([fetchAdminStats(), fetchAdminUsers()])
 
     const sortedUsers = users.toSorted(
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()

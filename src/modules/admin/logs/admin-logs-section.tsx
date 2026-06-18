@@ -3,12 +3,8 @@ import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
 import { LogsExplorer } from '@/modules/admin/logs/logs-explorer'
 import { fetchAdminLogs } from '@/modules/admin/shared/admin-queries'
 
-type Props = {
-    email: string
-}
-
-export async function AdminLogsSection({ email }: Props) {
-    const logs = await fetchAdminLogs(email)
+export async function AdminLogsSection() {
+    const logs = await fetchAdminLogs()
 
     const errors = logs.filter((log) => log.level === 'error').length
     const warnings = logs.filter((log) => log.level === 'warn').length

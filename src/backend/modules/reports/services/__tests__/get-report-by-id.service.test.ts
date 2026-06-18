@@ -3,17 +3,17 @@ import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { getReportById } from '@/backend/modules/reports/services/get-report-by-id.service'
 
-const { createSbServerClientMock, isSuperAdminMock, selectReportByIdMock, selectStockDataMock } =
+const { createSbServerClientMock, isAdminMock, selectReportByIdMock, selectStockDataMock } =
     vi.hoisted(() => ({
         createSbServerClientMock: vi.fn(),
-        isSuperAdminMock: vi.fn(),
+        isAdminMock: vi.fn(),
         selectReportByIdMock: vi.fn(),
         selectStockDataMock: vi.fn(),
     }))
 
 vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
-vi.mock('@/backend/modules/admin/helpers/is-super-admin.helper', () => ({
-    isSuperAdmin: isSuperAdminMock,
+vi.mock('@/backend/modules/admin/services/is-admin.service', () => ({
+    isAdmin: isAdminMock,
 }))
 vi.mock('@/backend/modules/reports/repositories/reports.repository', () => ({
     selectReportById: selectReportByIdMock,
@@ -28,7 +28,7 @@ const SUPABASE = { from: vi.fn() }
 describe('getReportById', () => {
     beforeEach(() => {
         createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
-        isSuperAdminMock.mockReset().mockReturnValue(false)
+        isAdminMock.mockReset().mockReturnValue(Effect.succeed(false))
         selectReportByIdMock.mockReset().mockReturnValue(Effect.succeed(REPORT))
         selectStockDataMock.mockReset().mockReturnValue(Effect.succeed(STOCK_DATA))
     })
@@ -42,10 +42,10 @@ describe('getReportById', () => {
     })
 
     it('skips the ownership filter for super admins', async () => {
-        isSuperAdminMock.mockReturnValue(true)
+        isAdminMock.mockReturnValue(Effect.succeed(true))
 
         await Effect.runPromise(getReportById(USER, 'r-1'))
-        expect(isSuperAdminMock).toHaveBeenCalledWith('user@example.com')
+        expect(isAdminMock).toHaveBeenCalledWith(SUPABASE)
         expect(selectReportByIdMock).toHaveBeenCalledWith(SUPABASE, 'r-1', undefined)
     })
 

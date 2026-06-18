@@ -49,7 +49,6 @@ export default async function SecureAdminPage() {
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="reports">Reports</TabsTrigger>
                         <TabsTrigger value="logs">Logs</TabsTrigger>
-                        <TabsTrigger value="actions">Actions</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="feedback">

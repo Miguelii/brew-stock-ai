@@ -25,5 +25,5 @@ jobs:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
             - run: pnpm exec playwright install --with-deps chromium
-            - run: pnpm build
+            - run: node --run build
             - run: pnpm e2e

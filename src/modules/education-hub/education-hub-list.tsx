@@ -34,7 +34,7 @@ export function EducationHubList() {
 
     return (
         <section>
-            <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">
+            <div className="max-w-7xl mx-auto px-6 pb-12 lg:pb-16">
                 <div className="flex flex-wrap gap-2 mb-10">
                     {FILTERS.map((filter) => {
                         const isActive = active === filter.value

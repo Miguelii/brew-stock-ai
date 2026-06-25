@@ -24,6 +24,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
-            - run: node --run exec playwright install --with-deps chromium
+            - run: pnpm exec playwright install --with-deps chromium
             - run: node --run build
-            - run: node --run e2e
+            - run: pnpm e2e

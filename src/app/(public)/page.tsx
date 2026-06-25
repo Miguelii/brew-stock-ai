@@ -1,6 +1,7 @@
 import { Hero } from '@/modules/home/hero'
 import { AnalysisCard } from '@/modules/home/analysis-card'
 import { HowItWorks } from '@/modules/home/how-it-works'
+import { FeaturedArticles } from '@/modules/home/featured-articles'
 import { WordRevealCard } from '@/modules/home/word-reveal-card'
 import { PricingCard } from '@/modules/home/pricing-card'
 import { FinalCTA } from '@/modules/home/final-cta'
@@ -28,6 +29,9 @@ export default function HomePage() {
 
                 {/* What the product does + how it works (static prose) */}
                 <HowItWorks />
+
+                {/* Featured education-hub articles — surfaces long-form content + internal links */}
+                <FeaturedArticles />
 
                 {/* Scrubbing text reveal */}
                 <WordRevealCard words={HOME_REVEAL_WORDS} />

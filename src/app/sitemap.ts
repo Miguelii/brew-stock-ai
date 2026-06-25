@@ -1,6 +1,7 @@
 import { ClientEnv } from '@/env/client'
 import { EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
 import { CHANGELOG_ENTRIES } from '@/lib/changelog'
+import { TICKER_PAGES, isTickerEnriched } from '@/lib/ticker-pages'
 import type { MetadataRoute } from 'next'
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
@@ -12,6 +13,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: new Date(a.publishedAt),
         priority: 0.8,
     }))
+
+    // Only enriched ticker pages are indexable, so only they belong in the sitemap.
+    const tickerRoutes: MetadataRoute.Sitemap = TICKER_PAGES.filter((t) => isTickerEnriched(t)).map(
+        (t) => ({
+            url: `${siteUrl}/analysis/${t.slug}`,
+            changeFrequency: 'monthly',
+            lastModified: new Date(),
+            priority: 0.7,
+        })
+    )
 
     const changelogRoutes: MetadataRoute.Sitemap = CHANGELOG_ENTRIES.map((e) => ({
         url: `${siteUrl}/changelog/${e.slug}`,
@@ -77,6 +88,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
         ...educationHubRoutes,
         ...changelogRoutes,
+        ...tickerRoutes,
         {
             url: `${siteUrl}/privacy`,
             changeFrequency: 'monthly',

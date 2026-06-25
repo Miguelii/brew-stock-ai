@@ -1,7 +1,8 @@
 /* eslint-disable max-lines -- static file intentional exception */
-import type { TickerPage } from '@/types/TickerPage'
+import type { TickerContent, TickerPage } from '@/types/TickerPage'
+import { TICKER_CONTENT } from '@/lib/ticker-content'
 
-export const TICKER_PAGES: TickerPage[] = [
+const TICKER_PAGES_BASE: TickerPage[] = [
     // Technology
     {
         ticker: 'AAPL',
@@ -1259,5 +1260,16 @@ export const TICKER_PAGES: TickerPage[] = [
             'Coursera Inc. is a leading online learning platform offering university-level courses, professional certificates, and degrees from 300+ global institutions.',
     },
 ]
+
+/** Base ticker list merged with long-form editorial content keyed by slug. */
+export const TICKER_PAGES: TickerPage[] = TICKER_PAGES_BASE.map((ticker) => {
+    const content = TICKER_CONTENT[ticker.slug]
+    return content ? { ...ticker, content } : ticker
+})
+
+/** A ticker is treated as indexable only once it has long-form `content`. */
+export const isTickerEnriched = (
+    ticker: TickerPage
+): ticker is TickerPage & { content: TickerContent } => ticker.content != null
 
 export const TICKER_PAGE_MAP = new Map(TICKER_PAGES.map((t) => [t.slug, t]))

@@ -52,6 +52,7 @@ export const STATIC_PREFIXES = [
     '/android-chrome-512x512.png',
     CHROMIUM_PACK_PATH,
     '/ads.txt',
+    '/google65ae1c769c12f01e.html',
 ]
 
 export const AUTH_PAGE_PATH = '/auth'

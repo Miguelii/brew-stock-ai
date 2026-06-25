@@ -25,8 +25,8 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
-            - run: pnpm lint
-            - run: pnpm knip
+            - run: node --run lint
+            - run: node --run knip
 
     typecheck:
         name: Typecheck
@@ -35,8 +35,8 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
-            - run: pnpm build
-            - run: pnpm typecheck
+            - run: node --run build
+            - run: node --run typecheck
 
     unit:
         name: Unit Tests
@@ -45,7 +45,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
-            - run: pnpm test
+            - run: node --run test
 
     build:
         name: Build
@@ -54,4 +54,4 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/setup
-            - run: pnpm build
+            - run: node --run build

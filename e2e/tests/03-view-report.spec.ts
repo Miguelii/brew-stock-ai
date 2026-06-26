@@ -67,9 +67,11 @@ test.describe('View report page', () => {
         const section = page.locator('#key-metrics')
 
         await expect(section.getByText('Key Financial Metrics')).toBeVisible()
-        await expect(section.getByText('Revenue & Profitability')).toBeVisible()
-        await expect(section.getByText('Valuation & Returns')).toBeVisible()
-        await expect(section.getByText('Financial Health')).toBeVisible()
+        // Metrics are grouped into graded category scorecards
+        await expect(section.getByText('Growth', { exact: true })).toBeVisible()
+        await expect(section.getByText('Profitability', { exact: true })).toBeVisible()
+        await expect(section.getByText('Valuation', { exact: true })).toBeVisible()
+        await expect(section.getByText('Financial Health', { exact: true })).toBeVisible()
     })
 
     test('"Key Financial Metrics" section renders the fundamentals blocks', async ({ page }) => {
@@ -77,16 +79,14 @@ test.describe('View report page', () => {
 
         const section = page.locator('#key-metrics')
 
-        // Forward estimates — the '+1q' period maps to a friendly "Next Quarter" label
-        await expect(section.getByText('Forward Estimates')).toBeVisible()
+        // Forward estimates fold into the Growth card — '+1q' maps to a friendly "Next Quarter" label
         await expect(section.getByText('Next Quarter EPS')).toBeVisible()
 
         // Earnings history with a beat badge (epsActual > epsEstimate)
         await expect(section.getByText('Earnings vs estimates')).toBeVisible()
         await expect(section.getByText(/Beat/i)).toBeVisible()
 
-        // Multi-year revenue trend — endDate 2025-09-30 yields a "Revenue 2025" tile
-        await expect(section.getByText('Revenue Trend')).toBeVisible()
+        // Multi-year revenue trend folds into the Growth card — endDate 2025-09-30 yields a "Revenue 2025" row
         await expect(section.getByText('Revenue 2025')).toBeVisible()
 
         // Insider activity — negative net shares reads as net selling

@@ -1,4 +1,4 @@
-import { RANGES } from './constants'
+import { RANGES } from '@/modules/report-view/report-market-outlook-card/stock-price-chart/constants'
 
 export function StockPriceChartSkeleton() {
     return (

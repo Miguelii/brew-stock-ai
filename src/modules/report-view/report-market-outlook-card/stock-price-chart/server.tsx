@@ -1,6 +1,6 @@
 import { createCaller } from '@/_trpc/server/caller'
-import { StockPriceChart } from '@/modules/report-view/report-financials-card/stock-price-chart-lazy'
 import type { ReportDTO } from '@/types/ReportDTO'
+import { StockPriceChartLazy } from './lazy'
 
 type PricePoint = { date: number; close: number }
 
@@ -18,5 +18,5 @@ export async function StockPriceChartServer({ ticker, low, high }: Props) {
         data = await caller.yahoo.getPriceHistory({ ticker }).catch(() => [])
     }
 
-    return <StockPriceChart data={data} low={low} high={high} />
+    return <StockPriceChartLazy data={data} low={low} high={high} />
 }

@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { ReportDTO, StockFinancials, StockFundamentals } from '@/types/ReportDTO'
 import { AnalystTargets } from '@/modules/report-view/report-financials-card/analyst-targets'
 import { AnalystRatingsBar } from '@/modules/report-view/report-financials-card/analyst-ratings'
-import { StockPriceChartServer } from '@/modules/report-view/report-financials-card/stock-price-chart-server'
-import { StockPriceChartSkeleton } from '@/modules/report-view/report-financials-card/stock-price-chart-skeleton'
+import { StockPriceChartSkeleton } from './stock-price-chart/skeleton'
+import { StockPriceChartServer } from './stock-price-chart/server'
 
 type Props = {
     financials: StockFinancials | null

@@ -12,7 +12,11 @@ import {
 } from 'recharts'
 import { cn } from '@/lib/utils'
 import { fmtDate, fmtPrice, formatXAxis } from '@/lib/formatters'
-import { RANGE_DAYS, RANGES, type Range } from './constants'
+import {
+    RANGE_DAYS,
+    RANGES,
+    type Range,
+} from '@/modules/report-view/report-market-outlook-card/stock-price-chart/constants'
 
 type PricePoint = { date: number; close: number }
 

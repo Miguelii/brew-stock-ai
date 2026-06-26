@@ -11,11 +11,9 @@ type Props = {
     fundamentals: StockFundamentals | null
 }
 
-export function ReportFinancialsCard({ financials, fundamentals }: Props) {
-    const f = financials
-
-    // Forward analyst estimates (next quarter / year) — EPS and revenue with growth.
-    const forwardRows: MetricTile[] = (fundamentals?.forwardEstimates ?? []).flatMap((e) => {
+// Forward analyst estimates (next quarter / year) — EPS and revenue with growth.
+function getForwardRows(fundamentals: StockFundamentals | null): MetricTile[] {
+    return (fundamentals?.forwardEstimates ?? []).flatMap((e) => {
         const epsValue =
             e.epsAvg != null
                 ? `${fmtNum(e.epsAvg)}${e.epsGrowth != null ? ` · ${fmtPct(e.epsGrowth)}` : ''}`
@@ -39,9 +37,11 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
             },
         ]
     })
+}
 
-    // Multi-year revenue and net-income trend (net income graded, revenue as context).
-    const revenueTrendRows: MetricTile[] = (fundamentals?.revenueTrend ?? []).flatMap((r) => {
+// Multi-year revenue and net-income trend (net income graded, revenue as context).
+function getRevenueTrendRows(fundamentals: StockFundamentals | null): MetricTile[] {
+    return (fundamentals?.revenueTrend ?? []).flatMap((r) => {
         const year = r.endDate ? r.endDate.slice(0, 4) : '—'
         return [
             {
@@ -53,8 +53,13 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
             { label: `Revenue ${year}`, value: fmtLarge(r.totalRevenue), context: true },
         ]
     })
+}
 
-    const growth: MetricTile[] = [
+function getGrowth(
+    f: StockFinancials | null,
+    fundamentals: StockFundamentals | null
+): MetricTile[] {
+    return [
         {
             label: 'Revenue Growth',
             value: fmtPct(f?.revenueGrowth),
@@ -67,12 +72,14 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
             rawValue: f?.earningsGrowth ?? null,
             metricKey: 'earningsGrowth',
         },
-        ...forwardRows,
-        ...revenueTrendRows,
+        ...getForwardRows(fundamentals),
+        ...getRevenueTrendRows(fundamentals),
         { label: 'Total Revenue', value: fmtLarge(f?.totalRevenue), context: true },
     ]
+}
 
-    const profitability: MetricTile[] = [
+function getProfitability(f: StockFinancials | null): MetricTile[] {
+    return [
         {
             label: 'Profit Margin',
             value: fmtPct(f?.profitMargins),
@@ -98,8 +105,10 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
             metricKey: 'returnOnEquity',
         },
     ]
+}
 
-    const valuation: MetricTile[] = [
+function getValuation(f: StockFinancials | null): MetricTile[] {
+    return [
         {
             label: 'Price / Earnings',
             value: fmtX(f?.trailingPE),
@@ -133,8 +142,10 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
         { label: 'Company Value', value: fmtLarge(f?.marketCap), context: true },
         { label: 'Total Value incl. Debt', value: fmtLarge(f?.enterpriseValue), context: true },
     ]
+}
 
-    const health: MetricTile[] = [
+function getHealth(f: StockFinancials | null): MetricTile[] {
+    return [
         {
             label: 'Free Cash Flow',
             value: fmtLarge(f?.freeCashflow),
@@ -155,7 +166,9 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
         },
         { label: 'Total Debt', value: fmtLarge(f?.totalDebt), context: true },
     ]
+}
 
+export function ReportFinancialsCard({ financials, fundamentals }: Props) {
     const earningsHistory = fundamentals?.earningsHistory ?? []
     const insiders = fundamentals?.insiders ?? null
 
@@ -169,21 +182,25 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
                     <CategoryCard
                         title="Valuation"
                         question="Cheap or expensive?"
-                        metrics={valuation}
+                        metrics={getValuation(financials)}
                     />
                     <CategoryCard
                         title="Profitability"
                         question="Does it make good money?"
-                        metrics={profitability}
+                        metrics={getProfitability(financials)}
                     />
                     <CategoryCard
                         title="Financial Health"
                         question="Can it cover its debts?"
-                        metrics={health}
+                        metrics={getHealth(financials)}
                     />
                 </div>
 
-                <CategoryCard title="Growth" question="Is it growing?" metrics={growth} />
+                <CategoryCard
+                    title="Growth"
+                    question="Is it growing?"
+                    metrics={getGrowth(financials, fundamentals)}
+                />
 
                 {earningsHistory.length > 0 && <EarningsHistory history={earningsHistory} />}
 

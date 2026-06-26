@@ -45,10 +45,10 @@ export function EducationHubList() {
                                 onClick={() => setActive(filter.value)}
                                 aria-pressed={isActive}
                                 className={cn(
-                                    'rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200',
+                                    'rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 border border-border',
                                     isActive
                                         ? 'bg-primary text-primary-foreground'
-                                        : 'border border-border text-muted-foreground hover:text-primary hover:border-primary/40'
+                                        : 'text-muted-foreground hover:text-primary hover:border-primary/40'
                                 )}
                             >
                                 {filter.label}

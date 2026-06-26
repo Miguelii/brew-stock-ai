@@ -5,13 +5,17 @@ import { FeaturedArticles } from '@/modules/home/featured-articles'
 import { WordRevealCard } from '@/modules/home/word-reveal-card'
 import { PricingCard } from '@/modules/home/pricing-card'
 import { FinalCTA } from '@/modules/home/final-cta'
-import { HOME_REVEAL_WORDS } from '@/lib/revel-words'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 
 export const dynamic = 'force-static'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
+
+const HOME_REVEAL_WORDS =
+    'You type a ticker. Our AI analyzes all the data and you get institutional-grade analysis. In under 120 seconds.'.split(
+        ' '
+    )
 
 export default function HomePage() {
     return (

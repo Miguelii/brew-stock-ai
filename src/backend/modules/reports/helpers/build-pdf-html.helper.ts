@@ -1,6 +1,6 @@
 // oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
-import { getSentimentInfo, getRiskLevelInfo } from '@/lib/sentiment'
+import { getSentimentInfo, getRiskLevelInfo } from '@/lib/analysis/sentiment'
 import {
     fmtLarge,
     fmtPct,

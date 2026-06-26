@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- static file intentional exception */
 import type { TickerContent, TickerPage } from '@/types/TickerPage'
-import { TICKER_CONTENT } from '@/lib/ticker-content'
+import { TICKER_CONTENT } from '@/lib/ticker/ticker-content'
 
 const TICKER_PAGES_BASE: TickerPage[] = [
     // Technology
@@ -1272,4 +1272,20 @@ export const isTickerEnriched = (
     ticker: TickerPage
 ): ticker is TickerPage & { content: TickerContent } => ticker.content != null
 
-export const TICKER_PAGE_MAP = new Map(TICKER_PAGES.map((t) => [t.slug, t]))
+/**
+ * Case-insensitive lookup keyed by both the lowercased slug AND the lowercased
+ * ticker symbol. Tickers are added first so a slug always wins on the unlikely
+ * event of a slug/ticker collision (the slug is the canonical identity).
+ */
+const TICKER_LOOKUP = new Map<string, TickerPage>()
+for (const t of TICKER_PAGES) TICKER_LOOKUP.set(t.ticker.toLowerCase(), t)
+for (const t of TICKER_PAGES) TICKER_LOOKUP.set(t.slug.toLowerCase(), t)
+
+/**
+ * Resolve a ticker page from a raw route param, matching either the slug or the
+ * ticker symbol, case-insensitively (e.g. `google`, `GOOGL`, `googl` all resolve
+ * to Alphabet). `generateStaticParams` still emits only canonical slugs — this
+ * just lets the dynamic route additionally serve ticker- and uppercase-based URLs.
+ */
+export const resolveTickerPage = (param: string): TickerPage | undefined =>
+    TICKER_LOOKUP.get(param.toLowerCase())

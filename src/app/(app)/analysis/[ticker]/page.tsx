@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
 import { getCachedSession } from '@/backend/modules/auth/services/get-cached-session.service'
-import { TICKER_PAGES, TICKER_PAGE_MAP, isTickerEnriched } from '@/lib/ticker-pages'
+import { TICKER_PAGES, resolveTickerPage, isTickerEnriched } from '@/lib/ticker/ticker-pages'
 import { AnalysisHero } from '@/components/analysis-hero'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
 import { AdBlock } from '@/components/ad-block'
@@ -20,7 +20,7 @@ const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { ticker } = await params
-    const page = TICKER_PAGE_MAP.get(ticker)
+    const page = resolveTickerPage(ticker)
     if (!page) return {}
 
     const pageUrl = `${SITE_URL}/analysis/${page.slug}`
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TickerPage({ params }: Props) {
     const { ticker } = await params
-    const page = TICKER_PAGE_MAP.get(ticker)
+    const page = resolveTickerPage(ticker)
 
     if (!page) notFound()
 

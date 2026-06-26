@@ -1,7 +1,7 @@
 import { ClientEnv } from '@/env/client'
 import { EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
-import { CHANGELOG_ENTRIES } from '@/lib/changelog'
-import { TICKER_PAGES, isTickerEnriched } from '@/lib/ticker-pages'
+import { CHANGELOG_ENTRIES } from '@/lib/change-log/changelog'
+import { TICKER_PAGES, isTickerEnriched } from '@/lib/ticker/ticker-pages'
 import type { MetadataRoute } from 'next'
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL

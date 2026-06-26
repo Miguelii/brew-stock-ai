@@ -3,10 +3,8 @@ import Link from 'next/link'
 import * as motion from 'motion/react-client'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-
 import { FinalCTA } from '@/modules/home/final-cta'
 import { WordRevealCard } from '@/modules/home/word-reveal-card'
-import { REPORT_REVEAL_WORDS } from '@/lib/revel-words'
 import { ReportMarketingCard } from '@/modules/home/report-marketing-card'
 import { ReportMacbookScroll } from '@/modules/home/report-macbook-scroll'
 import { ClientEnv } from '@/env/client'
@@ -42,6 +40,11 @@ const stats = [
     { value: '< 2min', label: 'Generation time' },
     { value: 'Free', label: 'First report' },
 ] as const
+
+export const REPORT_REVEAL_WORDS =
+    'Every risk surfaced. Every number explained. Every opportunity quantified. In under two minutes.'.split(
+        ' '
+    )
 
 export default function ExampleReport() {
     return (

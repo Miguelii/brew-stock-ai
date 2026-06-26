@@ -4,7 +4,7 @@ import type { TickerContent } from '@/types/TickerPage'
 /**
  * Long-form, unique editorial content keyed by ticker slug. A ticker is only
  * treated as indexable once it has an entry here (see `isTickerEnriched` in
- * `@/lib/ticker-pages`). Add entries incrementally; every entry must be
+ * `@/lib/ticker/ticker-pages`). Add entries incrementally; every entry must be
  * accurate, durable, and qualitative — never fabricate specific figures.
  */
 export const TICKER_CONTENT: Record<string, TickerContent> = {

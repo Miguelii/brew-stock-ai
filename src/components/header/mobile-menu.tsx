@@ -39,7 +39,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                             aria-label="Open menu"
                             onClick={() => setOpen(true)}
                             className={cn(
-                                'flex items-center justify-center h-9 w-9 rounded-sm border border-border bg-card',
+                                'flex items-center justify-center h-9 w-9 rounded-none border border-border bg-card',
                                 'text-primary transition-all duration-200 hover:bg-muted active:scale-95'
                             )}
                         >
@@ -52,7 +52,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
             </div>
 
             <Drawer open={open} onOpenChange={setOpen} direction="right">
-                <DrawerContent className="w-70 bg-card p-0 border-l border-border flex flex-col rounded-none!">
+                <DrawerContent className="w-70 bg-card p-0 border-l border-border flex flex-col rounded-none! z-98">
                     {/* Header */}
                     <div className="flex items-center justify-between h-16 px-5 border-b border-border shrink-0">
                         <div className="flex items-center gap-1.5">
@@ -64,7 +64,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                         <DrawerClose asChild>
                             <button
                                 aria-label="Close menu"
-                                className="flex items-center justify-center h-8 w-8 rounded-sm text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
+                                className="flex items-center justify-center h-8 w-8 rounded-none text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
                             >
                                 <X size={16} />
                             </button>
@@ -78,7 +78,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                 <Link
                                     href={link.href}
                                     prefetch={false}
-                                    className="flex items-center px-3 py-2.5 rounded-sm text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
+                                    className="flex items-center px-3 py-2.5 rounded-none text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
                                 >
                                     {link.label}
                                 </Link>
@@ -95,7 +95,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                     <Link
                                         href="/account"
                                         prefetch={false}
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-primary transition-colors hover:bg-muted"
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-medium text-primary transition-colors hover:bg-muted"
                                     >
                                         {avatar_url ? (
                                             <Image
@@ -115,7 +115,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                 <button
                                     onClick={onClickHandler}
                                     disabled={logout.isPending}
-                                    className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-primary transition-colors hover:bg-muted"
+                                    className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-medium text-primary transition-colors hover:bg-muted"
                                 >
                                     <LogOut size={16} />
                                     {logout.isPending ? 'Logging out…' : 'Logout'}

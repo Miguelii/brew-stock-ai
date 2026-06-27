@@ -18,12 +18,12 @@ export function InsiderActivitySummary({ insiders }: Props) {
           : 'text-destructive'
 
     return (
-        <div className="flex flex-col rounded-md border border-border/60 bg-muted/30 p-4 gap-1.5">
+        <div className="flex flex-col rounded-none border border-border/60 bg-muted/30 p-4 gap-1.5">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 Insider activity
             </span>
 
-            <div className="flex items-center justify-between gap-2 px-3 py-2 bg-muted/40 rounded-sm">
+            <div className="flex items-center justify-between gap-2 px-3 py-2">
                 <span className="text-xs text-muted-foreground">
                     {buyCount} buys / {sellCount} sells
                 </span>

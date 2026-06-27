@@ -11,7 +11,7 @@ type Props = {
 export function ChangelogMeta({ version, tags, publishedAt }: Props) {
     return (
         <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-[11px] font-mono font-semibold text-accent-blue">
+            <span className="inline-flex items-center rounded-none border border-border px-2.5 py-0.5 text-[11px] font-mono font-semibold text-accent-blue">
                 {version}
             </span>
             {tags.map((tag) => (

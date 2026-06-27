@@ -6,7 +6,7 @@
  * advice — and are intentionally easy to tune in one place.
  */
 
-type MetricQuality = 'good' | 'neutral' | 'caution' | 'concern'
+export type MetricQuality = 'good' | 'neutral' | 'caution' | 'concern'
 
 export type MetricKey =
     | 'revenueGrowth'

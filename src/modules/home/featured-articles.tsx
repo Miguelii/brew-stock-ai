@@ -35,7 +35,7 @@ export function FeaturedArticles() {
                             <Link
                                 href={`/education-hub/${article.slug}`}
                                 prefetch={false}
-                                className="group flex h-full flex-col gap-3 p-6 border border-border rounded-xl bg-card transition-shadow duration-300 hover:shadow-lg hover:shadow-black/5 hover:border-accent-blue/30"
+                                className="group flex h-full flex-col gap-3 p-6 border border-border rounded-none bg-card transition-shadow duration-300 hover:shadow-lg hover:shadow-black/5 hover:border-accent-blue/30"
                             >
                                 <span className="text-xs font-semibold tracking-widest uppercase text-accent-blue">
                                     {EDUCATION_HUB_THEME_LABELS[article.theme]}

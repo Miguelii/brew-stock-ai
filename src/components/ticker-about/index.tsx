@@ -68,7 +68,7 @@ function TickerAboutEnriched({ ticker, content }: EnrichedProps) {
                         {content.keyProducts.map((item) => (
                             <li
                                 key={item}
-                                className="flex items-start gap-3 p-4 border border-border rounded-xl bg-card"
+                                className="flex items-start gap-3 p-4 border border-border rounded-none bg-card"
                             >
                                 <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent-blue" />
                                 <span className="text-primary-muted text-sm leading-relaxed">
@@ -287,11 +287,11 @@ function TickerAboutOverview({ ticker }: OverviewProps) {
                                     }}
                                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                                     className={cn(
-                                        'group p-6 border border-border rounded-xl bg-card cursor-default transition-shadow duration-300 hover:shadow-lg hover:shadow-black/5 hover:border-accent-blue/30',
+                                        'group p-6 border border-border rounded-none bg-card cursor-default transition-shadow duration-300 hover:shadow-lg hover:shadow-black/5 hover:border-accent-blue/30',
                                         item.wide && 'sm:col-span-2'
                                     )}
                                 >
-                                    <div className="w-9 h-9 rounded-xl bg-accent-blue/10 flex items-center justify-center mb-4 shrink-0">
+                                    <div className="w-9 h-9 rounded-none bg-accent-blue/10 flex items-center justify-center mb-4 shrink-0">
                                         <span className="text-accent-blue font-bold text-sm">
                                             {i + 1}
                                         </span>

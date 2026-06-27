@@ -65,7 +65,7 @@ export function StockPriceChart({ data, low, high }: Props) {
 
     if (!data?.length) {
         return (
-            <div className="flex h-52 items-center justify-center rounded-sm bg-muted/40">
+            <div className="flex h-52 items-center justify-center rounded-none bg-muted/40">
                 <span className="text-xs text-muted-foreground">No price data available</span>
             </div>
         )

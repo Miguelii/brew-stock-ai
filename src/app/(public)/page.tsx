@@ -29,7 +29,6 @@ export default function HomePage() {
                 <AnalysisCard />
 
                 {/* Features */}
-                {/* <MarketingCard /> */}
 
                 {/* What the product does + how it works (static prose) */}
                 <HowItWorks />

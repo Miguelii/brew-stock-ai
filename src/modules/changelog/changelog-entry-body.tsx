@@ -15,7 +15,7 @@ export function ChangelogEntryBody({ entry }: Props) {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="mb-10 rounded-xl border border-border bg-card p-6"
+                    className="mb-10 rounded-none border border-border bg-card p-6"
                 >
                     <p className="text-xs font-semibold tracking-widest uppercase text-accent-blue mb-4">
                         What is new

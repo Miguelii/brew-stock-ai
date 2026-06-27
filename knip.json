@@ -6,8 +6,7 @@
         "trigger.config.ts",
         "src/env/server.ts",
         "src/env/client.ts",
-        "src/lib/utils.ts",
-        "src/modules/home/marketing-card.tsx"
+        "src/lib/utils.ts"
     ],
     "ignore": ["src/components/ui/**", "e2e/**"]
 }

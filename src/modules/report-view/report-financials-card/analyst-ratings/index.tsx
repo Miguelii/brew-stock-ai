@@ -24,7 +24,7 @@ export function AnalystRatingsBar({ ratings }: Props) {
                 Analyst recommendations ({total})
             </span>
 
-            <div className="flex h-2.5 w-full overflow-hidden rounded-sm bg-muted">
+            <div className="flex h-2.5 w-full overflow-hidden rounded bg-muted">
                 {SEGMENTS.map((s) => {
                     const count = ratings[s.key]
                     if (count === 0) return null

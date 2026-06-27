@@ -223,11 +223,25 @@ describe('buildFinancialsSection', () => {
         expect(html).not.toContain('Key Financial Metrics')
     })
 
-    it('renders all three group titles', () => {
+    it('renders the four category cards with their questions', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
-        expect(html).toContain('Revenue &amp; Profitability')
-        expect(html).toContain('Valuation &amp; Returns')
+        expect(html).toContain('Valuation')
+        expect(html).toContain('Cheap or expensive?')
+        expect(html).toContain('Profitability')
+        expect(html).toContain('Does it make good money?')
         expect(html).toContain('Financial Health')
+        expect(html).toContain('Can it cover its debts?')
+        expect(html).toContain('Growth')
+        expect(html).toContain('Is it growing?')
+    })
+
+    it('renders category grade badges and per-metric verdicts', () => {
+        const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
+        expect(html).toContain('fin-cat-card')
+        expect(html).toContain('fin-grade')
+        // baseFinancials.trailingPE = 30.4 → "Rich" verdict; profitMargins 0.253 → "Strong margin".
+        expect(html).toContain('Rich')
+        expect(html).toContain('Strong margin')
     })
 
     it('renders the 52-week range section with formatted prices', () => {
@@ -379,13 +393,14 @@ describe('buildPdfHtml fundamentals section', () => {
 
     it('renders all fundamentals blocks with friendly period labels', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFundamentals(baseFundamentals) })
+        // Analyst recommendations stay in the Market & Analyst Outlook section.
         expect(html).toContain('Analyst recommendations (41)')
         expect(html).toContain('Strong Buy')
-        expect(html).toContain('Forward Estimates')
+        // Forward estimates & revenue trend now render as rows inside the Growth card.
         expect(html).toContain('Next Quarter EPS')
+        expect(html).toContain('Net Income 2023')
         expect(html).toContain('Earnings vs estimates')
         expect(html).toContain('Beat')
-        expect(html).toContain('Revenue Trend')
         expect(html).toContain('Insider activity')
         expect(html).toContain('Net selling')
     })

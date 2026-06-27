@@ -1,17 +1,22 @@
 // oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/lib/analysis/sentiment'
-import {
-    fmtLarge,
-    fmtPct,
-    fmtX,
-    fmtNum,
-    fmtPrice,
-    fmtDate,
-    fmtEstimatePeriod,
-    escapeHtml,
-} from '@/lib/formatters'
+import { fmtPct, fmtNum, fmtPrice, fmtDate, escapeHtml } from '@/lib/formatters'
 import { sanitizeReportHtml } from '@/backend/modules/reports/helpers/sanitize-report-html.helper'
+import {
+    evaluateMetric,
+    gradeCategory,
+    gradeWord,
+    metricHelp,
+    type MetricQuality,
+} from '@/modules/report-view/report-financials-card/metric-quality'
+import {
+    getGrowth,
+    getHealth,
+    getProfitability,
+    getValuation,
+} from '@/modules/report-view/report-financials-card/metric-builders'
+import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type {
     ReportDTO,
@@ -157,38 +162,109 @@ function buildAnalystOutlookFinancials(f: StockFinancials): string {
     </div>`
 }
 
-// "Key Financial Metrics" portion: the three metric groups.
-function buildFinancialMetricsGroups(f: StockFinancials): string {
+// Quality → inline colors for the PDF, mirroring the page's semantic theme tokens
+// (text-positive / text-primary / text-warning / text-destructive and their tints).
+const QUALITY_HEX: Record<MetricQuality, string> = {
+    good: '#16a34a',
+    neutral: '#262626',
+    caution: '#b45309',
+    concern: '#ef4444',
+}
+const QUALITY_BG_HEX: Record<MetricQuality, string> = {
+    good: '#e8f5ee',
+    neutral: '#f5f5f7',
+    caution: '#fbf1e6',
+    concern: '#fdecec',
+}
+
+// One metric row inside a category card — mirrors the on-screen MetricRow:
+// label (+ optional plain-language help) on the left, value (+ verdict) on the right,
+// colored by the metric's quality. Context rows and N/A values are never graded.
+function buildMetricRow(m: MetricTile): string {
+    const isNA = m.value === 'N/A'
+    const evaluation = m.context || isNA ? null : evaluateMetric(m.metricKey, m.rawValue ?? null)
+    const help = m.context ? undefined : (m.helper ?? metricHelp(m.metricKey))
+    const hasVerdict = evaluation != null && evaluation.verdict !== 'N/A'
+
+    const color = isNA ? '#909097' : evaluation ? QUALITY_HEX[evaluation.quality] : '#262626'
+
+    const helpHtml = help ? `<div class="fin-metric-help">${escapeHtml(help)}</div>` : ''
+    const verdictHtml = hasVerdict
+        ? `<div class="fin-metric-verdict" style="color:${color};">${escapeHtml(evaluation.verdict)}</div>`
+        : ''
+
     return `
-    <div class="fin-group-title">Revenue &amp; Profitability</div>
-    <div class="fin-grid">
-        ${tile('Total Revenue', fmtLarge(f.totalRevenue), 'fin-tile-3')}
-        ${tile('Revenue Growth', fmtPct(f.revenueGrowth), 'fin-tile-3', true, f.revenueGrowth)}
-        ${tile('Earnings Growth', fmtPct(f.earningsGrowth), 'fin-tile-3', true, f.earningsGrowth)}
-        ${tile('EBITDA', fmtLarge(f.ebitda), 'fin-tile-3', true, f.ebitda)}
-        ${tile('Profit Margin', fmtPct(f.profitMargins), 'fin-tile-3', true, f.profitMargins)}
-        ${tile('Operating Margin', fmtPct(f.operatingMargins), 'fin-tile-3', true, f.operatingMargins)}
-    </div>
-
-    <div class="fin-group-title">Valuation &amp; Returns</div>
-    <div class="fin-grid">
-        ${tile('Market Cap', fmtLarge(f.marketCap), 'fin-tile')}
-        ${tile('Enterprise Value', fmtLarge(f.enterpriseValue), 'fin-tile')}
-        ${tile('P/E (TTM)', fmtX(f.trailingPE), 'fin-tile')}
-        ${tile('Forward P/E', fmtX(f.forwardPE), 'fin-tile')}
-        ${tile('Price/Book', fmtX(f.priceToBook), 'fin-tile')}
-        ${tile('Beta', fmtNum(f.beta), 'fin-tile')}
-        ${tile('Dividend Yield', fmtPct(f.dividendYield), 'fin-tile')}
-        ${tile('ROE', fmtPct(f.returnOnEquity), 'fin-tile', true, f.returnOnEquity)}
-    </div>
-
-    <div class="fin-group-title">Financial Health</div>
-    <div class="fin-grid">
-        ${tile('Free Cash Flow', fmtLarge(f.freeCashflow), 'fin-tile', true, f.freeCashflow)}
-        ${tile('Operating Cash Flow', fmtLarge(f.operatingCashflow), 'fin-tile', true, f.operatingCashflow)}
-        ${tile('Total Debt', fmtLarge(f.totalDebt), 'fin-tile')}
-        ${tile('Debt/Equity', fmtNum(f.debtToEquity), 'fin-tile')}
+    <div class="fin-metric-row">
+        <div class="fin-metric-main">
+            <div class="fin-metric-label">${escapeHtml(m.label)}</div>
+            ${helpHtml}
+        </div>
+        <div class="fin-metric-side">
+            <div class="fin-metric-value" style="color:${color};">${escapeHtml(m.value)}</div>
+            ${verdictHtml}
+        </div>
     </div>`
+}
+
+// One category card (Valuation / Profitability / Financial Health / Growth) — mirrors
+// the on-screen CategoryCard: title + question + letter grade badge, then metric rows.
+function buildCategoryCard(title: string, question: string, metrics: MetricTile[]): string {
+    const grade = gradeCategory(metrics)
+    const badge = grade
+        ? `<div class="fin-grade" style="background:${QUALITY_BG_HEX[grade.quality]};color:${QUALITY_HEX[grade.quality]};">
+               <span class="fin-grade-letter">${grade.letter}</span>
+               <span class="fin-grade-word">${gradeWord(grade.quality)}</span>
+           </div>`
+        : ''
+
+    return `
+    <div class="fin-cat-card">
+        <div class="fin-cat-head">
+            <div class="fin-cat-heading">
+                <span class="fin-cat-title">${escapeHtml(title)}</span>
+                <span class="fin-cat-question">${escapeHtml(question)}</span>
+            </div>
+            ${badge}
+        </div>
+        <div class="fin-cat-rows">${metrics.map((m) => buildMetricRow(m)).join('')}</div>
+    </div>`
+}
+
+// Insider activity summary block — mirrors the on-screen InsiderActivitySummary.
+function buildInsiderBlock(insiders: StockFundamentals['insiders']): string {
+    if (!insiders) return ''
+    const isNeutral = insiders.netShares == null || insiders.netShares === 0
+    const direction = isNeutral
+        ? 'Roughly neutral'
+        : insiders.netShares! > 0
+          ? 'Net buying'
+          : 'Net selling'
+    const color = isNeutral ? '#909097' : insiders.netShares! > 0 ? '#16a34a' : '#ef4444'
+    return `
+    <div class="fin-block">
+        <div class="fin-block-title">Insider activity</div>
+        <div class="fin-block-row">
+            <span style="color:#909097;">${insiders.buyCount} buys / ${insiders.sellCount} sells</span>
+            <span style="font-weight:600;color:${color};">${direction} (${fmtNum(insiders.netShares, 0)} shares)</span>
+        </div>
+    </div>`
+}
+
+// "Key Financial Metrics" portion: four graded category cards plus the earnings and
+// insider blocks — visually matching the on-screen ReportFinancialsCard.
+function buildKeyMetricsSection(
+    financials: StockFinancials | null,
+    fundamentals: StockFundamentals | null
+): string {
+    return `
+    <div class="fin-cat-grid">
+        ${buildCategoryCard('Valuation', 'Cheap or expensive?', getValuation(financials))}
+        ${buildCategoryCard('Profitability', 'Does it make good money?', getProfitability(financials))}
+        ${buildCategoryCard('Financial Health', 'Can it cover its debts?', getHealth(financials))}
+    </div>
+    ${buildCategoryCard('Growth', 'Is it growing?', getGrowth(financials, fundamentals))}
+    ${fundamentals ? buildEarningsHistoryBlock(fundamentals.earningsHistory) : ''}
+    ${fundamentals ? buildInsiderBlock(fundamentals.insiders) : ''}`
 }
 
 const RATING_SEGMENTS = [
@@ -234,7 +310,7 @@ function buildEarningsHistoryBlock(history: StockFundamentals['earningsHistory']
                     ? ''
                     : `<span style="font-weight:600;${beat ? 'color:#16a34a;' : 'color:#ef4444;'}">${beat ? 'Beat' : 'Miss'} ${fmtPct(q.surprisePercent)}</span>`
             return `
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px solid #eee;">
+            <div class="fin-block-row fin-block-row-sep">
                 <span style="color:#909097;">${escapeHtml(q.quarter ?? q.period)}</span>
                 <span style="color:#262626;">Act ${fmtNum(q.epsActual)} / Est ${fmtNum(q.epsEstimate)} &nbsp; ${badge}</span>
             </div>`
@@ -242,78 +318,10 @@ function buildEarningsHistoryBlock(history: StockFundamentals['earningsHistory']
         .join('')
 
     return `
-    <div class="fin-group-title">Earnings vs estimates</div>
-    <div style="margin-bottom:4px;">${rows}</div>`
-}
-
-function buildFundamentalsSection(f: StockFundamentals): string {
-    const forwardTiles = f.forwardEstimates
-        .map((e) => {
-            const epsValue =
-                e.epsAvg != null
-                    ? `${fmtNum(e.epsAvg)}${e.epsGrowth != null ? ` · ${fmtPct(e.epsGrowth)}` : ''}`
-                    : 'N/A'
-            const revValue =
-                e.revenueAvg != null
-                    ? `${fmtLarge(e.revenueAvg)}${e.revenueGrowth != null ? ` · ${fmtPct(e.revenueGrowth)}` : ''}`
-                    : 'N/A'
-            return (
-                tile(
-                    `${escapeHtml(fmtEstimatePeriod(e.period))} EPS`,
-                    epsValue,
-                    'fin-tile',
-                    true,
-                    e.epsGrowth
-                ) +
-                tile(
-                    `${escapeHtml(fmtEstimatePeriod(e.period))} Revenue`,
-                    revValue,
-                    'fin-tile',
-                    true,
-                    e.revenueGrowth
-                )
-            )
-        })
-        .join('')
-
-    const revenueTiles = f.revenueTrend
-        .map((r) => {
-            const year = r.endDate ? r.endDate.slice(0, 4) : '—'
-            return (
-                tile(`Revenue ${year}`, fmtLarge(r.totalRevenue), 'fin-tile') +
-                tile(`Net Income ${year}`, fmtLarge(r.netIncome), 'fin-tile', true, r.netIncome)
-            )
-        })
-        .join('')
-
-    const forwardBlock = forwardTiles
-        ? `<div class="fin-group-title">Forward Estimates</div><div class="fin-grid">${forwardTiles}</div>`
-        : ''
-    const revenueBlock = revenueTiles
-        ? `<div class="fin-group-title">Revenue Trend</div><div class="fin-grid">${revenueTiles}</div>`
-        : ''
-
-    const insiders = f.insiders
-    const insiderBlock = insiders
-        ? (() => {
-              const isNeutral = insiders.netShares == null || insiders.netShares === 0
-              const direction = isNeutral
-                  ? 'Roughly neutral'
-                  : insiders.netShares! > 0
-                    ? 'Net buying'
-                    : 'Net selling'
-              const color = isNeutral
-                  ? 'color:#909097;'
-                  : insiders.netShares! > 0
-                    ? 'color:#16a34a;'
-                    : 'color:#ef4444;'
-              return `
-        <div class="fin-group-title">Insider activity</div>
-        <div style="font-size:11px;color:#262626;margin-bottom:4px;">${insiders.buyCount} buys / ${insiders.sellCount} sells — <span style="font-weight:600;${color}">${direction} (${fmtNum(insiders.netShares, 0)} shares)</span></div>`
-          })()
-        : ''
-
-    return `${forwardBlock}${buildEarningsHistoryBlock(f.earningsHistory)}${revenueBlock}${insiderBlock}`
+    <div class="fin-block">
+        <div class="fin-block-title">Earnings vs estimates</div>
+        ${rows}
+    </div>`
 }
 
 function buildSigDevSection(sigDev: StockSigDev): string {
@@ -532,6 +540,60 @@ const PDF_CSS = `
         .fin-range-bar { position: relative; height: 10px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
         .fin-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: #909097; }
         .fin-range-meta { display: flex; gap: 14px; margin-top: 4px; font-size: 10px; color: #909097; }
+
+        /* Graded category cards, mirroring the on-screen financials layout. */
+        .fin-cat-grid { display: flex; gap: 8px; margin-bottom: 8px; }
+        .fin-cat-grid .fin-cat-card { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+        .fin-cat-card {
+            border: 1px solid #e5e5e8;
+            background: #fafafa;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        .fin-cat-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            border-bottom: 1px solid #e5e5e8;
+            padding-bottom: 6px;
+            margin-bottom: 4px;
+        }
+        .fin-cat-heading { display: flex; flex-direction: column; min-width: 0; }
+        .fin-cat-title { font-size: 13px; font-weight: 600; color: #262626; }
+        .fin-cat-question { font-size: 11px; color: #909097; }
+        .fin-grade {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 44px;
+            padding: 3px 10px;
+            flex-shrink: 0;
+        }
+        .fin-grade-letter { font-size: 18px; font-weight: 700; line-height: 1; }
+        .fin-grade-word { font-size: 9px; line-height: 1.3; }
+        .fin-cat-rows { display: flex; flex-direction: column; }
+        .fin-metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 5px 0;
+            border-top: 1px solid #ececef;
+        }
+        .fin-metric-row:first-child { border-top: none; }
+        .fin-metric-main { min-width: 0; }
+        .fin-metric-label { font-size: 11px; color: #909097; line-height: 1.3; }
+        .fin-metric-help { font-size: 9px; color: #b0b0b6; line-height: 1.3; }
+        .fin-metric-side { text-align: right; flex-shrink: 0; }
+        .fin-metric-value { font-size: 11px; font-weight: 600; line-height: 1.3; }
+        .fin-metric-verdict { font-size: 9px; font-weight: 500; line-height: 1.2; }
+
+        .fin-block { border: 1px solid #e5e5e8; background: #fafafa; padding: 12px; margin-bottom: 8px; }
+        .fin-block-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #909097; margin-bottom: 4px; }
+        .fin-block-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 5px 0; }
+        .fin-block-row-sep { border-top: 1px solid #ececef; }
+        .fin-block-row-sep:first-of-type { border-top: none; }
     `
 
 export function buildPdfHtml(params: {
@@ -559,8 +621,9 @@ export function buildPdfHtml(params: {
             : '')
 
     const keyMetricsInner =
-        (stockData?.financials ? buildFinancialMetricsGroups(stockData.financials) : '') +
-        (stockData?.fundamentals ? buildFundamentalsSection(stockData.fundamentals) : '')
+        stockData?.financials || stockData?.fundamentals
+            ? buildKeyMetricsSection(stockData?.financials ?? null, stockData?.fundamentals ?? null)
+            : ''
 
     return `<!DOCTYPE html>
 <html lang="en">

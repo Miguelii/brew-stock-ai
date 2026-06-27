@@ -143,7 +143,7 @@ export function TokenPackages({ showFree = false, showBuyButton = true, classNam
                                 <div className="flex items-center gap-3">
                                     <div
                                         className={cn(
-                                            'p-2 rounded-sm',
+                                            'p-2 rounded-none',
                                             pkg.highlight ? 'bg-accent-blue/20' : 'bg-muted'
                                         )}
                                     >

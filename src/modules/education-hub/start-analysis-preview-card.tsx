@@ -4,7 +4,7 @@ import Link from 'next/link'
 export function StartAnalysisPreviewCard() {
     return (
         <div className="mt-14 pt-10 border-t border-border">
-            <div className="bg-card border border-border rounded-xl p-8">
+            <div className="bg-card border border-border rounded-none p-8">
                 <h3 className="text-xl font-bold mb-2">Ready to analyse a stock?</h3>
                 <p className="text-primary-muted text-sm leading-relaxed mb-5">
                     Apply what you have learned. Run an AI-powered stock analysis and get a full

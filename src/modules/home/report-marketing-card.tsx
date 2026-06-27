@@ -97,14 +97,14 @@ export function ReportMarketingCard() {
                                 }}
                                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
                                 className={cn(
-                                    'group relative p-7 border border-border rounded-xl bg-card cursor-default transition-shadow duration-300 hover:shadow-lg hover:shadow-black/5 hover:border-accent-blue/30',
+                                    'group relative p-7 border border-border rounded-none bg-card cursor-default transition-shadow duration-300 hover:shadow-lg hover:shadow-black/5 hover:border-accent-blue/30',
                                     i === 0 && 'lg:col-span-2',
                                     section.featured &&
                                         'bg-gradient-to-br from-accent-blue/5 to-transparent border-accent-blue/20'
                                 )}
                             >
                                 {section.featured && (
-                                    <span className="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-accent-blue/10 text-accent-blue border border-accent-blue/20 uppercase tracking-wider">
+                                    <span className="absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded-none bg-accent-blue/10 text-accent-blue border border-accent-blue/20 uppercase tracking-wider">
                                         Most Complete
                                     </span>
                                 )}

@@ -100,7 +100,7 @@ export function PublicHeader() {
 
                         <button
                             onClick={() => setMenuOpen((v) => !v)}
-                            className="md:hidden flex items-center justify-center w-8 h-8 rounded-full hover:bg-muted transition-colors duration-200 text-primary"
+                            className="md:hidden flex items-center justify-center w-8 h-8 rounded-none hover:bg-muted transition-colors duration-200 text-primary"
                             aria-label="Toggle menu"
                         >
                             <AnimatePresence mode="wait" initial={false}>
@@ -142,7 +142,7 @@ export function PublicHeader() {
                                 WebkitBackdropFilter: 'blur(16px)',
                             }}
                             className={cn(
-                                'mx-10 absolute md:hidden w-full rounded-2xl bg-card',
+                                'mx-10 absolute md:hidden w-full rounded-none bg-card',
                                 'shadow-[0_8px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)]',
                                 'p-2 flex flex-col',
                                 scrolled
@@ -165,7 +165,7 @@ export function PublicHeader() {
                                         href={href}
                                         prefetch={false}
                                         onClick={() => setMenuOpen(false)}
-                                        className="block px-4 py-3 text-sm text-muted-foreground hover:text-primary rounded-xl hover:bg-muted transition-colors duration-150"
+                                        className="block px-4 py-3 text-sm text-muted-foreground hover:text-primary rounded-none hover:bg-muted transition-colors duration-150"
                                     >
                                         {label}
                                     </Link>

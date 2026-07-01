@@ -32,12 +32,12 @@ not from chaining calls.
 
 ## Pipeline
 
-The backend is organised NestJS-style under `src/backend/modules/<module>/`
+The backend is organised NestJS-style under `src/_backend/modules/<module>/`
 (controllers → services → processors/repositories/helpers). The analysis entry point is the
 `getStockAnalysis` **processor** in
-`src/backend/modules/analysis/processors/get-stock-analysis.processor.ts`. It runs in the
-**Trigger.dev** background runtime (`src/backend/modules/reports/jobs/process-report.job.ts` →
-`src/backend/modules/reports/processors/process-report.processor.ts`), with an admin Supabase client
+`src/_backend/modules/analysis/processors/get-stock-analysis.processor.ts`. It runs in the
+**Trigger.dev** background runtime (`src/_backend/modules/reports/jobs/process-report.job.ts` →
+`src/_backend/modules/reports/processors/process-report.processor.ts`), with an admin Supabase client
 and **no user session**.
 
 ```
@@ -85,7 +85,7 @@ Key properties:
 
 The model receives three things:
 
-### 1. System prompt — `SystemPrompt` (`src/backend/modules/analysis/prompts/system.prompt.ts`)
+### 1. System prompt — `SystemPrompt` (`src/_backend/modules/analysis/prompts/system.prompt.ts`)
 
 Defines the persona (senior equity research analyst), the writing rules (interpret don't describe,
 anchor every claim in numbers, never fabricate, stay balanced), the **required JSON output shape**,
@@ -98,8 +98,8 @@ and — critically — the **hierarchy of signals**:
 ### 2. Per-type prompt — one of five (`PROMPTS_MAP`)
 
 Selected by `promptType`. The five prompt strings live in
-`src/backend/modules/analysis/prompts/analysis.prompt.ts`; `PROMPTS_MAP` (which keys them by type)
-lives in `src/backend/modules/analysis/constants/index.ts`. Each contains `##TICKER##`, replaced with
+`src/_backend/modules/analysis/prompts/analysis.prompt.ts`; `PROMPTS_MAP` (which keys them by type)
+lives in `src/_backend/modules/analysis/constants/index.ts`. Each contains `##TICKER##`, replaced with
 the symbol at runtime.
 
 | Prompt constant                      | Focus                                                                                 |
@@ -113,7 +113,7 @@ the symbol at runtime.
 ### 3. Injected context — the `## Current Market Context` block
 
 Built by `buildYahooContext(data, technicals?, news?)`
-(`src/backend/modules/yahoo/helpers/build-yahoo-context.helper.ts`) and appended to the per-type
+(`src/_backend/modules/yahoo/helpers/build-yahoo-context.helper.ts`) and appended to the per-type
 prompt. The processor only assembles this block when at least one source survived (`hasContext`);
 otherwise the prompt is sent with no context appended. Each section renders **only when its data is
 present**, in this exact order:
@@ -139,7 +139,7 @@ Live data from Yahoo Finance — incorporate these insights into your analysis w
 
 ## Context blocks — master table
 
-All file paths below are relative to `src/backend/modules/`.
+All file paths below are relative to `src/_backend/modules/`.
 
 | Block                          | Status   | Source                         | Service / file                                                                                                  | Cache (TTL)           |
 | ------------------------------ | -------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | --------------------- |
@@ -179,7 +179,7 @@ FCF yield, forward-vs-trailing P/E, price-vs-target range).
 ### Fundamentals — NEW
 
 Type `StockFundamentals`. Fetched independently of `financials` so a failure here never compromises
-the snapshot above. Mapped in `src/backend/modules/yahoo/helpers/map-fundamentals.helper.ts`.
+the snapshot above. Mapped in `src/_backend/modules/yahoo/helpers/map-fundamentals.helper.ts`.
 
 - **`earningsHistory: EarningsQuarter[]`** (last 4 quarters, from `earningsHistory`) —
   `period`, `quarter`, `epsActual`, `epsEstimate`, `surprisePercent`. Rendered with a beat/miss
@@ -240,7 +240,7 @@ Framed as a confirmatory signal — used to confirm or challenge the thesis, nev
 ## Model & output
 
 Selected in `get-stock-analysis.processor.ts`, constants in
-`src/backend/modules/analysis/constants/index.ts`.
+`src/_backend/modules/analysis/constants/index.ts`.
 
 | Tier | Model (`useBaseModel`)                      | Thinking                                 | `maxOutputTokens`                |
 | ---- | ------------------------------------------- | ---------------------------------------- | -------------------------------- |
@@ -287,11 +287,11 @@ $0.80/$4.00, Sonnet $3.00/$15.00 per 1M input/output tokens).
 
 ## File map
 
-All backend code lives under `src/backend/modules/<module>/`, split NestJS-style
+All backend code lives under `src/_backend/modules/<module>/`, split NestJS-style
 (controllers → services → processors/repositories/helpers).
 
 ```
-src/backend/modules/analysis/
+src/_backend/modules/analysis/
 ├── processors/
 │   └── get-stock-analysis.processor.ts     # orchestration: assemble context → generateText → save
 ├── constants/index.ts                      # models, token budgets, stockAnalysisSchema, PROMPTS_MAP
@@ -301,7 +301,7 @@ src/backend/modules/analysis/
 └── helpers/
     └── calculate-token-cost.helper.ts      # per-call USD cost
 
-src/backend/modules/yahoo/
+src/_backend/modules/yahoo/
 ├── yahoo.router.ts                         # YAHOO_ROUTER (price-history controller)
 ├── controllers/
 │   └── get-price-history.controller.ts     # tRPC binding → cached price-history service
@@ -323,7 +323,7 @@ src/backend/modules/yahoo/
     ├── map-fundamentals.helper.ts          # quoteSummary/time-series → StockFundamentals
     └── compute-technical-indicators.helper.ts  # price series → StockTechnicals
 
-src/backend/modules/finnhub/
+src/_backend/modules/finnhub/
 ├── finnhub.router.ts                       # FINNHUB_ROUTER (latest-news controller)
 ├── controllers/
 │   └── get-latest-news.controller.ts       # tRPC binding → cached news service
@@ -334,7 +334,7 @@ src/backend/modules/finnhub/
 │   └── fetch-latest-news.processor.ts      # fetchLatestNewsRaw / fetchLatestNewsCached
 └── constants/index.ts                      # LATEST_NEWS_TTL, cache key
 
-src/backend/modules/reports/
+src/_backend/modules/reports/
 ├── jobs/process-report.job.ts              # Trigger.dev task — entry into the pipeline
 ├── processors/
 │   ├── process-report.processor.ts         # loads report → getStockAnalysis → notify

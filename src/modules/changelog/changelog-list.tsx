@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowRightIcon } from 'lucide-react'
 import * as motion from 'motion/react-client'
-import { CHANGELOG_ENTRIES_BY_DATE } from '@/lib/change-log/changelog'
+import { CHANGELOG_ENTRIES_BY_DATE } from '@/modules/changelog/changelog'
 import { ChangelogMeta } from '@/modules/changelog/changelog-meta'
 
 export function ChangelogList() {

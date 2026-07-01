@@ -4,7 +4,7 @@ import { ArrowRightIcon } from 'lucide-react'
 import { AdBlock } from '@/components/ad-block'
 import * as motion from 'motion/react-client'
 import type { EducationHubArticle } from '@/types/EducationHubArticle'
-import { EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
+import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
 import { AD_SLOT_IN_ARTICLE } from '@/lib/constants'
 
 const RELATED_COUNT = 3

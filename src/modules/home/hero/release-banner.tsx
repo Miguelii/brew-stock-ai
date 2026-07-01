@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Sparkles, ArrowRight } from 'lucide-react'
 import * as motion from 'motion/react-client'
-import { LATEST_CHANGELOG_ENTRY } from '@/lib/change-log/changelog'
+import { LATEST_CHANGELOG_ENTRY } from '@/modules/changelog/changelog'
 
 export function ReleaseBanner() {
     return (

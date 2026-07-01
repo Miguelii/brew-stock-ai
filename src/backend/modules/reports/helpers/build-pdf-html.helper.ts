@@ -1,6 +1,6 @@
 // oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
-import { getSentimentInfo, getRiskLevelInfo } from '@/lib/analysis/sentiment'
+import { getSentimentInfo, getRiskLevelInfo } from '@/modules/report-view/lib/sentiment'
 import { fmtPct, fmtNum, fmtPrice, fmtDate, escapeHtml } from '@/lib/formatters'
 import { sanitizeReportHtml } from '@/backend/modules/reports/helpers/sanitize-report-html.helper'
 import {

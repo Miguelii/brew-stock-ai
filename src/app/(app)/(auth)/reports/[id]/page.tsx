@@ -22,7 +22,7 @@ import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news
 import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-card/report-latest-news-card-skeleton'
 import { PROMPT_OPTIONS } from '@/lib/constants'
 import { createCaller } from '@/_trpc/server/caller'
-import { sanitizeReportHtml } from '@/backend/modules/reports/helpers/sanitize-report-html.helper'
+import { sanitizeReportHtml } from '@/_backend/modules/reports/helpers/sanitize-report-html.helper'
 
 type Props = PageProps<'/reports/[id]'>
 

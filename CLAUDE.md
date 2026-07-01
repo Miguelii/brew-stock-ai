@@ -18,8 +18,8 @@ All services must use Effect-TS. Follow this exact pattern:
 import 'server-only'
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, SomeError } from '@/backend/lib/errors'
-import { ErrorCode } from '@/backend/lib/error-codes'
+import { CreateSbClientError, SomeError } from '@/_backend/lib/errors'
+import { ErrorCode } from '@/_backend/lib/error-codes'
 
 export const myService = Effect.fn('myService')(function* (param: string) {
     const supabase = yield* Effect.tryPromise({
@@ -62,9 +62,9 @@ queries** — only the zod input schema, the `runEffect` call, and the error→T
 import 'server-only'
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError } from '@/backend/lib/errors'
-import { ErrorCode } from '@/backend/lib/error-codes'
-import { selectCredits } from '@/backend/modules/credits/repositories/credits.repository'
+import { CreateSbClientError } from '@/_backend/lib/errors'
+import { ErrorCode } from '@/_backend/lib/error-codes'
+import { selectCredits } from '@/_backend/modules/credits/repositories/credits.repository'
 import type { User } from '@supabase/supabase-js'
 
 export const getCredits = Effect.fn('getCredits')(function* (user: User) {
@@ -105,7 +105,7 @@ import 'server-only'
 import { Match } from 'effect'
 import { protectedProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'
-import { getCredits } from '@/backend/modules/credits/services/get-credits.service'
+import { getCredits } from '@/_backend/modules/credits/services/get-credits.service'
 
 export const GET_CREDITS_PROTECTED_CONTROLLER = protectedProcedure
     .query(({ ctx }) =>                                 // or .input(z.object({...})).mutation(({ input, ctx }) => ...)
@@ -126,7 +126,7 @@ namespaces the module routers:
 // 4) src/backend/modules/credits/credits.router.ts — module composition root
 import 'server-only'
 import { router } from '@/_trpc/server'
-import { GET_CREDITS_PROTECTED_CONTROLLER } from '@/backend/modules/credits/controllers/get-credits.controller'
+import { GET_CREDITS_PROTECTED_CONTROLLER } from '@/_backend/modules/credits/controllers/get-credits.controller'
 
 export const CREDITS_ROUTER = router({
     get: GET_CREDITS_PROTECTED_CONTROLLER,
@@ -201,8 +201,8 @@ import { getSession } from './get-session'
 import { getStockAnalysis } from '../analysis/get-stock-analysis'
 
 // ✅ Correct — alias paths
-import { getSession } from '@/backend/modules/auth/get-session'
-import { getStockAnalysis } from '@/backend/modules/analysis/processors/get-stock-analysis.processor'
+import { getSession } from '@/_backend/modules/auth/get-session'
+import { getStockAnalysis } from '@/_backend/modules/analysis/processors/get-stock-analysis.processor'
 ```
 
 This applies to all files — services, components, modules, helpers, types, etc. No exceptions.

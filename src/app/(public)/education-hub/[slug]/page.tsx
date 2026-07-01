@@ -2,7 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Clock } from 'lucide-react'
-import { EDUCATION_HUB_ARTICLE_MAP, EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
+import {
+    EDUCATION_HUB_ARTICLE_MAP,
+    EDUCATION_HUB_ARTICLES,
+} from '@/modules/education-hub/education-hub-articles'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'

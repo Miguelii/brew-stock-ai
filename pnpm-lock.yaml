@@ -129,8 +129,8 @@ importers:
         specifier: ^3.6.7
         version: 3.6.7
       yahoo-finance2:
-        specifier: ^3.14.2
-        version: 3.14.2
+        specifier: ^3.15.3
+        version: 3.15.3
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -4663,8 +4663,8 @@ packages:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
 
-  yahoo-finance2@3.14.2:
-    resolution: {integrity: sha512-s+F7TWQT7zAtjhfC7rFHEX16Xfq36u3wceysINP7V+esF3mAYyk9slxZU+fEdkxaTuCT0+PnikHdekMX4UPMrg==}
+  yahoo-finance2@3.15.3:
+    resolution: {integrity: sha512-AFmVZ4ACg3QFT2a/hyJv4Scp2J45gm/6xetVgvUvXzZypqsqbgreXJad4i+qm0onj6yeCf2fPhvow7Eh0CwwzA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -8944,14 +8944,17 @@ snapshots:
 
   y18n@5.0.8: {}
 
-  yahoo-finance2@3.14.2:
+  yahoo-finance2@3.15.3:
     dependencies:
       '@deno/shim-deno': 0.18.2
+      '@modelcontextprotocol/sdk': 1.29.0(zod@3.25.76)
       fetch-mock-cache: 2.3.1
       json-schema: 0.4.0
       tough-cookie: 5.1.2
       tough-cookie-file-store: 2.0.3
+      zod: 3.25.76
     transitivePeerDependencies:
+      - '@cfworker/json-schema'
       - supports-color
 
   yallist@3.1.1: {}

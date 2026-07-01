@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ArrowRightIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { TickerContent, TickerPage } from '@/types/TickerPage'
-import { EDUCATION_HUB_ARTICLE_MAP } from '@/lib/education-hub-articles'
+import { EDUCATION_HUB_ARTICLE_MAP } from '@/modules/education-hub/education-hub-articles'
 import * as motion from 'motion/react-client'
 
 type Props = {

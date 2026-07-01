@@ -3,24 +3,24 @@ import { Effect } from 'effect'
 import {
     getAdminStats,
     type AdminStats,
-} from '@/backend/modules/admin/services/get-admin-stats.service'
+} from '@/_backend/modules/admin/services/get-admin-stats.service'
 import {
     getAdminUsers,
     type AdminUser,
-} from '@/backend/modules/admin/services/get-admin-users.service'
+} from '@/_backend/modules/admin/services/get-admin-users.service'
 import {
     getAdminReports,
     type AdminReport,
-} from '@/backend/modules/admin/services/get-admin-reports.service'
+} from '@/_backend/modules/admin/services/get-admin-reports.service'
 import {
     getAdminFeedback,
     type AdminFeedback,
-} from '@/backend/modules/admin/services/get-admin-feedback.service'
+} from '@/_backend/modules/admin/services/get-admin-feedback.service'
 import {
     getAdminLogs,
     type AdminLog,
-} from '@/backend/modules/admin/services/get-admin-logs.service'
-import { isAdmin } from '@/backend/modules/admin/services/is-admin.service'
+} from '@/_backend/modules/admin/services/get-admin-logs.service'
+import { isAdmin } from '@/_backend/modules/admin/services/is-admin.service'
 
 const EMPTY_STATS: AdminStats = {
     totalReports: 0,

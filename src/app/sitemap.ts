@@ -1,6 +1,6 @@
 import { ClientEnv } from '@/env/client'
-import { EDUCATION_HUB_ARTICLES } from '@/lib/education-hub-articles'
-import { CHANGELOG_ENTRIES } from '@/lib/change-log/changelog'
+import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
+import { CHANGELOG_ENTRIES } from '@/modules/changelog/changelog'
 import { TICKER_PAGES, isTickerEnriched } from '@/lib/ticker/ticker-pages'
 import type { MetadataRoute } from 'next'
 

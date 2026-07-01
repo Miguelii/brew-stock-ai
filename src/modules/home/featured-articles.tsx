@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import { ArrowRightIcon, ClockIcon } from 'lucide-react'
 import * as motion from 'motion/react-client'
-import { EDUCATION_HUB_ARTICLES, EDUCATION_HUB_THEME_LABELS } from '@/lib/education-hub-articles'
+import {
+    EDUCATION_HUB_ARTICLES,
+    EDUCATION_HUB_THEME_LABELS,
+} from '@/modules/education-hub/education-hub-articles'
 
 const FEATURED_COUNT = 3
 

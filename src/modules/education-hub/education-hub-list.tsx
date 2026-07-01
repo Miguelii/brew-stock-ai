@@ -8,7 +8,7 @@ import {
     EDUCATION_HUB_ARTICLES,
     EDUCATION_HUB_THEMES,
     EDUCATION_HUB_THEME_LABELS,
-} from '@/lib/education-hub-articles'
+} from '@/modules/education-hub/education-hub-articles'
 import type { ArticleTheme } from '@/types/EducationHubArticle'
 import { cn } from '@/lib/utils'
 

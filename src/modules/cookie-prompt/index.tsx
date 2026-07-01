@@ -7,12 +7,9 @@ import { toastError } from '@/lib/toast-error'
 import Link from 'next/link'
 import { PromptCard } from '@/components/ui/prompt-card'
 import { CONSENT_COOKIE } from '@/lib/constants'
-import { useRouter } from 'next/navigation'
 
 export function CookiePrompt() {
     const [open, setOpen] = useState(false)
-
-    const router = useRouter()
 
     const consentMutation = trpcClient.core.createConsentCookie.useMutation({
         onSuccess: () => setOpen(false),
@@ -25,17 +22,12 @@ export function CookiePrompt() {
 
         // 1. updates google dataLayer analytics values
         globalThis?.gtag('consent', 'update', {
-            /* ad_storage: allow ? 'granted' : 'denied',
-            analytics_storage: allow ? 'granted' : 'denied', */
-            // Ups 🤷‍♂️
-            ad_storage: 'granted',
-            analytics_storage: 'granted',
+            ad_storage: allow ? 'granted' : 'denied',
+            analytics_storage: allow ? 'granted' : 'denied',
         })
 
-        // 3. Create cookie
+        // 2. Create cookie
         consentMutation.mutate({ allowAnalytics: allow })
-
-        router.refresh()
     }
 
     useEffect(() => {

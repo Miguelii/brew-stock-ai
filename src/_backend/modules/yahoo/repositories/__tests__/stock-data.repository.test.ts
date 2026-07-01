@@ -56,15 +56,23 @@ describe('upsertStockData', () => {
         expect(upsert).toHaveBeenCalledWith(
             {
                 id: 'AAPL',
-                reports: DATA.reports,
                 scores: DATA.scores,
-                sig_dev: DATA.sigDev,
-                financials: null,
-                fundamentals: null,
                 last_update_at: '2026-06-12T00:00:00.000Z',
             },
             { onConflict: 'id' }
         )
+    })
+
+    it('omits empty sections from the payload when there is no stock data', async () => {
+        const { upsert, supabase } = makeUpsertChain({ error: null })
+
+        await Effect.runPromise(upsertStockData(supabase, 'AAPL', { ...DATA, scores: null }))
+
+        const payload = upsert.mock.calls[0][0]
+        expect(payload).toEqual({
+            id: 'AAPL',
+            last_update_at: '2026-06-12T00:00:00.000Z',
+        })
     })
 
     it('fails with SaveStockDataError when the upsert returns an error', async () => {

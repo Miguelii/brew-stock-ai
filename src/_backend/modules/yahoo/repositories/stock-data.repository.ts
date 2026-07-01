@@ -4,6 +4,7 @@ import { SaveStockDataError } from '@/_backend/lib/errors'
 import { ErrorCode } from '@/_backend/lib/error-codes'
 import { logger } from '@trigger.dev/sdk'
 import type { GetYahooDataResult } from '@/_backend/modules/yahoo/types'
+import { hasStockData } from '../helpers/has-stock-data.helper'
 
 // Returns the raw Supabase response — the TTL processor decides staleness and fallbacks
 export function selectStockDataWithTtl(supabase: SupabaseClient, ticker: string) {
@@ -19,20 +20,19 @@ export const upsertStockData = Effect.fn('upsertStockData')(function* (
     ticker: string | null,
     data: GetYahooDataResult
 ) {
+    const payload: Record<string, unknown> = {
+        id: ticker,
+        last_update_at: new Date().toISOString(),
+    }
+
+    if (hasStockData(data?.reports)) payload.reports = data.reports
+    if (hasStockData(data?.scores)) payload.scores = data.scores
+    if (hasStockData(data?.sigDev)) payload.sig_dev = data.sigDev
+    if (hasStockData(data?.financials)) payload.financials = data.financials
+    if (hasStockData(data?.fundamentals)) payload.fundamentals = data.fundamentals
+
     const response = yield* Effect.tryPromise({
-        try: () =>
-            supabase.from('stock_data').upsert(
-                {
-                    id: ticker,
-                    reports: data.reports,
-                    scores: data.scores,
-                    sig_dev: data.sigDev,
-                    financials: data.financials ?? null,
-                    fundamentals: data.fundamentals ?? null,
-                    last_update_at: new Date().toISOString(),
-                },
-                { onConflict: 'id' }
-            ),
+        try: () => supabase.from('stock_data').upsert(payload, { onConflict: 'id' }),
         catch: (cause) =>
             new SaveStockDataError({ cause, error_hash: ErrorCode.SAVE_STOCK_DATA_INSERT }),
     })

@@ -11,10 +11,14 @@ import { createClient } from '@supabase/supabase-js'
 /**
  * Creates a Supabase server client without cookie-based session management and with SERVICE_ROLE_KEY
  *
- * Necessary for trigger dev to run task from SB
+ * Necessary for trigger.dev to run tasks from SB
  */
-export const createSbAdminClient = () =>
-    createClient(process.env.NEXT_SUPABASE_URL!, process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY!)
+export const createSbAdminClient = () => {
+    const SB_URL = ServerEnv.NEXT_SUPABASE_URL ?? process.env.NEXT_SUPABASE_URL!
+    const SB_SERVICE_ROLE_KEY =
+        ServerEnv.NEXT_SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY!
+    return createClient(SB_URL, SB_SERVICE_ROLE_KEY)
+}
 
 /**
  * Creates a Supabase server client with cookie-based session management.

@@ -18,5 +18,5 @@ export default defineConfig({
             randomize: true,
         },
     },
-    dirs: ['./src/backend/modules/reports/jobs'],
+    dirs: ['./src/_backend/modules/reports/jobs'],
 })

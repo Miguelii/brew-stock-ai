@@ -248,7 +248,7 @@ describe('updateReportWithAnalysis', () => {
         expect(eq).toHaveBeenCalledWith('id', 'r-1')
     })
 
-    it("falls back to 'NULL' markers when sentiment and ticker are missing", async () => {
+    it('falls back to null markers when sentiment and ticker are missing', async () => {
         const { update, supabase } = makeUpdateChain({ error: null })
 
         await Effect.runPromise(
@@ -262,8 +262,8 @@ describe('updateReportWithAnalysis', () => {
         expect(update).toHaveBeenCalledWith({
             status: ReportStatus.COMPLETED,
             ai_response: '<p>report</p>',
-            sentiment: 'NULL',
-            ticker: 'NULL',
+            sentiment: null,
+            ticker: null,
             cost: 'N/A',
         })
     })

@@ -191,8 +191,8 @@ export const updateReportWithAnalysis = Effect.fn('updateReportWithAnalysis')(fu
                 .update({
                     status: ReportStatus.COMPLETED,
                     ai_response: params.analysis,
-                    sentiment: params.sentiment ?? 'NULL',
-                    ticker: params.ticker ?? 'NULL',
+                    sentiment: params.sentiment ?? null,
+                    ticker: params.ticker ?? null,
                     cost: params.tokenUsdCost ?? 'N/A',
                 })
                 .eq('id', reportId),

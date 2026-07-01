@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import type { LogLevel } from '@/backend/modules/admin/services/get-admin-logs.service'
+import type { LogLevel } from '@/_backend/modules/admin/services/get-admin-logs.service'
 
 type Props = {
     level: LogLevel

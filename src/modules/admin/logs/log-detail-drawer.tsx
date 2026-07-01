@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { LogLevelBadge } from '@/modules/admin/logs/log-level-badge'
 import { formatJson, formatLogTimestamp } from '@/lib/formatters'
 import { cn } from '@/lib/utils'
-import type { AdminLog } from '@/backend/modules/admin/services/get-admin-logs.service'
+import type { AdminLog } from '@/_backend/modules/admin/services/get-admin-logs.service'
 
 type Props = {
     log: AdminLog

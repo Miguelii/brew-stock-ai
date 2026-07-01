@@ -1,3 +1,4 @@
+import { logger } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
 import { YahooClientError, YahooInsightsError, YahooQuoteSummaryError } from '@/_backend/lib/errors'
 import { ErrorCode } from '@/_backend/lib/error-codes'
@@ -20,29 +21,34 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
             const { default: YahooFinance } = await import('yahoo-finance2')
             return new YahooFinance({ suppressNotices: ['yahooSurvey'] })
         },
-        catch: (cause) =>
-            new YahooClientError({
+        catch: (cause) => {
+            logger.error('getYahooData client init error', { ticker, error: cause })
+            return new YahooClientError({
                 symbol: `|${ticker}|`,
                 cause,
                 error_hash: ErrorCode.YAHOO_CLIENT_INIT,
-            }),
+            })
+        },
     })
 
+    // Analyst insights (reports, significant developments, scores) — non-fatal
     const insights = yield* Effect.tryPromise({
         try: () =>
             yahooClient.insights(ticker, {
                 reportsCount: 3,
             }),
-        catch: (cause) =>
-            new YahooInsightsError({
+        catch: (cause) => {
+            logger.error('getYahooData insights error', { ticker, error: cause })
+            return new YahooInsightsError({
                 ticker: `|${ticker}|`,
                 cause,
                 error_hash: ErrorCode.YAHOO_INSIGHTS_FETCH,
-            }),
-    })
+            })
+        },
+    }).pipe(Effect.orElse(() => Effect.succeed(null)))
 
     // Recent significant development
-    const sigDev: StockSigDev | null = (insights.sigDevs.at(0) as unknown as StockSigDev) ?? null
+    const sigDev: StockSigDev | null = (insights?.sigDevs?.at(0) as unknown as StockSigDev) ?? null
 
     // Get the 3 latests reports
     const reports: StockReports[] =
@@ -58,7 +64,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
     let scores: StockScores | null = null
 
     // Company vs sector scores
-    if (insights.companySnapshot) {
+    if (insights?.companySnapshot) {
         const company = insights.companySnapshot.company
         const sector = insights.companySnapshot.sector
         scores = {
@@ -81,12 +87,14 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
             yahooClient.quoteSummary(ticker, {
                 modules: ['financialData', 'summaryDetail', 'defaultKeyStatistics'],
             }),
-        catch: (cause) =>
-            new YahooQuoteSummaryError({
+        catch: (cause) => {
+            logger.error('getYahooData financials quoteSummary error', { ticker, error: cause })
+            return new YahooQuoteSummaryError({
                 ticker: `|${ticker}|`,
                 cause,
                 error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
-            }),
+            })
+        },
     }).pipe(
         Effect.map((summary) => {
             const fd = summary.financialData
@@ -143,12 +151,17 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                             'insiderTransactions',
                         ],
                     }),
-                catch: (cause) =>
-                    new YahooQuoteSummaryError({
+                catch: (cause) => {
+                    logger.error('getYahooData fundamentals quoteSummary error', {
+                        ticker,
+                        error: cause,
+                    })
+                    return new YahooQuoteSummaryError({
                         ticker: `|${ticker}|`,
                         cause,
                         error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
-                    }),
+                    })
+                },
             }).pipe(Effect.orElse(() => Effect.succeed(null))),
 
             Effect.tryPromise({
@@ -158,12 +171,17 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                         type: 'annual',
                         module: 'financials',
                     }),
-                catch: (cause) =>
-                    new YahooQuoteSummaryError({
+                catch: (cause) => {
+                    logger.error('getYahooData revenueTrend fundamentalsTimeSeries error', {
+                        ticker,
+                        error: cause,
+                    })
+                    return new YahooQuoteSummaryError({
                         ticker: `|${ticker}|`,
                         cause,
                         error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
-                    }),
+                    })
+                },
             }).pipe(
                 Effect.map(mapRevenueTrend),
                 Effect.orElse(() => Effect.succeed([] as RevenueTrendPoint[]))

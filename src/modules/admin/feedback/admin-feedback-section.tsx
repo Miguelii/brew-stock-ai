@@ -2,7 +2,7 @@ import { MessageSquareIcon } from 'lucide-react'
 import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
 import { fetchAdminFeedback } from '@/modules/admin/shared/admin-queries'
 import { parseReportDate } from '@/lib/formatters'
-import type { AdminFeedback } from '@/_backend/modules/admin/services/get-admin-feedback.service'
+import type { AdminFeedback } from '@/_bff/modules/admin/services/get-admin-feedback.service'
 
 function FeedbackItem({ item }: { item: AdminFeedback }) {
     return (

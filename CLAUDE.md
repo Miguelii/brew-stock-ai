@@ -18,8 +18,8 @@ All services must use Effect-TS. Follow this exact pattern:
 import 'server-only'
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError, SomeError } from '@/_backend/lib/errors'
-import { ErrorCode } from '@/_backend/lib/error-codes'
+import { CreateSbClientError, SomeError } from '@/_bff/lib/errors'
+import { ErrorCode } from '@/_bff/lib/error-codes'
 
 export const myService = Effect.fn('myService')(function* (param: string) {
     const supabase = yield* Effect.tryPromise({
@@ -43,28 +43,28 @@ export const myService = Effect.fn('myService')(function* (param: string) {
 ### Rules
 - Always `import 'server-only'` at the top
 - Use `Effect.fn('serviceName')` for automatic telemetry
-- All errors must extend `Data.TaggedError` and live in `src/_backend/lib/errors.ts`
+- All errors must extend `Data.TaggedError` and live in `src/_bff/lib/errors.ts`
 - Every error must have `cause: unknown` and `error_hash: ErrorCode` fields
-- `error_hash` must be an `ErrorCode` member defined in `src/_backend/lib/error-codes.ts` (e.g. `ErrorCode.REPORT_CREATE_SB_CLIENT`)
+- `error_hash` must be an `ErrorCode` member defined in `src/_bff/lib/error-codes.ts` (e.g. `ErrorCode.REPORT_CREATE_SB_CLIENT`)
 - Use `return yield*` when failing (makes termination explicit)
 - Never use try-catch inside `Effect.gen` — Effect failures are not thrown
 - Supabase queries always check both the `Effect.tryPromise` catch AND the `error` field returned
 
 ### tRPC — controllers, services, repositories (NestJS-style layering)
 Each tRPC route is a **controller**: a thin binding in
-`src/_backend/modules/<module>/controllers/<name>.controller.ts` that delegates to an exported
+`src/_bff/modules/<module>/controllers/<name>.controller.ts` that delegates to an exported
 **service** in `services/<name>.service.ts`. Data access lives in **repositories**
 (`repositories/<table>.repository.ts`). Controllers contain **no business logic and no Supabase
 queries** — only the zod input schema, the `runEffect` call, and the error→TRPC-code `Match` map.
 
 ```typescript
-// 1) src/_backend/modules/credits/services/get-credits.service.ts — exported business logic
+// 1) src/_bff/modules/credits/services/get-credits.service.ts — exported business logic
 import 'server-only'
 import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
-import { CreateSbClientError } from '@/_backend/lib/errors'
-import { ErrorCode } from '@/_backend/lib/error-codes'
-import { selectCredits } from '@/_backend/modules/credits/repositories/credits.repository'
+import { CreateSbClientError } from '@/_bff/lib/errors'
+import { ErrorCode } from '@/_bff/lib/error-codes'
+import { selectCredits } from '@/_bff/modules/credits/repositories/credits.repository'
 import type { User } from '@supabase/supabase-js'
 
 export const getCredits = Effect.fn('getCredits')(function* (user: User) {
@@ -79,7 +79,7 @@ export const getCredits = Effect.fn('getCredits')(function* (user: User) {
 ```
 
 ```typescript
-// 2) src/_backend/modules/credits/repositories/credits.repository.ts — exported data access
+// 2) src/_bff/modules/credits/repositories/credits.repository.ts — exported data access
 //    Repositories RECEIVE the Supabase client as a parameter — the service decides which key to use.
 export const selectCredits = Effect.fn('selectCredits')(function* (
     supabase: SupabaseClient,
@@ -100,12 +100,12 @@ export const selectCredits = Effect.fn('selectCredits')(function* (
 ```
 
 ```typescript
-// 3) src/_backend/modules/credits/controllers/get-credits.controller.ts — thin tRPC binding
+// 3) src/_bff/modules/credits/controllers/get-credits.controller.ts — thin tRPC binding
 import 'server-only'
 import { Match } from 'effect'
 import { protectedProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'
-import { getCredits } from '@/_backend/modules/credits/services/get-credits.service'
+import { getCredits } from '@/_bff/modules/credits/services/get-credits.service'
 
 export const GET_CREDITS_PROTECTED_CONTROLLER = protectedProcedure
     .query(({ ctx }) =>                                 // or .input(z.object({...})).mutation(({ input, ctx }) => ...)
@@ -123,10 +123,10 @@ Each module composes its controllers in a router file at the module root, and `a
 namespaces the module routers:
 
 ```typescript
-// 4) src/_backend/modules/credits/credits.router.ts — module composition root
+// 4) src/_bff/modules/credits/credits.router.ts — module composition root
 import 'server-only'
 import { router } from '@/_trpc/server'
-import { GET_CREDITS_PROTECTED_CONTROLLER } from '@/_backend/modules/credits/controllers/get-credits.controller'
+import { GET_CREDITS_PROTECTED_CONTROLLER } from '@/_bff/modules/credits/controllers/get-credits.controller'
 
 export const CREDITS_ROUTER = router({
     get: GET_CREDITS_PROTECTED_CONTROLLER,
@@ -142,7 +142,7 @@ export const appRouter = router({
 ```
 
 #### Rules
-- Controller files **must** be named `src/_backend/modules/<module>/controllers/<name>.controller.ts` and export exactly **one** constant: `<NAME>_PROTECTED_CONTROLLER` or `<NAME>_PUBLIC_CONTROLLER`.
+- Controller files **must** be named `src/_bff/modules/<module>/controllers/<name>.controller.ts` and export exactly **one** constant: `<NAME>_PROTECTED_CONTROLLER` or `<NAME>_PUBLIC_CONTROLLER`.
 - Controllers are **thin**: zod input schema + `runEffect(...)` + `Match` error map. No `Effect.fn`, no business logic, no Supabase access.
 - Services (`services/<name>.service.ts`) are **exported** `Effect.fn(...)` functions holding the business logic. They create the Supabase client (choosing publishable vs service-role key) and pass it into repositories.
 - Repositories (`repositories/<table>.repository.ts`) are **exported** `Effect.fn(...)` functions that receive `supabase: SupabaseClient` as their first parameter and wrap queries with the dual error check (catch + `error` field). One file per table/domain. **No cross-module imports.**
@@ -175,7 +175,7 @@ const promise: Promise<ReturnType> = mutation.mutateAsync({ param: 'value' })
 Always assign `mutateAsync` to an explicitly typed `Promise<T>` variable before passing to Effect to avoid TypeScript deep instantiation errors.
 
 ### Backend module layout
-All backend code lives under `src/_backend/modules/<module>/`, split by responsibility (NestJS-style):
+All backend code lives under `src/_bff/modules/<module>/`, split by responsibility (NestJS-style):
 - `<module>.router.ts` — module composition root; exports `<MODULE>_ROUTER` composing the module's controllers. Registered under its namespace in `src/_trpc/api/index.ts`.
 - `controllers/<name>.controller.ts` — thin tRPC binding (zod schema + `runEffect` + `Match` error map); exports `<NAME>_<PROTECTED|PUBLIC>_CONTROLLER`. No logic, no Supabase.
 - `services/<name>.service.ts` — exported `Effect.fn` business logic; creates the Supabase client and orchestrates repositories/processors/helpers. The cross-module entry point (also used by Trigger.dev jobs).
@@ -187,7 +187,7 @@ All backend code lives under `src/_backend/modules/<module>/`, split by responsi
 
 **Dependency direction**: controller → service → (repository | processor | helper); jobs → services/processors of their own module. Cross-module imports only via `services/` or `processors/` — never another module's controller or repository.
 
-Shared error classes live in `src/_backend/lib/errors.ts`; their `ErrorCode` values in `src/_backend/lib/error-codes.ts`. tRPC infra lives in `src/_trpc/`: `server` (procedures, router, auth middleware), `utils` (`runEffect`), `context`, `api` (`appRouter`), and `server/caller` (`createCaller`).
+Shared error classes live in `src/_bff/lib/errors.ts`; their `ErrorCode` values in `src/_bff/lib/error-codes.ts`. tRPC infra lives in `src/_trpc/`: `server` (procedures, router, auth middleware), `utils` (`runEffect`), `context`, `api` (`appRouter`), and `server/caller` (`createCaller`).
 
 ---
 
@@ -201,8 +201,8 @@ import { getSession } from './get-session'
 import { getStockAnalysis } from '../analysis/get-stock-analysis'
 
 // ✅ Correct — alias paths
-import { getSession } from '@/_backend/modules/auth/get-session'
-import { getStockAnalysis } from '@/_backend/modules/analysis/processors/get-stock-analysis.processor'
+import { getSession } from '@/_bff/modules/auth/get-session'
+import { getStockAnalysis } from '@/_bff/modules/analysis/processors/get-stock-analysis.processor'
 ```
 
 This applies to all files — services, components, modules, helpers, types, etc. No exceptions.

@@ -34,7 +34,7 @@ export function FeaturedArticles() {
                             <Link
                                 href={`/education-hub/${article.slug}`}
                                 prefetch={false}
-                                className="group grid grid-cols-1 md:grid-cols-[11rem_1fr_auto] items-start md:items-center gap-2 md:gap-8 border-t border-border py-7 transition-colors duration-200 hover:bg-card"
+                                className="group grid grid-cols-1 md:grid-cols-[11rem_1fr_auto] items-start md:items-center gap-2 md:gap-8 border-t border-border py-7 transition-colors duration-200"
                             >
                                 <span className="font-mono text-xs font-semibold tracking-widest uppercase text-accent-blue">
                                     {EDUCATION_HUB_THEME_LABELS[article.theme]}

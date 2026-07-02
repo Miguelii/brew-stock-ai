@@ -6,7 +6,7 @@ runs:
     steps:
         - uses: pnpm/action-setup@v6
           with:
-              version: 10
+              version: 11.9.0
               cache: true
 
         - uses: actions/setup-node@v6

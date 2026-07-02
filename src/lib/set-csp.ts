@@ -52,18 +52,26 @@ const generateCSP = () => {
             https://*.googletagmanager.com
             https://*.google-analytics.com
             https://*.vercel-scripts.com
+            https://vercel.live
+            https://*.googlesyndication.com
+            https://*.adtrafficquality.google
             'unsafe-inline'${devScriptSrc};
         img-src 'self'
             https://www.google.pt
+            https://*.googlesyndication.com
+            https://*.adtrafficquality.google
             blob: data:
             https://*.googletagmanager.com
             https://*.google-analytics.com;
         font-src 'self';
-        frame-src 'self';
+        frame-src 'self'
+            https://*.adtrafficquality.google
+            https://*.googlesyndication.com;
         object-src 'none';
         media-src 'self';
         base-uri 'self';
         connect-src 'self'
+            https://*.googlesyndication.com
             https://*.vercel-scripts.com
             https://*.adtrafficquality.google
             https://*.analytics.google.com

@@ -23,7 +23,7 @@ jobs:
         if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - uses: ./.github/actions/setup
             - run: node --run lint
             - run: node --run knip
@@ -33,7 +33,7 @@ jobs:
         if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - uses: ./.github/actions/setup
             - run: node --run build
             - run: node --run typecheck
@@ -43,7 +43,7 @@ jobs:
         if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - uses: ./.github/actions/setup
             - run: node --run test
 
@@ -52,6 +52,6 @@ jobs:
         if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - uses: ./.github/actions/setup
             - run: node --run build

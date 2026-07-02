@@ -6,7 +6,9 @@ import {
     qualityToken,
 } from '@/modules/report-view/report-financials-card/metric-quality'
 
-export function MetricRow({ label, value, rawValue, metricKey, helper, context }: MetricTile) {
+type Props = MetricTile
+
+export function MetricRow({ label, value, rawValue, metricKey, helper, context }: Props) {
     const isNA = value === 'N/A'
     const evaluation = context || isNA ? null : evaluateMetric(metricKey, rawValue ?? null)
     const help = context ? undefined : (helper ?? metricHelp(metricKey))

@@ -47,11 +47,8 @@ export default function EducationHubPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                         >
-                            <p className="text-xs font-semibold tracking-widest uppercase text-accent-blue mb-4">
-                                Education Hub
-                            </p>
                             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-5">
-                                Stock Analysis Guides
+                                Education Hub
                             </h1>
                             <p className="text-primary-muted text-lg leading-relaxed max-w-2xl">
                                 Clear, practical guides on the concepts behind stock analysis — from

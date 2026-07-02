@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
 import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
-import { fetchAdminStats, fetchAdminUsers } from '@/modules/admin/shared/admin-queries'
+import { fetchAdminStats, fetchAdminUsers } from '@/modules/admin/shared/get-admin-data'
 import { parseReportDate } from '@/lib/formatters'
 
 export async function AdminUsersSection() {

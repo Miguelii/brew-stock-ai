@@ -32,34 +32,59 @@ This project uses automated code quality tools to maintain consistency:
 flowchart TD
     U["User"] -->|"ticker + prompt"| UI["Next.js Client"]
 
-    subgraph API["tRPC API (synchronous request)"]
-        UI --> CTRL["create-report Controller"]
-        CTRL --> SVC["create-report Service"]
+    subgraph API["tRPC API"]
+        UI --> CR["reports.create"]
     end
 
     PG[("Supabase / Postgres")]
     TQ[["Trigger.dev Queue"]]
 
-    SVC -->|"insert report (PROCESSING)\ndeduct credits"| PG
-    SVC --> TQ
-    SVC -.->|"reportId returned immediately"| UI
+    CR -->|"insert report (GENERATING)\ndeduct credits"| PG
+    CR --> TQ
+    CR -.->|"reportId returned immediately"| UI
 
     subgraph BG["Background Job (Trigger.dev)"]
         JOB["process-report Job"] --> ANALYSIS["getStockAnalysis"]
 
-        ANALYSIS --> YAHOO["Yahoo Finance\nfundamentals · scores · reports"]
-        ANALYSIS --> FINNHUB["Finnhub\nnews"]
-        ANALYSIS --> PRICE["Price History\n→ technical indicators"]
+        subgraph YF["Yahoo Finance"]
+            YAHOO["fundamentals · scores · reports"]
+            PRICE["price history\n→ technical indicators"]
+        end
 
-        ANALYSIS --> AI{{"Claude (Anthropic)"}}
+        ANALYSIS --> YAHOO
+        ANALYSIS --> PRICE
+        ANALYSIS --> FINNHUB["Finnhub\nnews"]
+
+        ANALYSIS --> AI{{"AI Analysis using Claude"}}
         AI --> SAVE["Save analysis + sentiment"]
         SAVE --> PUSH["Push notification"]
     end
 
     TQ --> JOB
+    JOB -.->|"on failure"| FAIL["mark FAILED\n+ refund credits"]
+    FAIL --> PG
     YAHOO -.->|"TTL cache"| PG
     SAVE -->|"persist"| PG
 
     PUSH -.-> U
-    UI -->|"poll / read report"| PG
+    UI -->|"poll while GENERATING\nread report"| PG
+```
+
+## Credits & Payments
+
+```mermaid
+flowchart TD
+    U["User"] -->|"buy credit package"| CHK["credits.createCheckoutSession"]
+    CHK --> STRIPE["Stripe Checkout"]
+    STRIPE -->|"webhook\n(signature verified)"| WH["/api/webhooks/stripe"]
+
+    PG[("Supabase / Postgres")]
+
+    WH -->|"claim event_id\n(idempotency)"| PG
+    WH -->|"add_credits RPC"| PG
+
+    U -->|"create report"| SPEND["deduct credits"]
+    SPEND --> PG
+
+    JOB["process-report Job"] -.->|"on failure\nrefund credits"| PG
 ```

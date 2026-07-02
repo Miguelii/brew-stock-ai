@@ -15,7 +15,7 @@ import { Drawer } from '@/components/ui/drawer'
 import { LogLevelBadge } from '@/modules/admin/logs/log-level-badge'
 import { LogDetailDrawer } from '@/modules/admin/logs/log-detail-drawer'
 import { formatLogTimestamp } from '@/lib/formatters'
-import type { AdminLog, LogLevel } from '@/_backend/modules/admin/services/get-admin-logs.service'
+import type { AdminLog, LogLevel } from '@/_bff/modules/admin/services/get-admin-logs.service'
 
 type Props = {
     logs: AdminLog[]

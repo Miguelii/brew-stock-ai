@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { fmtCount } from '@/lib/formatters'
 import { type LucideIcon } from 'lucide-react'
 
 type Props = {
@@ -25,7 +26,7 @@ export function AdminStatCard({ label, value, icon: Icon, accent }: Props) {
                     accent ? 'text-destructive' : 'text-foreground'
                 )}
             >
-                {value.toLocaleString()}
+                {fmtCount(value)}
             </p>
         </div>
     )

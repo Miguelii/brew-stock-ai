@@ -2,8 +2,8 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { Effect, Exit } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
-import { CreateSbClientError, OAuthInitError } from '@/_backend/lib/errors'
-import { ErrorCode } from '@/_backend/lib/error-codes'
+import { CreateSbClientError, OAuthInitError } from '@/_bff/lib/errors'
+import { ErrorCode } from '@/_bff/lib/error-codes'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL

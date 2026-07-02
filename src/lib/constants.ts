@@ -57,7 +57,7 @@ export const STATIC_PREFIXES = [
 
 export const AUTH_PAGE_PATH = '/auth'
 
-export const PROTECTED_PATHS = new Set(['/reports', '/account', '/tokens'])
+export const PROTECTED_PATHS = new Set(['/reports', '/account', '/tokens', '/secure-admin'])
 
 export const AUTH_PAGES_PATHS = new Set([AUTH_PAGE_PATH])
 
@@ -66,6 +66,9 @@ export const HOME_PAGE_PATH = '/'
 export const SIGN_IN_GOOGLE_API_PATH = '/api/auth/google'
 
 export const MAX_STOCK_INPUT_LENGHT = 50
+
+// Ticker or company name: unicode letters/digits plus the punctuation Yahoo symbols use (BRK.B, ^GSPC, "S&P", "O'Reilly").
+export const STOCK_INPUT_PATTERN = /^[\p{L}\p{N} .,'&^-]+$/u
 
 export const PUSH_DISMISSED_KEY = 'push_prompt_dismissed'
 

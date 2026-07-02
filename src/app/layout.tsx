@@ -14,6 +14,7 @@ import {
     WebSiteSchema,
 } from '@/components/structured-data'
 import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 import { GtmScript } from '@/components/scripts/gtm-script'
 import { AdsenseScript } from '@/components/scripts/adsence-script'
 import { TrpcContextProvider } from '@/_trpc/context/trpc-context.provider'
@@ -112,7 +113,11 @@ export default function RootLayout({ children }: Props) {
         <html
             data-scroll-behavior="smooth"
             lang="en"
-            className={`${geistSans.variable} ${geistMono.variable} bg-background antialiased font-sans text-primary`}
+            className={cn(
+                geistSans.variable,
+                geistMono.variable,
+                'bg-background antialiased font-sans text-primary'
+            )}
         >
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

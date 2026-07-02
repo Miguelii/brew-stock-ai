@@ -7,7 +7,7 @@ import {
     EXTREME_BULLISH_COLOR,
     getSentimentInfo,
     NEUTRAL_COLOR,
-} from '@/modules/report-view/lib/sentiment'
+} from '@/modules/report-view/sentiment'
 
 const CX = 100
 const CY = 100

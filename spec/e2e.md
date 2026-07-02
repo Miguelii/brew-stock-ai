@@ -294,7 +294,7 @@ Four parallel jobs on every PR to `main`:
 
 Shared setup used by every job (DRY). Installs pnpm, Node 22, and project dependencies.
 
-> **Important:** `actions/checkout@v4` is NOT inside the composite action. GitHub Actions needs the repo checked out before it can resolve `./.github/actions/setup`. Each job must run `actions/checkout@v4` first.
+> **Important:** `actions/checkout@v6 is NOT inside the composite action. GitHub Actions needs the repo checked out before it can resolve `./.github/actions/setup`. Each job must run `actions/checkout@v6` first.
 
 ---
 

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import { AnalysisHero } from '@/components/analysis-hero'
+import { AnalysisHero } from '@/modules/analysis/analysis-hero'
 import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
-import { getCachedSession } from '@/_backend/modules/auth/services/get-cached-session.service'
+import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'AI Stock Analysis'

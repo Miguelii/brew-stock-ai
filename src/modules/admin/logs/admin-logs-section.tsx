@@ -1,7 +1,7 @@
 import { ScrollTextIcon, TriangleAlertIcon, CircleAlertIcon } from 'lucide-react'
 import { AdminStatCard } from '@/modules/admin/shared/admin-stat-card'
 import { LogsExplorer } from '@/modules/admin/logs/logs-explorer'
-import { fetchAdminLogs } from '@/modules/admin/shared/admin-queries'
+import { fetchAdminLogs } from '@/modules/admin/shared/get-admin-data'
 
 export async function AdminLogsSection() {
     const logs = await fetchAdminLogs()

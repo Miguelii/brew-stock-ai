@@ -1,10 +1,10 @@
 import { router } from '@/_trpc/server'
-import { AUTH_ROUTER } from '@/_backend/modules/auth/auth.router'
-import { CORE_ROUTER } from '@/_backend/modules/core/core.router'
-import { CREDITS_ROUTER } from '@/_backend/modules/credits/credits.router'
-import { FINNHUB_ROUTER } from '@/_backend/modules/finnhub/finnhub.router'
-import { REPORTS_ROUTER } from '@/_backend/modules/reports/reports.router'
-import { YAHOO_ROUTER } from '@/_backend/modules/yahoo/yahoo.router'
+import { AUTH_ROUTER } from '@/_bff/modules/auth/auth.router'
+import { CORE_ROUTER } from '@/_bff/modules/core/core.router'
+import { CREDITS_ROUTER } from '@/_bff/modules/credits/credits.router'
+import { FINNHUB_ROUTER } from '@/_bff/modules/finnhub/finnhub.router'
+import { REPORTS_ROUTER } from '@/_bff/modules/reports/reports.router'
+import { YAHOO_ROUTER } from '@/_bff/modules/yahoo/yahoo.router'
 
 export const appRouter = router({
     auth: AUTH_ROUTER,

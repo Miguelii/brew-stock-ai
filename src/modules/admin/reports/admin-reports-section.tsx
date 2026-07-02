@@ -16,7 +16,7 @@ import {
     fetchAdminStats,
     fetchAdminUsers,
     fetchAdminReports,
-} from '@/modules/admin/shared/admin-queries'
+} from '@/modules/admin/shared/get-admin-data'
 import { parseReportDate } from '@/lib/formatters'
 import { PROMPT_OPTIONS } from '@/lib/constants'
 import { ReportStatus } from '@/types/ReportDTO'

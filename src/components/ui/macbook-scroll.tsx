@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode, useRef, useState } from 'react'
+import { type PropsWithChildren, type ReactNode, useRef, useState } from 'react'
 import { type MotionValue, motion, useMotionValue, useScroll, useTransform } from 'motion/react'
 import { cn } from '@/lib/utils'
 import {
@@ -80,7 +80,7 @@ export const MacbookScroll = ({
                         translateY: textTransform,
                         opacity: textOpacity,
                     }}
-                    className="mb-20 text-center text-3xl font-bold text-neutral-800 dark:text-white"
+                    className="mb-20 text-center text-3xl font-bold text-primary"
                 >
                     {title || null}
                 </motion.h2>
@@ -536,9 +536,8 @@ export const KBtn = ({
     children,
     childrenClassName,
     backlit = true,
-}: {
+}: PropsWithChildren & {
     className?: string
-    children?: ReactNode
     childrenClassName?: string
     backlit?: boolean
 }) => {

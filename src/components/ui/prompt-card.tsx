@@ -50,7 +50,7 @@ export function PromptCard({
             <div className="flex gap-2">
                 <Button
                     size="sm"
-                    className="flex-1 bg-accent-blue hover:bg-accent-blue-dark text-white rounded-none text-xs"
+                    className="flex-1 bg-accent-blue hover:bg-accent-blue-dark text-background rounded-none text-xs"
                     onClick={primaryAction.onClick}
                     disabled={isPending}
                 >

@@ -1,9 +1,11 @@
 import { Hero } from '@/modules/home/hero'
-import { AnalysisCard } from '@/modules/home/analysis-card'
 import { HowItWorks } from '@/modules/home/how-it-works'
-import { FeaturedArticles } from '@/modules/home/featured-articles'
+import { AnalysisCard } from '@/modules/home/analysis-card'
+import { ReportSections } from '@/modules/home/report-sections'
 import { WordRevealCard } from '@/modules/home/word-reveal-card'
+import { FeaturedArticles } from '@/modules/home/featured-articles'
 import { PricingCard } from '@/modules/home/pricing-card'
+import { HomeFaq } from '@/modules/faq/home-faq'
 import { FinalCTA } from '@/modules/home/final-cta'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
@@ -25,24 +27,20 @@ export default function HomePage() {
             <main className="flex-1 overflow-x-hidden">
                 <Hero />
 
-                {/* Analysis Types — Bento Grid */}
                 <AnalysisCard />
 
-                {/* Features */}
-
-                {/* What the product does + how it works (static prose) */}
                 <HowItWorks />
 
-                {/* Featured education-hub articles — surfaces long-form content + internal links */}
-                <FeaturedArticles />
+                <ReportSections />
 
-                {/* Scrubbing text reveal */}
                 <WordRevealCard words={HOME_REVEAL_WORDS} />
 
-                {/* Pricing */}
+                <FeaturedArticles />
+
                 <PricingCard />
 
-                {/* Final CTA */}
+                <HomeFaq />
+
                 <FinalCTA />
             </main>
         </>

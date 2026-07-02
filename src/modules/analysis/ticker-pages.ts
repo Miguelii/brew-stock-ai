@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- static file intentional exception */
 import type { TickerContent, TickerPage } from '@/types/TickerPage'
-import { TICKER_CONTENT } from '@/lib/ticker/ticker-content'
+import { TICKER_CONTENT } from '@/modules/analysis/ticker-content'
 
 const TICKER_PAGES_BASE: TickerPage[] = [
     // Technology

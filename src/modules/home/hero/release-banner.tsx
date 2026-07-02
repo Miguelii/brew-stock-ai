@@ -14,7 +14,7 @@ export function ReleaseBanner() {
             <Link
                 href={`/changelog/${LATEST_CHANGELOG_ENTRY.slug}`}
                 prefetch={false}
-                className="group inline-flex items-center gap-2 rounded-full border border-border bg-card/60 py-1.5 pl-2 pr-3 text-sm backdrop-blur-sm transition-colors duration-200 hover:border-accent-blue"
+                className="group inline-flex items-center gap-2 rounded-full border border-border bg-card/60 py-1.5 pl-2 pr-3 text-sm backdrop-blur-sm transition-colors duration-200 hover:border-accent-blue/50"
             >
                 <span className="inline-flex items-center gap-1 rounded-full bg-accent-blue-light px-2 py-0.5 text-[11px] font-semibold text-accent-blue">
                     <Sparkles className="size-3" />

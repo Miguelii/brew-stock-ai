@@ -2,12 +2,11 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
 import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
-import { TICKER_PAGES, resolveTickerPage, isTickerEnriched } from '@/lib/ticker/ticker-pages'
-import { AnalysisHero } from '@/components/analysis-hero'
+import { TICKER_PAGES, resolveTickerPage, isTickerEnriched } from '@/modules/analysis/ticker-pages'
+import { AnalysisHero } from '@/modules/analysis/analysis-hero'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
 import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
-import { TickerAbout } from '@/components/ticker-about'
 import { AD_SLOT_TICKER } from '@/lib/constants'
 
 type Props = PageProps<'/analysis/[ticker]'>
@@ -135,8 +134,6 @@ export default async function TickerPage({ params }: Props) {
                     format="horizontal"
                     className="hidden md:block max-w-7xl mx-auto px-6 mt-8"
                 />
-
-                <TickerAbout ticker={page} />
             </main>
         </>
     )

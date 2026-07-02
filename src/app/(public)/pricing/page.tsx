@@ -4,29 +4,7 @@ import { TokenPackages } from '@/modules/tokens/token-packages'
 import { Separator } from '@/components/ui/separator'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema, FAQSchema } from '@/components/structured-data'
-
-const PRICING_FAQ = [
-    {
-        question: 'Do credits expire?',
-        answer: 'No. Credits never expire. Buy a package once and use it whenever you need.',
-    },
-    {
-        question: 'Is this a subscription?',
-        answer: 'No. There are no subscriptions, recurring charges, or hidden fees. You only pay when you choose to buy a credit package.',
-    },
-    {
-        question: 'How much does one analysis cost?',
-        answer: 'An analysis costs 1 or 2 credits depending on its depth. Lighter analyses like Risk, Moat, and Growth Potential cost 1 credit; the Full Wall Street Style Analysis and the Deep Financial Breakdown cost 2 credits each.',
-    },
-    {
-        question: 'Can I try it for free?',
-        answer: 'Yes. Every new account starts with 2 free trial credits — enough for your first full analysis — with no card required.',
-    },
-    {
-        question: 'What payment methods do you accept?',
-        answer: 'Payments are processed securely by Stripe, which supports major credit and debit cards plus popular local payment methods.',
-    },
-] as const
+import { PRICING_FAQ } from '@/modules/faq/faq-content'
 
 export const dynamic = 'force-static'
 

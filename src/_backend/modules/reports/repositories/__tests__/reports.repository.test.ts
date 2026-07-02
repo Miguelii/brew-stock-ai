@@ -200,19 +200,37 @@ describe('selectStockDataByTicker', () => {
 })
 
 describe('markReportFailed', () => {
-    it('updates the report status to FAILED', async () => {
-        const eq = vi.fn().mockResolvedValue({ data: null, error: null })
+    const makeFailChain = (result: { data: unknown; error: unknown }) => {
+        const maybeSingle = vi.fn().mockResolvedValue(result)
+        const select = vi.fn(() => ({ maybeSingle }))
+        const neq = vi.fn(() => ({ select }))
+        const eq = vi.fn(() => ({ neq }))
         const update = vi.fn(() => ({ eq }))
-        const supabase = asClient({ update })
+        return { update, eq, neq, supabase: asClient({ update }) }
+    }
 
-        await Effect.runPromise(markReportFailed(supabase, 'r-1'))
+    it('marks the report FAILED and returns the refund columns on the first transition', async () => {
+        const { update, eq, neq, supabase } = makeFailChain({
+            data: { user_id: 'user-1', type: 'fundamental' },
+            error: null,
+        })
+
+        const result = await Effect.runPromise(markReportFailed(supabase, 'r-1'))
+
+        expect(result).toEqual({ user_id: 'user-1', type: 'fundamental' })
         expect(update).toHaveBeenCalledWith({ status: ReportStatus.FAILED })
         expect(eq).toHaveBeenCalledWith('id', 'r-1')
+        expect(neq).toHaveBeenCalledWith('status', ReportStatus.FAILED)
     })
 
-    it('fails with MarkReportFailedError when the update rejects', async () => {
-        const eq = vi.fn().mockRejectedValue(new Error('network down'))
-        const supabase = asClient({ update: () => ({ eq }) })
+    it('returns null when the report is already FAILED', async () => {
+        const { supabase } = makeFailChain({ data: null, error: null })
+
+        await expect(Effect.runPromise(markReportFailed(supabase, 'r-1'))).resolves.toBeNull()
+    })
+
+    it('fails with MarkReportFailedError when the update errors', async () => {
+        const { supabase } = makeFailChain({ data: null, error: { message: 'boom' } })
 
         const exit = await Effect.runPromiseExit(markReportFailed(supabase, 'r-1'))
         expect(failureTag(exit)).toBe('MarkReportFailedError')

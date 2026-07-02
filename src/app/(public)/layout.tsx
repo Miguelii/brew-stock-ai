@@ -1,6 +1,9 @@
 import { PublicHeader } from '@/components/public-header'
+import type { PropsWithChildren } from 'react'
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
+type Props = PropsWithChildren
+
+export default function HomeLayout({ children }: Props) {
     return (
         <>
             <PublicHeader />

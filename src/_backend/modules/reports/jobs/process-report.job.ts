@@ -1,8 +1,8 @@
 import { task, logger, tasks } from '@trigger.dev/sdk/v3'
 import { Effect } from 'effect'
-import { createSbAdminClient, getIsDev } from '@/lib/utils.server'
-import { ReportStatus } from '@/types/ReportDTO'
+import { getIsDev } from '@/lib/utils.server'
 import { processReport } from '@/_backend/modules/reports/processors/process-report.processor'
+import { markReportFailedAndRefund } from '@/_backend/modules/reports/services/mark-report-failed-and-refund.service'
 
 const JOB_ID = 'process-report'
 
@@ -17,11 +17,28 @@ const processReportBackgroundJob = task({
             reportId: payload.reportId,
             error: String(error),
         })
-        const supabase = createSbAdminClient()
-        await supabase
-            .from('reports')
-            .update({ status: ReportStatus.FAILED })
-            .eq('id', payload.reportId)
+
+        const refunded = await Effect.runPromise(
+            markReportFailedAndRefund(payload.reportId).pipe(
+                Effect.catchAll((err) =>
+                    Effect.sync(() => {
+                        logger.error('markReportFailedAndRefund failed', {
+                            reportId: payload.reportId,
+                            error: String(err),
+                        })
+                        return null
+                    })
+                )
+            )
+        )
+
+        if (refunded) {
+            logger.log('refunded credits for failed report', {
+                reportId: payload.reportId,
+                userId: refunded.userId,
+                refund: refunded.refund,
+            })
+        }
     },
     run: (payload: { reportId: string; useBaseModel?: boolean }) =>
         Effect.runPromise(processReport(payload.reportId, payload.useBaseModel)),

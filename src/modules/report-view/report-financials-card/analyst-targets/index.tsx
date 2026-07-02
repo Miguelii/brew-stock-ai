@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { fmtPrice } from '@/lib/formatters'
+import { fmtPrice, signedPct1 } from '@/lib/formatters'
 import type { StockFinancials } from '@/types/ReportDTO'
 
 type Props = {
@@ -11,7 +11,7 @@ export function AnalystTargets({ financials }: Props) {
 
     const upside =
         f?.targetMeanPrice != null && f?.currentPrice != null && f.currentPrice > 0
-            ? (((f.targetMeanPrice - f.currentPrice) / f.currentPrice) * 100).toFixed(1)
+            ? ((f.targetMeanPrice - f.currentPrice) / f.currentPrice) * 100
             : null
 
     return (
@@ -24,11 +24,10 @@ export function AnalystTargets({ financials }: Props) {
                     <span
                         className={cn(
                             'text-xs font-semibold',
-                            Number.parseFloat(upside) >= 0 ? 'text-positive' : 'text-destructive'
+                            upside >= 0 ? 'text-positive' : 'text-destructive'
                         )}
                     >
-                        {Number.parseFloat(upside) >= 0 ? '+' : ''}
-                        {upside}% to consensus
+                        {signedPct1(upside)} to consensus
                     </span>
                 )}
             </div>

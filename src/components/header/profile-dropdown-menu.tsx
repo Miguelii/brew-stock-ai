@@ -10,10 +10,9 @@ import {
 import { LogOut, UserIcon } from 'lucide-react'
 import { useLogout } from '@/hooks/use-logout'
 import { useRouter } from 'next/navigation'
+import type { PropsWithChildren } from 'react'
 
-type Props = {
-    children: React.ReactNode
-}
+type Props = PropsWithChildren
 
 export function ProfileDropdownMenu({ children }: Props) {
     const logout = useLogout()

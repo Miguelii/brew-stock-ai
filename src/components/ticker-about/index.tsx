@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { PropsWithChildren } from 'react'
 import Link from 'next/link'
 import { ArrowRightIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -144,9 +144,8 @@ function TickerAboutEnriched({ ticker, content }: EnrichedProps) {
     )
 }
 
-type BlockProps = {
+type BlockProps = PropsWithChildren & {
     heading: string
-    children: ReactNode
 }
 
 function Block({ heading, children }: BlockProps) {

@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { processReport } from '@/_backend/modules/reports/processors/process-report.processor'
-import { ReportStatus } from '@/types/ReportDTO'
 import { failureTag } from '@/_backend/__tests__/utils'
 
 const { createSbAdminClientMock, getStockAnalysisMock, sendPushMock } = vi.hoisted(() => ({
@@ -72,15 +71,15 @@ describe('processReport', () => {
         expect(getStockAnalysisMock).not.toHaveBeenCalled()
     })
 
-    it('marks the report as FAILED and re-fails with the analysis error', async () => {
-        const { client, update, updateEq } = makeSupabase({ data: REPORT, error: null })
+    it('propagates the analysis error without touching the report status', async () => {
+        const { client, update } = makeSupabase({ data: REPORT, error: null })
         createSbAdminClientMock.mockReturnValue(client)
         getStockAnalysisMock.mockReturnValue(Effect.fail({ _tag: 'StockAnalysisError' }))
 
         const exit = await Effect.runPromiseExit(processReport('report-1'))
         expect(failureTag(exit)).toBe('StockAnalysisError')
-        expect(update).toHaveBeenCalledWith({ status: ReportStatus.FAILED })
-        expect(updateEq).toHaveBeenCalledWith('id', 'report-1')
+        // The FAILED transition (and credit refund) is owned by the job's onFailure.
+        expect(update).not.toHaveBeenCalled()
         expect(sendPushMock).not.toHaveBeenCalled()
     })
 

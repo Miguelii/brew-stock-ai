@@ -39,6 +39,25 @@ export const pct1 = (n: number | null | undefined): string =>
     n == null ? 'N/A' : `${n.toFixed(1)}%`
 
 /**
+ * Format an already-percentage number with an explicit sign to one decimal
+ * (e.g. `5.3 → "+5.3%"`, `-2.1 → "-2.1%"`).
+ *
+ * @param n - The already-percentage value to format.
+ * @returns The signed percentage, or `"N/A"` when nullish.
+ */
+export const signedPct1 = (n: number | null | undefined): string =>
+    n == null ? 'N/A' : `${n >= 0 ? '+' : ''}${n.toFixed(1)}%`
+
+/**
+ * Format an integer count with US-locale thousands separators (e.g. `12345 → "12,345"`).
+ *
+ * @param n - The count to format.
+ * @returns The localised count string, or `"N/A"` when nullish.
+ */
+export const fmtCount = (n: number | null | undefined): string =>
+    n == null ? 'N/A' : n.toLocaleString('en-US')
+
+/**
  * Format a date as an ISO calendar day (`YYYY-MM-DD`).
  *
  * @param d - The date to format.

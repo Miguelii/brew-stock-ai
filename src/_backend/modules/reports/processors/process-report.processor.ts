@@ -5,10 +5,7 @@ import { CreateSbClientError } from '@/_backend/lib/errors'
 import { ErrorCode } from '@/_backend/lib/error-codes'
 import { getStockAnalysis } from '@/_backend/modules/analysis/processors/get-stock-analysis.processor'
 import { sendPushNotificationToUser } from '@/_backend/modules/core/processors/send-push-notification-to-user.processor'
-import {
-    markReportFailed,
-    selectReportForProcessing,
-} from '@/_backend/modules/reports/repositories/reports.repository'
+import { selectReportForProcessing } from '@/_backend/modules/reports/repositories/reports.repository'
 
 export const processReport = Effect.fn('processReport')(function* (
     reportId: string,
@@ -29,11 +26,9 @@ export const processReport = Effect.fn('processReport')(function* (
         userId: report.user_id,
     })
 
-    yield* getStockAnalysis(report.stock, report.type, report.id, supabase, useBaseModel).pipe(
-        Effect.catchAll((err) =>
-            markReportFailed(supabase, report.id).pipe(Effect.flatMap(() => Effect.fail(err)))
-        )
-    )
+    // On failure the error propagates to the job, whose onFailure owns the
+    // GENERATING → FAILED transition and the credit refund.
+    yield* getStockAnalysis(report.stock, report.type, report.id, supabase, useBaseModel)
 
     logger.log('Report completed', { reportId: report.id })
 

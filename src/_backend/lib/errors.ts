@@ -79,6 +79,9 @@ export class SendPushNotificationError extends Data.TaggedError(
 // Tokens
 export class GetCreditsError extends Data.TaggedError('GetCreditsError')<ServiceErrorFields> {}
 export class DeductCreditError extends Data.TaggedError('DeductCreditError')<ServiceErrorFields> {}
+export class RefundCreditsError extends Data.TaggedError(
+    'RefundCreditsError'
+)<ServiceErrorFields> {}
 export class CreateCheckoutSessionError extends Data.TaggedError(
     'CreateCheckoutSessionError'
 )<ServiceErrorFields> {}

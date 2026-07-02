@@ -13,7 +13,12 @@ vi.mock('next/cache', () => ({
 
 const fetchMock = vi.fn()
 
-const jsonResponse = (body: unknown) => Promise.resolve({ json: () => Promise.resolve(body) })
+const jsonResponse = (body: unknown, init: { ok?: boolean; status?: number } = {}) =>
+    Promise.resolve({
+        ok: init.ok ?? true,
+        status: init.status ?? 200,
+        json: () => Promise.resolve(body),
+    })
 
 describe('fetchLatestNewsRaw', () => {
     beforeEach(() => {
@@ -33,7 +38,8 @@ describe('fetchLatestNewsRaw', () => {
 
         await fetchLatestNewsRaw('AAPL')
         expect(fetchMock).toHaveBeenCalledWith(
-            'https://finnhub.test/api/v1/company-news?symbol=AAPL&from=2025-06-10&to=2026-06-10&token=test-api-key'
+            'https://finnhub.test/api/v1/company-news?symbol=AAPL&from=2025-06-10&to=2026-06-10&token=test-api-key',
+            expect.objectContaining({ signal: expect.any(AbortSignal) })
         )
     })
 
@@ -57,6 +63,14 @@ describe('fetchLatestNewsRaw', () => {
 
         await expect(fetchLatestNewsRaw('AAPL')).rejects.toThrow(
             'Unexpected news response for AAPL'
+        )
+    })
+
+    it('throws when the response status is not ok', async () => {
+        fetchMock.mockReturnValue(jsonResponse([], { ok: false, status: 429 }))
+
+        await expect(fetchLatestNewsRaw('AAPL')).rejects.toThrow(
+            'Finnhub news request failed for AAPL: 429'
         )
     })
 })

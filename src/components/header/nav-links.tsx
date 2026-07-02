@@ -6,7 +6,11 @@ import { cn } from '@/lib/utils'
 import type { NavLink } from '@/types/NavLink'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
 
-export function NavLinks({ links }: { links: NavLink[] }) {
+type Props = {
+    links: NavLink[]
+}
+
+export function NavLinks({ links }: Props) {
     const pathname = usePathname()
 
     return (

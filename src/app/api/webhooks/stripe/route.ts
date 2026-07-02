@@ -50,12 +50,42 @@ export async function POST(request: Request) {
 
         const supabase = createSbAdminClient()
 
+        // Claim the event id before crediting so a retried delivery can never credit twice.
+        const claim = await supabase.from('stripe_processed_events').insert({ event_id: event.id })
+
+        if (claim.error) {
+            const isAlreadyProcessed = claim.error.code === '23505'
+
+            if (isAlreadyProcessed) {
+                Logger({
+                    prefix: 'stripe-webhook',
+                    level: 'info',
+                    message: 'skipping already-processed event',
+                    metadata: { event_id: event.id, session_id: session.id },
+                    userId: userId ?? undefined,
+                })
+                return NextResponse.json({ received: true })
+            }
+
+            Logger({
+                prefix: 'stripe-webhook',
+                level: 'error',
+                message: 'failed to claim event for idempotency',
+                error: claim.error,
+                metadata: { event_id: event.id, session_id: session.id },
+                userId: userId ?? undefined,
+            })
+            return NextResponse.json({ error: 'Failed to record event' }, { status: 500 })
+        }
+
         const response = await supabase.rpc('add_credits', {
             p_user_id: userId,
             p_credits: credits,
         })
 
         if (response.error) {
+            // Release the claim so Stripe's retry can reprocess this event.
+            await supabase.from('stripe_processed_events').delete().eq('event_id', event.id)
             Logger({
                 prefix: 'stripe-webhook',
                 level: 'error',

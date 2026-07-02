@@ -1,7 +1,7 @@
 // oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/modules/report-view/lib/sentiment'
-import { fmtPct, fmtNum, fmtPrice, fmtDate, escapeHtml } from '@/lib/formatters'
+import { fmtPct, fmtNum, fmtPrice, fmtDate, signedPct1, escapeHtml } from '@/lib/formatters'
 import { sanitizeReportHtml } from '@/_backend/modules/reports/helpers/sanitize-report-html.helper'
 import {
     evaluateMetric,
@@ -52,9 +52,9 @@ function buildScoreRows(scores: StockScores): string {
 
         const valueText = isNA
             ? `<span style="color:#909097;">N/A</span>`
-            : `<span style="font-weight:600;">${company.toFixed(2)}</span>`
+            : `<span style="font-weight:600;">${fmtNum(company)}</span>`
 
-        const sectorText = sector != null ? sector.toFixed(2) : 'N/A'
+        const sectorText = fmtNum(sector)
 
         return `
             <div style="margin-bottom:16px;">
@@ -144,7 +144,7 @@ function buildAnalystOutlookFinancials(f: StockFinancials): string {
 
     const upsideBadge =
         upsideNum != null
-            ? `<span style="font-size:10px;font-weight:600;${upsideNum >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'}">${upsideNum >= 0 ? '+' : ''}${upsideNum.toFixed(1)}% to consensus</span>`
+            ? `<span style="font-size:10px;font-weight:600;${upsideNum >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'}">${signedPct1(upsideNum)} to consensus</span>`
             : ''
 
     return `

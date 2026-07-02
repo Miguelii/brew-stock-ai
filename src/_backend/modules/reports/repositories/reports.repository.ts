@@ -129,8 +129,10 @@ export const selectReportForProcessing = Effect.fn('selectReportForProcessing')(
     supabase: SupabaseClient,
     reportId: string
 ) {
+    // Only the columns the processing job needs — `*` would drag the large ai_response JSON along.
     const { data: report, error } = yield* Effect.tryPromise({
-        try: () => supabase.from('reports').select('*').eq('id', reportId).single(),
+        try: () =>
+            supabase.from('reports').select('id, stock, type, user_id').eq('id', reportId).single(),
         catch: (cause) =>
             new FetchReportForTaskError({ cause, error_hash: ErrorCode.PROCESS_REPORT_FETCH }),
     })
@@ -142,7 +144,39 @@ export const selectReportForProcessing = Effect.fn('selectReportForProcessing')(
         })
     }
 
-    return report as ReportDTO
+    return report as Pick<ReportDTO, 'id' | 'stock' | 'type' | 'user_id'>
+})
+
+// Marks the report as FAILED exactly once: the `neq` guard means only the first caller
+// gets the row back (later calls return null), so the credit refund can't double-fire.
+export const markReportFailed = Effect.fn('markReportFailed')(function* (
+    supabase: SupabaseClient,
+    reportId: ReportDTO['id']
+) {
+    const { data, error } = yield* Effect.tryPromise({
+        try: () =>
+            supabase
+                .from('reports')
+                .update({ status: ReportStatus.FAILED })
+                .eq('id', reportId)
+                .neq('status', ReportStatus.FAILED)
+                .select('user_id, type')
+                .maybeSingle(),
+        catch: (cause) =>
+            new MarkReportFailedError({
+                cause,
+                error_hash: ErrorCode.PROCESS_REPORT_MARK_FAILED,
+            }),
+    })
+
+    if (error) {
+        return yield* new MarkReportFailedError({
+            cause: error,
+            error_hash: ErrorCode.PROCESS_REPORT_MARK_FAILED,
+        })
+    }
+
+    return data as Pick<ReportDTO, 'user_id' | 'type'> | null
 })
 
 // Best-effort — resolves to null instead of failing so report views never break on stock data
@@ -157,21 +191,6 @@ export const selectStockDataByTicker = Effect.fn('selectStockDataByTicker')(func
         Effect.map((res) => (res.data as StockData) ?? null),
         Effect.orElse(() => Effect.succeed(null))
     )
-})
-
-export const markReportFailed = Effect.fn('markReportFailed')(function* (
-    supabase: SupabaseClient,
-    reportId: ReportDTO['id']
-) {
-    yield* Effect.tryPromise({
-        try: () =>
-            supabase.from('reports').update({ status: ReportStatus.FAILED }).eq('id', reportId),
-        catch: (cause) =>
-            new MarkReportFailedError({
-                cause,
-                error_hash: ErrorCode.PROCESS_REPORT_MARK_FAILED,
-            }),
-    })
 })
 
 export const updateReportWithAnalysis = Effect.fn('updateReportWithAnalysis')(function* (

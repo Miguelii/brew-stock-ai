@@ -1,7 +1,9 @@
 import Logo from '@/components/logo'
-import type { ReactNode } from 'react'
+import type { PropsWithChildren } from 'react'
 
-export function AuthLayout({ children }: { children: ReactNode }) {
+type Props = PropsWithChildren
+
+export function AuthLayout({ children }: Props) {
     return (
         <div className="fixed inset-0 z-9999 flex">
             <div className="flex flex-1 flex-col bg-background px-12 py-8">

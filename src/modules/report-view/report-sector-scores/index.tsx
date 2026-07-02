@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { fmtNum } from '@/lib/formatters'
 import type { StockScores } from '@/types/ReportDTO'
 
 type ScoreRow = {
@@ -74,12 +75,12 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
                             <span className="text-muted-foreground">N/A</span>
                         ) : (
                             <span className="font-semibold text-primary">
-                                {score.companyScore!.toFixed(2)}
+                                {fmtNum(score.companyScore)}
                             </span>
                         )}
                         <span className="text-muted-foreground font-normal">
                             {' '}
-                            vs {score.sectorAvg !== null ? score.sectorAvg.toFixed(2) : 'N/A'}
+                            vs {fmtNum(score.sectorAvg)}
                         </span>
                     </span>
                 </div>

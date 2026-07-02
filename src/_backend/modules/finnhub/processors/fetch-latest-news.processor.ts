@@ -1,17 +1,23 @@
 import { ServerEnv } from '@/env/server'
 import type { NewsItem } from '@/types/news'
 import { unstable_cache } from 'next/cache'
+import { toIso } from '@/lib/formatters'
 import { LATEST_NEWS_CACHE_KEY, LATEST_NEWS_TTL } from '@/_backend/modules/finnhub/constants'
+
+const FETCH_TIMEOUT_MS = 30_000
 
 export const fetchLatestNewsRaw = async (ticker: string): Promise<NewsItem[]> => {
     const to = new Date()
     const from = new Date()
     from.setFullYear(from.getFullYear() - 1)
 
-    const fmt = (d: Date) => d.toISOString().split('T')[0]
-    const url = `${ServerEnv.NEXT_FINNHUB_BASE_URL}/company-news?symbol=${encodeURIComponent(ticker)}&from=${fmt(from)}&to=${fmt(to)}&token=${ServerEnv.NEXT_FINNHUB_API_KEY}`
+    const url = `${ServerEnv.NEXT_FINNHUB_BASE_URL}/company-news?symbol=${encodeURIComponent(ticker)}&from=${toIso(from)}&to=${toIso(to)}&token=${ServerEnv.NEXT_FINNHUB_API_KEY}`
 
-    const raw = await fetch(url).then((res) => res.json())
+    const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) })
+
+    if (!res.ok) throw new Error(`Finnhub news request failed for ${ticker}: ${res.status}`)
+
+    const raw = await res.json()
 
     if (!Array.isArray(raw)) throw new Error(`Unexpected news response for ${ticker}`)
 

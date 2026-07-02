@@ -84,6 +84,7 @@ export enum ErrorCode {
     TOKENS_DEDUCT_RPC = 'f3pv6k8w',
     TOKENS_DEDUCT_RPC_ERR = 'r7nd2m4c',
     TOKENS_INSUFFICIENT = 'h1yj9t6x',
+    TOKENS_REFUND_RPC_ERR = 'k4tn8w2r',
     CHECKOUT_INVALID_PKG = 'v5wf3k8n',
     CHECKOUT_SB_CLIENT = 'b2mc7p4g',
     CHECKOUT_UNAUTH = 'd8hx1v6t',

@@ -8,15 +8,13 @@ export async function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname
     const requestHeaders = new Headers(request.headers)
 
-    const response = NextResponse.next({
-        request: {
-            headers: requestHeaders,
-        },
-    })
+    const response = isPathFromStaticFiles(pathname)
+        ? NextResponse.next({
+              request: {
+                  headers: requestHeaders,
+              },
+          })
+        : await sbProxy(request)
 
-    setCSP(response, pathname)
-
-    if (isPathFromStaticFiles(pathname)) return response
-
-    return await sbProxy(request)
+    return setCSP(response, pathname)
 }

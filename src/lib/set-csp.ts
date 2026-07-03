@@ -65,6 +65,7 @@ const generateCSP = () => {
             https://*.google-analytics.com;
         font-src 'self';
         frame-src 'self'
+            https://vercel.live
             https://*.adtrafficquality.google
             https://*.googlesyndication.com;
         object-src 'none';

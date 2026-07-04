@@ -47,7 +47,7 @@ export default function ExampleReport() {
                 ]}
             />
 
-            <main className="overflow-x-hidden w-full">
+            <main id="main" className="overflow-x-hidden w-full">
                 <ReportHero />
 
                 <ReportMacbookScroll />

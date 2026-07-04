@@ -122,7 +122,7 @@ export default async function TickerPage({ params }: Props) {
                 description={page.description}
                 url={pageUrl}
             />
-            <main id="#main" className="w-full px-6 py-16 lg:py-24">
+            <main id="main" className="w-full px-6 py-16 lg:py-24">
                 <section className="flex-1 max-w-7xl mx-auto">
                     <AnalysisHero companyName={`${page.name} (${page.ticker})`}>
                         <AnalysisFormCard isAuthenticated={!!user} defaultTicker={page.ticker} />

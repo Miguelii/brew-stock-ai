@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 export default function ReportsIdLoading() {
     return (
-        <main className="max-w-7xl mx-auto px-6 py-10 space-y-8">
+        <main id="main" className="max-w-7xl mx-auto px-6 py-10 space-y-8">
             {/* Header */}
             <div className="flex flex-col gap-6">
                 <Skeleton className="h-8 w-20" />

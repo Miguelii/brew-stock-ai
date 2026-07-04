@@ -40,7 +40,7 @@ export default function AboutPage() {
                 ]}
             />
 
-            <main className="main-container">
+            <main id="main" className="main-container">
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold tracking-tight">About StockBrewAI</h1>
                     <p className="text-sm text-muted-foreground">

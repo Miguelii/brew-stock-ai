@@ -39,7 +39,7 @@ export default async function AnalysisPage() {
                 ]}
             />
             <main
-                id="#main"
+                id="main"
                 className="flex-1 max-w-7xl mx-auto w-full px-6 pt-16 pb-20 lg:pt-24 lg:pb-36"
             >
                 <AnalysisHero>

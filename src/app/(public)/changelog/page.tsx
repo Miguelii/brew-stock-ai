@@ -39,7 +39,7 @@ export default function ChangelogPage() {
                 ]}
             />
 
-            <main className="main-container">
+            <main id="main" className="main-container">
                 <motion.header
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

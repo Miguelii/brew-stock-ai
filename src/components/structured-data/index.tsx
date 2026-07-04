@@ -10,7 +10,7 @@ export function OrganizationSchema() {
         url: WEBSITE_URL,
         logo: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
         description:
-            'Institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators.',
+            'Institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators.',
         founder: {
             '@type': 'Person',
             name: 'Miguel Gonçalves',
@@ -35,7 +35,7 @@ export function WebSiteSchema() {
         name: 'StockBrewAI',
         url: WEBSITE_URL,
         description:
-            'Institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
+            'Institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.',
         inLanguage: 'en-US',
         potentialAction: {
             '@type': 'SearchAction',

@@ -37,7 +37,7 @@ export default function Report() {
                     { name: META_TITLE, url: META_URL },
                 ]}
             />
-            <main className="main-container-lg" id="#main">
+            <main className="main-container-lg" id="main">
                 <div className="flex flex-col gap-6 md:gap-0 md:flex-row w-full justify-between items-start md:items-center">
                     <div className="space-y-1">
                         <h1 className="text-2xl font-bold tracking-tight text-foreground">

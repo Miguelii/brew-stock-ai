@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { LogLevelBadge } from '@/modules/admin/logs/log-level-badge'
-import { formatJson, formatLogTimestamp } from '@/lib/formatters'
+import { formatJson, formatLogTimestamp } from '@/modules/admin/logs/utils'
 import { cn } from '@/lib/utils'
 import type { AdminLog } from '@/_bff/modules/admin/services/get-admin-logs.service'
 

@@ -4,6 +4,7 @@ import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
 import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
 import { TICKER_PAGES, resolveTickerPage, isTickerEnriched } from '@/modules/analysis/ticker-pages'
 import { AnalysisHero } from '@/modules/analysis/analysis-hero'
+import { TickerFaq } from '@/modules/analysis/ticker-faq'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
 import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
@@ -122,7 +123,7 @@ export default async function TickerPage({ params }: Props) {
                 description={page.description}
                 url={pageUrl}
             />
-            <main id="#main" className="w-full px-6 py-16 lg:py-24">
+            <main id="main" className="w-full px-6 py-16 lg:py-24">
                 <section className="flex-1 max-w-7xl mx-auto">
                     <AnalysisHero companyName={`${page.name} (${page.ticker})`}>
                         <AnalysisFormCard isAuthenticated={!!user} defaultTicker={page.ticker} />
@@ -134,6 +135,13 @@ export default async function TickerPage({ params }: Props) {
                     format="horizontal"
                     className="hidden md:block max-w-7xl mx-auto px-6 mt-8"
                 />
+
+                <div className="max-w-7xl mx-auto mt-16 lg:mt-24 flex flex-col gap-12 lg:gap-16">
+                    <TickerFaq
+                        companyName={`${page.name} (${page.ticker})`}
+                        questions={faqQuestions}
+                    />
+                </div>
             </main>
         </>
     )

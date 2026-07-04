@@ -24,7 +24,7 @@ export default function HomePage() {
         <>
             <BreadcrumbSchema items={[{ name: 'Home', url: `${SITE_URL}/` }]} />
 
-            <main className="flex-1 overflow-x-hidden">
+            <main id="main" className="flex-1 overflow-x-hidden">
                 <Hero />
 
                 <AnalysisCard />

@@ -13,7 +13,7 @@ import {
     WebApplicationSchema,
     WebSiteSchema,
 } from '@/components/structured-data'
-import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
+import { GOOGLE_ADSENSE_ACCOUNT_ID, SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { GtmScript } from '@/components/scripts/gtm-script'
 import { AdsenseScript } from '@/components/scripts/adsence-script'
@@ -42,7 +42,7 @@ export const viewport: Viewport = {
 
 const META_TITLE = 'StockBrewAI | AI-Powered Stock Analysis'
 const META_DESCRIPTION =
-    'Get institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.'
+    'Get institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.'
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
@@ -65,8 +65,8 @@ export const metadata: Metadata = {
     ],
     authors: [
         {
-            name: 'Miguel Gonçalves',
-            url: 'https://www.linkedin.com/in/miguelgoncalves18/',
+            name: SITE_AUTHOR_NAME,
+            url: SITE_AUTHOR_URL,
         },
     ],
     publisher: 'StockBrewAI',

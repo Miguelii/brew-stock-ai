@@ -61,7 +61,7 @@ export default async function ChangelogEntryPage({ params }: PageProps<'/changel
                 ]}
             />
 
-            <main className="flex-1">
+            <main id="main" className="flex-1">
                 <div className="main-container">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

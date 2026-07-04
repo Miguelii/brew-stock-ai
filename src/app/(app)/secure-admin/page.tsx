@@ -35,7 +35,7 @@ export default async function SecureAdminPage() {
                 ]}
             />
 
-            <main className="main-container-lg">
+            <main id="main" className="main-container-lg">
                 <div className="space-y-1">
                     <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
                     <p className="text-sm text-muted-foreground">Platform overview.</p>

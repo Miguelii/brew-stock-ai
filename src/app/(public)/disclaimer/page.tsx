@@ -40,7 +40,7 @@ export default function DisclaimerPage() {
                 ]}
             />
 
-            <main className="main-container">
+            <main id="main" className="main-container">
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold tracking-tight">
                         Risk Disclosure &amp; Disclaimer

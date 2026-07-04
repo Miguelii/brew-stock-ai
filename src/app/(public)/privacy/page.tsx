@@ -40,7 +40,7 @@ export default function PrivacyPage() {
                 ]}
             />
 
-            <main className="main-container">
+            <main id="main" className="main-container">
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold tracking-tight">Privacy Notice</h1>
                     <p className="text-sm text-muted-foreground">Last updated: May 2026</p>

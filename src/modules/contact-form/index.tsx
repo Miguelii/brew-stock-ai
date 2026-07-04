@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { useContactForm, type ContactFormValues } from '@/modules/contact/use-contact-form'
+import { useContactForm, type ContactFormValues } from '@/modules/contact-form/use-contact-form'
 import { trpcClient } from '@/_trpc/client'
 import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'

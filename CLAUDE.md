@@ -209,24 +209,26 @@ This applies to all files — services, components, modules, helpers, types, etc
 
 ---
 
-### Formatters — ALWAYS live in `src/lib/formatters.ts`
+### Formatters & constants — ownership follows usage
 
-**Every** value-formatting helper (numbers, percentages, currency, dates, large numbers, labels, etc.) **must** be defined and exported from `src/lib/formatters.ts` and imported from there. **Never** define a formatter inline in a service, component, or helper file — even a one-liner.
+Placement rule for value-formatting helpers (numbers, percentages, currency, dates, labels, etc.) and constants:
+
+- **Used by 2+ modules (or shared between frontend and `_bff`)** → define once in `src/lib/formatters.ts` / `src/lib/constants.ts` and import from there.
+- **Used by a single module** → colocate it in that module: a `utils.ts` (formatters) or `constants.ts` (constants) next to the deepest common consumer (e.g. `src/modules/account/invoices-table/utils.ts`). In `_bff`, a helper used by a single file may be a private (non-exported) function in that file.
 
 ```ts
-// ❌ Wrong — formatter defined locally in some other file
-const pct1 = (n: number | null | undefined): string => (n == null ? 'N/A' : `${n.toFixed(1)}%`)
-const toIso = (d: Date | null | undefined): string | null =>
-    d ? new Date(d).toISOString().split('T')[0] : null
+// ✅ Shared by report-view AND _bff → lives in src/lib/formatters.ts
+import { fmtPct, fmtNum } from '@/lib/formatters'
 
-// ✅ Correct — define once in src/lib/formatters.ts, import everywhere
-import { pct1, toIso } from '@/lib/formatters'
+// ✅ Only used inside report-financials-card → colocated utils.ts
+import { fmtEstimatePeriod } from '@/modules/report-view/report-financials-card/utils'
 ```
 
 Rules:
-- If a formatter you need does not exist yet, **add it to `src/lib/formatters.ts`** and import it — do not inline it.
+- **Never** duplicate a formatter: before adding one, reuse what exists in `src/lib/formatters.ts` (`fmtNum`, `fmtPct`, `fmtPrice`, `fmtLarge`, `toIso`, `fmtDate`, `formatDate`, …) or in the module's own `utils.ts`.
+- When a colocated formatter gains a second consumer module, **promote it** to `src/lib/formatters.ts` (and vice-versa: a lib formatter that drops to one consumer may be demoted to that module).
 - Keep formatters pure (input → string), null/undefined-safe (return `'N/A'` or `null`), and documented with a one-line comment when the behaviour is non-obvious.
-- Reuse existing formatters (`fmtNum`, `fmtPct`, `pct1`, `fmtPrice`, `fmtLarge`, `fmtX`, `toIso`, `formatDate`, …) before adding a new one.
+- Watch intra-file dependencies before demoting a constant: e.g. `CHROMIUM_PACK_PATH` stays in `src/lib/constants.ts` because `STATIC_PREFIXES` (same file) uses it.
 
 ---
 

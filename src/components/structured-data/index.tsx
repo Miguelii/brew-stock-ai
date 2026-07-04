@@ -1,4 +1,5 @@
 import { ClientEnv } from '@/env/client'
+import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 
 const WEBSITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
@@ -10,13 +11,13 @@ export function OrganizationSchema() {
         url: WEBSITE_URL,
         logo: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
         description:
-            'Institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators.',
+            'Institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators.',
         founder: {
             '@type': 'Person',
-            name: 'Miguel Gonçalves',
-            url: 'https://www.linkedin.com/in/miguelgoncalves18/',
+            name: SITE_AUTHOR_NAME,
+            url: SITE_AUTHOR_URL,
         },
-        sameAs: ['https://www.linkedin.com/in/miguelgoncalves18/'],
+        sameAs: [SITE_AUTHOR_URL],
     }
 
     return (
@@ -35,16 +36,8 @@ export function WebSiteSchema() {
         name: 'StockBrewAI',
         url: WEBSITE_URL,
         description:
-            'Institutional-grade AI stock analysis for any equity — financial metrics, market sentiment, and technical indicators. For less than a coffee.',
+            'Institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.',
         inLanguage: 'en-US',
-        potentialAction: {
-            '@type': 'SearchAction',
-            target: {
-                '@type': 'EntryPoint',
-                urlTemplate: `${WEBSITE_URL}/?q={search_term_string}`,
-            },
-            'query-input': 'required name=search_term_string',
-        },
     }
 
     return (
@@ -88,6 +81,58 @@ export function WebApplicationSchema() {
             id="web-application-schema"
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+        />
+    )
+}
+
+export function ArticleSchema({
+    title,
+    description,
+    url,
+    datePublished,
+    dateModified,
+}: Readonly<{
+    title: string
+    description: string
+    url: string
+    datePublished: string
+    dateModified?: string
+}>) {
+    const articleSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: title,
+        description,
+        url,
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': url,
+        },
+        image: `${WEBSITE_URL}/opengraph-image.png`,
+        datePublished,
+        dateModified: dateModified ?? datePublished,
+        inLanguage: 'en-US',
+        author: {
+            '@type': 'Person',
+            name: SITE_AUTHOR_NAME,
+            url: SITE_AUTHOR_URL,
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'StockBrewAI',
+            url: WEBSITE_URL,
+            logo: {
+                '@type': 'ImageObject',
+                url: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
+            },
+        },
+    }
+
+    return (
+        <script
+            id="article-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
         />
     )
 }

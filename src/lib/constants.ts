@@ -103,3 +103,8 @@ export const CONTACT_FORM_MAX_MESSAGE_LENGTH = 250
 export const CONTACT_FORM_MIN_MESSAGE_LENGTH = 5
 
 export const CONTACT_FORM_MAX_NAME_LENGTH = 100
+
+/** Site author identity reused across bylines, metadata, and structured data. */
+export const SITE_AUTHOR_NAME = 'Miguel Gonçalves'
+
+export const SITE_AUTHOR_URL = 'https://www.linkedin.com/in/miguelgoncalves18/'

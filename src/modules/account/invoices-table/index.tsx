@@ -1,11 +1,12 @@
 'use client'
 
-import { formatAmount, formatDate, formatPaymentMethod } from '@/lib/formatters'
+import { formatAmount, formatDate } from '@/lib/formatters'
 import { ReceiptIcon } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'
 import type { Invoice } from '@/types/Invoice'
 import { useGetInvoices } from '@/hooks/use-get-invoices'
+import { formatPaymentMethod } from './utils'
 
 export function AccountInvoicesTable() {
     const { invoices, isLoading } = useGetInvoices()

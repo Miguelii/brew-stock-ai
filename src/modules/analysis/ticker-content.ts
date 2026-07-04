@@ -9,6 +9,7 @@ import type { TickerContent } from '@/types/TickerPage'
  */
 export const TICKER_CONTENT: Record<string, TickerContent> = {
     apple: {
+        updatedAt: '2026-07-02',
         businessModel:
             'Apple designs premium consumer hardware and sells it at high margins, then layers a fast-growing, high-margin Services business — the App Store, iCloud, Apple Music, advertising, and payments — on top of an installed base of over two billion active devices. Hardware drives the ecosystem; Services monetises the loyalty it creates.',
         keyProducts: [
@@ -36,6 +37,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     microsoft: {
+        updatedAt: '2026-07-02',
         businessModel:
             'Microsoft earns the bulk of its profit from enterprise software and cloud infrastructure sold largely by subscription. Three segments — Productivity (Microsoft 365, LinkedIn), Intelligent Cloud (Azure, server products), and More Personal Computing (Windows, Xbox, Surface, search) — generate durable, recurring, high-margin revenue.',
         keyProducts: [
@@ -64,6 +66,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     google: {
+        updatedAt: '2026-07-02',
         businessModel:
             "Alphabet generates most of its revenue from advertising — Search, YouTube, and the Google Network — monetising the world's largest base of user-intent data. Google Cloud is a growing second pillar, and 'Other Bets' such as Waymo represent long-dated optionality.",
         keyProducts: [
@@ -92,6 +95,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     amazon: {
+        updatedAt: '2026-07-02',
         businessModel:
             'Amazon runs a high-volume, low-margin e-commerce marketplace and logistics network, but earns the majority of its operating profit from two high-margin engines: Amazon Web Services (cloud) and a fast-growing advertising business. Prime memberships bind the retail flywheel together.',
         keyProducts: [
@@ -120,6 +124,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     nvidia: {
+        updatedAt: '2026-07-02',
         businessModel:
             'NVIDIA designs the GPUs and networking that have become the default hardware for training and running AI models, and pairs them with the CUDA software platform that locks in developers. Its Data Center segment now dominates revenue, supplemented by gaming, professional visualisation, and automotive.',
         keyProducts: [
@@ -152,6 +157,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     meta: {
+        updatedAt: '2026-07-02',
         businessModel:
             "Meta earns almost all of its revenue from advertising across Facebook, Instagram, WhatsApp, and Messenger — its 'Family of Apps' reaching billions of daily users. It reinvests heavily in AI (for ad targeting and content recommendation) and in Reality Labs, its long-term metaverse and AR / VR bet.",
         keyProducts: [
@@ -186,6 +192,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     tesla: {
+        updatedAt: '2026-07-02',
         businessModel:
             'Tesla makes most of its revenue selling electric vehicles directly to consumers, supplemented by an energy generation and storage business and a services / software segment that includes Supercharging and Full Self-Driving. The long-term thesis hinges increasingly on autonomy, AI, and robotics rather than vehicle volumes alone.',
         keyProducts: [
@@ -214,6 +221,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     netflix: {
+        updatedAt: '2026-07-02',
         businessModel:
             'Netflix is a subscription streaming service that monetises a global content library across tiered plans, and increasingly through a fast-growing ad-supported tier and a paid-sharing initiative. Scale lets it spread heavy content spending across hundreds of millions of members.',
         keyProducts: [
@@ -248,6 +256,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     amd: {
+        updatedAt: '2026-07-02',
         businessModel:
             'AMD designs high-performance CPUs and GPUs and outsources manufacturing to foundries (chiefly TSMC). It competes across data-centre processors and AI accelerators, PC client chips, gaming consoles (semi-custom), and embedded markets (boosted by its Xilinx acquisition).',
         keyProducts: [
@@ -276,6 +285,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     jpmorgan: {
+        updatedAt: '2026-07-02',
         businessModel:
             'JPMorgan is a diversified, globally systemic bank earning money from net interest income (the spread on loans and deposits) and fee income across consumer banking, corporate and investment banking, asset and wealth management, and commercial banking. Scale and a fortress balance sheet are central to the model.',
         keyProducts: [
@@ -309,6 +319,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     visa: {
+        updatedAt: '2026-07-02',
         businessModel:
             'Visa operates a global payments network that connects banks, merchants, and cardholders, earning fees on the volume and number of transactions that flow across its rails. It does not lend or take credit risk — it is a high-margin toll-taker on the secular shift from cash to digital payments.',
         keyProducts: [
@@ -338,6 +349,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         relatedArticleSlugs: ['understanding-competitive-moats', 'roe-vs-roic', 'what-is-pe-ratio'],
     },
     disney: {
+        updatedAt: '2026-07-02',
         businessModel:
             'Disney monetises its intellectual property across three pillars: Entertainment (film studios, linear TV, and Disney+ streaming), Sports (ESPN), and Experiences (theme parks, resorts, cruises, and consumer products). Its franchises feed all three, creating a flywheel from screen to park to merchandise.',
         keyProducts: [
@@ -366,6 +378,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     'coca-cola': {
+        updatedAt: '2026-07-02',
         businessModel:
             'Coca-Cola is primarily a brand and concentrate company: it sells concentrates and syrups to a global network of bottling partners, focusing its own capital on marketing and brand-building rather than capital-intensive bottling. This asset-light model produces high margins and steady cash flow across 200+ countries.',
         keyProducts: [
@@ -392,6 +405,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     walmart: {
+        updatedAt: '2026-07-02',
         businessModel:
             "Walmart is the world's largest retailer, using enormous scale and purchasing power to offer low prices across groceries and general merchandise. It increasingly monetises higher-margin streams — e-commerce, a third-party marketplace, advertising (Walmart Connect), and membership (Walmart+) — on top of the low-margin retail base.",
         keyProducts: [
@@ -420,6 +434,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
         ],
     },
     'johnson-and-johnson': {
+        updatedAt: '2026-07-02',
         businessModel:
             'Johnson & Johnson is a diversified healthcare company operating in two segments after spinning off its consumer-health unit (Kenvue): Innovative Medicine (branded pharmaceuticals) and MedTech (medical devices). Patent-protected drugs and a broad device portfolio generate stable, defensive cash flows.',
         keyProducts: [

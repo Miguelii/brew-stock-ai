@@ -13,7 +13,7 @@ import {
     WebApplicationSchema,
     WebSiteSchema,
 } from '@/components/structured-data'
-import { GOOGLE_ADSENSE_ACCOUNT_ID } from '@/lib/constants'
+import { GOOGLE_ADSENSE_ACCOUNT_ID, SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { GtmScript } from '@/components/scripts/gtm-script'
 import { AdsenseScript } from '@/components/scripts/adsence-script'
@@ -65,8 +65,8 @@ export const metadata: Metadata = {
     ],
     authors: [
         {
-            name: 'Miguel Gonçalves',
-            url: 'https://www.linkedin.com/in/miguelgoncalves18/',
+            name: SITE_AUTHOR_NAME,
+            url: SITE_AUTHOR_URL,
         },
     ],
     publisher: 'StockBrewAI',

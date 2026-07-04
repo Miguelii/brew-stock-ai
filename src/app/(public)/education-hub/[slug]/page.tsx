@@ -6,13 +6,14 @@ import {
     EDUCATION_HUB_ARTICLE_MAP,
     EDUCATION_HUB_ARTICLES,
 } from '@/modules/education-hub/education-hub-articles'
-import { BreadcrumbSchema } from '@/components/structured-data'
+import { ArticleSchema, BreadcrumbSchema } from '@/components/structured-data'
 import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
 import * as motion from 'motion/react-client'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
 import { StartAnalysisPreviewCard } from '@/modules/education-hub/start-analysis-preview-card'
-import { AD_SLOT_ARTICLE_BOTTOM } from '@/lib/constants'
+import { AD_SLOT_ARTICLE_BOTTOM, SITE_AUTHOR_NAME } from '@/lib/constants'
+import { fmtDate } from '@/lib/formatters'
 
 export const dynamic = 'force-static'
 
@@ -39,6 +40,10 @@ export async function generateMetadata({
             title: article.title,
             description: article.description,
             url,
+            type: 'article',
+            publishedTime: article.publishedAt,
+            modifiedTime: article.updatedAt ?? article.publishedAt,
+            authors: [SITE_AUTHOR_NAME],
         },
         twitter: {
             title: article.title,
@@ -63,6 +68,13 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
                     { name: 'Learn', url: `${SITE_URL}/education-hub` },
                     { name: article.title, url: articleUrl },
                 ]}
+            />
+            <ArticleSchema
+                title={article.title}
+                description={article.description}
+                url={articleUrl}
+                datePublished={article.publishedAt}
+                dateModified={article.updatedAt}
             />
 
             <main id="main" className="main-container">
@@ -90,7 +102,24 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
                         <p className="text-primary-muted text-lg leading-relaxed mb-5">
                             {article.description}
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                            <span>By {SITE_AUTHOR_NAME}</span>
+                            <span aria-hidden>·</span>
+                            <time dateTime={article.publishedAt}>
+                                {fmtDate(article.publishedAt)}
+                            </time>
+                            {article.updatedAt && (
+                                <>
+                                    <span aria-hidden>·</span>
+                                    <span>
+                                        Updated{' '}
+                                        <time dateTime={article.updatedAt}>
+                                            {fmtDate(article.updatedAt)}
+                                        </time>
+                                    </span>
+                                </>
+                            )}
+                            <span aria-hidden>·</span>
                             <Clock className="size-3" />
                             <span>{article.readingTimeMinutes} min read</span>
                         </div>

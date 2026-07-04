@@ -212,28 +212,6 @@ export const parseReportDate = (date: string) => {
     return date.slice(0, 16).replace('T', ' ')
 }
 
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
-    card: 'Card',
-    multibanco: 'Multibanco',
-    sepa_debit: 'SEPA Debit',
-    amazon_pay: 'Amazon Pay',
-    ideal: 'iDEAL',
-    bancontact: 'Bancontact',
-    klarna: 'Klarna',
-    link: 'Link',
-}
-
-/**
- * Map a payment-method key to its human-friendly label.
- *
- * @param method - The payment-method key (e.g. `"sepa_debit"`), possibly undefined.
- * @returns The display label, the raw key when unknown, or `"—"` when absent.
- */
-export function formatPaymentMethod(method: string | undefined): string {
-    if (!method) return '—'
-    return PAYMENT_METHOD_LABELS[method] ?? method
-}
-
 /**
  * Format an epoch-ms timestamp as a short month label for chart axes (en-GB).
  *
@@ -242,3 +220,12 @@ export function formatPaymentMethod(method: string | undefined): string {
  */
 export const formatXAxis = (ms: number) =>
     new Date(ms).toLocaleDateString('en-GB', { month: 'short' })
+
+/**
+ * Latest ISO day in a list
+ *
+ * @param days - An array of ISO date strings.
+ * @returns The latest ISO day as a Date object.
+ */
+export const latestIsoDay = (days: string[]): Date =>
+    new Date(Math.max(...days.map((day) => new Date(day).getTime())))

@@ -9,6 +9,8 @@ export type EducationHubArticle = {
     title: string
     description: string
     publishedAt: string
+    /** ISO day (`YYYY-MM-DD`) of the last material edit. Omit when never revised. */
+    updatedAt?: string
     readingTimeMinutes: number
     theme: ArticleTheme
     sections: {

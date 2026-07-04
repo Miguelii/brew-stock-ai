@@ -1,4 +1,6 @@
 export type TickerContent = {
+    /** ISO day (`YYYY-MM-DD`) the entry was last materially edited — feeds the sitemap `lastmod`. */
+    updatedAt: string
     /** 2-3 sentences on how the company makes money. */
     businessModel: string
     /** 3-6 core products, segments, or revenue lines. */

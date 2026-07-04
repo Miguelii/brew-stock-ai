@@ -49,7 +49,7 @@ const generateCSP = () => {
         style-src 'self'
             'unsafe-inline';
         script-src 'self'
-            https://fundingchoicesmessages.google.com
+            https://*.google.com
             https://*.googletagmanager.com
             https://*.google-analytics.com
             https://*.vercel-scripts.com
@@ -73,6 +73,7 @@ const generateCSP = () => {
         media-src 'self';
         base-uri 'self';
         connect-src 'self'
+            https://*.google.com
             https://*.googlesyndication.com
             https://*.vercel-scripts.com
             https://*.adtrafficquality.google

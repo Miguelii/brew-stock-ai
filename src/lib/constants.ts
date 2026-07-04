@@ -63,16 +63,10 @@ export const AUTH_PAGES_PATHS = new Set([AUTH_PAGE_PATH])
 
 export const HOME_PAGE_PATH = '/'
 
-export const SIGN_IN_GOOGLE_API_PATH = '/api/auth/google'
-
 export const MAX_STOCK_INPUT_LENGHT = 50
 
 // Ticker or company name: unicode letters/digits plus the punctuation Yahoo symbols use (BRK.B, ^GSPC, "S&P", "O'Reilly").
 export const STOCK_INPUT_PATTERN = /^[\p{L}\p{N} .,'&^-]+$/u
-
-export const PUSH_DISMISSED_KEY = 'push_prompt_dismissed'
-
-export const PUSH_DISMISS_TTL_DAYS = 7
 
 export const GTM_ID = 'G-3VFDWM9Q9V'
 
@@ -95,8 +89,6 @@ export const AD_SLOT_ARTICLE_BOTTOM = 'REPLACE_WITH_SLOT_ID'
 export const AD_SLOT_IN_ARTICLE = 'REPLACE_WITH_SLOT_ID'
 
 export const SB_OTP_TOKEN_LENGTH = 6
-
-export const ENABLE_OTP_LOGIN = true
 
 export const CONTACT_FORM_MAX_MESSAGE_LENGTH = 250
 

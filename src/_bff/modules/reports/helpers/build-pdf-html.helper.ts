@@ -1,7 +1,7 @@
 // oxlint-disable max-lines
 import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/modules/report-view/sentiment'
-import { fmtPct, fmtNum, fmtPrice, fmtDate, signedPct1, escapeHtml } from '@/lib/formatters'
+import { fmtPct, fmtNum, fmtPrice, fmtDate, signedPct1 } from '@/lib/formatters'
 import { sanitizeReportHtml } from '@/_bff/modules/reports/helpers/sanitize-report-html.helper'
 import {
     evaluateMetric,
@@ -27,12 +27,7 @@ import type {
     StockSigDev,
     StockReports,
 } from '@/types/ReportDTO'
-
-const SCORE_ROW_DEFS = [
-    { label: 'Innovation', key: 'innovativeness' },
-    { label: 'Workforce Growth', key: 'hiring' },
-    { label: 'Sustainability', key: 'sustainability' },
-] as const
+import { escapeHtml, SCORE_ROW_DEFS, signStyle } from './utils.helper'
 
 function buildScoreRows(scores: StockScores): string {
     return SCORE_ROW_DEFS.map(({ label, key }) => {
@@ -67,11 +62,6 @@ function buildScoreRows(scores: StockScores): string {
                 </div>
             </div>`
     }).join('')
-}
-
-function signStyle(n: number | null | undefined): string {
-    if (n == null) return 'color:#262626;'
-    return n >= 0 ? 'color:#16a34a;' : 'color:#ef4444;'
 }
 
 function tile(

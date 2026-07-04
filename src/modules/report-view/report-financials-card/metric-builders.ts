@@ -1,4 +1,9 @@
-import { fmtLarge, fmtPct, fmtX, fmtNum, fmtDebtEquity, fmtEstimatePeriod } from '@/lib/formatters'
+import { fmtLarge, fmtPct, fmtNum } from '@/lib/formatters'
+import {
+    fmtX,
+    fmtDebtEquity,
+    fmtEstimatePeriod,
+} from '@/modules/report-view/report-financials-card/utils'
 import type { StockFinancials, StockFundamentals } from '@/types/ReportDTO'
 import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
 

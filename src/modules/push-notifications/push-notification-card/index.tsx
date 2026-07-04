@@ -6,7 +6,8 @@ import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
 import { ClientEnv } from '@/env/client'
 import { trpcClient } from '@/_trpc/client'
-import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY, SW_PATH } from '@/lib/constants'
+import { SW_PATH } from '@/lib/constants'
+import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY } from '@/modules/push-notifications/constants'
 import { PromptCard } from '@/components/ui/prompt-card'
 
 function urlBase64ToUint8Array(base64String: string) {

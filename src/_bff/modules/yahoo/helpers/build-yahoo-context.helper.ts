@@ -1,9 +1,8 @@
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
 import type { StockFinancials, StockFundamentals, StockTechnicals } from '@/types/ReportDTO'
 import type { NewsItem } from '@/types/news'
-import { fmtNum, fmtPct, fmtLarge, fmtPrice, formatDate, pct1 } from '@/lib/formatters'
-
-const NEWS_SUMMARY_MAX_CHARS = 200
+import { fmtNum, fmtPct, fmtLarge, fmtPrice, formatDate } from '@/lib/formatters'
+import { NEWS_SUMMARY_MAX_CHARS, pct1 } from './utils.helper'
 
 /**
  * Render the "Key Financial Indicators" block (valuation, quality, growth and

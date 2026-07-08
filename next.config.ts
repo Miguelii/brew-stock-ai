@@ -39,10 +39,11 @@ const nextConfig: NextConfig = {
                 hostname: 'lh3.googleusercontent.com',
             },
         ],
-        minimumCacheTTL: 2678400, // 31 days
+        minimumCacheTTL: 31536000, // 365 days
     },
     env: {
-        NEXT_PUBLIC_BUILD_TIMESTAMP: buildTimestamp,
+        NEXT_PUBLIC_BUILD_TIMESTAMP:
+            process.env.NODE_ENV === 'production' ? buildTimestamp : undefined,
     },
     async headers() {
         return [

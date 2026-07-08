@@ -1,5 +1,4 @@
 // oxlint-disable max-lines
-import { PROMPT_TYPES } from '@/lib/constants'
 import { getSentimentInfo, getRiskLevelInfo } from '@/modules/report-view/sentiment'
 import { fmtPct, fmtNum, fmtPrice, fmtDate, signedPct1 } from '@/lib/formatters'
 import { sanitizeReportHtml } from '@/_bff/modules/reports/helpers/sanitize-report-html.helper'
@@ -28,6 +27,7 @@ import type {
     StockReports,
 } from '@/types/ReportDTO'
 import { escapeHtml, SCORE_ROW_DEFS, signStyle } from './utils.helper'
+import { PROMPT_TYPES } from '@/_bff/modules/analysis/constants'
 
 function buildScoreRows(scores: StockScores): string {
     return SCORE_ROW_DEFS.map(({ label, key }) => {

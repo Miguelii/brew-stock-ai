@@ -1,4 +1,3 @@
-import { PROMPT_TYPES } from '@/lib/constants'
 import { z } from 'zod'
 import {
     WallStreetStyleStockAnalysisPrompt,
@@ -7,6 +6,35 @@ import {
     RiskAnalysisPrompt,
     GrowthPotentialAnalysisPrompt,
 } from '@/_bff/modules/analysis/prompts/analysis.prompt'
+import { PropmptsEnum } from '@/types/PropmptsEnum'
+
+export const PROMPT_TYPES = {
+    [PropmptsEnum.STOCK_ANALYSIS]: {
+        type: PropmptsEnum.STOCK_ANALYSIS,
+        label: 'Full Wall Street Style Stock Analysis',
+        cost: 2,
+    },
+    [PropmptsEnum.DEEP_FINANCIAL_BREAKDOWN]: {
+        type: PropmptsEnum.DEEP_FINANCIAL_BREAKDOWN,
+        label: 'Deep Financial Breakdown',
+        cost: 2,
+    },
+    [PropmptsEnum.MOAT_ANALYSIS]: {
+        type: PropmptsEnum.MOAT_ANALYSIS,
+        label: 'Competitive Advantage (Moat) Analysis',
+        cost: 1,
+    },
+    [PropmptsEnum.RISK_ANALYSIS]: {
+        type: PropmptsEnum.RISK_ANALYSIS,
+        label: 'Risk Analysis',
+        cost: 1,
+    },
+    [PropmptsEnum.GROWTH_POTENTIAL_ANALYSIS]: {
+        type: PropmptsEnum.GROWTH_POTENTIAL_ANALYSIS,
+        label: 'Growth Potential Analysis',
+        cost: 1,
+    },
+} as const
 
 export const PROMPTS_MAP: Record<string, string> = {
     [PROMPT_TYPES.STOCK_ANALYSIS.type]: WallStreetStyleStockAnalysisPrompt,
@@ -15,6 +43,8 @@ export const PROMPTS_MAP: Record<string, string> = {
     [PROMPT_TYPES.RISK_ANALYSIS.type]: RiskAnalysisPrompt,
     [PROMPT_TYPES.GROWTH_POTENTIAL_ANALYSIS.type]: GrowthPotentialAnalysisPrompt,
 }
+
+export const PROMPT_OPTIONS = Object.values(PROMPT_TYPES)
 
 export const PROMPT_COSTS_MAP: Record<string, number> = Object.fromEntries(
     Object.values(PROMPT_TYPES).map(({ type, cost }) => [type, cost])

@@ -1,41 +1,15 @@
 import type { NextResponse } from 'next/server'
-import { NEXT_IMAGE_PATH, SW_PATH } from '@/lib/constants'
-import { isPathFromStaticFiles } from '@/lib/utils'
 import { getIsDev } from '@/lib/utils.server'
 
-export const setCSP = (response: NextResponse, pathname: string) => {
-    const csp = generateCSP()
-    const staticCsp = generateStaticCSP()
-
-    if (isPathFromStaticFiles(pathname)) {
-        // Special case for PWA
-        if (pathname.startsWith(SW_PATH)) {
-            response.headers.set('Content-Type', 'application/javascript; charset=utf-8')
-            response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
-            response.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self'")
-        } else {
-            response.headers.set('Content-Security-Policy', staticCsp)
-
-            if (pathname.startsWith(NEXT_IMAGE_PATH)) {
-                response.headers.set('Cache-Control', 'public, max-age=31536000, must-revalidate')
-            } else {
-                // Let Next.js handle its own chunk caching
-                // overriding causes stale chunk errors after deploys or HMR in Next.js 16+
-            }
-        }
-    } else {
-        response.headers.set('Content-Security-Policy', csp)
-        response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate')
-    }
-
-    response.headers.set('X-Frame-Options', 'DENY')
-    response.headers.set('Referrer-Policy', 'no-referrer')
-    response.headers.set('X-Content-Type-Options', 'nosniff')
-    response.headers.set(
-        'Strict-Transport-Security',
-        'max-age=31536000; includeSubDomains; preload'
-    )
-    response.headers.set('X-Xss-Protection', '0')
+/**
+ * Sets the page Content-Security-Policy and Cache-Control on a proxy response.
+ * Only runs for page/document requests — static assets are excluded from the
+ * proxy via matcher and get their headers from next.config.ts headers().
+ * @param response - The proxy response to decorate.
+ */
+export const setCSP = (response: NextResponse) => {
+    response.headers.set('Content-Security-Policy', generateCSP())
+    response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate')
 
     return response
 }
@@ -88,13 +62,5 @@ const generateCSP = () => {
         upgrade-insecure-requests;
     `
 
-    return csp.replaceAll(/\s{2,}/gu, ' ').trim()
-}
-
-const generateStaticCSP = () => {
-    const csp = `
-        default-src 'self';
-        upgrade-insecure-requests;
-    `
     return csp.replaceAll(/\s{2,}/gu, ' ').trim()
 }

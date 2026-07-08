@@ -16,7 +16,7 @@ import Link from 'next/link'
 import type { ReportListItem } from '@/types/ReportDTO'
 import { ReportStatus } from '@/types/ReportDTO'
 import { Skeleton } from '@/components/ui/skeleton'
-import { PROMPT_OPTIONS } from '@/lib/constants'
+import { PROMPT_OPTIONS } from '@/_bff/modules/analysis/constants'
 import { parseReportDate } from '@/lib/formatters'
 
 type Props = {

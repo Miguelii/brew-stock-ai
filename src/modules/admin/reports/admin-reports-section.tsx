@@ -18,7 +18,7 @@ import {
     fetchAdminReports,
 } from '@/modules/admin/shared/get-admin-data'
 import { parseReportDate } from '@/lib/formatters'
-import { PROMPT_OPTIONS } from '@/lib/constants'
+import { PROMPT_OPTIONS } from '@/_bff/modules/analysis/constants'
 import { ReportStatus } from '@/types/ReportDTO'
 
 function StatusBadge({ status }: { status: ReportStatus }) {

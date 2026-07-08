@@ -10,6 +10,11 @@ This includes: variable names, function names, type names, constants, file names
 
 Human-facing UI copy and documentation may be in any language, but **everything inside `.ts` / `.tsx` files must be English.**
 
+## General Rules
+
+- Do not start a dev server unless explicitly asked
+- Use always pnpm
+
 ## Services (Effect-TS)
 
 All services must use Effect-TS. Follow this exact pattern:
@@ -228,7 +233,7 @@ Rules:
 - **Never** duplicate a formatter: before adding one, reuse what exists in `src/lib/formatters.ts` (`fmtNum`, `fmtPct`, `fmtPrice`, `fmtLarge`, `toIso`, `fmtDate`, `formatDate`, …) or in the module's own `utils.ts`.
 - When a colocated formatter gains a second consumer module, **promote it** to `src/lib/formatters.ts` (and vice-versa: a lib formatter that drops to one consumer may be demoted to that module).
 - Keep formatters pure (input → string), null/undefined-safe (return `'N/A'` or `null`), and documented with a one-line comment when the behaviour is non-obvious.
-- Watch intra-file dependencies before demoting a constant: e.g. `CHROMIUM_PACK_PATH` stays in `src/lib/constants.ts` because `STATIC_PREFIXES` (same file) uses it.
+- Watch intra-file dependencies before demoting a constant: a constant that another export in the same file uses must stay with that consumer (e.g. `CHROMIUM_PACK_PATH` lives in `src/_bff/modules/reports/constants/index.ts` — its only consumer is the reports module).
 
 ---
 

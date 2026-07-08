@@ -2,7 +2,6 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { createSbServerClient, getIsDev } from '@/lib/utils.server'
-import { CHROMIUM_PACK_PATH } from '@/lib/constants'
 import { CreateSbClientError, ExportReportError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
@@ -13,6 +12,8 @@ import {
     selectReportForExport,
     selectStockDataByTicker,
 } from '@/_bff/modules/reports/repositories/reports.repository'
+
+const CHROMIUM_PACK_PATH = '/chromium-v148.0.0-pack.x64.tar'
 
 const CHROMIUM_PACK_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${CHROMIUM_PACK_PATH}`
 

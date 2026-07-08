@@ -79,14 +79,14 @@
         "@types/web-push": "^3.6.4",
         "babel-plugin-react-compiler": "1.0.0",
         "husky": "^9.1.7",
-        "jsdom": "^27.4.0",
-        "knip": "^5.86.0",
+        "jsdom": "^29.1.1",
+        "knip": "^6.25.0",
         "postcss": "^8.5.8",
         "puppeteer": "^24.42.0",
         "tailwindcss": "^4",
-        "typescript": "^6",
-        "vite-plus": "^0.1.19",
-        "vitest": "^4.1.5"
+        "typescript": "^7.0.2",
+        "vite-plus": "^0.2.4",
+        "vitest": "^4.1.10"
     },
     "packageManager": "pnpm@11.9.0"
 }

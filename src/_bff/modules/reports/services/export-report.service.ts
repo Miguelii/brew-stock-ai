@@ -10,7 +10,7 @@ import { ClientEnv } from '@/env/client'
 import { buildPdfHtml } from '@/_bff/modules/reports/helpers/build-pdf-html.helper'
 import {
     selectReportForExport,
-    selectStockDataByTicker,
+    selectStockDataByTickerCached,
 } from '@/_bff/modules/reports/repositories/reports.repository'
 
 const CHROMIUM_PACK_PATH = '/chromium-v148.0.0-pack.x64.tar'
@@ -65,7 +65,7 @@ export const exportReport = Effect.fn('exportReport')(function* (user: User, id:
     // Fetch stock_data and resolve the Chromium path in parallel — neither depends on the other
     const [stockData, chromiumPath] = yield* Effect.all(
         [
-            report.ticker ? selectStockDataByTicker(supabase, report.ticker) : Effect.succeed(null),
+            selectStockDataByTickerCached(report.ticker),
             isDev ? Effect.succeed(null) : getChromiumPath(),
         ],
         { concurrency: 'unbounded' }

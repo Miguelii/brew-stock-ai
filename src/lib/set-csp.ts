@@ -16,7 +16,7 @@ export const setCSP = (response: NextResponse) => {
 
 const generateCSP = () => {
     // 'unsafe-eval' is only required in development (React Fast Refresh)
-    const scriptEvalDirective = getIsDev() ? "'unsafe-eval'" : ''
+    const scriptEvalDirective = getIsDev() ? "'unsafe-eval' 'wasm-unsafe-eval'" : ''
 
     const csp = `
         default-src 'self';
@@ -30,7 +30,7 @@ const generateCSP = () => {
             https://vercel.live
             https://*.googlesyndication.com
             https://*.adtrafficquality.google
-            'unsafe-inline'${scriptEvalDirective};
+            'unsafe-inline' ${scriptEvalDirective};
         img-src 'self'
             https://www.google.pt
             https://*.googlesyndication.com

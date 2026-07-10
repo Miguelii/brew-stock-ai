@@ -55,6 +55,25 @@ export const listUsers = Effect.fn('listUsers')(function* (supabase: SupabaseCli
     return result.data.users
 })
 
+export const selectAllUserCredits = Effect.fn('selectAllUserCredits')(function* (
+    supabase: SupabaseClient
+) {
+    const { data, error } = yield* Effect.tryPromise({
+        try: () => supabase.from('user_credits').select('user_id, credits'),
+        catch: (cause) =>
+            new AdminStatsError({ cause, error_hash: ErrorCode.ADMIN_USER_CREDITS_FETCH }),
+    })
+
+    if (error) {
+        return yield* new AdminStatsError({
+            cause: error,
+            error_hash: ErrorCode.ADMIN_USER_CREDITS_FETCH_ERR,
+        })
+    }
+
+    return (data ?? []) as { user_id: string; credits: number }[]
+})
+
 export const selectAdminReports = Effect.fn('selectAdminReports')(function* (
     supabase: SupabaseClient
 ) {

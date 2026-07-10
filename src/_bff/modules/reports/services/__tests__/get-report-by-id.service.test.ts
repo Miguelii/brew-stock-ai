@@ -17,7 +17,7 @@ vi.mock('@/_bff/modules/admin/services/is-admin.service', () => ({
 }))
 vi.mock('@/_bff/modules/reports/repositories/reports.repository', () => ({
     selectReportById: selectReportByIdMock,
-    selectStockDataByTicker: selectStockDataMock,
+    selectStockDataByTickerCached: selectStockDataMock,
 }))
 
 const USER = { id: 'user-1', email: 'user@example.com' } as User
@@ -38,7 +38,7 @@ describe('getReportById', () => {
 
         expect(result).toEqual({ report: REPORT, stockData: STOCK_DATA })
         expect(selectReportByIdMock).toHaveBeenCalledWith(SUPABASE, 'r-1', 'user-1')
-        expect(selectStockDataMock).toHaveBeenCalledWith(SUPABASE, 'AAPL')
+        expect(selectStockDataMock).toHaveBeenCalledWith('AAPL')
     })
 
     it('skips the ownership filter for super admins', async () => {

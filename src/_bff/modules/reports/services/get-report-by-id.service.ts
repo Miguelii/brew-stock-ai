@@ -9,7 +9,7 @@ import { isAdmin } from '@/_bff/modules/admin/services/is-admin.service'
 import type { User } from '@supabase/supabase-js'
 import {
     selectReportById,
-    selectStockDataByTicker,
+    selectStockDataByTickerCached,
 } from '@/_bff/modules/reports/repositories/reports.repository'
 
 export const getReportById = Effect.fn('getReportById')(function* (
@@ -26,7 +26,7 @@ export const getReportById = Effect.fn('getReportById')(function* (
 
     const report = yield* selectReportById(supabase, id, admin ? undefined : user.id)
 
-    const stockData = yield* selectStockDataByTicker(supabase, report.ticker)
+    const stockData = yield* selectStockDataByTickerCached(report.ticker)
 
     return { report, stockData } satisfies ReportWithStockData
 })

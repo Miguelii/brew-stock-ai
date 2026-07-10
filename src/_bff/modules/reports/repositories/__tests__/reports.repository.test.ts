@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { ReportStatus } from '@/types/ReportDTO'
 import { failureTag, asClient } from '@/_bff/__tests__/utils'
@@ -8,10 +8,22 @@ import {
     selectReportById,
     selectReportForExport,
     selectReportForProcessing,
-    selectStockDataByTicker,
+    selectStockDataByTickerCached,
     selectUserReports,
     updateReportWithAnalysis,
 } from '@/_bff/modules/reports/repositories/reports.repository'
+
+const { createSbAdminClientMock, loggerMock } = vi.hoisted(() => ({
+    createSbAdminClientMock: vi.fn(),
+    loggerMock: vi.fn(),
+}))
+
+vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/lib/logger', () => ({ Logger: loggerMock }))
+// unstable_cache needs the Next.js incremental cache runtime, absent in vitest — pass through
+vi.mock('next/cache', () => ({
+    unstable_cache: (fn: (...args: unknown[]) => unknown) => fn,
+}))
 
 describe('insertReport', () => {
     const makeInsertChain = (result: { data: unknown; error: unknown }) => {
@@ -170,32 +182,56 @@ describe('selectReportForProcessing', () => {
     })
 })
 
-describe('selectStockDataByTicker', () => {
+describe('selectStockDataByTickerCached', () => {
     const makeStockChain = (maybeSingle: () => Promise<unknown>) =>
         asClient({ select: () => ({ eq: () => ({ maybeSingle }) }) })
 
-    it('returns the stock data row when present', async () => {
-        const supabase = makeStockChain(() => Promise.resolve({ data: { id: 'AAPL' } }))
+    beforeEach(() => {
+        createSbAdminClientMock.mockReset()
+        loggerMock.mockReset()
+    })
 
-        await expect(Effect.runPromise(selectStockDataByTicker(supabase, 'AAPL'))).resolves.toEqual(
-            { id: 'AAPL' }
+    it('returns the stock data row when present', async () => {
+        createSbAdminClientMock.mockReturnValue(
+            makeStockChain(() => Promise.resolve({ data: { id: 'AAPL' }, error: null }))
         )
+
+        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toEqual({
+            id: 'AAPL',
+        })
     })
 
     it('resolves to null when there is no row', async () => {
-        const supabase = makeStockChain(() => Promise.resolve({ data: null }))
+        createSbAdminClientMock.mockReturnValue(
+            makeStockChain(() => Promise.resolve({ data: null, error: null }))
+        )
 
-        await expect(Effect.runPromise(selectStockDataByTicker(supabase, 'AAPL'))).resolves.toBe(
+        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toBe(null)
+    })
+
+    it('resolves to null without querying when the ticker is missing', async () => {
+        await expect(Effect.runPromise(selectStockDataByTickerCached(undefined))).resolves.toBe(
             null
         )
+        expect(createSbAdminClientMock).not.toHaveBeenCalled()
+    })
+
+    it('resolves to null instead of failing when the query returns an error', async () => {
+        createSbAdminClientMock.mockReturnValue(
+            makeStockChain(() => Promise.resolve({ data: null, error: { message: 'boom' } }))
+        )
+
+        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toBe(null)
+        expect(loggerMock).toHaveBeenCalledWith(expect.objectContaining({ level: 'error' }))
     })
 
     it('resolves to null instead of failing when the query rejects', async () => {
-        const supabase = makeStockChain(() => Promise.reject(new Error('network down')))
-
-        await expect(Effect.runPromise(selectStockDataByTicker(supabase, 'AAPL'))).resolves.toBe(
-            null
+        createSbAdminClientMock.mockReturnValue(
+            makeStockChain(() => Promise.reject(new Error('network down')))
         )
+
+        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toBe(null)
+        expect(loggerMock).toHaveBeenCalledWith(expect.objectContaining({ level: 'error' }))
     })
 })
 

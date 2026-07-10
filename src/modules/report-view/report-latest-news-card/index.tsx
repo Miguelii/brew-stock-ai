@@ -6,15 +6,18 @@ import { formatDate } from '@/lib/formatters'
 
 type Props = {
     news: NewsItem[]
+    ticker?: string
 }
 
-export function ReportLatestNewsCard({ news }: Props) {
+export function ReportLatestNewsCard({ news, ticker }: Props) {
     const isEmpty = !news || news.length === 0
 
     return (
         <Card className="h-fit overflow-hidden gap-0 pb-0!">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">Latest News</CardTitle>
+                <CardTitle className="text-base font-semibold">
+                    {ticker ? `Recent news mentioning ${ticker}` : 'Recent news'}
+                </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
                 {isEmpty ? (

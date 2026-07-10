@@ -138,7 +138,7 @@ export const CREDITS_ROUTER = router({
     // ...
 })
 
-// 5) src/_trpc/api/index.ts — appRouter composes module routers (namespaced)
+// 5) src/_trpc/router/index.ts — appRouter composes module routers (namespaced)
 export const appRouter = router({
     credits: CREDITS_ROUTER,   // → trpcClient.credits.get.useQuery()
     reports: REPORTS_ROUTER,   // → trpcClient.reports.create.useMutation()
@@ -155,7 +155,7 @@ export const appRouter = router({
 - Use `protectedProcedure` (from `@/_trpc/server`) for authenticated routes — `ctx.user` is guaranteed; pass it into the service. Auth is enforced by the middleware, so **never** map `UnauthenticatedError` / `GetUserError` in the `Match`.
 - Use `publicProcedure` for unauthenticated routes (auth flows, public forms).
 - `runEffect` comes from `@/_trpc/utils`; the `Match.value(error).pipe(… Match.exhaustive)` mapping lives in the controller file.
-- Register controllers in the module's `<module>.router.ts` (exporting `<MODULE>_ROUTER`), and register that router under its namespace in `src/_trpc/api/index.ts`.
+- Register controllers in the module's `<module>.router.ts` (exporting `<MODULE>_ROUTER`), and register that router under its namespace in `src/_trpc/router/index.ts`.
 
 `protectedProcedure` runs `getSession()` once per request (cached) and injects `ctx.user`: it throws `401` when there is no user and `500` on infrastructure failure. Services still create their own Supabase client, so each one controls whether it uses the publishable or service-role key.
 
@@ -181,7 +181,7 @@ Always assign `mutateAsync` to an explicitly typed `Promise<T>` variable before 
 
 ### Backend module layout
 All backend code lives under `src/_bff/modules/<module>/`, split by responsibility (NestJS-style):
-- `<module>.router.ts` — module composition root; exports `<MODULE>_ROUTER` composing the module's controllers. Registered under its namespace in `src/_trpc/api/index.ts`.
+- `<module>.router.ts` — module composition root; exports `<MODULE>_ROUTER` composing the module's controllers. Registered under its namespace in `src/_trpc/router/index.ts`.
 - `controllers/<name>.controller.ts` — thin tRPC binding (zod schema + `runEffect` + `Match` error map); exports `<NAME>_<PROTECTED|PUBLIC>_CONTROLLER`. No logic, no Supabase.
 - `services/<name>.service.ts` — exported `Effect.fn` business logic; creates the Supabase client and orchestrates repositories/processors/helpers. The cross-module entry point (also used by Trigger.dev jobs).
 - `repositories/<table>.repository.ts` — exported `Effect.fn` data access; receives `supabase: SupabaseClient` as a parameter. One file per table/domain. Never imported across modules.

@@ -15,5 +15,5 @@ export async function ReportLatestNewsServer({ ticker }: Props) {
         news = (await caller.finnhub.getLatestNews({ ticker }).catch(() => null)) ?? []
     }
 
-    return <ReportLatestNewsCard news={news} />
+    return <ReportLatestNewsCard news={news} ticker={ticker ?? undefined} />
 }

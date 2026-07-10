@@ -38,9 +38,9 @@ export const REPORT_SECTIONS = [
     },
     {
         icon: Rss,
-        title: 'Latest News',
+        title: 'Recent News',
         description:
-            "The most recent headlines about the company, pulled in real time so the analysis reflects what's happening today.",
+            "The most recent headlines mentioning the company, pulled in real time so the analysis reflects what's happening today.",
         featured: false,
     },
     {

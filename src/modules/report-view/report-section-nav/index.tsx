@@ -13,7 +13,7 @@ const SECTIONS = [
     { id: 'key-metrics', label: 'Key Financial Metrics' },
     { id: 'analysis', label: 'Full AI Report' },
     { id: 'sig-dev', label: 'Happening Now' },
-    { id: 'latest-news', label: 'Latest News' },
+    { id: 'latest-news', label: 'Recent News' },
     { id: 'media-mentions', label: 'Expert Coverage' },
     { id: 'sector-scores', label: 'Sector Scores' },
 ] as const

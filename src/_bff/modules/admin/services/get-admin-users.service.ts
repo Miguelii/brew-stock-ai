@@ -5,7 +5,7 @@ import { createSbAdminClient } from '@/lib/utils.server'
 import { UnauthenticatedError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { isAdmin } from '@/_bff/modules/admin/services/is-admin.service'
-import { listUsers } from '@/_bff/modules/admin/repositories/admin.repository'
+import { listUsers, selectAllUserCredits } from '@/_bff/modules/admin/repositories/admin.repository'
 
 export type AdminUser = {
     id: string
@@ -13,6 +13,7 @@ export type AdminUser = {
     created_at: string
     last_sign_in_at: string | null
     provider: string | null
+    credits: number
 }
 
 export const getAdminUsers = Effect.fn('getAdminUsers')(function* () {
@@ -22,7 +23,12 @@ export const getAdminUsers = Effect.fn('getAdminUsers')(function* () {
 
     const supabase = createSbAdminClient()
 
-    const users = yield* listUsers(supabase)
+    const [users, userCredits] = yield* Effect.all(
+        [listUsers(supabase), selectAllUserCredits(supabase)],
+        { concurrency: 'unbounded' }
+    )
+
+    const creditsByUserId = new Map(userCredits.map((c) => [c.user_id, c.credits]))
 
     return users.map((u) => ({
         id: u.id,
@@ -30,5 +36,6 @@ export const getAdminUsers = Effect.fn('getAdminUsers')(function* () {
         created_at: u.created_at,
         last_sign_in_at: u.last_sign_in_at ?? null,
         provider: (u.app_metadata?.provider as string | undefined) ?? null,
+        credits: creditsByUserId.get(u.id) ?? 0,
     })) satisfies AdminUser[]
 })

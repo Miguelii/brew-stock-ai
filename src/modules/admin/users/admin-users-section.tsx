@@ -42,14 +42,15 @@ export async function AdminUsersSection() {
                                 <TableHead>Email</TableHead>
                                 <TableHead>Registered</TableHead>
                                 <TableHead>Last Sign In</TableHead>
-                                <TableHead className="pr-5">Provider</TableHead>
+                                <TableHead>Provider</TableHead>
+                                <TableHead className="pr-5">Credits</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {sortedUsers.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={3}
+                                        colSpan={6}
                                         className="h-24 text-center text-muted-foreground"
                                     >
                                         No users found.
@@ -67,13 +68,16 @@ export async function AdminUsersSection() {
                                         <TableCell className="py-3 text-sm text-muted-foreground">
                                             {parseReportDate(u.created_at)}
                                         </TableCell>
-                                        <TableCell className="pr-5 py-3 text-sm text-muted-foreground">
+                                        <TableCell className="py-3 text-sm text-muted-foreground">
                                             {u.last_sign_in_at
                                                 ? parseReportDate(u.last_sign_in_at)
                                                 : '—'}
                                         </TableCell>
                                         <TableCell className="py-3 uppercase text-sm text-muted-foreground">
                                             {u.provider}
+                                        </TableCell>
+                                        <TableCell className="pr-5 py-3 text-sm font-medium">
+                                            {u.credits}
                                         </TableCell>
                                     </TableRow>
                                 ))

@@ -9,12 +9,12 @@ test.describe('Export report', () => {
 
         await page.goto(`/reports/${MOCK_REPORT_ID}`)
 
-        await expect(page.getByRole('button', { name: 'Export PDF' })).toBeVisible({
+        await expect(page.getByTestId('export-pdf-button')).toBeVisible({
             timeout: 10_000,
         })
 
         const downloadPromise = page.waitForEvent('download', { timeout: 15_000 })
-        await page.getByRole('button', { name: 'Export PDF' }).click()
+        await page.getByTestId('export-pdf-button').click()
 
         const download = await downloadPromise
         expect(download.suggestedFilename()).toBe('AAPL-analysis.pdf')
@@ -35,8 +35,7 @@ test.describe('Export report', () => {
 
         await page.goto(`/reports/${MOCK_REPORT_ID}`)
 
-        const exportBtn = page.getByRole('button', { name: 'Export PDF' })
-        await exportBtn.click()
+        await page.getByTestId('export-pdf-button').click()
 
         // During loading the button should show "Generating..." and be disabled
         await expect(page.getByRole('button', { name: 'Generating...' })).toBeVisible({

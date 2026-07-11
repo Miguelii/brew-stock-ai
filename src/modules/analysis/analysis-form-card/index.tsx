@@ -101,6 +101,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                         <div className="relative">
                                             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-muted pointer-events-none" />
                                             <Input
+                                                data-testid="ticker-input"
                                                 placeholder="Enter AAPL, TSLA, etc."
                                                 className="h-10 w-full border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition uppercase"
                                                 {...field}
@@ -127,6 +128,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                     <FormControl>
                                         <Select value={field.value} onValueChange={field.onChange}>
                                             <SelectTrigger
+                                                data-testid="analysis-type-select"
                                                 aria-label="Analysis Type"
                                                 className="h-10! w-full bg-background border-border text-primary rounded-none"
                                             >
@@ -189,6 +191,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                         />
 
                         <Button
+                            data-testid="generate-report-button"
                             type={isAuthenticated && !hasNoCredits ? 'submit' : 'button'}
                             disabled={isPending}
                             className="h-11! w-full gap-2 cursor-pointer"

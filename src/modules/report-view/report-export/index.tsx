@@ -30,6 +30,7 @@ export function ReportExport({ reportId }: Props) {
 
     return (
         <Button
+            data-testid="export-pdf-button"
             variant="outline"
             size="lg"
             className="cursor-pointer bg-card rounded-none w-full md:w-fit md:min-w-31.25"

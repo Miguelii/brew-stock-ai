@@ -20,11 +20,11 @@ test.describe('Full happy path', () => {
         // 1. Navigate to analysis and create a report
         await page.goto('/analysis')
 
-        await expect(page.getByPlaceholder('Enter AAPL, TSLA, etc.')).toBeVisible()
-        await page.getByPlaceholder('Enter AAPL, TSLA, etc.').fill('AAPL')
-        await page.getByRole('combobox').click()
+        await expect(page.getByTestId('ticker-input')).toBeVisible()
+        await page.getByTestId('ticker-input').fill('AAPL')
+        await page.getByTestId('analysis-type-select').click()
         await page.getByRole('option').first().click()
-        await page.getByRole('button', { name: 'Generate Report' }).click()
+        await page.getByTestId('generate-report-button').click()
 
         // Toast confirms report is being generated
         await expect(page.getByText(/being generated/i)).toBeVisible({ timeout: 8000 })
@@ -48,7 +48,7 @@ test.describe('Full happy path', () => {
 
         // 3. Export the report
         const downloadPromise = page.waitForEvent('download', { timeout: 15_000 })
-        await page.getByRole('button', { name: 'Export PDF' }).click()
+        await page.getByTestId('export-pdf-button').click()
 
         const download = await downloadPromise
         expect(download.suggestedFilename()).toBe('AAPL-analysis.pdf')

@@ -30,7 +30,7 @@ This project uses automated code quality tools to maintain consistency:
 
 ```mermaid
 flowchart TD
-    U["User"] -->|"ticker + prompt"| UI["Next.js Client"]
+    U["User"] -->|"ticker + prompt"| UI["Next.js BFF"]
 
     subgraph API["tRPC API"]
         UI --> CR["reports.create"]
@@ -47,8 +47,8 @@ flowchart TD
         JOB["process-report Job"] --> ANALYSIS["getStockAnalysis"]
 
         subgraph YF["Yahoo Finance"]
-            YAHOO["fundamentals · scores · reports"]
-            PRICE["price history\n→ technical indicators"]
+            YAHOO["fundamentals + scores + reports"]
+            PRICE["price history\n+ technical indicators"]
         end
 
         ANALYSIS --> YAHOO
@@ -67,24 +67,6 @@ flowchart TD
     SAVE -->|"persist"| PG
 
     PUSH -.-> U
-    UI -->|"poll while GENERATING\nread report"| PG
-```
-
-## Credits & Payments
-
-```mermaid
-flowchart TD
-    U["User"] -->|"buy credit package"| CHK["credits.createCheckoutSession"]
-    CHK --> STRIPE["Stripe Checkout"]
-    STRIPE -->|"webhook\n(signature verified)"| WH["/api/webhooks/stripe"]
-
-    PG[("Supabase / Postgres")]
-
-    WH -->|"claim event_id\n(idempotency)"| PG
-    WH -->|"add_credits RPC"| PG
-
-    U -->|"create report"| SPEND["deduct credits"]
-    SPEND --> PG
-
-    JOB["process-report Job"] -.->|"on failure\nrefund credits"| PG
+    UI -->|"poll while GENERATING\n"| PG
+    UI -->|"latest news on view\n(TTL cache)"| FINNHUB
 ```

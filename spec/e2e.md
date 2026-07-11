@@ -12,11 +12,12 @@ Playwright-based end-to-end tests that run against the full Next.js application 
 4. [Mock server](#mock-server)
 5. [Auth — fake cookies](#auth--fake-cookies)
 6. [tRPC mocking](#trpc-mocking)
-7. [Test suites](#test-suites)
-8. [Running locally](#running-locally)
-9. [CI/CD](#cicd)
-10. [File map](#file-map)
-11. [Adding new tests](#adding-new-tests)
+7. [Selectors](#selectors)
+8. [Test suites](#test-suites)
+9. [Running locally](#running-locally)
+10. [CI/CD](#cicd)
+11. [File map](#file-map)
+12. [Adding new tests](#adding-new-tests)
 
 ---
 
@@ -55,7 +56,8 @@ pnpm e2e
   │    ├─ 03-view-report.spec    page.route() → tRPC getLatestNews
   │    │                         mock server  → Supabase reports + stock_data
   │    ├─ 04-export-report.spec  page.route() → tRPC exportReport
-  │    └─ 05-full-flow.spec      all of the above combined
+  │    ├─ 05-full-flow.spec      all of the above combined
+  │    └─ 06-tokens.spec         page.route() → tRPC credits.*
   │
   └─ globalTeardown
        └─ stopMockSupabase()  →  port 54321 closed
@@ -157,7 +159,8 @@ Each helper registers a `page.route()` handler that fulfills matching tRPC reque
 
 ```ts
 export async function mockGetCredits(page: Page, credits = MOCK_CREDITS) {
-    await page.route('**/api/trpc/getCredits**', (route) =>
+    // RegExp with a lookahead so `credits.get` never swallows `credits.getInvoices`
+    await page.route(/\/api\/trpc\/credits\.get(?![A-Za-z])/, (route) =>
         route.fulfill({ contentType: 'application/json', body: batchResponse(credits) })
     )
 }
@@ -167,15 +170,30 @@ These intercept **browser-side** calls only. Server-side tRPC calls (from RSC/Se
 
 ### Available helpers
 
-| Function            | Procedure mocked |
-| ------------------- | ---------------- |
-| `mockGetCredits`    | `getCredits`     |
-| `mockGetReports`    | `getReports`     |
-| `mockCreateReport`  | `createReport`   |
-| `mockExportReport`  | `exportReport`   |
-| `mockSendOtp`       | `sendOtp`        |
-| `mockVerifyOtp`     | `verifyOtp`      |
-| `mockGetLatestNews` | `getLatestNews`  |
+| Function                    | Procedure mocked                |
+| --------------------------- | ------------------------------- |
+| `mockGetCredits`            | `credits.get`                   |
+| `mockGetReports`            | `reports.getAll`                |
+| `mockCreateReport`          | `reports.create`                |
+| `mockExportReport`          | `reports.export`                |
+| `mockSendOtp`               | `auth.sendOtp`                  |
+| `mockVerifyOtp`             | `auth.verifyOtp`                |
+| `mockGetLatestNews`         | `finnhub.getLatestNews`         |
+| `mockCreateCheckoutSession` | `credits.createCheckoutSession` |
+| `mockGetInvoices`           | `credits.getInvoices`           |
+
+---
+
+## Selectors
+
+Rules for locating elements in specs:
+
+- **Interactive elements (inputs, selects, buttons that tests act on) must be located via `data-testid` + `getByTestId`.** Add the `data-testid` attribute to the component when it doesn't have one yet.
+- **Never use `getByPlaceholder`** — placeholders are UI copy and change without warning.
+- **Never target library-internal attributes** (e.g. `[data-input-otp="true"]`, `[data-slot]`) — they are implementation details of third-party packages.
+- `getByRole` / `getByText` remain acceptable for **asserting visible content** (headings, banners, copy) — that is what those tests are meant to verify.
+
+Existing test ids: `email-input`, `sign-in-button`, `otp-input` (auth), `ticker-input`, `analysis-type-select`, `generate-report-button` (analysis form), `export-pdf-button` (report view).
 
 ---
 
@@ -224,6 +242,15 @@ Tests cover:
 ### `05-full-flow.spec.ts` — Full happy path
 
 End-to-end: create report → view report → export PDF, all in one test. Also asserts no console errors occur during the entire flow (excluding favicon 404s).
+
+### `06-tokens.spec.ts` — Credits / tokens page
+
+Mocks `credits.get`, `credits.getInvoices`, and `credits.createCheckoutSession`.
+
+- Renders the three packages (Starter / Pro / Expert) with their credit amounts and Buy Now buttons
+- Shows the current credit balance
+- Clicking Buy Now redirects to the mocked Stripe checkout URL
+- Success / cancel / pending payment banners driven by query params
 
 ---
 
@@ -316,7 +343,8 @@ e2e/
     ├── 02-create-report.spec.ts
     ├── 03-view-report.spec.ts
     ├── 04-export-report.spec.ts
-    └── 05-full-flow.spec.ts
+    ├── 05-full-flow.spec.ts
+    └── 06-tokens.spec.ts
 
 playwright.config.ts        # root — Playwright config, webServer, storageState
 .github/
@@ -359,4 +387,4 @@ export async function mockMyProcedure(page: Page, data: MyType) {
 
 ### 4. Write the spec
 
-Create `e2e/tests/06-my-feature.spec.ts`. Register mocks in `test.beforeEach` or at the top of individual tests. Use `storageState` from the global config (authenticated by default) — override with `test.use({ storageState: { cookies: [], origins: [] } })` for unauthenticated flows.
+Create `e2e/tests/NN-my-feature.spec.ts` (next number in sequence). Register mocks in `test.beforeEach` or at the top of individual tests. Use `storageState` from the global config (authenticated by default) — override with `test.use({ storageState: { cookies: [], origins: [] } })` for unauthenticated flows. Follow the [Selectors](#selectors) rules — `data-testid` for interactive elements, never `getByPlaceholder`.

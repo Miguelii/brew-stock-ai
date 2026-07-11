@@ -153,6 +153,7 @@ export function AuthCard({ returnTo }: Props) {
                                                     {lastUsed === 'email' && <LastUsedBadge />}
                                                     <FormControl>
                                                         <Input
+                                                            data-testid="email-input"
                                                             type="email"
                                                             placeholder="name@company.com"
                                                             {...field}
@@ -164,6 +165,7 @@ export function AuthCard({ returnTo }: Props) {
                                         )}
                                     />
                                     <Button
+                                        data-testid="sign-in-button"
                                         type="submit"
                                         disabled={sendOtp.isPending}
                                         className="w-full cursor-pointer"
@@ -192,6 +194,7 @@ export function AuthCard({ returnTo }: Props) {
 
                     <div className="flex flex-col items-center gap-4">
                         <InputOTP
+                            data-testid="otp-input"
                             maxLength={SB_OTP_TOKEN_LENGTH}
                             value={otp}
                             onChange={setOtp}

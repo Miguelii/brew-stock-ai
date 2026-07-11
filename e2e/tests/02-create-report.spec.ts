@@ -12,22 +12,22 @@ test.describe('Create report flow', () => {
     test('shows the analysis form with Generate Report button', async ({ page }) => {
         await page.goto('/analysis')
 
-        await expect(page.getByPlaceholder('Enter AAPL, TSLA, etc.')).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Generate Report' })).toBeVisible()
+        await expect(page.getByTestId('ticker-input')).toBeVisible()
+        await expect(page.getByTestId('generate-report-button')).toBeVisible()
     })
 
     test('submits the form and shows success toast + redirects to /reports', async ({ page }) => {
         await page.goto('/analysis')
 
         // Fill ticker
-        await page.getByPlaceholder('Enter AAPL, TSLA, etc.').fill('AAPL')
+        await page.getByTestId('ticker-input').fill('AAPL')
 
         // Select analysis type via the combobox trigger
-        await page.getByRole('combobox').click()
+        await page.getByTestId('analysis-type-select').click()
         await page.getByRole('option').first().click()
 
         // Submit
-        await page.getByRole('button', { name: 'Generate Report' }).click()
+        await page.getByTestId('generate-report-button').click()
 
         // Toast should appear
         await expect(page.getByText(/being generated/i)).toBeVisible({ timeout: 8000 })

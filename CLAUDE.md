@@ -476,6 +476,8 @@ export function MyComponent({ name, email }: Props) { ... }
 
 Before creating or modifying any file under `e2e/` or `playwright.config.ts`, read `spec/e2e.md` to understand the mock architecture, cookie format, tRPC batch response shape, and the two-layer interception pattern (mock server for server-side calls, `page.route()` for browser-side calls).
 
+Selectors: interactive elements (inputs, selects, action buttons) must be located via `data-testid` + `getByTestId` — add the attribute to the component if missing. Never use `getByPlaceholder` or library-internal attributes (e.g. `[data-input-otp]`). `getByRole`/`getByText` are fine for asserting visible content.
+
 ---
 
 <!-- TRIGGER.DEV basic START -->

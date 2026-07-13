@@ -3,8 +3,6 @@ import type { NextConfig } from 'next'
 
 loadSystemEnvs()
 
-const buildTimestamp = Date.now().toString()
-
 const nextConfig: NextConfig = {
     reactCompiler: true,
     // Prevent Next.js from bundling these packages (they contain native binaries)
@@ -40,10 +38,6 @@ const nextConfig: NextConfig = {
             },
         ],
         minimumCacheTTL: 31536000, // 365 days
-    },
-    env: {
-        NEXT_PUBLIC_BUILD_TIMESTAMP:
-            process.env.NODE_ENV === 'production' ? buildTimestamp : undefined,
     },
     async headers() {
         return [

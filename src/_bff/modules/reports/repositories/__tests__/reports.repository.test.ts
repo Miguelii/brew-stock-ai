@@ -210,9 +210,7 @@ describe('selectStockDataByTickerCached', () => {
     })
 
     it('resolves to null without querying when the ticker is missing', async () => {
-        await expect(Effect.runPromise(selectStockDataByTickerCached(undefined))).resolves.toBe(
-            null
-        )
+        await expect(Effect.runPromise(selectStockDataByTickerCached(null))).resolves.toBe(null)
         expect(createSbAdminClientMock).not.toHaveBeenCalled()
     })
 

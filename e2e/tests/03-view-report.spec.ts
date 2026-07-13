@@ -19,7 +19,9 @@ test.describe('View report page', () => {
     test('shows the report type badge', async ({ page }) => {
         await page.goto(`/reports/${MOCK_REPORT_ID}`)
 
-        await expect(page.getByText(/Full Wall Street Style Stock Analysis/i).first()).toBeVisible()
+        await expect(
+            page.getByText(/Full Wall Street Style Stock Analysis/iu).first()
+        ).toBeVisible()
     })
 
     test('section nav has plain-English labels', async ({ page }) => {
@@ -39,7 +41,7 @@ test.describe('View report page', () => {
 
         await expect(page.getByText('Summary of what our AI found:')).toBeVisible()
         // Scope to #overview to avoid matching the same text in the full AI report section
-        await expect(page.locator('#overview').getByText(/pricing power/i)).toBeVisible()
+        await expect(page.locator('#overview').getByText(/pricing power/iu)).toBeVisible()
     })
 
     test('"Market & Analyst Outlook" section renders price chart and analyst views', async ({
@@ -51,8 +53,8 @@ test.describe('View report page', () => {
         const section = page.locator('#market-outlook')
 
         await expect(section.getByText('Market & Analyst Outlook')).toBeVisible()
-        await expect(section.getByText(/Where the stock has traded/i)).toBeVisible()
-        await expect(section.getByText(/What analysts think/i)).toBeVisible()
+        await expect(section.getByText(/Where the stock has traded/iu)).toBeVisible()
+        await expect(section.getByText(/What analysts think/iu)).toBeVisible()
 
         // Analyst recommendations bar (counts in MOCK_FUNDAMENTALS sum to 35)
         await expect(section.getByText('Analyst recommendations (35)')).toBeVisible()
@@ -84,14 +86,14 @@ test.describe('View report page', () => {
 
         // Earnings history with a beat badge (epsActual > epsEstimate)
         await expect(section.getByText('Earnings vs estimates')).toBeVisible()
-        await expect(section.getByText(/Beat/i)).toBeVisible()
+        await expect(section.getByText(/Beat/iu)).toBeVisible()
 
         // Multi-year revenue trend folds into the Growth card — endDate 2025-09-30 yields a "Revenue 2025" row
         await expect(section.getByText('Revenue 2025')).toBeVisible()
 
         // Insider activity — negative net shares reads as net selling
         await expect(section.getByText('Insider activity')).toBeVisible()
-        await expect(section.getByText(/Net selling/i)).toBeVisible()
+        await expect(section.getByText(/Net selling/iu)).toBeVisible()
     })
 
     test('"AI Sentiment Score" gauge is visible', async ({ page }) => {

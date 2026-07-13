@@ -120,7 +120,7 @@ export async function AdminReportsSection() {
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">
                                             {r.cost
-                                                ? `${Number(Number.parseFloat(r.cost).toFixed(4))}$`
+                                                ? `${Number(Number(r.cost).toFixed(4))}$`
                                                 : 'N/A'}
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">

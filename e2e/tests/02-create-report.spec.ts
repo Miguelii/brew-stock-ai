@@ -30,7 +30,7 @@ test.describe('Create report flow', () => {
         await page.getByTestId('generate-report-button').click()
 
         // Toast should appear
-        await expect(page.getByText(/being generated/i)).toBeVisible({ timeout: 8000 })
+        await expect(page.getByText(/being generated/iu)).toBeVisible({ timeout: 8000 })
 
         // Redirect to /reports (after the 2s delay in the handler)
         await page.waitForURL('**/reports', { timeout: 10_000 })

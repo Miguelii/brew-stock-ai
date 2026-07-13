@@ -24,8 +24,8 @@ const MAX_REVENUE_YEARS = 4
  */
 const classifyTransaction = (text: string | undefined): 'buy' | 'sell' | null => {
     const t = (text ?? '').toLowerCase()
-    if (/(sale|sell|sold|disposition)/.test(t)) return 'sell'
-    if (/(buy|bought|purchase|acquisition|grant)/.test(t)) return 'buy'
+    if (/(sale|sell|sold|disposition)/u.test(t)) return 'sell'
+    if (/(buy|bought|purchase|acquisition|grant)/u.test(t)) return 'buy'
     return null
 }
 

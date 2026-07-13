@@ -16,7 +16,7 @@ function batchResponse(data: unknown) {
 
 export async function mockGetCredits(page: Page, credits = MOCK_CREDITS) {
     // RegExp with a lookahead so `credits.get` never swallows `credits.getInvoices`
-    await page.route(/\/api\/trpc\/credits\.get(?![A-Za-z])/, (route) =>
+    await page.route(/\/api\/trpc\/credits\.get(?![A-Za-z])/u, (route) =>
         route.fulfill({ contentType: 'application/json', body: batchResponse(credits) })
     )
 }

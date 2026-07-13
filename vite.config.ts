@@ -57,6 +57,8 @@ export default defineConfig({
             'unicorn/prefer-dom-node-append': 'off',
             'unicorn/prefer-query-selector': 'off',
             'react/no-array-index-key': 'off',
+            'eslint/no-underscore-dangle': 'off',
+            'unicorn/no-negated-condition': 'off',
         },
         ignorePatterns: [
             '.next',

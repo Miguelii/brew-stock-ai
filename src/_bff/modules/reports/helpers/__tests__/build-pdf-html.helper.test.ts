@@ -287,7 +287,7 @@ describe('buildFinancialsSection', () => {
         })
         expect(html).toContain('What analysts think the stock is worth')
         // 3 N/A tiles from targets + any nulls already present — at least 3
-        const matches = html.match(/N\/A/g) ?? []
+        const matches = html.match(/N\/A/gu) ?? []
         expect(matches.length).toBeGreaterThanOrEqual(3)
     })
 
@@ -345,7 +345,7 @@ describe('buildFinancialsSection', () => {
             }),
         })
         // each null field produces an N/A tile — at least three present
-        const matches = html.match(/N\/A/g) ?? []
+        const matches = html.match(/N\/A/gu) ?? []
         expect(matches.length).toBeGreaterThanOrEqual(3)
     })
 })

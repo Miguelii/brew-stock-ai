@@ -27,7 +27,7 @@ test.describe('Tokens page', () => {
     test('shows current credit balance', async ({ page }) => {
         await page.goto('/tokens')
 
-        await expect(page.getByText(new RegExp(`${MOCK_CREDITS}\\s*Credits`))).toBeVisible({
+        await expect(page.getByText(new RegExp(`${MOCK_CREDITS}\\s*Credits`, 'u'))).toBeVisible({
             timeout: 8000,
         })
     })
@@ -35,13 +35,13 @@ test.describe('Tokens page', () => {
     test('shows success banner on ?success=true', async ({ page }) => {
         await page.goto('/tokens?success=true')
 
-        await expect(page.getByText(/Payment successful/i)).toBeVisible()
+        await expect(page.getByText(/Payment successful/iu)).toBeVisible()
     })
 
     test('shows cancel banner on ?canceled=true', async ({ page }) => {
         await page.goto('/tokens?canceled=true')
 
-        await expect(page.getByText(/Checkout was canceled/i)).toBeVisible()
+        await expect(page.getByText(/Checkout was canceled/iu)).toBeVisible()
     })
 
     test('clicking Buy Now initiates checkout and redirects', async ({ page }) => {
@@ -53,7 +53,7 @@ test.describe('Tokens page', () => {
         // Mock returns http://localhost:3001/tokens?success=true so navigation is local
         await page.waitForURL('**/tokens**success**', { timeout: 8000 })
 
-        await expect(page.getByText(/Payment successful/i)).toBeVisible()
+        await expect(page.getByText(/Payment successful/iu)).toBeVisible()
     })
 
     test('shows pending payment banner when an invoice is pending', async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe('Tokens page', () => {
 
         await page.goto('/tokens')
 
-        await expect(page.getByText(/pending payment/i)).toBeVisible({ timeout: 8000 })
+        await expect(page.getByText(/pending payment/iu)).toBeVisible({ timeout: 8000 })
         // Use locator('strong') to disambiguate from the same amount shown in the package card price
         await expect(page.locator('strong').filter({ hasText: '€2.49' })).toBeVisible()
         await expect(page.locator('strong').filter({ hasText: '15 Analysis Tokens' })).toBeVisible()

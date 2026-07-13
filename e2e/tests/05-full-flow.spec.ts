@@ -27,7 +27,7 @@ test.describe('Full happy path', () => {
         await page.getByTestId('generate-report-button').click()
 
         // Toast confirms report is being generated
-        await expect(page.getByText(/being generated/i)).toBeVisible({ timeout: 8000 })
+        await expect(page.getByText(/being generated/iu)).toBeVisible({ timeout: 8000 })
 
         // Wait for redirect to /reports list
         await page.waitForURL('**/reports', { timeout: 10_000 })

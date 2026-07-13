@@ -14,7 +14,7 @@ describe('setupVapid', () => {
 
         expect(webpush.setVapidDetails).toHaveBeenCalledTimes(1)
         expect(webpush.setVapidDetails).toHaveBeenCalledWith(
-            expect.stringMatching(/^mailto:/),
+            expect.stringMatching(/^mailto:/u),
             'test-public-key',
             'test-private-key'
         )

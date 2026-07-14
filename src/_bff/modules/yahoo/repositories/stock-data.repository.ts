@@ -2,7 +2,6 @@ import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { SaveStockDataError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
-import { logger } from '@trigger.dev/sdk'
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
 import { hasStockData } from '../helpers/has-stock-data.helper'
 
@@ -38,10 +37,6 @@ export const upsertStockData = Effect.fn('upsertStockData')(function* (
     })
 
     if (response.error) {
-        logger.log('SaveYahooDataError', {
-            cause: JSON.stringify(response.error),
-            ticker: ticker,
-        })
         return yield* new SaveStockDataError({
             cause: response.error,
             error_hash: ErrorCode.SAVE_STOCK_DATA_ERR,

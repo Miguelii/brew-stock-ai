@@ -1,4 +1,5 @@
-import { Effect } from 'effect'
+import { Effect, Fiber } from 'effect'
+import { ServerEnv } from '@/env/server'
 import { AiGenerationError, InvalidPromptTypeError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
@@ -41,17 +42,44 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
 
     const yahooPreFetch = yield* getYahooTtlData(stockSymbol, supabaseClient)
 
-    // Resolve the ticker once and reuse it for the supplementary data sources so
-    // news, price history and Yahoo fundamentals all refer to the same symbol.
     const tickerForData = yahooPreFetch?.ticker ?? stockSymbol
 
-    // Supplementary context — both non-fatal: a failure here must never abort the
-    // analysis. Uses the raw (uncached, session-less) fetchers for the Trigger.dev
-    // runtime.
+    const finalTicker = yahooPreFetch?.ticker ?? null
+
+    // Persist fresh Yahoo data immediately (in parallel with the rest of the pipeline)
+    const saveYahooFiber = yahooPreFetch?.isFresh
+        ? yield* Effect.fork(
+              saveYahooDataToTTL(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
+                  Effect.orElse(() => Effect.void)
+              )
+          )
+        : null
+
+    // Adicional context - a failure here must never abort the const
     const [priceHistory, news] = yield* Effect.all(
         [
-            getPriceHistory(tickerForData).pipe(Effect.orElse(() => Effect.succeed(null))),
-            getLatestNewsService(tickerForData).pipe(Effect.orElse(() => Effect.succeed(null))),
+            getPriceHistory(tickerForData).pipe(
+                Effect.tapError((error) =>
+                    Effect.sync(() =>
+                        logger.error('getPriceHistory failed', {
+                            ticker: tickerForData,
+                            error,
+                        })
+                    )
+                ),
+                Effect.orElse(() => Effect.succeed(null))
+            ),
+            getLatestNewsService(tickerForData).pipe(
+                Effect.tapError((error) =>
+                    Effect.sync(() =>
+                        logger.error('getLatestNewsService failed', {
+                            ticker: tickerForData,
+                            error,
+                        })
+                    )
+                ),
+                Effect.orElse(() => Effect.succeed(null))
+            ),
         ],
         { concurrency: 'unbounded' }
     )
@@ -86,7 +114,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                 import('@ai-sdk/anthropic'),
             ])
             const anthropicClient = createAnthropic({
-                apiKey: process.env.NEXT_ANTHROPIC_AI_KEY,
+                apiKey: ServerEnv.NEXT_ANTHROPIC_AI_KEY,
             })
             return generateText({
                 model: anthropicClient(model),
@@ -141,8 +169,6 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         })
     }
 
-    const finalTicker = yahooPreFetch?.ticker ?? null
-
     yield* Effect.all(
         [
             saveAnalysisToReport(
@@ -154,11 +180,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                 supabaseClient
             ),
 
-            yahooPreFetch?.isFresh
-                ? saveYahooDataToTTL(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
-                      Effect.orElse(() => Effect.void)
-                  )
-                : Effect.void,
+            saveYahooFiber ? Fiber.join(saveYahooFiber) : Effect.void,
         ],
         { concurrency: 'unbounded' }
     )

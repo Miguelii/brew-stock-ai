@@ -13,6 +13,11 @@ describe('hasStockData', () => {
         expect(hasStockData({})).toBe(false)
     })
 
+    it('returns false for objects whose values are all nullish', () => {
+        expect(hasStockData({ currentPrice: null, marketCap: null })).toBe(false)
+        expect(hasStockData({ currentPrice: undefined })).toBe(false)
+    })
+
     it('returns true for populated collections', () => {
         expect(hasStockData([1])).toBe(true)
         expect(hasStockData({ value: 1 })).toBe(true)

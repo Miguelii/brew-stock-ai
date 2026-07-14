@@ -9,11 +9,10 @@ import type {
 import type { Invoice } from '@/types/Invoice'
 
 export const MOCK_REPORT_ID = 'pw-test-report-id'
-export const MOCK_TICKER = 'AAPL'
-export const MOCK_USER_EMAIL = 'playwright@stockbrew.test'
+const MOCK_TICKER = 'AAPL'
 export const MOCK_CREDITS = 5
 
-export const MOCK_AI_RESPONSE = `
+const MOCK_AI_RESPONSE = `
 <h2>Full Stock Analysis — AAPL</h2>
 <p>Apple Inc. demonstrates strong fundamentals across all key financial metrics, with consistent revenue growth and industry-leading profit margins.</p>
 <h2>Revenue &amp; Profitability</h2>
@@ -26,7 +25,7 @@ export const MOCK_AI_RESPONSE = `
 <p>Apple continues to demonstrate exceptional pricing power and brand loyalty. The company's Services segment provides predictable recurring revenue, while the iPhone franchise maintains dominant global market share. At current valuations, the stock offers a reasonable entry point for long-term investors seeking quality at a fair price. The balance sheet remains fortress-like with over $60B in net cash.</p>
 `
 
-export const MOCK_FINANCIALS: StockFinancials = {
+const MOCK_FINANCIALS: StockFinancials = {
     currentPrice: 185.5,
     marketCap: 2_850_000_000_000,
     trailingPE: 28.5,
@@ -53,12 +52,12 @@ export const MOCK_FINANCIALS: StockFinancials = {
     dividendYield: 0.0053,
 }
 
-export const MOCK_SCORES: StockScores = {
+const MOCK_SCORES: StockScores = {
     company: { innovativeness: 0.85, hiring: 0.72, sustainability: 0.65 },
     sector: { innovativeness: 0.7, hiring: 0.6, sustainability: 0.55 },
 }
 
-export const MOCK_FUNDAMENTALS: StockFundamentals = {
+const MOCK_FUNDAMENTALS: StockFundamentals = {
     earningsHistory: [
         {
             period: '-1q',

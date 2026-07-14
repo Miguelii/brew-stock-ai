@@ -1,12 +1,6 @@
 {
     "$schema": "https://unpkg.com/knip@5/schema.json",
     "tags": ["-lintignore"],
-    "entry": [
-        "public/sw.js",
-        "trigger.config.ts",
-        "src/env/server.ts",
-        "src/env/client.ts",
-        "src/lib/utils.ts"
-    ],
-    "ignore": ["src/components/ui/**", "e2e/**"]
+    "entry": ["trigger.config.ts"],
+    "ignore": ["src/components/ui/**", "public/**"]
 }

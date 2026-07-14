@@ -50,6 +50,14 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     const saveYahooFiber = yahooPreFetch?.isFresh
         ? yield* Effect.fork(
               saveYahooDataToTTL(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
+                  Effect.tapError((error) =>
+                      Effect.sync(() =>
+                          logger.error('saveYahooDataToTTL failed', {
+                              ticker: finalTicker,
+                              error,
+                          })
+                      )
+                  ),
                   Effect.orElse(() => Effect.void)
               )
           )

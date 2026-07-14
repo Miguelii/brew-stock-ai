@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Menu, X, LogOut, UserIcon } from 'lucide-react'
 import Link from 'next/link'
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer'
@@ -24,10 +24,10 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
 
     const logout = useLogout()
 
-    const onClickHandler = useCallback(() => {
+    const onClickHandler = () => {
         logout.mutate()
         setOpen(false)
-    }, [logout])
+    }
 
     return (
         <>
@@ -36,6 +36,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                     <>
                         <CreditsDisplay />
                         <button
+                            type="button"
                             aria-label="Open menu"
                             onClick={() => setOpen(true)}
                             className={cn(
@@ -63,6 +64,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                         </div>
                         <DrawerClose asChild>
                             <button
+                                type="button"
                                 aria-label="Close menu"
                                 className="flex items-center justify-center h-8 w-8 rounded-none text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
                             >
@@ -113,6 +115,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                     </Link>
                                 </DrawerClose>
                                 <button
+                                    type="button"
                                     onClick={onClickHandler}
                                     disabled={logout.isPending}
                                     className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-medium text-primary transition-colors hover:bg-muted"

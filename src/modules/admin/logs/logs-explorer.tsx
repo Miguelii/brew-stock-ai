@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
     Table,
     TableBody,
@@ -23,6 +23,18 @@ type Props = {
 
 type LevelFilter = LogLevel | 'all'
 
+function countByLevel(logs: AdminLog[]): Record<LevelFilter, number> {
+    const tally: Record<LevelFilter, number> = {
+        all: logs.length,
+        log: 0,
+        info: 0,
+        warn: 0,
+        error: 0,
+    }
+    for (const log of logs) tally[log.level]++
+    return tally
+}
+
 const LEVEL_FILTERS: { value: LevelFilter; label: string }[] = [
     { value: 'all', label: 'All' },
     { value: 'error', label: 'Error' },
@@ -36,22 +48,9 @@ export function LogsExplorer({ logs }: Props) {
     const [selected, setSelected] = useState<AdminLog | null>(null)
     const [open, setOpen] = useState(false)
 
-    const counts = useMemo(() => {
-        const tally: Record<LevelFilter, number> = {
-            all: logs.length,
-            log: 0,
-            info: 0,
-            warn: 0,
-            error: 0,
-        }
-        for (const log of logs) tally[log.level]++
-        return tally
-    }, [logs])
+    const counts = countByLevel(logs)
 
-    const filtered = useMemo(
-        () => (activeLevel === 'all' ? logs : logs.filter((log) => log.level === activeLevel)),
-        [logs, activeLevel]
-    )
+    const filtered = activeLevel === 'all' ? logs : logs.filter((log) => log.level === activeLevel)
 
     const openLog = (log: AdminLog) => {
         setSelected(log)

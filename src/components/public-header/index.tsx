@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import Logo from '@/components/logo'
-import { motion, AnimatePresence } from 'motion/react'
+import { AnimatePresence, LazyMotion, domAnimation, m } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 const NAV_LINKS = [
     { label: 'Reports', href: '/example-report' },
@@ -15,26 +16,32 @@ const NAV_LINKS = [
     { label: 'FAQs', href: '/faq' },
 ] as const
 
+const subscribeToScroll = (callback: () => void) => {
+    window.addEventListener('scroll', callback, { passive: true })
+    return () => window.removeEventListener('scroll', callback)
+}
+
 export function PublicHeader() {
-    const [scrolled, setScrolled] = useState(false)
+    // Re-renders only when the boolean flips, not on every scroll tick.
+    const scrolled = useSyncExternalStore(
+        subscribeToScroll,
+        () => window.scrollY > 60,
+        () => false
+    )
     const [menuOpen, setMenuOpen] = useState(false)
 
-    useEffect(() => {
-        setScrolled(window.scrollY > 60)
-        const onScroll = () => {
-            setScrolled(window.scrollY > 60)
-            setMenuOpen(false)
-        }
-        window.addEventListener('scroll', onScroll, { passive: true })
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [])
+    useHotkeys('Escape', () => setMenuOpen(false), { enabled: menuOpen })
 
     return (
-        <>
+        <LazyMotion features={domAnimation} strict>
             <div className="h-20" aria-hidden="true" />
 
             {menuOpen && (
-                <div className="fixed inset-0 z-50 md:hidden" onClick={() => setMenuOpen(false)} />
+                <div
+                    aria-hidden="true"
+                    className="fixed inset-0 z-50 md:hidden"
+                    onClick={() => setMenuOpen(false)}
+                />
             )}
 
             <div className="fixed inset-x-0 top-0 z-60 flex justify-center">
@@ -51,15 +58,15 @@ export function PublicHeader() {
                             : 'max-w-235 translate-y-4 px-5 bg-card shadow-[0_8px_40px_rgba(0,0,0,0.16),0_0_0_1px_rgba(255,255,255,0.07)]'
                     )}
                 >
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     >
                         <Logo />
-                    </motion.div>
+                    </m.div>
 
-                    <motion.nav
+                    <m.nav
                         initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
@@ -81,9 +88,9 @@ export function PublicHeader() {
                                 </Button>
                             </Link>
                         ))}
-                    </motion.nav>
+                    </m.nav>
 
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, x: 8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
@@ -100,13 +107,15 @@ export function PublicHeader() {
                         </Link>
 
                         <button
+                            type="button"
+                            aria-expanded={menuOpen}
                             onClick={() => setMenuOpen((v) => !v)}
                             className="md:hidden flex items-center justify-center w-8 h-8 rounded-none hover:bg-muted transition-colors duration-200 text-primary"
                             aria-label="Toggle menu"
                         >
                             <AnimatePresence mode="wait" initial={false}>
                                 {menuOpen ? (
-                                    <motion.span
+                                    <m.span
                                         key="close"
                                         initial={{ rotate: -45, opacity: 0 }}
                                         animate={{ rotate: 0, opacity: 1 }}
@@ -114,9 +123,9 @@ export function PublicHeader() {
                                         transition={{ duration: 0.15 }}
                                     >
                                         <X size={16} strokeWidth={2} />
-                                    </motion.span>
+                                    </m.span>
                                 ) : (
-                                    <motion.span
+                                    <m.span
                                         key="open"
                                         initial={{ rotate: 45, opacity: 0 }}
                                         animate={{ rotate: 0, opacity: 1 }}
@@ -124,16 +133,16 @@ export function PublicHeader() {
                                         transition={{ duration: 0.15 }}
                                     >
                                         <Menu size={16} strokeWidth={2} />
-                                    </motion.span>
+                                    </m.span>
                                 )}
                             </AnimatePresence>
                         </button>
-                    </motion.div>
+                    </m.div>
                 </header>
 
                 <AnimatePresence>
                     {menuOpen && (
-                        <motion.div
+                        <m.div
                             initial={{ opacity: 0, y: -6, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -6, scale: 0.98 }}
@@ -152,7 +161,7 @@ export function PublicHeader() {
                             )}
                         >
                             {NAV_LINKS.map(({ label, href }, i) => (
-                                <motion.div
+                                <m.div
                                     key={href}
                                     initial={{ opacity: 0, x: -8 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -170,7 +179,7 @@ export function PublicHeader() {
                                     >
                                         {label}
                                     </Link>
-                                </motion.div>
+                                </m.div>
                             ))}
 
                             <div className="mt-1 pt-1.5 border-t border-border">
@@ -184,10 +193,10 @@ export function PublicHeader() {
                                     </Button>
                                 </Link>
                             </div>
-                        </motion.div>
+                        </m.div>
                     )}
                 </AnimatePresence>
             </div>
-        </>
+        </LazyMotion>
     )
 }

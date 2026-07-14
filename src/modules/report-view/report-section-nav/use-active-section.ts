@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function useActiveSection<T extends string>(sections: readonly { id: T }[], offset = 120) {
     const [activeId, setActiveId] = useState<T>(sections[0].id)
@@ -28,20 +28,17 @@ export function useActiveSection<T extends string>(sections: readonly { id: T }[
         return () => observer.disconnect()
     }, [sections, offset])
 
-    const scrollTo = useCallback(
-        (id: T) => {
-            const el = document.getElementById(id)
-            if (!el) return
-            setActiveId(id)
-            lockRef.current = true
-            const top = el.getBoundingClientRect().top + window.scrollY - offset
-            window.scrollTo({ top, behavior: 'smooth' })
-            setTimeout(() => {
-                lockRef.current = false
-            }, 800)
-        },
-        [offset]
-    )
+    const scrollTo = (id: T) => {
+        const el = document.getElementById(id)
+        if (!el) return
+        setActiveId(id)
+        lockRef.current = true
+        const top = el.getBoundingClientRect().top + window.scrollY - offset
+        window.scrollTo({ top, behavior: 'smooth' })
+        setTimeout(() => {
+            lockRef.current = false
+        }, 800)
+    }
 
     return [activeId, scrollTo] as const
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { CookieIcon } from 'lucide-react'
 import { trpcClient } from '@/_trpc/client'
 import { toastError } from '@/lib/toast-error'
@@ -8,20 +8,29 @@ import Link from 'next/link'
 import { PromptCard } from '@/components/ui/prompt-card'
 import { CONSENT_COOKIE } from '@/lib/constants'
 
+// The consent cookie has no change event; the snapshot is read once on
+// hydration and the prompt is hidden via local `dismissed` state afterwards.
+const emptySubscribe = () => () => {}
+
+const hasConsentCookie = () =>
+    document.cookie.split(';').some((c) => c.trim().startsWith(`${CONSENT_COOKIE}=`))
+
 export function CookiePrompt() {
-    const [open, setOpen] = useState(false)
+    const [dismissed, setDismissed] = useState(false)
+
+    // Server snapshot `true` keeps the prompt out of the SSR payload.
+    const hasConsent = useSyncExternalStore(emptySubscribe, hasConsentCookie, () => true)
 
     const consentMutation = trpcClient.core.createConsentCookie.useMutation({
-        onSuccess: () => setOpen(false),
         onError: (error) =>
             toastError('Could not save your cookie preference.', error, 'Please try again later.'),
     })
 
     const handler = (allow: boolean) => {
-        setOpen(false)
+        setDismissed(true)
 
         // 1. updates google dataLayer analytics values
-        globalThis?.gtag('consent', 'update', {
+        globalThis.gtag?.('consent', 'update', {
             ad_storage: allow ? 'granted' : 'denied',
             analytics_storage: allow ? 'granted' : 'denied',
         })
@@ -30,14 +39,7 @@ export function CookiePrompt() {
         consentMutation.mutate({ allowAnalytics: allow })
     }
 
-    useEffect(() => {
-        const hasConsent = document.cookie
-            .split(';')
-            .some((c) => c.trim().startsWith(`${CONSENT_COOKIE}=`))
-        if (!hasConsent) setOpen(true)
-    }, [])
-
-    if (!open) return null
+    if (hasConsent || dismissed) return null
 
     return (
         <PromptCard

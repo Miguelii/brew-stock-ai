@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
     Area,
     AreaChart,
@@ -45,24 +45,21 @@ function PriceTooltip({ active, payload, label }: TooltipProps) {
 
 export function StockPriceChart({ data, low, high }: Props) {
     const [range, setRange] = useState<Range>('1Y')
+    // Impure read deferred to mount; render stays deterministic (purity rule).
+    const [now] = useState(() => Date.now())
 
-    const filtered = useMemo(() => {
-        if (!data) return []
-        const cutoff = Date.now() - RANGE_DAYS[range] * 86_400_000
-        return data.filter((p) => p.date >= cutoff)
-    }, [data, range])
+    const cutoff = now - RANGE_DAYS[range] * 86_400_000
+    const filtered = data ? data.filter((p) => p.date >= cutoff) : []
 
-    const monthTicks = useMemo(() => {
-        const seen = new Set<string>()
-        return filtered
-            .filter(({ date }) => {
-                const key = new Date(date).toISOString().slice(0, 7)
-                if (seen.has(key)) return false
-                seen.add(key)
-                return true
-            })
-            .map(({ date }) => date)
-    }, [filtered])
+    const seen = new Set<string>()
+    const monthTicks = filtered
+        .filter(({ date }) => {
+            const key = new Date(date).toISOString().slice(0, 7)
+            if (seen.has(key)) return false
+            seen.add(key)
+            return true
+        })
+        .map(({ date }) => date)
 
     if (!data?.length) {
         return (

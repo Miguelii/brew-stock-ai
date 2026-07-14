@@ -3,6 +3,17 @@ import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 
 const WEBSITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
+// JSON.stringify does not HTML-escape; a `</script>` or `<` in the data would
+// break out of the script tag, so escape the three dangerous characters.
+function jsonLdHtml(schema: object): { __html: string } {
+    return {
+        __html: JSON.stringify(schema)
+            .replaceAll('<', String.raw`\u003c`)
+            .replaceAll('>', String.raw`\u003e`)
+            .replaceAll('&', String.raw`\u0026`),
+    }
+}
+
 export function OrganizationSchema() {
     const organizationSchema = {
         '@context': 'https://schema.org',
@@ -24,7 +35,7 @@ export function OrganizationSchema() {
         <script
             id="organization-schema"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            dangerouslySetInnerHTML={jsonLdHtml(organizationSchema)}
         />
     )
 }
@@ -44,7 +55,7 @@ export function WebSiteSchema() {
         <script
             id="website-schema"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+            dangerouslySetInnerHTML={jsonLdHtml(websiteSchema)}
         />
     )
 }
@@ -80,7 +91,7 @@ export function WebApplicationSchema() {
         <script
             id="web-application-schema"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+            dangerouslySetInnerHTML={jsonLdHtml(appSchema)}
         />
     )
 }
@@ -132,7 +143,7 @@ export function ArticleSchema({
         <script
             id="article-schema"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+            dangerouslySetInnerHTML={jsonLdHtml(articleSchema)}
         />
     )
 }
@@ -157,7 +168,7 @@ export function FAQSchema({
         <script
             id="faq-schema"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            dangerouslySetInnerHTML={jsonLdHtml(faqSchema)}
         />
     )
 }
@@ -186,7 +197,7 @@ export function FinancialProductSchema({
         <script
             id="financial-product-schema"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={jsonLdHtml(schema)}
         />
     )
 }
@@ -209,7 +220,7 @@ export function BreadcrumbSchema({
         <script
             id="breadcrumb-schema"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            dangerouslySetInnerHTML={jsonLdHtml(breadcrumbSchema)}
         />
     )
 }

@@ -36,6 +36,7 @@ export function PromptCard({
                 </div>
                 {onDismiss && (
                     <button
+                        type="button"
                         onClick={onDismiss}
                         className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
                         aria-label="Dismiss"

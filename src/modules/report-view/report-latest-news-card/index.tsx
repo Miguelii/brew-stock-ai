@@ -16,7 +16,14 @@ export function ReportLatestNewsCard({ news, ticker }: Props) {
         <Card className="h-fit overflow-hidden gap-0 pb-0!">
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">
-                    {ticker ? `Recent news mentioning ${ticker}` : 'Recent news'}
+                    {ticker ? (
+                        <>
+                            <span>Recent news mentioning </span>
+                            <span className="text-accent-blue">{ticker}</span>
+                        </>
+                    ) : (
+                        'Recent news'
+                    )}
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0">

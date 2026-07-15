@@ -1,0 +1,6 @@
+{
+    "$schema": "https://unpkg.com/knip@5/schema.json",
+    "tags": ["-lintignore"],
+    "entry": ["trigger.config.ts"],
+    "ignore": ["src/components/ui/**", "public/**"]
+}

@@ -1,3 +1,19 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+allowBuilds:
+    puppeteer: true
+    sharp: true
+minimumReleaseAgeExclude:
+    - '@voidzero-dev/vite-plus-core@0.2.4'
+    - '@voidzero-dev/vite-plus-darwin-arm64@0.2.4'
+    - '@voidzero-dev/vite-plus-darwin-x64@0.2.4'
+    - '@voidzero-dev/vite-plus-linux-arm64-gnu@0.2.4'
+    - '@voidzero-dev/vite-plus-linux-arm64-musl@0.2.4'
+    - '@voidzero-dev/vite-plus-linux-x64-gnu@0.2.4'
+    - '@voidzero-dev/vite-plus-linux-x64-musl@0.2.4'
+    - '@voidzero-dev/vite-plus-win32-arm64-msvc@0.2.4'
+    - '@voidzero-dev/vite-plus-win32-x64-msvc@0.2.4'
+    - vite-plus@0.2.4
+    - '@ai-sdk/anthropic@4.0.10'
+    - '@ai-sdk/gateway@4.0.14'
+    - '@ai-sdk/provider-utils@5.0.6'
+    - '@types/node@26.1.1'
+    - ai@7.0.18

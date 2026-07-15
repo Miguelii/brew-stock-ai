@@ -1,0 +1,97 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import './font.css';
+@import './theme.css';
+@import './theme-dark.css';
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+html {
+    scroll-behavior: smooth !important;
+}
+
+.main-container {
+    @apply max-w-5xl mx-auto px-6 py-6 md:py-10 space-y-8 lg:pb-24;
+}
+
+.main-container-lg {
+    @apply max-w-7xl mx-auto px-6 py-6 md:py-10 space-y-8 lg:pb-24;
+}
+
+@layer base {
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-muted-foreground);
+        border-radius: 5px;
+    }
+
+    * {
+        @apply border-border outline-ring/50;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+    }
+
+    a,
+    button {
+        @apply cursor-pointer;
+    }
+}
+
+@layer components {
+    .analysis-prose {
+        @apply prose prose-sm max-w-none;
+
+        /* Headings */
+        --tw-prose-headings: var(--color-primary);
+        h2 {
+            @apply text-xs font-semibold uppercase tracking-widest text-primary-muted mb-3;
+        }
+        h3 {
+            @apply text-sm font-semibold text-primary mt-4 mb-2;
+        }
+
+        /* Body */
+        p {
+            @apply text-sm text-primary leading-relaxed mb-3;
+        }
+
+        /* Lists */
+        ul {
+            @apply space-y-2 my-3 list-none;
+            padding-left: 0;
+        }
+        li {
+            @apply text-sm text-primary leading-relaxed;
+            position: relative;
+            padding-left: 1.25rem;
+        }
+        li::before {
+            content: '•';
+            @apply text-accent-blue font-bold;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        li > strong:first-child {
+            @apply block;
+        }
+
+        /* Emphasis */
+        strong {
+            @apply text-accent-blue font-semibold;
+        }
+        em {
+            @apply text-primary-muted not-italic;
+        }
+    }
+}

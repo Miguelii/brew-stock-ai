@@ -1,0 +1,83 @@
+import { defineConfig } from 'vite-plus'
+import path from 'node:path'
+
+const __dirname = import.meta.dirname
+
+export default defineConfig({
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+            'server-only': path.resolve(__dirname, './src/lib/__mocks__/server-only.ts'),
+        },
+    },
+
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: ['./vitest.setup.ts'],
+        include: ['src/**/*.test.{ts,tsx}'],
+        css: false,
+    },
+
+    lint: {
+        plugins: ['typescript', 'react', 'react-perf', 'nextjs', 'import', 'unicorn'],
+        categories: {
+            correctness: 'error',
+            suspicious: 'warn',
+            pedantic: 'warn',
+            perf: 'warn',
+            style: 'off',
+        },
+        rules: {
+            'no-unused-vars': 'off',
+            'typescript/no-unused-vars': 'warn',
+            'unicorn/prefer-node-protocol': 'error',
+            'unicorn/prefer-dom-node-remove': 'warn',
+            'import/no-duplicates': 'error',
+            'react/no-direct-mutation-state': 'error',
+            'react/jsx-no-duplicate-props': 'error',
+            'react-perf/jsx-no-new-object-as-prop': 'off',
+            'react-perf/jsx-no-new-array-as-prop': 'off',
+            'react-perf/jsx-no-new-function-as-prop': 'off',
+            'react/react-in-jsx-scope': 'off',
+            'import/no-unassigned-import': 'off',
+            'import/max-dependencies': ['warn', { max: 20 }],
+            'eslint/max-lines-per-function': ['warn', { max: 250 }],
+            'eslint/max-lines': ['warn', { max: 350 }],
+            'eslint/eqeqeq': 'off',
+            'eslint/no-inline-comments': 'off',
+            'eslint/no-negated-condition': 'off',
+            'unicorn/prefer-top-level-await': 'off',
+            'react-perf/jsx-no-jsx-as-prop': 'off',
+            'eslint/max-classes-per-file': ['warn', { max: 100 }],
+            'eslint/require-await': 'off',
+            'unicorn/no-lonely-if': 'off',
+            'unicorn/require-module-specifiers': 'off',
+            'unicorn/consistent-function-scoping': 'off',
+            'unicorn/prefer-dom-node-append': 'off',
+            'unicorn/prefer-query-selector': 'off',
+            'react/no-array-index-key': 'off',
+            'eslint/no-underscore-dangle': 'off',
+            'unicorn/no-negated-condition': 'off',
+        },
+        ignorePatterns: [
+            '.next',
+            'out',
+            'build',
+            'node_modules',
+            'src/components/ui',
+            'scripts',
+            'src/lib/__tests__',
+            'src/hooks/__tests__',
+        ],
+    },
+
+    fmt: {
+        semi: false,
+        singleQuote: true,
+        tabWidth: 4,
+        printWidth: 100,
+        trailingComma: 'es5',
+        ignorePatterns: ['build', 'coverage', 'CLAUDE.md', '.agents', '.claude', 'design-system'],
+    },
+})

@@ -1,6 +1,6 @@
 # BrewStockAI
 
-AI-powered stock analysis — get institutional-grade financial insights, market sentiment, and technical indicators for any equity. For less than a coffee ☕
+AI-powered stock analysis - institutional grade financial insights, market sentiment and technical indicators for any stock. For less than a coffee ☕
 
 ## Technical Tools
 

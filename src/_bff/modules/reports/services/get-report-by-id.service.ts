@@ -26,7 +26,7 @@ export const getReportById = Effect.fn('getReportById')(function* (
 
     const report = yield* selectReportById(supabase, id, admin ? undefined : user.id)
 
-    const stockData = yield* selectStockDataByTickerCached(report.ticker)
+    const stockData = yield* selectStockDataByTickerCached(report.ticker, user.id)
 
     return { report, stockData } satisfies ReportWithStockData
 })

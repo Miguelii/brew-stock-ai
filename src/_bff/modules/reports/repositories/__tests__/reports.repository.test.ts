@@ -196,7 +196,9 @@ describe('selectStockDataByTickerCached', () => {
             makeStockChain(() => Promise.resolve({ data: { id: 'AAPL' }, error: null }))
         )
 
-        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toEqual({
+        await expect(
+            Effect.runPromise(selectStockDataByTickerCached('AAPL', 'user_id'))
+        ).resolves.toEqual({
             id: 'AAPL',
         })
     })
@@ -206,11 +208,15 @@ describe('selectStockDataByTickerCached', () => {
             makeStockChain(() => Promise.resolve({ data: null, error: null }))
         )
 
-        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toBe(null)
+        await expect(
+            Effect.runPromise(selectStockDataByTickerCached('AAPL', 'user_id'))
+        ).resolves.toBe(null)
     })
 
     it('resolves to null without querying when the ticker is missing', async () => {
-        await expect(Effect.runPromise(selectStockDataByTickerCached(null))).resolves.toBe(null)
+        await expect(
+            Effect.runPromise(selectStockDataByTickerCached(null, 'user_id'))
+        ).resolves.toBe(null)
         expect(createSbAdminClientMock).not.toHaveBeenCalled()
     })
 
@@ -219,7 +225,9 @@ describe('selectStockDataByTickerCached', () => {
             makeStockChain(() => Promise.resolve({ data: null, error: { message: 'boom' } }))
         )
 
-        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toBe(null)
+        await expect(
+            Effect.runPromise(selectStockDataByTickerCached('AAPL', 'user_id'))
+        ).resolves.toBe(null)
         expect(loggerMock).toHaveBeenCalledWith(expect.objectContaining({ level: 'error' }))
     })
 
@@ -228,7 +236,9 @@ describe('selectStockDataByTickerCached', () => {
             makeStockChain(() => Promise.reject(new Error('network down')))
         )
 
-        await expect(Effect.runPromise(selectStockDataByTickerCached('AAPL'))).resolves.toBe(null)
+        await expect(
+            Effect.runPromise(selectStockDataByTickerCached('AAPL', 'user_id'))
+        ).resolves.toBe(null)
         expect(loggerMock).toHaveBeenCalledWith(expect.objectContaining({ level: 'error' }))
     })
 })

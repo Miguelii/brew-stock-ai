@@ -15,7 +15,7 @@ import {
     ReportStatus,
     type StockData,
 } from '@/types/ReportDTO'
-import type { SupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient, User } from '@supabase/supabase-js'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { STOCK_DATA_CACHE_KEY, STOCK_DATA_CACHE_TTL } from '@/_bff/modules/reports/constants'
 import { unstable_cache } from 'next/cache'
@@ -185,7 +185,6 @@ export const markReportFailed = Effect.fn('markReportFailed')(function* (
 
 // Uses the admin client: unstable_cache runs outside the request scope, so cookie-based
 // clients are unavailable there; stock_data is not user-scoped, so this is safe.
-// A missing row resolves to null (cacheable); Supabase errors throw so failures are never cached.
 const selectStockDataByTickerRaw = async (ticker: string): Promise<StockData | null> => {
     const supabase = createSbAdminClient()
 
@@ -203,10 +202,10 @@ const selectStockDataByTickerRaw = async (ticker: string): Promise<StockData | n
 }
 
 // Best-effort — resolves to null instead of failing so report views never break on stock data.
-// Do NOT call from Trigger.dev jobs: unstable_cache only works in the Next runtime; outside it
-// the call throws and the best-effort fallback silently resolves to null.
+// Do NOT call from Trigger.dev jobs: unstable_cache only works in the Next runtime;
 export const selectStockDataByTickerCached = Effect.fn('selectStockDataByTickerCached')(function* (
-    ticker: string | null | undefined
+    ticker: string | null | undefined,
+    userId: User['id'] // only necessary for logger
 ) {
     if (!ticker) {
         return null
@@ -229,9 +228,10 @@ export const selectStockDataByTickerCached = Effect.fn('selectStockDataByTickerC
                 Logger({
                     level: 'error',
                     prefix: 'selectStockDataByTickerCached',
-                    message: 'Stock data fetch failed; resolving to null',
+                    message: 'Stock data fetch failed',
                     error: cause,
                     metadata: { ticker },
+                    userId: userId,
                 })
             )
         ),

@@ -38,7 +38,7 @@ describe('getReportById', () => {
 
         expect(result).toEqual({ report: REPORT, stockData: STOCK_DATA })
         expect(selectReportByIdMock).toHaveBeenCalledWith(SUPABASE, 'r-1', 'user-1')
-        expect(selectStockDataMock).toHaveBeenCalledWith('AAPL')
+        expect(selectStockDataMock).toHaveBeenCalledWith('AAPL', 'user-1')
     })
 
     it('skips the ownership filter for super admins', async () => {

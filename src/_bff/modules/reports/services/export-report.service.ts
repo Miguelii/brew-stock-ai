@@ -65,7 +65,7 @@ export const exportReport = Effect.fn('exportReport')(function* (user: User, id:
     // Fetch stock_data and resolve the Chromium path in parallel — neither depends on the other
     const [stockData, chromiumPath] = yield* Effect.all(
         [
-            selectStockDataByTickerCached(report.ticker),
+            selectStockDataByTickerCached(report.ticker, user.id),
             isDev ? Effect.succeed(null) : getChromiumPath(),
         ],
         { concurrency: 'unbounded' }

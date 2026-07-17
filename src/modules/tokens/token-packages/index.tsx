@@ -3,74 +3,30 @@
 import { trpcClient } from '@/_trpc/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { CoinsIcon, ZapIcon, StarIcon, TrophyIcon, Loader2Icon } from 'lucide-react'
+import { CoinsIcon, Loader2Icon } from 'lucide-react'
 import { toastError } from '@/lib/toast-error'
 import { cn } from '@/lib/utils'
 import { TokenPromo } from '@/modules/tokens/token-packages/token-promo'
 import { useTransition } from 'react'
-
-// Set to false to restore original pricing
-const LAUNCH_PROMO_ACTIVE = true
-
-const PACKAGES = [
-    {
-        id: 'free' as const,
-        label: 'Trial',
-        credits: 2,
-        price: 'Free',
-        pricePerToken: '2 analysis credits included',
-        originalPrice: null as string | null,
-        originalPricePerToken: null as string | null,
-        description: 'Your first analysis, on us.',
-        icon: TrophyIcon,
-        highlight: false,
-    },
-    {
-        id: 'starter' as const,
-        label: 'Starter',
-        credits: 5,
-        price: LAUNCH_PROMO_ACTIVE ? '€0.99' : '€1.99',
-        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.20/credit' : '€0.40/credit',
-        originalPrice: LAUNCH_PROMO_ACTIVE ? '€1.99' : null,
-        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.40/credit' : null,
-        description: 'Perfect for trying out analyses',
-        icon: ZapIcon,
-        highlight: true,
-    },
-    {
-        id: 'pro' as const,
-        label: 'Pro',
-        credits: 15,
-        price: LAUNCH_PROMO_ACTIVE ? '€2.49' : '€4.99',
-        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.17/credit' : '€0.33/credit',
-        originalPrice: LAUNCH_PROMO_ACTIVE ? '€4.99' : null,
-        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.40/credit' : null,
-        description: 'Most popular for regular investors',
-        icon: StarIcon,
-        highlight: false,
-    },
-    {
-        id: 'expert' as const,
-        label: 'Expert',
-        credits: 50,
-        price: LAUNCH_PROMO_ACTIVE ? '€5.99' : '€11.99',
-        pricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.12/credit' : '€0.24/credit',
-        originalPrice: LAUNCH_PROMO_ACTIVE ? '€11.99' : null,
-        originalPricePerToken: LAUNCH_PROMO_ACTIVE ? '€0.24/credit' : null,
-        description: 'Best value for power users',
-        icon: TrophyIcon,
-        highlight: false,
-    },
-]
+import type { TokenPackage } from '@/types/TokenPackage'
+import { getPackageIcon } from './get-package-icon'
 
 type Props = {
     showFree?: boolean
     showBuyButton?: boolean
     className?: string
+    packages: TokenPackage[]
 }
 
-export function TokenPackages({ showFree = false, showBuyButton = true, className }: Props) {
+export function TokenPackages({
+    showFree = false,
+    showBuyButton = true,
+    className,
+    packages,
+}: Props) {
     const [pending, startTransition] = useTransition()
+
+    const showPromoBanner = packages.some((item) => item.hasPromo === true) != null
 
     const checkout = trpcClient.credits.createCheckoutSession.useMutation({
         onSuccess: (url) => {
@@ -104,7 +60,7 @@ export function TokenPackages({ showFree = false, showBuyButton = true, classNam
                 }
             `}</style>
 
-            {LAUNCH_PROMO_ACTIVE ? <TokenPromo /> : null}
+            {showPromoBanner ? <TokenPromo /> : null}
 
             <div
                 className={cn(
@@ -112,10 +68,9 @@ export function TokenPackages({ showFree = false, showBuyButton = true, classNam
                     className
                 )}
             >
-                {PACKAGES.map((pkg) => {
-                    const Icon = pkg.icon
+                {packages.map((pkg) => {
+                    const Icon = getPackageIcon(pkg.id)
                     const isLoading = checkout.isPending && checkout.variables?.packageId === pkg.id
-                    const isPromo = LAUNCH_PROMO_ACTIVE && pkg.id !== 'free'
 
                     if (!showFree && pkg.id === 'free') return null
 
@@ -134,7 +89,7 @@ export function TokenPackages({ showFree = false, showBuyButton = true, classNam
                                     </span>
                                 )}
 
-                                {isPromo && (
+                                {pkg.hasPromo && (
                                     <span className="absolute top-3 right-3 text-[9px] font-bold tracking-wider text-accent-blue border border-accent-blue/35 px-1.5 py-0.5 leading-tight">
                                         50% OFF
                                     </span>

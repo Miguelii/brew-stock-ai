@@ -6,6 +6,7 @@ import { TokenBalanceCard } from '@/modules/tokens/token-balance-card'
 import { PendingPaymentBanner } from '@/modules/tokens/pending-payment-banner'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
+import { PACKAGES } from '@/_bff/modules/credits/constants'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Buy Credits'
@@ -76,6 +77,7 @@ export default async function TokensPage({ searchParams }: Props) {
                     showFree={false}
                     showBuyButton={true}
                     className="md:grid-cols-2 lg:grid-cols-3"
+                    packages={PACKAGES}
                 />
             </main>
         </>

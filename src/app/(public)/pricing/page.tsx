@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema, FAQSchema } from '@/components/structured-data'
 import { PRICING_FAQ } from '@/modules/faq/faq-content'
+import { PACKAGES } from '@/_bff/modules/credits/constants'
 
 export const dynamic = 'force-static'
 
@@ -78,6 +79,7 @@ export default function PricingPage() {
                         showBuyButton={false}
                         showFree={true}
                         className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                        packages={PACKAGES}
                     />
                 </motion.section>
 

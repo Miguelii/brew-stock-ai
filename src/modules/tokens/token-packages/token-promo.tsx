@@ -9,13 +9,13 @@ export function TokenPromo() {
                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-background" />
                     </span>
                     <span className="text-[9px] font-bold tracking-[0.25em] text-background/70 uppercase">
-                        Limited Launch Promo
+                        Limited Time Offer
                     </span>
                 </div>
                 <p className="text-base font-bold text-background leading-snug">
-                    All plans 50% off.
+                    Starter pack 50% off.
                 </p>
-                <p className="text-xs text-background/60">Special launch offer — ending soon.</p>
+                <p className="text-xs text-background/60">Special offer — ending soon.</p>
             </div>
 
             {/* Divider */}

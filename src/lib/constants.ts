@@ -5,7 +5,7 @@ export const SW_PATH = '/sw.js'
 
 export const AUTH_PAGE_PATH = '/auth'
 
-export const PROTECTED_PATHS = new Set(['/reports', '/account', '/tokens', '/secure-admin'])
+export const PROTECTED_PATHS = new Set(['/reports', '/account', '/tokens', '/config-app'])
 
 export const AUTH_PAGES_PATHS = new Set([AUTH_PAGE_PATH])
 

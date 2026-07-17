@@ -9,6 +9,7 @@ import { HomeFaq } from '@/modules/faq/home-faq'
 import { FinalCTA } from '@/modules/home/final-cta'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
+import { PACKAGES } from '@/_bff/modules/credits/constants'
 
 export const dynamic = 'force-static'
 
@@ -37,7 +38,7 @@ export default function HomePage() {
 
                 <FeaturedArticles />
 
-                <PricingCard />
+                <PricingCard packages={PACKAGES} />
 
                 <HomeFaq />
 

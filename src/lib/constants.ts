@@ -54,3 +54,9 @@ export const SITE_AUTHOR_NAME = 'Miguel Gonçalves'
 
 export const SITE_AUTHOR_URL = 'https://www.linkedin.com/in/miguelgoncalves18/'
 //############
+
+// #### LAST UPDATE PAGES ####
+export const PRIVACY_PAGE_LAST_UPDATE_AT = '2026-07-17'
+
+export const DISCLAIMER_PAGE_LAST_UPDATE_AT = '2026-07-17'
+//############

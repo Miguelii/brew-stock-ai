@@ -58,7 +58,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                     <div className="flex items-center justify-between h-16 px-5 border-b border-border shrink-0">
                         <div className="flex items-center gap-1.5">
                             <div className="font-bold text-lg tracking-tight pt-1.5">
-                                <span>StockBrew</span>
+                                <span>BrewStock</span>
                                 <span className="text-accent-blue font-mono">AI</span>
                             </div>
                         </div>

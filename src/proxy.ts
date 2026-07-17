@@ -13,6 +13,6 @@ export async function proxy(request: NextRequest) {
 // so template literals/String.raw are silently dropped ([.] = literal dot)
 export const config = {
     matcher: [
-        '/((?!_next|api/|assets|favicon|robots[.]txt|script|sw[.]js|apple-touch-icon|web-app-manifest|android-chrome|chromium-|ads[.]txt|google65ae1c769c12f01e[.]html).*)',
+        '/((?!_next|api/|assets|favicon|robots[.]txt|script|sw[.]js|apple-touch-icon|web-app-manifest|android-chrome|binaries|ads[.]txt|google65ae1c769c12f01e[.]html).*)',
     ],
 }

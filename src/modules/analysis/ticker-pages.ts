@@ -58,7 +58,7 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         slug: 'meta',
         sector: 'Technology',
         description:
-            'Meta Platforms operates Facebook, Instagram, and WhatsApp — reaching over 3 billion daily active users. Expanding into AI and the metaverse.',
+            'Meta Platforms operates Facebook, Instagram, and WhatsApp, reaching over 3 billion daily active users. Expanding into AI and the metaverse.',
     },
     {
         ticker: 'NFLX',
@@ -307,7 +307,7 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         slug: 'roblox',
         sector: 'Technology',
         description:
-            'Roblox Corporation operates a global online entertainment platform and game creation system, with hundreds of millions of monthly active users — primarily Gen Z.',
+            'Roblox Corporation operates a global online entertainment platform and game creation system, with hundreds of millions of monthly active users, primarily Gen Z.',
     },
     {
         ticker: 'U',
@@ -760,7 +760,7 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         slug: 'deere',
         sector: 'Industrials',
         description:
-            "Deere & Company manufactures agricultural, construction, and forestry machinery under the John Deere brand — the world's largest farm equipment maker.",
+            "Deere & Company manufactures agricultural, construction, and forestry machinery under the John Deere brand, the world's largest farm equipment maker.",
     },
     {
         ticker: 'GE',

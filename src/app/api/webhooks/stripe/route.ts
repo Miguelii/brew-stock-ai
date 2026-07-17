@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import StripeClient, { type Stripe } from 'stripe'
 import { ServerEnv } from '@/env/server'
 import { createSbAdminClient } from '@/lib/utils.server'
-import { Logger } from '@/lib/logger'
+import { Logger } from '@/_bff/lib/server-logger'
 
 export async function POST(request: Request) {
     const body = await request.text()

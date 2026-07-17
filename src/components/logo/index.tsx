@@ -12,7 +12,7 @@ export default function Logo({ linkToHome = true }: Props) {
             prefetch={false}
         >
             <div className="font-bold text-lg tracking-tight">
-                <span>StockBrew</span>
+                <span>BrewStock</span>
                 <span className="text-accent-blue font-mono">AI</span>
             </div>
         </Link>

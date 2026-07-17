@@ -9,7 +9,7 @@ export const dynamic = 'force-static'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Change Log'
 const META_DESCRIPTION =
-    'Product updates and improvements to our AI stock analysis — richer data, deeper reports, and a more reliable engine. See the latest release.'
+    'Product updates and improvements to our AI stock analysis: richer data, deeper reports, and a more reliable engine. See the latest release.'
 const META_URL = `${SITE_URL}/changelog`
 
 export const metadata: Metadata = {

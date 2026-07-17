@@ -11,7 +11,7 @@ import { PACKAGES } from '@/_bff/modules/credits/constants'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Buy Credits'
 const META_DESCRIPTION =
-    'Buy StockBrewAI credits to unlock AI-powered stock analysis reports. Pay-as-you-go — credits never expire and each analysis costs just 1–2 credits.'
+    'Buy BrewStockAI credits to unlock AI-powered stock analysis reports. Pay as you go: credits never expire and each analysis costs just 1 or 2 credits.'
 const META_URL = `${SITE_URL}/tokens`
 
 export const metadata: Metadata = {
@@ -50,7 +50,7 @@ export default async function TokensPage({ searchParams }: Props) {
                         Buy Credits
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        Each analysis costs 1–2 credits depending on depth. Credits never expire.
+                        Each analysis costs 1 or 2 credits depending on depth. Credits never expire.
                     </p>
                 </div>
 

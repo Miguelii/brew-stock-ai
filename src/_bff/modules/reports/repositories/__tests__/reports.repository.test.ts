@@ -19,7 +19,7 @@ const { createSbAdminClientMock, loggerMock } = vi.hoisted(() => ({
 }))
 
 vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
-vi.mock('@/lib/logger', () => ({ Logger: loggerMock }))
+vi.mock('@/_bff/lib/server-logger', () => ({ Logger: loggerMock }))
 // unstable_cache needs the Next.js incremental cache runtime, absent in vitest — pass through
 vi.mock('next/cache', () => ({
     unstable_cache: (fn: (...args: unknown[]) => unknown) => fn,

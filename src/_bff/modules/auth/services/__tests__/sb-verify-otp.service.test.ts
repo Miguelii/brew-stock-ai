@@ -9,7 +9,7 @@ const { createSbServerClientMock, loggerMock } = vi.hoisted(() => ({
 }))
 
 vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
-vi.mock('@/lib/logger', () => ({ Logger: loggerMock }))
+vi.mock('@/_bff/lib/server-logger', () => ({ Logger: loggerMock }))
 
 const verifyOtp = vi.fn()
 

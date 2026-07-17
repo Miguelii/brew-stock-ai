@@ -16,16 +16,10 @@ export const ClientEnv = createEnv({
     },
 })
 
-function normalizeWebsiteUrl(normalized = 'http://localhost:3000'): string {
-    // Always returns https
-    if (!normalized.startsWith('http://') && !normalized.startsWith('https://')) {
-        normalized = `https://${normalized}`
-    }
-
+function normalizeWebsiteUrl(url = 'http://localhost:3000'): string {
     // Always returns without final slash
-    if (normalized.endsWith('/')) {
-        normalized = normalized.slice(0, -1)
+    if (url.endsWith('/')) {
+        url = url.slice(0, -1)
     }
-
-    return normalized
+    return url
 }

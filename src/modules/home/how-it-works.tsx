@@ -5,12 +5,12 @@ const STEPS = [
     {
         title: 'Pick a stock',
         description:
-            'Type in any ticker — from Apple to the small-cap you just read about — and choose the angle you care about: full analysis, financials, moat, risk, or growth.',
+            'Type any ticker, from Apple to the small company you just read about. Then choose what you want to know: full analysis, financials, moat, risk, or growth.',
     },
     {
         title: 'The AI does the research',
         description:
-            'The engine pulls earnings history, forward estimates, analyst ratings, insider activity, technical signals, and the latest news — and weighs the evidence fundamentals-first.',
+            'The engine gathers earnings history, future estimates, analyst ratings, insider activity, price signals, and the latest news. Then it weighs all that evidence, starting with the fundamentals.',
     },
     {
         title: 'Read a structured report',
@@ -24,8 +24,8 @@ export function HowItWorks() {
         <section className="border-b border-border">
             <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
                 <SectionHeader
-                    title="What StockBrewAI Actually Does"
-                    lede="StockBrewAI processes earnings reports, balance sheets, and market data the same way professional analysts do. You get the output in under 2 minutes for less than a coffee."
+                    title="What BrewStockAI Actually Does"
+                    lede="BrewStockAI reads earnings reports, balance sheets, and market data the same way a professional analyst would. You get the result in under 2 minutes, for less than a coffee."
                     className="mb-16"
                 />
 

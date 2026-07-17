@@ -18,7 +18,7 @@ export function OrganizationSchema() {
     const organizationSchema = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'StockBrewAI',
+        name: 'BrewStockAI',
         url: WEBSITE_URL,
         logo: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
         description:
@@ -44,7 +44,7 @@ export function WebSiteSchema() {
     const websiteSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'StockBrewAI',
+        name: 'BrewStockAI',
         url: WEBSITE_URL,
         description:
             'Institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.',
@@ -64,7 +64,7 @@ export function WebApplicationSchema() {
     const appSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
-        name: 'StockBrewAI',
+        name: 'BrewStockAI',
         url: WEBSITE_URL,
         description:
             'AI-powered stock analysis tool that delivers institutional-grade financial insights, market sentiment, and technical indicators for any equity.',
@@ -130,7 +130,7 @@ export function ArticleSchema({
         },
         publisher: {
             '@type': 'Organization',
-            name: 'StockBrewAI',
+            name: 'BrewStockAI',
             url: WEBSITE_URL,
             logo: {
                 '@type': 'ImageObject',
@@ -187,7 +187,7 @@ export function FinancialProductSchema({
         url,
         provider: {
             '@type': 'Organization',
-            name: 'StockBrewAI',
+            name: 'BrewStockAI',
             url: WEBSITE_URL,
         },
         category: 'Stock Analysis',

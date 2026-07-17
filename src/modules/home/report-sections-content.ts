@@ -5,7 +5,7 @@ export const REPORT_SECTIONS = [
         icon: FileText,
         title: 'Summary',
         description:
-            'What the AI found — the overall verdict, top strengths, and the one risk you should know about.',
+            'What the AI found: the overall verdict, top strengths, and the one risk you should know about.',
         featured: false,
     },
     {
@@ -19,21 +19,21 @@ export const REPORT_SECTIONS = [
         icon: BarChart3,
         title: 'Key Financial Metrics',
         description:
-            'The numbers that matter — revenue and profitability, valuation, financial health, forward estimates, and insider activity, all in plain English.',
+            'The numbers that matter: revenue and profitability, valuation, financial health, future estimates, and insider activity, all in plain English.',
         featured: false,
     },
     {
         icon: Sparkles,
         title: 'Full AI Report',
         description:
-            'A complete, in-depth analysis of the company — growth, profitability, cash flow, and financial health, explained in clear terms.',
+            'A complete, in-depth analysis of the company: growth, profitability, cash flow, and financial health, explained in clear terms.',
         featured: false,
     },
     {
         icon: Zap,
         title: "What's Happening Now",
         description:
-            'The most notable recent event our AI identified — a big announcement, leadership change, or market-moving news — and why it matters.',
+            'The most notable recent event our AI found and why it matters. It could be a big announcement, a leadership change, or market-moving news.',
         featured: false,
     },
     {
@@ -54,7 +54,7 @@ export const REPORT_SECTIONS = [
         icon: Scale,
         title: 'How It Compares',
         description:
-            'Side-by-side comparison of the company against others in the same sector — showing where it leads, lags, or stands out.',
+            'A side-by-side comparison with other companies in the same sector, showing where it leads, lags, or stands out.',
         featured: false,
     },
 ] as const

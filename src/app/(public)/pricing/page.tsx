@@ -12,7 +12,7 @@ export const dynamic = 'force-static'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Pricing'
 const META_DESCRIPTION =
-    'Simple, pay-as-you-go pricing for AI-powered stock analysis. Buy credits once and use them whenever you need — no subscriptions, no commitments.'
+    'Simple, pay-as-you-go pricing for AI-powered stock analysis. Buy credits once and use them whenever you need. No subscriptions, no commitments.'
 const META_URL = `${SITE_URL}/pricing`
 
 export const metadata: Metadata = {
@@ -100,7 +100,7 @@ export default function PricingPage() {
                 >
                     <FAQSchema questions={[...PRICING_FAQ]} />
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-8">
-                        Pricing FAQ&apos;s
+                        Pricing FAQ
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         {PRICING_FAQ.map((item) => (

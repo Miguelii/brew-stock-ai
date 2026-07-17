@@ -4,34 +4,35 @@ import { CHANGELOG_ENTRIES } from '@/modules/changelog/changelog'
 import { TICKER_PAGES, isTickerEnriched } from '@/modules/analysis/ticker-pages'
 import type { MetadataRoute } from 'next'
 import { latestIsoDay } from '@/lib/formatters'
+import { DISCLAIMER_PAGE_LAST_UPDATE_AT, PRIVACY_PAGE_LAST_UPDATE_AT } from '@/lib/constants'
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
+const enrichedTickers = TICKER_PAGES.filter((t) => isTickerEnriched(t))
+
+const EDUCATION_HUB_PAGES: MetadataRoute.Sitemap = EDUCATION_HUB_ARTICLES.map((a) => ({
+    url: `${siteUrl}/education-hub/${a.slug}`,
+    changeFrequency: 'monthly',
+    lastModified: new Date(a.updatedAt ?? a.publishedAt),
+    priority: 0.8,
+}))
+
+// Only enriched ticker pages are indexable, so only they belong in the sitemap.
+const TICKER_ANALYSIS_PAGES: MetadataRoute.Sitemap = enrichedTickers.map((t) => ({
+    url: `${siteUrl}/analysis/${t.slug}`,
+    changeFrequency: 'monthly',
+    lastModified: new Date(t.content.updatedAt),
+    priority: 0.7,
+}))
+
+const CHANGE_LOG_PAGES: MetadataRoute.Sitemap = CHANGELOG_ENTRIES.map((e) => ({
+    url: `${siteUrl}/changelog/${e.slug}`,
+    changeFrequency: 'monthly',
+    lastModified: new Date(e.publishedAt),
+    priority: 0.7,
+}))
+
 export default function sitemap(): MetadataRoute.Sitemap {
-    const enrichedTickers = TICKER_PAGES.filter((t) => isTickerEnriched(t))
-
-    const educationHubRoutes: MetadataRoute.Sitemap = EDUCATION_HUB_ARTICLES.map((a) => ({
-        url: `${siteUrl}/education-hub/${a.slug}`,
-        changeFrequency: 'monthly',
-        lastModified: new Date(a.updatedAt ?? a.publishedAt),
-        priority: 0.8,
-    }))
-
-    // Only enriched ticker pages are indexable, so only they belong in the sitemap.
-    const tickerRoutes: MetadataRoute.Sitemap = enrichedTickers.map((t) => ({
-        url: `${siteUrl}/analysis/${t.slug}`,
-        changeFrequency: 'monthly',
-        lastModified: new Date(t.content.updatedAt),
-        priority: 0.7,
-    }))
-
-    const changelogRoutes: MetadataRoute.Sitemap = CHANGELOG_ENTRIES.map((e) => ({
-        url: `${siteUrl}/changelog/${e.slug}`,
-        changeFrequency: 'monthly',
-        lastModified: new Date(e.publishedAt),
-        priority: 0.7,
-    }))
-
     // Listing pages change when their newest child does; static marketing pages
     // carry no lastModified at all — a fabricated date teaches Google to ignore
     // the field for the whole site.
@@ -90,17 +91,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'weekly',
             priority: 0.7,
         },
-        ...educationHubRoutes,
-        ...changelogRoutes,
-        ...tickerRoutes,
+        ...EDUCATION_HUB_PAGES,
+        ...CHANGE_LOG_PAGES,
+        ...TICKER_ANALYSIS_PAGES,
         {
             url: `${siteUrl}/privacy`,
             changeFrequency: 'monthly',
+            lastModified: new Date(PRIVACY_PAGE_LAST_UPDATE_AT),
             priority: 0.2,
         },
         {
             url: `${siteUrl}/disclaimer`,
             changeFrequency: 'monthly',
+            lastModified: new Date(DISCLAIMER_PAGE_LAST_UPDATE_AT),
             priority: 0.2,
         },
     ]

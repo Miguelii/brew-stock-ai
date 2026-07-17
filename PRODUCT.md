@@ -10,7 +10,7 @@ Casual retail investors evaluating a stock before buying. They want a quick, rel
 
 ## Product Purpose
 
-StockBrewAI generates institutional-grade stock analysis reports in under 30 seconds for 50 cents each. It replaces hours of manual research with a single AI-powered workflow: enter a ticker, pick a report type, get a detailed breakdown. Success means the user reads the report, feels informed, and either acts on their conviction or saves the analysis for later.
+BrewStockAI generates institutional-grade stock analysis reports in under 30 seconds for 50 cents each. It replaces hours of manual research with a single AI-powered workflow: enter a ticker, pick a report type, get a detailed breakdown. Success means the user reads the report, feels informed, and either acts on their conviction or saves the analysis for later.
 
 ## Brand Personality
 
@@ -18,7 +18,7 @@ Sharp, minimal, trustworthy. The interface earns credibility through restraint â
 
 ## Anti-references
 
-- Generic AI tools: gradient hero sections, sparkle icons, "powered by AI" badges, chat-bubble interfaces. StockBrewAI is a purpose-built analysis tool, not a chatbot wrapper.
+- Generic AI tools: gradient hero sections, sparkle icons, "powered by AI" badges, chat-bubble interfaces. BrewStockAI is a purpose-built analysis tool, not a chatbot wrapper.
 - Gamified trading apps (Robinhood-style confetti, green/red dopamine triggers, social feeds). This is research, not entertainment.
 - Overstuffed dashboards with 40 widgets competing for attention. One report, presented clearly.
 - SaaS template aesthetics: identical card grids, hero-metric layouts, stock photography of people pointing at screens.

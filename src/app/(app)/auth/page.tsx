@@ -7,7 +7,7 @@ import { BreadcrumbSchema } from '@/components/structured-data'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Sign In'
 const META_DESCRIPTION =
-    'Sign in to your StockBrewAI account to access AI-powered stock analysis reports, track your credit balance, and manage your settings.'
+    'Sign in to your BrewStockAI account to access AI-powered stock analysis reports, track your credit balance, and manage your settings.'
 const META_URL = `${SITE_URL}/auth`
 
 export const metadata: Metadata = {

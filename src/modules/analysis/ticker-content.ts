@@ -11,7 +11,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
     apple: {
         updatedAt: '2026-07-02',
         businessModel:
-            'Apple designs premium consumer hardware and sells it at high margins, then layers a fast-growing, high-margin Services business — the App Store, iCloud, Apple Music, advertising, and payments — on top of an installed base of over two billion active devices. Hardware drives the ecosystem; Services monetises the loyalty it creates.',
+            'Apple designs premium consumer hardware and sells it at high margins, then layers a fast-growing, high-margin Services business (the App Store, iCloud, Apple Music, advertising, and payments) on top of an installed base of over two billion active devices. Hardware drives the ecosystem; Services monetises the loyalty it creates.',
         keyProducts: [
             'iPhone (largest revenue segment)',
             'Mac and iPad',
@@ -39,7 +39,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
     microsoft: {
         updatedAt: '2026-07-02',
         businessModel:
-            'Microsoft earns the bulk of its profit from enterprise software and cloud infrastructure sold largely by subscription. Three segments — Productivity (Microsoft 365, LinkedIn), Intelligent Cloud (Azure, server products), and More Personal Computing (Windows, Xbox, Surface, search) — generate durable, recurring, high-margin revenue.',
+            'Microsoft earns the bulk of its profit from enterprise software and cloud infrastructure sold largely by subscription. Its three segments generate durable, recurring, high-margin revenue: Productivity (Microsoft 365, LinkedIn), Intelligent Cloud (Azure, server products), and More Personal Computing (Windows, Xbox, Surface, search).',
         keyProducts: [
             'Azure cloud platform',
             'Microsoft 365 / Office',
@@ -68,7 +68,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
     google: {
         updatedAt: '2026-07-02',
         businessModel:
-            "Alphabet generates most of its revenue from advertising — Search, YouTube, and the Google Network — monetising the world's largest base of user-intent data. Google Cloud is a growing second pillar, and 'Other Bets' such as Waymo represent long-dated optionality.",
+            "Alphabet generates most of its revenue from advertising across Search, YouTube, and the Google Network, monetising the world's largest base of user-intent data. Google Cloud is a growing second pillar, and 'Other Bets' such as Waymo represent long-dated optionality.",
         keyProducts: [
             'Google Search and advertising',
             'YouTube',
@@ -78,7 +78,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
             'Waymo (autonomous driving)',
         ],
         investmentNarrative:
-            "The bull case is Search's dominant economics, YouTube's scale, accelerating Google Cloud profitability, and AI assets (Gemini, DeepMind, custom TPUs) that few rivals can match. The stock has historically traded at a discount to other mega-cap peers.\n\nThe bear case is that generative-AI answer engines could disrupt the traditional search-ad model Alphabet depends on, alongside serious antitrust exposure — including US rulings that could reshape its distribution deals and ad-tech business.",
+            "The bull case is Search's dominant economics, YouTube's scale, accelerating Google Cloud profitability, and AI assets (Gemini, DeepMind, custom TPUs) that few rivals can match. The stock has historically traded at a discount to other mega-cap peers.\n\nThe bear case is that generative-AI answer engines could disrupt the traditional search-ad model Alphabet depends on, alongside serious antitrust exposure, including US rulings that could reshape its distribution deals and ad-tech business.",
         keyRisks: [
             'Antitrust rulings affecting Search distribution and the ad-tech stack',
             'Disruption risk to Search from AI chat interfaces',
@@ -159,7 +159,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
     meta: {
         updatedAt: '2026-07-02',
         businessModel:
-            "Meta earns almost all of its revenue from advertising across Facebook, Instagram, WhatsApp, and Messenger — its 'Family of Apps' reaching billions of daily users. It reinvests heavily in AI (for ad targeting and content recommendation) and in Reality Labs, its long-term metaverse and AR / VR bet.",
+            "Meta earns almost all of its revenue from advertising across Facebook, Instagram, WhatsApp, and Messenger, its 'Family of Apps' reaching billions of daily users. It reinvests heavily in AI (for ad targeting and content recommendation) and in Reality Labs, its long-term metaverse and AR / VR bet.",
         keyProducts: [
             'Facebook',
             'Instagram',
@@ -204,7 +204,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
             'Optimus humanoid robot (in development)',
         ],
         investmentNarrative:
-            'Bulls value Tesla as more than an automaker — betting on autonomy (robotaxi), energy-storage growth, manufacturing scale, and AI / robotics optionality that could justify a software-like valuation.\n\nBears note that Tesla is valued far above traditional automakers while facing slowing delivery growth, price cuts that compress automotive margins, intensifying EV competition (especially from China), and a valuation heavily dependent on FSD / robotaxi promises that remain unproven at scale.',
+            'Bulls value Tesla as more than an automaker, betting on autonomy (robotaxi), energy-storage growth, manufacturing scale, and AI / robotics optionality that could justify a software-like valuation.\n\nBears note that Tesla is valued far above traditional automakers while facing slowing delivery growth, price cuts that compress automotive margins, intensifying EV competition (especially from China), and a valuation heavily dependent on FSD / robotaxi promises that remain unproven at scale.',
         keyRisks: [
             'Automotive margin compression from price cuts',
             'Intensifying EV competition, notably from Chinese makers',
@@ -296,7 +296,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
             'Credit cards and payments',
         ],
         investmentNarrative:
-            'Bulls view JPMorgan as the best-run large US bank — diversified, well-capitalised, and a share-gainer through cycles — with strong returns on tangible equity and disciplined risk management.\n\nBears note that bank earnings are cyclical and rate-sensitive: net interest income can compress as rates fall, credit losses rise in downturns, and tighter capital rules can limit buybacks. Banks are also macro-exposed and hard to value at a premium.',
+            'Bulls view JPMorgan as the best-run large US bank: diversified, well-capitalised, and a share-gainer through cycles, with strong returns on tangible equity and disciplined risk management.\n\nBears note that bank earnings are cyclical and rate-sensitive: net interest income can compress as rates fall, credit losses rise in downturns, and tighter capital rules can limit buybacks. Banks are also macro-exposed and hard to value at a premium.',
         keyRisks: [
             'Credit losses rising in an economic downturn',
             'Net interest income sensitivity to interest-rate changes',
@@ -321,7 +321,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
     visa: {
         updatedAt: '2026-07-02',
         businessModel:
-            'Visa operates a global payments network that connects banks, merchants, and cardholders, earning fees on the volume and number of transactions that flow across its rails. It does not lend or take credit risk — it is a high-margin toll-taker on the secular shift from cash to digital payments.',
+            'Visa operates a global payments network that connects banks, merchants, and cardholders, earning fees on the volume and number of transactions that flow across its rails. It does not lend or take credit risk. It is a high-margin toll-taker on the secular shift from cash to digital payments.',
         keyProducts: [
             'Credit and debit network processing',
             'Cross-border transaction services',
@@ -407,7 +407,7 @@ export const TICKER_CONTENT: Record<string, TickerContent> = {
     walmart: {
         updatedAt: '2026-07-02',
         businessModel:
-            "Walmart is the world's largest retailer, using enormous scale and purchasing power to offer low prices across groceries and general merchandise. It increasingly monetises higher-margin streams — e-commerce, a third-party marketplace, advertising (Walmart Connect), and membership (Walmart+) — on top of the low-margin retail base.",
+            "Walmart is the world's largest retailer, using enormous scale and purchasing power to offer low prices across groceries and general merchandise. It increasingly monetises higher-margin streams on top of the low-margin retail base: e-commerce, a third-party marketplace, advertising (Walmart Connect), and membership (Walmart+).",
         keyProducts: [
             'Walmart US supercenters and groceries',
             "Sam's Club membership warehouses",

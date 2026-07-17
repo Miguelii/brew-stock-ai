@@ -4,7 +4,7 @@ import { Effect } from 'effect'
 import { createSbServerClient } from '@/lib/utils.server'
 import { CreateSbClientError, VerifyOtpError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
-import { Logger } from '@/lib/logger'
+import { Logger } from '@/_bff/lib/server-logger'
 
 export const sbVerifyOtp = Effect.fn('sbVerifyOtp')(function* (email: string, token: string) {
     const supabase = yield* Effect.tryPromise({

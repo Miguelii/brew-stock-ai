@@ -8,7 +8,7 @@ import { ContactForm } from '@/modules/contact-form'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Contact'
 const META_DESCRIPTION =
-    "Have a question about StockBrewAI? Reach out to our team for help with your account, reports, or feedback. We'll get back to you as soon as possible."
+    "Have a question about BrewStockAI? Reach out to our team for help with your account, reports, or feedback. We'll get back to you as soon as possible."
 const META_URL = `${SITE_URL}/contact`
 
 export const metadata: Metadata = {
@@ -58,7 +58,7 @@ export default async function ContactPage() {
                             </h2>
                             <p className="text-sm text-muted-foreground leading-relaxed">
                                 Whether you have questions about your account, need help with a
-                                report, or just want to share feedback — send us a message and
+                                report, or just want to share feedback, send us a message and
                                 we&apos;ll get back to you as soon as possible.
                             </p>
                             <p className="text-sm text-muted-foreground leading-relaxed">

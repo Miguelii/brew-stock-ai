@@ -71,31 +71,31 @@ export default async function TickerPage({ params }: Props) {
         },
         {
             question: `What does the AI stock analysis for ${page.name} cover?`,
-            answer: `The AI analysis for ${page.name} (${page.ticker}) covers fundamental financial metrics, market sentiment scoring, technical indicators, moat analysis, risk assessment, and growth potential — institutional-grade insights delivered in seconds.`,
+            answer: `The AI analysis for ${page.name} (${page.ticker}) covers fundamental financial metrics, market sentiment scoring, technical indicators, moat analysis, risk assessment, and growth potential. You get professional-level insights in seconds.`,
         },
         {
             question: `How can I get an AI analysis for ${page.name} stock?`,
-            answer: `Enter the ${page.ticker} ticker on StockBrewAI and run the analysis. You get a full report covering financials, sentiment, and technicals for less than the price of a coffee.`,
+            answer: `Enter the ${page.ticker} ticker on BrewStockAI and run the analysis. You get a full report covering financials, sentiment, and technicals for less than the price of a coffee.`,
         },
         {
             question: `Is ${page.name} (${page.ticker}) a good investment?`,
             answer: content
-                ? `Whether ${page.name} is a good investment depends on your strategy and risk tolerance. ${content.whatToWatch} StockBrewAI's analysis covers valuation, growth potential, competitive moat, and risk factors — but this is educational information, not investment advice.`
-                : `Whether ${page.name} is a good investment depends on your strategy and risk tolerance. StockBrewAI's AI analysis covers ${page.name}'s valuation metrics, growth potential, competitive moat, and risk factors so you can make an informed decision. Run a free analysis to see the full breakdown.`,
+                ? `Whether ${page.name} is a good investment depends on your strategy and risk tolerance. ${content.whatToWatch} BrewStockAI's analysis covers valuation, growth potential, competitive moat, and risk factors. This is educational information, not investment advice.`
+                : `Whether ${page.name} is a good investment depends on your strategy and risk tolerance. BrewStockAI's AI analysis covers ${page.name}'s valuation metrics, growth potential, competitive moat, and risk factors so you can make an informed decision. Run a free analysis to see the full breakdown.`,
         },
         {
             question: `What are the main risks of investing in ${page.name} stock?`,
             answer: content
-                ? `Key risks for ${page.name} (${page.ticker}) include: ${content.keyRisks.join('; ')}. StockBrewAI's Risk Analysis report goes deeper on each.`
-                : `Key risks for ${page.name} (${page.ticker}) depend on sector dynamics, competitive pressures, macroeconomic conditions, and company-specific factors. StockBrewAI's Risk Analysis report identifies debt exposure, regulatory threats, and market vulnerabilities specific to ${page.name}.`,
+                ? `Key risks for ${page.name} (${page.ticker}) include: ${content.keyRisks.join('; ')}. BrewStockAI's Risk Analysis report goes deeper on each.`
+                : `Key risks for ${page.name} (${page.ticker}) depend on sector dynamics, competitive pressures, macroeconomic conditions, and company-specific factors. BrewStockAI's Risk Analysis report identifies debt exposure, regulatory threats, and market vulnerabilities specific to ${page.name}.`,
         },
         {
             question: `How does AI stock analysis work for ${page.name}?`,
-            answer: `StockBrewAI processes ${page.name}'s earnings reports, balance sheets, cash flow statements, and market data using AI to produce institutional-grade analysis in under 2 minutes. The result is a structured report covering financials, sentiment, technicals, and competitive positioning.`,
+            answer: `BrewStockAI processes ${page.name}'s earnings reports, balance sheets, cash flow statements, and market data using AI to produce institutional-grade analysis in under 2 minutes. The result is a structured report covering financials, sentiment, technicals, and competitive positioning.`,
         },
         {
-            question: `What is the difference between StockBrewAI analysis types for ${page.name}?`,
-            answer: `StockBrewAI offers five analysis types for ${page.name} (${page.ticker}): Wall Street Analysis (full-scope), Deep Financial Breakdown (revenue, margins, cash flow), Competitive Advantage (moat analysis), Risk Analysis (debt, regulatory, macro risks), and Growth Potential (market expansion, pipelines). Each answers a different investment question.`,
+            question: `What is the difference between BrewStockAI analysis types for ${page.name}?`,
+            answer: `BrewStockAI offers five analysis types for ${page.name} (${page.ticker}): Wall Street Analysis (full-scope), Deep Financial Breakdown (revenue, margins, cash flow), Competitive Advantage (moat analysis), Risk Analysis (debt, regulatory, macro risks), and Growth Potential (market expansion, pipelines). Each answers a different investment question.`,
         },
         ...(content
             ? [

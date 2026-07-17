@@ -6,10 +6,10 @@ import type { MetadataRoute } from 'next'
  */
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'StockBrewAI',
-        short_name: 'StockBrewAI',
+        name: 'BrewStockAI',
+        short_name: 'BrewStockAI',
         description:
-            'AI-powered stock analysis — institutional-grade financial insights and market sentiment for any stock.',
+            'AI-powered stock analysis. Professional financial insights and market sentiment for any stock.',
         start_url: '/',
         display: 'standalone',
         background_color: '#fbfbfd',

@@ -8,7 +8,7 @@ export function ReportSections() {
             <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
                 <SectionHeader
                     title="Every Section. Every Metric."
-                    lede="A full Wall Street Analysis covers eight distinct report sections — each answering a different question about the stock."
+                    lede="A full Wall Street Analysis covers eight report sections. Each one answers a different question about the stock."
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">

@@ -15,7 +15,7 @@ export function TokenPromo() {
                 <p className="text-base font-bold text-background leading-snug">
                     Starter pack 50% off.
                 </p>
-                <p className="text-xs text-background/60">Special offer — ending soon.</p>
+                <p className="text-xs text-background/60">Special offer, ending soon.</p>
             </div>
 
             {/* Divider */}

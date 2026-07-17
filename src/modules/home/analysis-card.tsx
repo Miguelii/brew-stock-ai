@@ -8,7 +8,7 @@ const analysisTypes = [
         icon: Landmark,
         title: 'Wall Street Analysis',
         description:
-            'A full-scope report covering valuation, financials, and competitive positioning — the same framework used by professional analysts.',
+            'The complete report: valuation, financials, and competitive position, built with the same framework professional analysts use.',
         featured: true,
     },
     {
@@ -22,7 +22,7 @@ const analysisTypes = [
         icon: Castle,
         title: 'Competitive Advantage',
         description:
-            'Identify durable moats — brand power, network effects, switching costs, and cost advantages that protect a company from competitors.',
+            'Find out if the company has a lasting edge over competitors: brand power, network effects, switching costs, and cost advantages.',
         featured: false,
     },
     {
@@ -47,7 +47,7 @@ export function AnalysisCard() {
             <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
                 <SectionHeader
                     title="Five AI Stock Analysis Types, One Platform"
-                    lede="Choose the analysis that matches your investment strategy. Each report answers different questions — from financial health to long-term growth."
+                    lede="Choose the analysis that matches what you want to learn. Each report answers a different question, from financial health to long-term growth."
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 grid-flow-dense">

@@ -8,7 +8,7 @@ export function StartAnalysisPreviewCard() {
                 <h3 className="text-xl font-bold mb-2">Ready to analyse a stock?</h3>
                 <p className="text-primary-muted text-sm leading-relaxed mb-5">
                     Apply what you have learned. Run an AI-powered stock analysis and get a full
-                    breakdown — financials, competitive positioning, risk, and growth potential — in
+                    breakdown of financials, competitive position, risk, and growth potential in
                     under 120 seconds.
                 </p>
                 <Link

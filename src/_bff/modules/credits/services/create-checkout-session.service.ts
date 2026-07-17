@@ -8,7 +8,7 @@ import { ErrorCode } from '@/_bff/lib/error-codes'
 import { createSbServerClient } from '@/lib/utils.server'
 import type { User } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
-import { Logger } from '@/lib/logger'
+import { Logger } from '@/_bff/lib/server-logger'
 import { TOKEN_PACKAGES } from '@/_bff/modules/credits/constants'
 
 export type TokenPackageId = (typeof TOKEN_PACKAGES)[number]['id']

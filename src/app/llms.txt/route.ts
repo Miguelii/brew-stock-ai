@@ -15,17 +15,17 @@ export function GET() {
     const enrichedTickers = TICKER_PAGES.filter((t) => isTickerEnriched(t))
 
     const body = [
-        '# StockBrewAI',
+        '# BrewStockAI',
         '',
         '> AI-powered stock analysis for any equity. Institutional-grade financial metrics, market sentiment, and technical indicators, delivered in under two minutes for less than the price of a coffee. Educational information, not investment advice.',
         '',
         '## Key pages',
         '',
         `- [AI Stock Analysis](${SITE_URL}/analysis): Run an AI analysis for any stock ticker`,
-        `- [Example Report](${SITE_URL}/example-report): A full sample of a StockBrewAI analysis report`,
+        `- [Example Report](${SITE_URL}/example-report): A full sample of a BrewStockAI analysis report`,
         `- [Pricing](${SITE_URL}/pricing): Analysis credits and pricing`,
         `- [FAQ](${SITE_URL}/faq): How the analysis works, data sources, and limitations`,
-        `- [About](${SITE_URL}/about): Who builds StockBrewAI`,
+        `- [About](${SITE_URL}/about): Who builds BrewStockAI`,
         '',
         '## Stock analysis pages',
         '',

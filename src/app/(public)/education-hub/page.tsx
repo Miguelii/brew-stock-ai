@@ -9,7 +9,7 @@ export const dynamic = 'force-static'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Education Hub'
 const META_DESCRIPTION =
-    'Free educational guides on stock analysis, valuation, competitive moats, risk assessment, and financial metrics — written for investors of all levels.'
+    'Free educational guides on stock analysis, valuation, competitive moats, risk assessment, and financial metrics. Written for investors of all levels.'
 const META_URL = `${SITE_URL}/education-hub`
 
 export const metadata: Metadata = {
@@ -51,7 +51,7 @@ export default function EducationHubPage() {
                                 Education Hub
                             </h1>
                             <p className="text-primary-muted text-lg leading-relaxed max-w-2xl">
-                                Clear, practical guides on the concepts behind stock analysis — from
+                                Clear, practical guides on the concepts behind stock analysis, from
                                 reading financial reports to understanding competitive moats and
                                 risk.
                             </p>

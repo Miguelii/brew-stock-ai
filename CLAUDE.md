@@ -14,6 +14,9 @@ Human-facing UI copy and documentation may be in any language, but **everything 
 
 - Do not start a dev server unless explicitly asked
 - Use always pnpm
+- NEVER use em-dashes ("—") in any writing: UI copy, code comments, docs, commit messages. Rephrase with commas, colons, parentheses, or separate sentences instead
+- For shadcn components ALWAYS use `base-ui`, NEVER `radix-ui`
+- When creating any kind of function or component, if you need to declare a type, those declarations always go at the beginning of the file. NEVER declare a type and leave it in the middle of the file.
 
 ## Services (Effect-TS)
 

@@ -27,7 +27,7 @@ export function PendingPaymentBanner() {
                             <strong className="text-foreground">{formatted}</strong> for{' '}
                             <strong className="text-foreground">{invoice.description}</strong>.
                             Credits will be added to your account automatically once the payment
-                            clears — this usually takes 1–3 business days.
+                            clears. This usually takes 1 to 3 business days.
                         </span>
                     </div>
                 )

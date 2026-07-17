@@ -114,7 +114,7 @@ describe('buildPdfHtml', () => {
 
     it('includes brand name', () => {
         const html = buildPdfHtml(baseParams)
-        expect(html).toContain('StockBrew')
+        expect(html).toContain('BrewStock')
     })
 })
 

@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server'
 import { Cause, Effect, Exit, Option } from 'effect'
-import { Logger } from '@/lib/logger'
+import { Logger } from '@/_bff/lib/server-logger'
 import { getCachedUserId } from '@/_bff/modules/auth/services/get-cached-user-id.service'
 
 export async function runEffect<A, E extends { _tag: string; error_hash: string }>(

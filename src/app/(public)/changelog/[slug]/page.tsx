@@ -28,7 +28,7 @@ export async function generateMetadata({
     const url = `${SITE_URL}/changelog/${slug}`
 
     return {
-        title: `${entry.title} — ${entry.version}`,
+        title: `${entry.title} · ${entry.version}`,
         description: entry.description,
         alternates: { canonical: url },
         openGraph: {

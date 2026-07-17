@@ -13,7 +13,7 @@ import {
     selectStockDataByTickerCached,
 } from '@/_bff/modules/reports/repositories/reports.repository'
 
-const CHROMIUM_PACK_PATH = '/chromium-v148.0.0-pack.x64.tar'
+const CHROMIUM_PACK_PATH = '/binaries/chromium-v148.0.0-pack.x64.tar'
 
 const CHROMIUM_PACK_URL = `${ClientEnv.NEXT_PUBLIC_WEBSITE_URL}${CHROMIUM_PACK_PATH}`
 

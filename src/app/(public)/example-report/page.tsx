@@ -12,7 +12,7 @@ export const dynamic = 'force-static'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Example Report'
 const META_DESCRIPTION =
-    'See a real AI-generated stock analysis report. Institutional-grade coverage of financials, risk, growth, and competitive positioning.'
+    'See a real AI-generated stock analysis report. Professional coverage of financials, risk, growth, and competitive position.'
 const META_URL = `${SITE_URL}/example-report`
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 }
 
 export const REPORT_REVEAL_WORDS =
-    'Every risk surfaced. Every number explained. Every opportunity quantified. In under two minutes.'.split(
+    'All the risks, numbers, and opportunities of a stock, explained in plain English. In under two minutes.'.split(
         ' '
     )
 

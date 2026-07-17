@@ -40,7 +40,7 @@ export const viewport: Viewport = {
     height: 'device-height',
 }
 
-const META_TITLE = 'StockBrewAI | AI-Powered Stock Analysis'
+const META_TITLE = 'BrewStockAI | AI-Powered Stock Analysis'
 const META_DESCRIPTION =
     'Get institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.'
 
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
         default: META_TITLE,
-        template: '%s | StockBrewAI',
+        template: '%s | BrewStockAI',
     },
     description: META_DESCRIPTION,
     keywords: [
@@ -69,16 +69,16 @@ export const metadata: Metadata = {
             url: SITE_AUTHOR_URL,
         },
     ],
-    publisher: 'StockBrewAI',
-    creator: 'StockBrewAI',
+    publisher: 'BrewStockAI',
+    creator: 'BrewStockAI',
     openGraph: {
         type: 'website',
         locale: 'en_US',
         url: siteUrl,
-        siteName: 'StockBrewAI',
+        siteName: 'BrewStockAI',
         title: {
             default: META_TITLE,
-            template: '%s | StockBrewAI',
+            template: '%s | BrewStockAI',
         },
         description: META_DESCRIPTION,
     },
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: {
             default: META_TITLE,
-            template: '%s | StockBrewAI',
+            template: '%s | BrewStockAI',
         },
         description: META_DESCRIPTION,
     },
@@ -121,7 +121,7 @@ export default function RootLayout({ children }: Props) {
         >
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-                <meta name="apple-mobile-web-app-title" content="StockBrewAI" />
+                <meta name="apple-mobile-web-app-title" content="BrewStockAI" />
                 <meta name="google-adsense-account" content={GOOGLE_ADSENSE_ACCOUNT_ID} />
             </head>
             <VercelAnalytics />

@@ -18,7 +18,7 @@ export function AuthLayout({ children }: Props) {
                     </span>
                     <blockquote className="text-2xl font-medium text-background leading-snug">
                         I used to spend hours reading earnings calls and analyst reports.
-                        StockBrewAI gives me the same depth in minutes — for less than my morning
+                        BrewStockAI gives me the same depth in minutes — for less than my morning
                         coffee.
                     </blockquote>
                     <div className="mt-8 flex items-center gap-3">

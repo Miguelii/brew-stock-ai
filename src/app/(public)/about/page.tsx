@@ -8,9 +8,9 @@ import { Section } from '@/components/ui/section'
 export const dynamic = 'force-static'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
-const META_TITLE = 'About StockBrewAI'
+const META_TITLE = 'About BrewStockAI'
 const META_DESCRIPTION =
-    'StockBrewAI brings institutional-grade stock research to retail investors through AI, to make educational financial analysis affordable and accessible. Learn who we are and how the product works.'
+    'BrewStockAI brings institutional-grade stock research to retail investors through AI, to make educational financial analysis affordable and accessible. Learn who we are and how the product works.'
 const META_URL = `${SITE_URL}/about`
 
 export const metadata: Metadata = {
@@ -42,7 +42,7 @@ export default function AboutPage() {
 
             <main id="main" className="main-container">
                 <div className="space-y-2">
-                    <h1 className="text-2xl font-bold tracking-tight">About StockBrewAI</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">About BrewStockAI</h1>
                     <p className="text-sm text-muted-foreground">
                         Institutional-grade stock research, made accessible.
                     </p>
@@ -59,10 +59,10 @@ export default function AboutPage() {
                             single name.
                         </p>
                         <p>
-                            StockBrewAI exists to close that gap. We use AI to compress that
-                            research into a few minutes and a few cents — so that anyone curious
-                            about a company can read a clear, structured breakdown of its
-                            financials, risks, and competitive position before deciding what to do.
+                            BrewStockAI exists to close that gap. We use AI to turn hours of
+                            research into a few minutes and a few cents. Anyone curious about a
+                            company can read a clear, structured breakdown of its financials, risks,
+                            and competitive position before deciding what to do.
                         </p>
                         <p>
                             Our role is educational. We help you{' '}
@@ -81,39 +81,38 @@ export default function AboutPage() {
 
                     <Section title="How the product works">
                         <p>
-                            When you request an analysis, StockBrewAI pulls the latest public
+                            When you request an analysis, BrewStockAI pulls the latest public
                             financial data for the ticker, structures it, and runs it through a
                             large language model with prompts engineered to mimic the way an equity
-                            analyst would frame the question. The output is a structured report —
-                            not a chat answer — covering the dimensions that matter for that report
-                            type.
+                            analyst would frame the question. The output is a structured report, not
+                            a chat answer, covering the areas that matter for that report type.
                         </p>
                         <p>Five report types are available today:</p>
                         <ul className="list-disc list-inside space-y-1 pl-1">
                             <li>
-                                <strong className="text-foreground">Wall Street Analysis</strong> —
-                                full-scope view of valuation, financial health, and competitive
-                                positioning.
+                                <strong className="text-foreground">Wall Street Analysis:</strong>{' '}
+                                the full picture of valuation, financial health, and competitive
+                                position.
                             </li>
                             <li>
                                 <strong className="text-foreground">
-                                    Deep Financial Breakdown
+                                    Deep Financial Breakdown:
                                 </strong>{' '}
-                                — revenue, margins, cash flow, and balance-sheet quality.
+                                revenue, margins, cash flow, and balance sheet quality.
                             </li>
                             <li>
-                                <strong className="text-foreground">Competitive Advantage</strong> —
-                                moat analysis covering brand, network effects, switching costs, and
-                                scale.
+                                <strong className="text-foreground">Competitive Advantage:</strong>{' '}
+                                whether the company has a lasting edge, looking at brand, network
+                                effects, switching costs, and scale.
                             </li>
                             <li>
-                                <strong className="text-foreground">Risk Analysis</strong> — debt
-                                exposure, regulatory threats, management risk, and macro
-                                vulnerabilities.
+                                <strong className="text-foreground">Risk Analysis:</strong> debt
+                                exposure, regulatory threats, management risk, and risks from the
+                                wider economy.
                             </li>
                             <li>
-                                <strong className="text-foreground">Growth Potential</strong> —
-                                market expansion, product pipelines, and international reach.
+                                <strong className="text-foreground">Growth Potential:</strong>{' '}
+                                market expansion, upcoming products, and international reach.
                             </li>
                         </ul>
                     </Section>

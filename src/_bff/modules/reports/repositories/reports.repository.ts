@@ -19,7 +19,7 @@ import type { SupabaseClient, User } from '@supabase/supabase-js'
 import { createSbAdminClient } from '@/lib/utils.server'
 import { STOCK_DATA_CACHE_KEY, STOCK_DATA_CACHE_TTL } from '@/_bff/modules/reports/constants'
 import { unstable_cache } from 'next/cache'
-import { Logger } from '@/lib/logger'
+import { Logger } from '@/_bff/lib/server-logger'
 
 export const insertReport = Effect.fn('insertReport')(function* (
     supabase: SupabaseClient,

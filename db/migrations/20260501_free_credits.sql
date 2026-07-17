@@ -1,4 +1,4 @@
--- Função que cria os créditos iniciais quando um user é criado
+-- Function that creates the initial credits when a user is created
 create or replace function public.handle_new_user_credits()
 returns trigger
 language plpgsql
@@ -20,7 +20,7 @@ begin
 end;
 $$;
 
--- Trigger que chama a função após INSERT em auth.users
+-- Trigger that calls the function after an INSERT into auth.users
 create or replace trigger on_auth_user_created_credits
   after insert on auth.users
   for each row

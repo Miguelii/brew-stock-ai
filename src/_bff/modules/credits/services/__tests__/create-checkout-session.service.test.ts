@@ -20,7 +20,9 @@ const {
 }))
 
 vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
-vi.mock('@/env/server', () => ({ ServerEnv: { STRIPE_SECRET_KEY: 'sk_test' } }))
+vi.mock('@/env/server', () => ({
+    ServerEnv: { STRIPE_SECRET_KEY: 'sk_test', STRIPE_WEBHOOK_SECRET: 'whsec_test' },
+}))
 vi.mock('@/env/client', () => ({ ClientEnv: { NEXT_PUBLIC_WEBSITE_URL: 'https://test.local' } }))
 vi.mock('@/_bff/lib/server-logger', () => ({ Logger: loggerMock }))
 vi.mock('next/headers', () => ({ cookies: cookiesMock }))

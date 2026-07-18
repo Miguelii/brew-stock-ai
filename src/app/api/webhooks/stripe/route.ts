@@ -12,6 +12,10 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 })
     }
 
+    if (!ServerEnv.STRIPE_SECRET_KEY) {
+        return NextResponse.json({ error: 'Stripe app error' }, { status: 400 })
+    }
+
     const stripe = new StripeClient(ServerEnv.STRIPE_SECRET_KEY!)
 
     let event: Stripe.Event

@@ -11,8 +11,8 @@ export const ServerEnv = createEnv({
         VAPID_CONTACT_EMAIL: z.string().default('stockbrew.support@gmail.com'),
         STRIPE_SECRET_KEY: z.string().optional(),
         STRIPE_WEBHOOK_SECRET: z.string().optional(),
-        NEXT_FINNHUB_API_KEY: z.string().optional(),
-        NEXT_FINNHUB_BASE_URL: z.string(),
+        NEXT_FINNHUB_API_KEY: z.string(),
+        NEXT_FINNHUB_BASE_URL: z.string().default('https://finnhub.io/api/v1'),
     },
     runtimeEnv: {
         NEXT_SUPABASE_URL: process.env.NEXT_SUPABASE_URL,

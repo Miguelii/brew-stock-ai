@@ -33,6 +33,13 @@ function mapSession(s: Stripe.Checkout.Session): Invoice {
 }
 
 export const getInvoices = Effect.fn('getInvoices')(function* (user: User) {
+    if (!ServerEnv.STRIPE_SECRET_KEY) {
+        return yield* new GetInvoicesError({
+            cause: 'STRIPE ERROR',
+            error_hash: ErrorCode.INVOICES_NO_STRIPE_SECRET_KEY,
+        })
+    }
+
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(),
         catch: (cause) =>

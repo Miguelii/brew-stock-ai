@@ -27,6 +27,18 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
             error_hash: ErrorCode.CHECKOUT_INVALID_PKG,
         })
     }
+    if (!ServerEnv.STRIPE_SECRET_KEY) {
+        return yield* new CreateCheckoutSessionError({
+            cause: 'STRIPE ERROR',
+            error_hash: ErrorCode.CHECKOUT_NO_STRIPE_SECRET_KEY,
+        })
+    }
+    if (!ServerEnv.STRIPE_WEBHOOK_SECRET) {
+        return yield* new CreateCheckoutSessionError({
+            cause: 'STRIPE ERROR',
+            error_hash: ErrorCode.CHECKOUT_NO_STRIPE_WEBHOOK_KEY,
+        })
+    }
 
     const supabase = yield* Effect.tryPromise({
         try: () => createSbServerClient(true),

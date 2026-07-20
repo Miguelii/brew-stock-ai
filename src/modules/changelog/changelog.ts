@@ -39,5 +39,3 @@ export const CHANGELOG_ENTRY_MAP = new Map(CHANGELOG_ENTRIES.map((e) => [e.slug,
 export const CHANGELOG_ENTRIES_BY_DATE = CHANGELOG_ENTRIES.toSorted((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt)
 )
-
-export const LATEST_CHANGELOG_ENTRY = CHANGELOG_ENTRIES_BY_DATE[0]

@@ -41,7 +41,7 @@ export function Hero() {
                     <Link href="/analysis" prefetch={false} className="contents">
                         <Button size="lg" className="group gap-2 pl-4 pr-1.5 h-10 w-full sm:w-fit">
                             Start Free Analysis
-                            <span className="flex size-7 items-center justify-center bg-primary-foreground/15 transition-transform duration-500 ease-out-strong group-hover:translate-x-0.5">
+                            <span className="flex size-7 items-center justify-center transition-transform duration-500 ease-out-strong group-hover:translate-x-0.5">
                                 <ArrowRight className="size-4" />
                             </span>
                         </Button>

@@ -1,11 +1,12 @@
+'use client'
+
 import type { Variants } from 'motion/react'
-import * as motion from 'motion/react-client'
+import { motion } from 'motion/react'
 
 const pathVariants = {
-    initial: { strokeDashoffset: 800, strokeDasharray: '50 800' },
+    initial: { strokeDashoffset: 800 },
     animate: {
         strokeDashoffset: 0,
-        strokeDasharray: '20 800',
         opacity: [0, 1, 1, 0],
     },
 } as Variants
@@ -64,6 +65,8 @@ export const SVG = ({
         '#6A286F',
         '#604483',
     ]
+    const animatedPaths = paths.slice(0, 10)
+
     return (
         <motion.svg
             viewBox="0 0 1440 900"
@@ -74,12 +77,13 @@ export const SVG = ({
             transition={{ duration: 1 }}
             className="absolute inset-0 w-full h-full"
         >
-            {paths.map((path, idx) => (
+            {animatedPaths.map((path, idx) => (
                 <motion.path
                     d={path}
                     stroke={colors[idx]}
                     strokeWidth="2.3"
                     strokeLinecap="round"
+                    strokeDasharray="20 800"
                     variants={pathVariants}
                     initial="initial"
                     animate="animate"

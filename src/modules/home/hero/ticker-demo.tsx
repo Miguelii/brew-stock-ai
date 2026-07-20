@@ -5,14 +5,9 @@ import Link from 'next/link'
 import { motion } from 'motion/react'
 import { CheckIcon, SearchIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { EASE } from '@/modules/home/shared/motion'
+import { TICKERS, TYPE_INTERVAL_MS, GENERATING_MS, READY_MS } from './constants'
 
 type Phase = 'typing' | 'generating' | 'ready'
-
-const TICKERS = ['NVDA', 'AAPL', 'ASML', 'GOOGL'] as const
-const TYPE_INTERVAL_MS = 160
-const GENERATING_MS = 1800
-const READY_MS = 1600
 
 export function TickerDemo() {
     const [tickerIndex, setTickerIndex] = useState(0)
@@ -55,7 +50,7 @@ export function TickerDemo() {
             aria-label="Start a stock analysis"
             className="group block w-full max-w-md"
         >
-            <div className="rounded-none bg-card/40 p-1.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-0.5 group-hover:shadow-lg group-hover:shadow-accent-blue/5">
+            <div className="rounded-none bg-card/40 p-1.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-500 ease-out-strong group-hover:-translate-y-0.5 group-hover:shadow-lg group-hover:shadow-accent-blue/5">
                 <div className="rounded-none bg-card ring-1 ring-foreground/10">
                     <div className="flex items-center gap-3 px-4 py-3">
                         <SearchIcon className="size-4 shrink-0 text-primary-muted" />
@@ -64,7 +59,7 @@ export function TickerDemo() {
                             {effectivePhase === 'typing' && (
                                 <span
                                     aria-hidden
-                                    className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse bg-accent-blue"
+                                    className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-caret-blink bg-accent-blue"
                                 />
                             )}
                         </span>
@@ -91,7 +86,7 @@ export function TickerDemo() {
                             <motion.div
                                 initial={{ scaleX: 0 }}
                                 animate={{ scaleX: 1 }}
-                                transition={{ duration: GENERATING_MS / 1000, ease: EASE }}
+                                transition={{ duration: GENERATING_MS / 1000, ease: 'linear' }}
                                 className="h-full w-full origin-left bg-accent-blue"
                             />
                         )}

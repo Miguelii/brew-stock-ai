@@ -56,7 +56,7 @@ export default function ExampleReport() {
 
                 <WordRevealCard words={REPORT_REVEAL_WORDS} />
 
-                <FinalCTA />
+                <FinalCTA secondCTA="pricing" />
             </main>
         </>
     )

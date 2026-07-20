@@ -1,9 +1,31 @@
 import { Button } from '@/components/ui/button'
-import { ArrowRightIcon, FileTextIcon } from 'lucide-react'
+import { ArrowRightIcon, BadgeEuroIcon, FileTextIcon } from 'lucide-react'
 import * as motion from 'motion/react-client'
 import Link from 'next/link'
 
-export function FinalCTA() {
+type Props = {
+    secondCTA: 'report' | 'pricing'
+}
+
+const getSecondCTABtnProps = (secondCTA: Props['secondCTA']) => {
+    if (secondCTA === 'pricing') {
+        return {
+            label: 'See pricing',
+            href: '/pricing',
+            icon: BadgeEuroIcon,
+        }
+    }
+
+    return {
+        label: 'See a sample report',
+        href: '/example-report',
+        icon: FileTextIcon,
+    }
+}
+
+export function FinalCTA({ secondCTA }: Props) {
+    const { label, href, icon: Icon } = getSecondCTABtnProps(secondCTA)
+
     return (
         <section className="bg-primary">
             <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
@@ -33,14 +55,14 @@ export function FinalCTA() {
                                 <ArrowRightIcon className="size-4" />
                             </Button>
                         </Link>
-                        <Link href="/example-report" prefetch={false} className="contents">
+                        <Link href={href} prefetch={false} className="contents">
                             <Button
                                 size="lg"
                                 variant="outline"
                                 className="gap-2 text-base px-8 h-12 bg-transparent border-primary-foreground/25 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground w-full sm:w-fit"
                             >
-                                <FileTextIcon className="size-4" />
-                                See a sample report
+                                <Icon className="size-4" />
+                                {label}
                             </Button>
                         </Link>
                     </div>

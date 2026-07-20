@@ -42,7 +42,7 @@ export default function HomePage() {
 
                 <HomeFaq />
 
-                <FinalCTA />
+                <FinalCTA secondCTA="report" />
             </main>
         </>
     )

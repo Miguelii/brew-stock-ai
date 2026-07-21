@@ -14,7 +14,7 @@ export function ReportSentimentCard({ report }: Props) {
         <Card className="h-79 md:h-full w-full">
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">
-                    {isRiskAnalysis ? 'AI Risk Score' : 'AI Sentiment Score'}
+                    {isRiskAnalysis ? 'Risk Score' : 'Sentiment Score'}
                 </CardTitle>
             </CardHeader>
             <CardContent>

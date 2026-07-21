@@ -20,7 +20,7 @@ export function Hero() {
                     variants={ITEM_VARIANTS}
                     className="bg-clip-text text-transparent bg-linear-to-b from-foreground to-foreground/70 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] py-3"
                 >
-                    AI-Powered Stock Analysis
+                    Professional Stock Analysis
                     <br />
                     For Smarter Investing
                 </motion.h1>

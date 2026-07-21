@@ -20,7 +20,7 @@ export function ReportMediaMentions({ news }: Props) {
             <CardContent className="p-0 px-5">
                 {news.length === 0 ? (
                     <p className="text-muted-foreground">
-                        Our AI couldn&apos;t find any recent analyst coverage.
+                        Our engine couldn&apos;t find any recent analyst coverage.
                     </p>
                 ) : (
                     <ul>

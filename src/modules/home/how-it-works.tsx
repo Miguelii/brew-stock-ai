@@ -8,7 +8,7 @@ const STEPS = [
             'Type any ticker, from Apple to the small company you just read about. Then choose what you want to know: full analysis, financials, moat, risk, or growth.',
     },
     {
-        title: 'The AI does the research',
+        title: 'Our engine does the work',
         description:
             'The engine gathers earnings history, future estimates, analyst ratings, insider activity, price signals, and the latest news. Then it weighs all that evidence, starting with the fundamentals.',
     },

@@ -40,8 +40,7 @@ export function Footer() {
                     <div className="col-span-2 md:col-span-1">
                         <Logo />
                         <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xs">
-                            Institutional-grade stock analysis powered by AI. For less than a
-                            coffee.
+                            Institutional-grade stock analysis. For less than a coffee.
                         </p>
                     </div>
                     {footerLinks.map((group) => (

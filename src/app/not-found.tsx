@@ -13,7 +13,7 @@ export default function NotFound() {
 
                     <div className="space-y-2">
                         <h1 className="text-xl font-semibold text-foreground">
-                            Even our AI couldn&apos;t find this one
+                            Even our engine couldn&apos;t find this one
                         </h1>
                         <p className="text-sm text-muted-foreground leading-relaxed">
                             The page you&apos;re looking for has gone dark. Probably a bad trade.

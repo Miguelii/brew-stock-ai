@@ -7,7 +7,7 @@ type Props = {
     date?: StockSigDev['date']
 }
 export function ReportSigDev({ headline, date }: Props) {
-    const text = headline ?? "Our AI couldn't find any recent significant development"
+    const text = headline ?? "Our engine couldn't find any recent significant development"
 
     const parsedDate = (item: string) => item.split('T').at(0)
 
@@ -16,7 +16,7 @@ export function ReportSigDev({ headline, date }: Props) {
             <CardHeader className="border-b">
                 <CardTitle className="text-base font-semibold">What&apos;s Happening Now</CardTitle>
                 <p className="text-xs text-muted-foreground">
-                    The most notable recent event our AI identified for this company
+                    The most notable recent event our engine identified for this company
                 </p>
             </CardHeader>
             <CardContent className="flex flex-col md:flex-row gap-4 md:justify-between">

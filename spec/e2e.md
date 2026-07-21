@@ -354,16 +354,33 @@ e2e/
     ├── 03-view-report.spec.ts
     ├── 04-export-report.spec.ts
     ├── 05-full-flow.spec.ts
-    └── 06-tokens.spec.ts
+    ├── 06-tokens.spec.ts
+    └── yahoo-contract.spec.ts   # LIVE Yahoo API — excluded from the main run (see below)
 
-playwright.config.ts        # root — Playwright config, webServer, storageState
+playwright.config.ts        # root — mocked suite: webServer, globalSetup, storageState
+playwright.yahoo.config.ts  # root — live Yahoo contract test only (no server/mock/browser)
 .github/
 ├── actions/setup/
 │   └── action.yml          # composite action: pnpm + node + install
 └── workflows/
-    ├── e2e.yml             # E2E job (PR → main)
+    ├── e2e.yml             # mocked E2E job in Playwright container (push/PR → main)
+    ├── e2e-yahoo.yml       # live Yahoo contract test (daily cron + manual dispatch)
     └── pr-checks.yml       # lint / typecheck / unit / build (PR → main)
 ```
+
+---
+
+## Live Yahoo contract test
+
+`e2e/tests/yahoo-contract.spec.ts` is the one spec that does **not** mock the network: it calls the real `yahoo-finance2` API from the Playwright runner's Node context (no web server, no mock server, no browser, no auth state). It is a drift canary: it mirrors the exact calls and field paths the app consumes (see `src/_bff/modules/yahoo/`) so a Yahoo API change surfaces here instead of in production.
+
+Because it depends on Yahoo being reachable, it is isolated from the mocked suite:
+
+- The main `playwright.config.ts` sets `testIgnore: '**/yahoo-contract.spec.ts'`, so `pnpm e2e` and the `e2e.yml` job never run it.
+- It has its own `playwright.yahoo.config.ts` (no `webServer`/`globalSetup`/`storageState`) and script `pnpm e2e:yahoo`.
+- CI runs it via `.github/workflows/e2e-yahoo.yml` on a daily `schedule` plus `workflow_dispatch`, not on PRs, so a Yahoo outage never blocks a merge. That workflow needs no Playwright browser install (the test launches none).
+
+Assertion strategy: hard-assert fields that are reliably present for the large-cap ticker (types/keys), and assert shape-only-when-present for volatile arrays (`sigDevs`, `reports`, `insiderTransactions`) to avoid false negatives.
 
 ---
 

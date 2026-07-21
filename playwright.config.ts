@@ -11,6 +11,8 @@ if (!existsSync(AUTH_STATE_PATH)) {
 
 export default defineConfig({
     testDir: './e2e/tests',
+    // The live Yahoo contract test has its own config + workflow (playwright.yahoo.config.ts)
+    testIgnore: '**/yahoo-contract.spec.ts',
     globalSetup: './e2e/global-setup.ts',
     globalTeardown: './e2e/global-teardown.ts',
     fullyParallel: false,

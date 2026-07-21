@@ -303,8 +303,11 @@ The `trap cleanup EXIT` ensures ports 54321 and 3001 are always released, even a
 Triggered on pull requests to `main`.
 
 ```
-checkout → composite setup → playwright install chromium → pnpm build → pnpm e2e
+container: mcr.microsoft.com/playwright:v<version>-jammy
+checkout → composite setup → pnpm build → pnpm e2e
 ```
+
+The job runs inside the **official Playwright container**, which ships Chromium and all its system dependencies pre-installed, pinned to the `@playwright/test` version. This removes the `playwright install --with-deps` / `install-deps` steps and the browser cache. Keep the image tag in sync with the version in `package.json` when upgrading Playwright.
 
 The build step is required because CI uses `pnpm start` (production server). Env vars for the mock server are set at the job level so they are available both to `pnpm build` (Next.js env validation) and to `pnpm e2e`.
 

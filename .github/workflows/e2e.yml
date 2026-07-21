@@ -28,6 +28,10 @@ jobs:
     e2e:
         if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
+        # Official Playwright image: Chromium + all system deps baked in, pinned to the
+        # installed @playwright/test version. Keep this tag in sync with package.json.
+        container:
+            image: mcr.microsoft.com/playwright:v1.61.1-jammy
         steps:
             - uses: actions/checkout@v6
             - uses: ./.github/actions/setup
@@ -37,14 +41,5 @@ jobs:
                   key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**/*.[jt]s', 'src/**/*.[jt]sx') }}
                   restore-keys: |
                       ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
-            - uses: actions/cache@v6
-              id: playwright-cache
-              with:
-                  path: ~/.cache/ms-playwright
-                  key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
-            - if: steps.playwright-cache.outputs.cache-hit != 'true'
-              run: pnpm exec playwright install --with-deps chromium
-            - if: steps.playwright-cache.outputs.cache-hit == 'true'
-              run: pnpm exec playwright install-deps chromium
             - run: node --run build
             - run: pnpm e2e

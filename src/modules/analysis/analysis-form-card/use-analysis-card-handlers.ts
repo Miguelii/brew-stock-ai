@@ -1,7 +1,7 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { FormValues } from '@/modules/analysis/analysis-form-card/use-analysis-form'
 import { trpcClient } from '@/_trpc/client'
-import { useTransition } from 'react'
+import { createElement, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
@@ -33,7 +33,13 @@ export const useAnalysisCardHandlers = ({ form }: Props) => {
         try {
             await createReport.mutateAsync(values)
             resetForm()
-            toast.success('Your report is being generated ☕')
+            toast.success(
+                createElement(
+                    'span',
+                    { 'data-testid': 'report-created-toast' },
+                    'Your report is being generated ☕'
+                )
+            )
             setTimeout(() => router.push('/reports'), 2000)
         } catch (error) {
             const code = (error as { data?: { code?: string } })?.data?.code

@@ -1,20 +1,20 @@
 import { test, expect } from '@playwright/test'
 import { mockGetLatestNews, mockExportReport } from '../support/mock-trpc'
 import { MOCK_REPORT_ID } from '../fixtures/mock-data'
+import { ReportPage } from '../pos/report.po'
 
 test.describe('Export report', () => {
     test('clicking "Export PDF" triggers a file download', async ({ page }) => {
         await mockGetLatestNews(page)
         await mockExportReport(page)
 
-        await page.goto(`/reports/${MOCK_REPORT_ID}`)
+        const report = new ReportPage(page)
+        await report.goto(MOCK_REPORT_ID)
 
-        await expect(page.getByTestId('export-pdf-button')).toBeVisible({
-            timeout: 10_000,
-        })
+        await expect(report.exportButton).toBeVisible({ timeout: 10_000 })
 
         const downloadPromise = page.waitForEvent('download', { timeout: 15_000 })
-        await page.getByTestId('export-pdf-button').click()
+        await report.exportButton.click()
 
         const download = await downloadPromise
         expect(download.suggestedFilename()).toBe('AAPL-analysis.pdf')
@@ -33,14 +33,13 @@ test.describe('Export report', () => {
             })
         })
 
-        await page.goto(`/reports/${MOCK_REPORT_ID}`)
+        const report = new ReportPage(page)
+        await report.goto(MOCK_REPORT_ID)
 
-        await page.getByTestId('export-pdf-button').click()
+        await report.exportButton.click()
 
         // During loading the button should show "Generating..." and be disabled
-        await expect(page.getByRole('button', { name: 'Generating...' })).toBeVisible({
-            timeout: 3000,
-        })
-        await expect(page.getByRole('button', { name: 'Generating...' })).toBeDisabled()
+        await expect(report.exportButton).toContainText('Generating...', { timeout: 3000 })
+        await expect(report.exportButton).toBeDisabled()
     })
 })

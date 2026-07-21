@@ -13,7 +13,7 @@ export function ReportSentimentCard({ report }: Props) {
     return (
         <Card className="h-79 md:h-full w-full">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">
+                <CardTitle data-testid="sentiment-score" className="text-base font-semibold">
                     {isRiskAnalysis ? 'Risk Score' : 'Sentiment Score'}
                 </CardTitle>
             </CardHeader>

@@ -165,6 +165,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                                 {PROMPT_OPTIONS.map((option) => (
                                                     <SelectItem
                                                         key={option.type}
+                                                        data-testid="analysis-type-option"
                                                         value={option.type}
                                                         className="px-3"
                                                     >

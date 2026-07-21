@@ -77,6 +77,7 @@ export function TokenPackages({
                     return (
                         <Card
                             key={pkg.id}
+                            data-testid={`token-package-${pkg.id}`}
                             className={cn(
                                 'relative flex flex-col rounded-none gap-0 pt-0 overflow-visible transition-shadow duration-300',
                                 pkg.highlight && 'border-accent-blue bg-accent-blue/5 shadow-md'
@@ -163,6 +164,7 @@ export function TokenPackages({
 
                                 {showBuyButton && (
                                     <Button
+                                        data-testid="buy-now-button"
                                         className="mt-auto w-full"
                                         variant={pkg.highlight ? 'default' : 'outline'}
                                         disabled={checkout.isPending}

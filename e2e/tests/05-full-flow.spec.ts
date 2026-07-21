@@ -7,6 +7,8 @@ import {
     mockExportReport,
 } from '../support/mock-trpc'
 import { MOCK_REPORT_ID } from '../fixtures/mock-data'
+import { AnalysisFormPage } from '../pos/analysis-form.po'
+import { ReportPage } from '../pos/report.po'
 
 test.describe('Full happy path', () => {
     test('create → view → export report without errors', async ({ page }) => {
@@ -18,37 +20,34 @@ test.describe('Full happy path', () => {
         await mockExportReport(page)
 
         // 1. Navigate to analysis and create a report
-        await page.goto('/analysis')
+        const analysis = new AnalysisFormPage(page)
+        await analysis.goto()
 
-        await expect(page.getByTestId('ticker-input')).toBeVisible()
-        await page.getByTestId('ticker-input').fill('AAPL')
-        await page.getByTestId('analysis-type-select').click()
-        await page.getByRole('option').first().click()
-        await page.getByTestId('generate-report-button').click()
+        await expect(analysis.tickerInput).toBeVisible()
+        await analysis.fillAndSubmit('AAPL')
 
         // Toast confirms report is being generated
-        await expect(page.getByText(/being generated/iu)).toBeVisible({ timeout: 8000 })
+        await expect(analysis.createdToast).toBeVisible({ timeout: 8000 })
 
         // Wait for redirect to /reports list
         await page.waitForURL('**/reports', { timeout: 10_000 })
 
         // 2. Navigate directly to the seeded report page
-        await page.goto(`/reports/${MOCK_REPORT_ID}`)
+        const report = new ReportPage(page)
+        await report.goto(MOCK_REPORT_ID)
 
         // Verify key sections are present
-        await expect(page.getByRole('heading', { name: 'AAPL', exact: true })).toBeVisible({
-            timeout: 10_000,
-        })
-        await expect(page.getByText('Summary of what our engine found:')).toBeVisible()
-        await expect(page.locator('#key-metrics').getByText('Key Financial Metrics')).toBeVisible()
-        await expect(page.getByText('Sentiment Score')).toBeVisible()
-        await expect(page.getByText("What's Happening Now")).toBeVisible()
-        await expect(page.getByText('What Experts Are Saying')).toBeVisible()
-        await expect(page.getByText('How It Compares')).toBeVisible()
+        await expect(report.tickerHeading).toHaveText('AAPL', { timeout: 10_000 })
+        await expect(report.section('overview')).toContainText('Summary of what our engine found:')
+        await expect(report.section('key-metrics')).toContainText('Key Financial Metrics')
+        await expect(report.sentimentScore).toHaveText('Sentiment Score')
+        await expect(report.section('sig-dev')).toContainText("What's Happening Now")
+        await expect(report.section('media-mentions')).toContainText('What Experts Are Saying')
+        await expect(report.section('sector-scores')).toContainText('How It Compares')
 
         // 3. Export the report
         const downloadPromise = page.waitForEvent('download', { timeout: 15_000 })
-        await page.getByTestId('export-pdf-button').click()
+        await report.exportButton.click()
 
         const download = await downloadPromise
         expect(download.suggestedFilename()).toBe('AAPL-analysis.pdf')

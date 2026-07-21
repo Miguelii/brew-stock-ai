@@ -188,12 +188,14 @@ These intercept **browser-side** calls only. Server-side tRPC calls (from RSC/Se
 
 Rules for locating elements in specs:
 
-- **Interactive elements (inputs, selects, buttons that tests act on) must be located via `data-testid` + `getByTestId`.** Add the `data-testid` attribute to the component when it doesn't have one yet.
-- **Never use `getByPlaceholder`** — placeholders are UI copy and change without warning.
-- **Never target library-internal attributes** (e.g. `[data-input-otp="true"]`, `[data-slot]`) — they are implementation details of third-party packages.
-- `getByRole` / `getByText` remain acceptable for **asserting visible content** (headings, banners, copy) — that is what those tests are meant to verify.
+- **Every element is located via `data-testid` + `getByTestId`.** Add the `data-testid` attribute to the component when it doesn't have one yet — including headings, banners, badges and copy that a test asserts on.
+- **Never use `getByRole`, `getByLabelText`, `getByText` or `getByPlaceholder`** to locate elements. They are brittle (copy, roles and placeholders change) and are banned as locators.
+- **Verify visible content by locating with `getByTestId(...)` and asserting the text** with `.toContainText(...)` / `.toHaveText(...)`. Those are assertions (not locators), so they stay allowed and keep copy coverage.
+- **Never target library-internal attributes** (e.g. `[data-input-otp="true"]`, `[data-slot]`) nor CSS/tag/id locators (`locator('#id')`, `locator('strong')`) for assertions — add a `data-testid` instead.
+- When a component renders **responsive variants** (e.g. the section nav's desktop row + mobile dropdown), give each variant a distinct testid (`nav-<id>` vs `nav-mobile-<id>`) so a single `getByTestId` never matches two elements (Playwright strict mode).
+- **Testids reused across specs (or repeated) are encapsulated in Page Objects under `e2e/pos/*.po.ts`; specs never hardcode testid strings.** Each Page Object receives `page: Page` and exposes locators (via `getByTestId`) plus small navigation/action helpers; assertions stay in the specs.
 
-Existing test ids: `email-input`, `sign-in-button`, `otp-input` (auth), `ticker-input`, `analysis-type-select`, `generate-report-button` (analysis form), `export-pdf-button` (report view).
+Existing test ids: `email-input`, `sign-in-button`, `otp-input`, `auth-title`, `confirm-otp-button`, `use-different-email-button` (auth); `ticker-input`, `analysis-type-select`, `analysis-type-option`, `generate-report-button`, `report-created-toast` (analysis form); `report-ticker-heading`, `report-type-badge`, `report-section-<id>`, `nav-<id>` / `nav-mobile-<id>`, `sentiment-score`, `export-pdf-button` (report view); `token-package-<id>`, `buy-now-button`, `token-balance`, `payment-success-banner`, `payment-canceled-banner`, `pending-payment-banner`, `pending-payment-amount`, `pending-payment-description` (tokens).
 
 ---
 
@@ -301,8 +303,11 @@ The `trap cleanup EXIT` ensures ports 54321 and 3001 are always released, even a
 Triggered on pull requests to `main`.
 
 ```
-checkout → composite setup → playwright install chromium → pnpm build → pnpm e2e
+container: mcr.microsoft.com/playwright:v<version>-jammy
+checkout → composite setup → pnpm build → pnpm e2e
 ```
+
+The job runs inside the **official Playwright container**, which ships Chromium and all its system dependencies pre-installed, pinned to the `@playwright/test` version. This removes the `playwright install --with-deps` / `install-deps` steps and the browser cache. Keep the image tag in sync with the version in `package.json` when upgrading Playwright.
 
 The build step is required because CI uses `pnpm start` (production server). Env vars for the mock server are set at the job level so they are available both to `pnpm build` (Next.js env validation) and to `pnpm e2e`.
 
@@ -338,6 +343,11 @@ e2e/
 │   └── mock-data.ts        # MOCK_REPORT, MOCK_STOCK_DATA, MOCK_NEWS_ITEMS, etc.
 ├── support/
 │   └── mock-trpc.ts        # page.route() helpers for each tRPC procedure
+├── pos/                    # Page Objects — encapsulate data-testid locators per area
+│   ├── auth.po.ts
+│   ├── analysis-form.po.ts
+│   ├── report.po.ts
+│   └── tokens.po.ts
 └── tests/
     ├── 01-auth.spec.ts
     ├── 02-create-report.spec.ts
@@ -387,4 +397,4 @@ export async function mockMyProcedure(page: Page, data: MyType) {
 
 ### 4. Write the spec
 
-Create `e2e/tests/NN-my-feature.spec.ts` (next number in sequence). Register mocks in `test.beforeEach` or at the top of individual tests. Use `storageState` from the global config (authenticated by default) — override with `test.use({ storageState: { cookies: [], origins: [] } })` for unauthenticated flows. Follow the [Selectors](#selectors) rules — `data-testid` for interactive elements, never `getByPlaceholder`.
+Create `e2e/tests/NN-my-feature.spec.ts` (next number in sequence). Register mocks in `test.beforeEach` or at the top of individual tests. Use `storageState` from the global config (authenticated by default) — override with `test.use({ storageState: { cookies: [], origins: [] } })` for unauthenticated flows. Follow the [Selectors](#selectors) rules — locate everything via `getByTestId` through a Page Object in `e2e/pos/`, never `getByRole`/`getByLabelText`/`getByText`/`getByPlaceholder`, and verify copy with `.toContainText(...)` / `.toHaveText(...)`.

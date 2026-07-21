@@ -88,7 +88,9 @@ export function AuthCard({ returnTo }: Props) {
         <div className="w-full max-w-sm flex flex-col gap-8">
             <AuthErrorHandler />
             <div>
-                <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
+                <h1 data-testid="auth-title" className="text-3xl font-semibold tracking-tight">
+                    Welcome back
+                </h1>
                 <p className="mt-1.5 text-sm text-muted-foreground">Sign in to your account</p>
             </div>
 
@@ -209,6 +211,7 @@ export function AuthCard({ returnTo }: Props) {
                     </div>
 
                     <Button
+                        data-testid="confirm-otp-button"
                         type="button"
                         disabled={
                             otp.length !== SB_OTP_TOKEN_LENGTH || verifyOtp.isPending || pending
@@ -223,6 +226,7 @@ export function AuthCard({ returnTo }: Props) {
                     </Button>
 
                     <Button
+                        data-testid="use-different-email-button"
                         variant="link"
                         type="button"
                         className={cn('w-full cursor-pointer text-muted-foreground')}

@@ -125,11 +125,17 @@ export default async function ReportsIdPage(props: Props) {
                     <div className="flex flex-col gap-6 md:gap-0 items-start md:flex-row w-full justify-between md:items-center">
                         <div className="space-y-3">
                             {reportTypeLabel && (
-                                <span className="inline-flex items-center rounded px-2 py-1 text-xs font-semibold bg-accent-blue-light text-accent-blue">
+                                <span
+                                    data-testid="report-type-badge"
+                                    className="inline-flex items-center rounded px-2 py-1 text-xs font-semibold bg-accent-blue-light text-accent-blue"
+                                >
                                     {reportTypeLabel}
                                 </span>
                             )}
-                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-accent-blue font-mono">
+                            <h1
+                                data-testid="report-ticker-heading"
+                                className="text-4xl md:text-5xl font-bold tracking-tight text-accent-blue font-mono"
+                            >
                                 {report.stock}
                             </h1>
                             <p className="text-sm text-muted-foreground">
@@ -142,14 +148,14 @@ export default async function ReportsIdPage(props: Props) {
 
                 <ReportSectionNav />
 
-                <section id="overview">
+                <section id="overview" data-testid="report-section-overview">
                     <div className="flex flex-col md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
                         <ReportTldrCard report={report} />
                         <ReportSentimentCard report={report} />
                     </div>
                 </section>
 
-                <section id="market-outlook">
+                <section id="market-outlook" data-testid="report-section-market-outlook">
                     <ReportMarketOutlookCard
                         financials={stockData?.financials ?? null}
                         fundamentals={stockData?.fundamentals ?? null}
@@ -157,35 +163,35 @@ export default async function ReportsIdPage(props: Props) {
                     />
                 </section>
 
-                <section id="key-metrics">
+                <section id="key-metrics" data-testid="report-section-key-metrics">
                     <ReportFinancialsCard
                         financials={stockData?.financials ?? null}
                         fundamentals={stockData?.fundamentals ?? null}
                     />
                 </section>
 
-                <section id="analysis">
+                <section id="analysis" data-testid="report-section-analysis">
                     <ReportAnalysisCard report={report} />
                 </section>
 
-                <section id="sig-dev">
+                <section id="sig-dev" data-testid="report-section-sig-dev">
                     <ReportSigDev
                         headline={stockData?.sig_dev?.headline}
                         date={stockData?.sig_dev?.date}
                     />
                 </section>
 
-                <section id="latest-news">
+                <section id="latest-news" data-testid="report-section-latest-news">
                     <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
                         <ReportLatestNewsServer ticker={stockTicker} />
                     </Suspense>
                 </section>
 
-                <section id="media-mentions">
+                <section id="media-mentions" data-testid="report-section-media-mentions">
                     <ReportMediaMentions news={stockData?.reports ?? []} />
                 </section>
 
-                <section id="sector-scores">
+                <section id="sector-scores" data-testid="report-section-sector-scores">
                     <ReportSectorScores scores={stockData?.scores ?? null} />
                 </section>
             </main>

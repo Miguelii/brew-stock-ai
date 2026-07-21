@@ -56,6 +56,7 @@ export function ReportSectionNav({ className }: Props) {
                             {SECTIONS.map(({ id, label }) => (
                                 <DropdownMenuItem
                                     key={id}
+                                    data-testid={`nav-mobile-${id}`}
                                     onClick={() => scrollTo(id)}
                                     className={cn(
                                         'w-full px-4 py-2.5 text-left text-sm transition-colors',
@@ -77,6 +78,7 @@ export function ReportSectionNav({ className }: Props) {
                         <button
                             type="button"
                             key={id}
+                            data-testid={`nav-${id}`}
                             ref={(el) => {
                                 buttonRefs.current[i] = el
                             }}

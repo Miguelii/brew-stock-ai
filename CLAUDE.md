@@ -465,7 +465,7 @@ export function MyComponent({ name, email }: Props) { ... }
 
 Before creating or modifying any file under `e2e/` or `playwright.config.ts`, read `spec/e2e.md` to understand the mock architecture, cookie format, tRPC batch response shape, and the two-layer interception pattern (mock server for server-side calls, `page.route()` for browser-side calls).
 
-Selectors: interactive elements (inputs, selects, action buttons) must be located via `data-testid` + `getByTestId` — add the attribute to the component if missing. Never use `getByPlaceholder` or library-internal attributes (e.g. `[data-input-otp]`). `getByRole`/`getByText` are fine for asserting visible content.
+Selectors: locate EVERY element via `data-testid` + `getByTestId` — add the attribute to the component if missing (headings, banners, badges and copy included). NEVER use `getByRole`, `getByLabelText`, `getByText` or `getByPlaceholder` to locate elements, and never library-internal attributes (e.g. `[data-input-otp]`) or CSS/tag/id locators. To verify copy, locate with `getByTestId(...)` and assert the text with `.toContainText(...)` / `.toHaveText(...)`. Testids reused across specs live in Page Objects under `e2e/pos/*.po.ts`; specs never hardcode testid strings.
 
 ---
 
@@ -473,28 +473,6 @@ Selectors: interactive elements (inputs, selects, action buttons) must be locate
 # Trigger.dev Basic Tasks (v4)
 
 **MUST use `@trigger.dev/sdk`, NEVER `client.defineJob`**
-
-## Basic Task
-
-```ts
-import { task } from "@trigger.dev/sdk";
-
-export const processData = task({
-  id: "process-data",
-  retry: {
-    maxAttempts: 10,
-    factor: 1.8,
-    minTimeoutInMs: 500,
-    maxTimeoutInMs: 30_000,
-    randomize: false,
-  },
-  run: async (payload: { userId: string; data: any[] }) => {
-    // Task logic - runs for long time, no timeouts
-    console.log(`Processing ${payload.data.length} items for user ${payload.userId}`);
-    return { processed: payload.data.length };
-  },
-});
-```
 
 ## Best Practices
 

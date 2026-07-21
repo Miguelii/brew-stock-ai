@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { mockGetCredits, mockCreateCheckoutSession, mockGetInvoices } from '../support/mock-trpc'
 import { MOCK_CREDITS, MOCK_PENDING_INVOICE } from '../fixtures/mock-data'
+import { TokensPage } from '../pos/tokens.po'
 
 test.describe('Tokens page', () => {
     test.beforeEach(async ({ page }) => {
@@ -10,60 +11,63 @@ test.describe('Tokens page', () => {
     })
 
     test('renders Starter, Pro and Expert packages with Buy Now buttons', async ({ page }) => {
-        await page.goto('/tokens')
+        const tokens = new TokensPage(page)
+        await tokens.goto()
 
-        await expect(page.getByText('Starter', { exact: true })).toBeVisible()
-        await expect(page.getByText('Pro', { exact: true })).toBeVisible()
-        await expect(page.getByText('Expert', { exact: true })).toBeVisible()
+        await expect(tokens.pkg('starter')).toContainText('Starter')
+        await expect(tokens.pkg('pro')).toContainText('Pro')
+        await expect(tokens.pkg('expert')).toContainText('Expert')
 
-        const buyButtons = page.getByRole('button', { name: 'Buy Now' })
-        await expect(buyButtons).toHaveCount(3)
+        await expect(tokens.buyNowButtons).toHaveCount(3)
 
-        await expect(page.getByText('5 analysis credits', { exact: true })).toBeVisible()
-        await expect(page.getByText('15 analysis credits', { exact: true })).toBeVisible()
-        await expect(page.getByText('50 analysis credits', { exact: true })).toBeVisible()
+        await expect(tokens.pkg('starter')).toContainText('5 analysis credits')
+        await expect(tokens.pkg('pro')).toContainText('15 analysis credits')
+        await expect(tokens.pkg('expert')).toContainText('50 analysis credits')
     })
 
     test('shows current credit balance', async ({ page }) => {
-        await page.goto('/tokens')
+        const tokens = new TokensPage(page)
+        await tokens.goto()
 
-        await expect(page.getByText(new RegExp(`${MOCK_CREDITS}\\s*Credits`, 'u'))).toBeVisible({
-            timeout: 8000,
-        })
+        await expect(tokens.balance).toContainText(`${MOCK_CREDITS} Credits`, { timeout: 8000 })
     })
 
     test('shows success banner on ?success=true', async ({ page }) => {
-        await page.goto('/tokens?success=true')
+        const tokens = new TokensPage(page)
+        await tokens.goto('?success=true')
 
-        await expect(page.getByText(/Payment successful/iu)).toBeVisible()
+        await expect(tokens.successBanner).toContainText(/Payment successful/iu)
     })
 
     test('shows cancel banner on ?canceled=true', async ({ page }) => {
-        await page.goto('/tokens?canceled=true')
+        const tokens = new TokensPage(page)
+        await tokens.goto('?canceled=true')
 
-        await expect(page.getByText(/Checkout was canceled/iu)).toBeVisible()
+        await expect(tokens.canceledBanner).toContainText(/Checkout was canceled/iu)
     })
 
     test('clicking Buy Now initiates checkout and redirects', async ({ page }) => {
-        await page.goto('/tokens')
+        const tokens = new TokensPage(page)
+        await tokens.goto()
 
         // Click the Starter "Buy Now" button (first in DOM)
-        await page.getByRole('button', { name: 'Buy Now' }).first().click()
+        await tokens.buyNowButtons.first().click()
 
         // Mock returns http://localhost:3001/tokens?success=true so navigation is local
         await page.waitForURL('**/tokens**success**', { timeout: 8000 })
 
-        await expect(page.getByText(/Payment successful/iu)).toBeVisible()
+        await expect(tokens.successBanner).toContainText(/Payment successful/iu)
     })
 
     test('shows pending payment banner when an invoice is pending', async ({ page }) => {
         await mockGetInvoices(page, [MOCK_PENDING_INVOICE])
 
-        await page.goto('/tokens')
+        const tokens = new TokensPage(page)
+        await tokens.goto()
 
-        await expect(page.getByText(/pending payment/iu)).toBeVisible({ timeout: 8000 })
-        // Use locator('strong') to disambiguate from the same amount shown in the package card price
-        await expect(page.locator('strong').filter({ hasText: '€2.49' })).toBeVisible()
-        await expect(page.locator('strong').filter({ hasText: '15 Analysis Tokens' })).toBeVisible()
+        await expect(tokens.pendingBanner).toContainText(/pending payment/iu, { timeout: 8000 })
+        // Amount and description live in their own testids, disambiguated from the package card price
+        await expect(tokens.pendingAmount).toContainText('€2.49')
+        await expect(tokens.pendingDescription).toContainText('15 Analysis Tokens')
     })
 })

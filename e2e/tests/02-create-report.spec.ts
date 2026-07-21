@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { mockGetCredits, mockCreateReport, mockGetReports } from '../support/mock-trpc'
 import { MOCK_REPORT_ID } from '../fixtures/mock-data'
+import { AnalysisFormPage } from '../pos/analysis-form.po'
 
 test.describe('Create report flow', () => {
     test.beforeEach(async ({ page }) => {
@@ -10,27 +11,21 @@ test.describe('Create report flow', () => {
     })
 
     test('shows the analysis form with Generate Report button', async ({ page }) => {
-        await page.goto('/analysis')
+        const analysis = new AnalysisFormPage(page)
+        await analysis.goto()
 
-        await expect(page.getByTestId('ticker-input')).toBeVisible()
-        await expect(page.getByTestId('generate-report-button')).toBeVisible()
+        await expect(analysis.tickerInput).toBeVisible()
+        await expect(analysis.generateButton).toBeVisible()
     })
 
     test('submits the form and shows success toast + redirects to /reports', async ({ page }) => {
-        await page.goto('/analysis')
+        const analysis = new AnalysisFormPage(page)
+        await analysis.goto()
 
-        // Fill ticker
-        await page.getByTestId('ticker-input').fill('AAPL')
-
-        // Select analysis type via the combobox trigger
-        await page.getByTestId('analysis-type-select').click()
-        await page.getByRole('option').first().click()
-
-        // Submit
-        await page.getByTestId('generate-report-button').click()
+        await analysis.fillAndSubmit('AAPL')
 
         // Toast should appear
-        await expect(page.getByText(/being generated/iu)).toBeVisible({ timeout: 8000 })
+        await expect(analysis.createdToast).toBeVisible({ timeout: 8000 })
 
         // Redirect to /reports (after the 2s delay in the handler)
         await page.waitForURL('**/reports', { timeout: 10_000 })

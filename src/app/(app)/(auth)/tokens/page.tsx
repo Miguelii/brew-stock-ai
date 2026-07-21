@@ -55,14 +55,20 @@ export default async function TokensPage({ searchParams }: Props) {
                 </div>
 
                 {params.success && (
-                    <div className="flex items-center gap-3 rounded-none border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400">
+                    <div
+                        data-testid="payment-success-banner"
+                        className="flex items-center gap-3 rounded-none border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400"
+                    >
                         <CheckIcon className="w-4 h-4 shrink-0" />
                         Payment successful! Your credits have been added to your account.
                     </div>
                 )}
 
                 {params.canceled && (
-                    <div className="flex items-center gap-3 rounded-none border border-yellow-400 bg-yellow-400/10 px-4 py-3 text-sm text-muted-foreground">
+                    <div
+                        data-testid="payment-canceled-banner"
+                        className="flex items-center gap-3 rounded-none border border-yellow-400 bg-yellow-400/10 px-4 py-3 text-sm text-muted-foreground"
+                    >
                         Checkout was canceled. No charges were made.
                     </div>
                 )}

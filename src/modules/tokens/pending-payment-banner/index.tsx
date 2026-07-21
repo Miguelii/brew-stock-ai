@@ -19,14 +19,26 @@ export function PendingPaymentBanner() {
                 return (
                     <div
                         key={invoice.id}
+                        data-testid="pending-payment-banner"
                         className="flex items-start gap-3 rounded-none border border-yellow-400 bg-yellow-400/10 px-4 py-3 text-sm text-muted-foreground"
                     >
                         <ClockIcon className="w-4 h-4 shrink-0 text-yellow-500 mt-0.5" />
                         <span>
                             You have a pending payment of{' '}
-                            <strong className="text-foreground">{formatted}</strong> for{' '}
-                            <strong className="text-foreground">{invoice.description}</strong>.
-                            Credits will be added to your account automatically once the payment
+                            <strong
+                                data-testid="pending-payment-amount"
+                                className="text-foreground"
+                            >
+                                {formatted}
+                            </strong>{' '}
+                            for{' '}
+                            <strong
+                                data-testid="pending-payment-description"
+                                className="text-foreground"
+                            >
+                                {invoice.description}
+                            </strong>
+                            . Credits will be added to your account automatically once the payment
                             clears. This usually takes 1 to 3 business days.
                         </span>
                     </div>

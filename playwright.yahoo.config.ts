@@ -7,7 +7,6 @@ export default defineConfig({
     testMatch: '**/yahoo-contract.spec.ts',
     fullyParallel: false,
     workers: 1,
-    // Live network: give each call room, and retry transient Yahoo hiccups in CI.
     timeout: 60_000,
     retries: process.env.CI ? 2 : 0,
     reporter: [['list']],

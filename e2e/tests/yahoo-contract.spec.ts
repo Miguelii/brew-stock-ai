@@ -1,14 +1,6 @@
 /**
  * Live contract test for yahoo-finance2.
- *
- * Unlike the other e2e specs (which mock ALL network), this one hits the REAL
- * Yahoo Finance API with no mocks, no web server and no browser. It runs in the
- * Node context of the Playwright runner and is a canary: it mirrors the exact
- * calls and field paths the app depends on (see the yahoo processors) so we learn
- * immediately when Yahoo renames, empties, or drops a field we consume, instead
- * of finding out in production.
  */
-
 import { test, expect } from '@playwright/test'
 
 type YahooClient = {

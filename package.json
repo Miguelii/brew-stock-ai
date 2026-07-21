@@ -21,7 +21,8 @@
         "trigger:dev": "pnpm dlx trigger.dev@latest dev",
         "e2e": "bash e2e/run.sh",
         "e2e:ui": "bash e2e/run.sh --ui",
-        "e2e:debug": "bash e2e/run.sh --debug"
+        "e2e:debug": "bash e2e/run.sh --debug",
+        "e2e:yahoo": "playwright test --config playwright.yahoo.config.ts"
     },
     "dependencies": {
         "@ai-sdk/anthropic": "^4.0.10",

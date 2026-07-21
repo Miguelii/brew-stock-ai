@@ -30,7 +30,7 @@ test.describe('View report page', () => {
         await expect(page.getByRole('button', { name: 'Summary' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Market & Analyst Outlook' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Key Financial Metrics' })).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Full AI Report' })).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Full Report' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Happening Now' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Expert Coverage' })).toBeVisible()
         await expect(page.getByRole('button', { name: 'Sector Scores' })).toBeVisible()
@@ -39,8 +39,8 @@ test.describe('View report page', () => {
     test('"Summary" section is visible', async ({ page }) => {
         await page.goto(`/reports/${MOCK_REPORT_ID}`)
 
-        await expect(page.getByText('Summary of what our AI found:')).toBeVisible()
-        // Scope to #overview to avoid matching the same text in the full AI report section
+        await expect(page.getByText('Summary of what our engine found:')).toBeVisible()
+        // Scope to #overview to avoid matching the same text in the full report section
         await expect(page.locator('#overview').getByText(/pricing power/iu)).toBeVisible()
     })
 
@@ -96,10 +96,10 @@ test.describe('View report page', () => {
         await expect(section.getByText(/Net selling/iu)).toBeVisible()
     })
 
-    test('"AI Sentiment Score" gauge is visible', async ({ page }) => {
+    test('"Sentiment Score" gauge is visible', async ({ page }) => {
         await page.goto(`/reports/${MOCK_REPORT_ID}`)
 
-        await expect(page.getByText('AI Sentiment Score')).toBeVisible()
+        await expect(page.getByText('Sentiment Score')).toBeVisible()
     })
 
     test('"What\'s Happening Now" section is visible', async ({ page }) => {

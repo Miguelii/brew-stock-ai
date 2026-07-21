@@ -133,7 +133,7 @@ export default async function ReportsIdPage(props: Props) {
                                 {report.stock}
                             </h1>
                             <p className="text-sm text-muted-foreground">
-                                AI-Driven Fundamental Analysis &amp; Sentiment Report
+                                Fundamental Analysis &amp; Sentiment Report
                             </p>
                         </div>
                         <ReportExport reportId={report.id} />

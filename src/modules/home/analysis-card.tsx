@@ -46,7 +46,7 @@ export function AnalysisCard() {
         <section id="analysis-types" className="border border-border bg-card/50">
             <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
                 <SectionHeader
-                    title="Five AI Stock Analysis Types, One Platform"
+                    title="Five Stock Analysis Types, One Platform"
                     lede="Choose the analysis that matches what you want to learn. Each report answers a different question, from financial health to long-term growth."
                 />
 

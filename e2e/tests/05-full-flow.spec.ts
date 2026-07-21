@@ -39,9 +39,9 @@ test.describe('Full happy path', () => {
         await expect(page.getByRole('heading', { name: 'AAPL', exact: true })).toBeVisible({
             timeout: 10_000,
         })
-        await expect(page.getByText('Summary of what our AI found:')).toBeVisible()
+        await expect(page.getByText('Summary of what our engine found:')).toBeVisible()
         await expect(page.locator('#key-metrics').getByText('Key Financial Metrics')).toBeVisible()
-        await expect(page.getByText('AI Sentiment Score')).toBeVisible()
+        await expect(page.getByText('Sentiment Score')).toBeVisible()
         await expect(page.getByText("What's Happening Now")).toBeVisible()
         await expect(page.getByText('What Experts Are Saying')).toBeVisible()
         await expect(page.getByText('How It Compares')).toBeVisible()

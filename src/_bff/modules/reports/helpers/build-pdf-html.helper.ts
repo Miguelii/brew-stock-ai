@@ -318,7 +318,7 @@ function buildSigDevSection(sigDev: StockSigDev): string {
     return `
     <div class="extra-section">
         <div class="extra-section-title">What's Happening Now</div>
-        <div class="extra-section-subtitle">The most notable recent event our AI identified for this company</div>
+        <div class="extra-section-subtitle">The most notable recent event our engine identified for this company</div>
         <p class="sig-dev-headline">${escapeHtml(sigDev.headline)}</p>
         ${sigDev.date ? `<span class="sig-dev-date">${fmtDate(sigDev.date)}</span>` : ''}
     </div>`
@@ -627,7 +627,7 @@ export function buildPdfHtml(params: {
         <div class="brand">BrewStock<span>AI</span></div>
         <div class="meta">
             <strong>${date}</strong>
-            AI-Driven Analysis Report
+            Fundamental Analysis &amp; Sentiment Report
         </div>
     </div>
 

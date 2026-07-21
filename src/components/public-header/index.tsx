@@ -12,7 +12,6 @@ import { useHotkeys } from 'react-hotkeys-hook'
 const NAV_LINKS = [
     { label: 'Reports', href: '/example-report' },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'Education Hub', href: '/education-hub' },
     { label: 'FAQs', href: '/faq' },
 ] as const
 

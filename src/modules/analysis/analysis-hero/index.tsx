@@ -12,11 +12,11 @@ export function AnalysisHero({ children, companyName }: Props) {
                 {companyName ? (
                     <h1 className="flex flex-col gap-2 text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
                         <span>{companyName}</span>
-                        <span>AI-Powered Stock Analysis</span>
+                        <span>Professional Stock Analysis</span>
                     </h1>
                 ) : (
                     <h1 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
-                        AI-Powered Stock Analysis
+                        Professional Stock Analysis
                     </h1>
                 )}
 

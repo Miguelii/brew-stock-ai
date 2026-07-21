@@ -6,7 +6,7 @@ import { SectionHeader } from '@/modules/home/section-header'
 
 const FEATURED_QUESTIONS = [
     'What is BrewStockAI?',
-    'What data does the AI use?',
+    'What data does the engine use?',
     'How accurate is it? What are the limitations?',
     'How much does one analysis cost?',
     'Can I try it for free?',

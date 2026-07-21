@@ -37,7 +37,7 @@ export const FAQ_GROUPS = [
         items: [
             {
                 question: 'What is BrewStockAI?',
-                answer: 'BrewStockAI is an AI-powered stock research tool. You enter a ticker, choose the type of analysis you want, and within about two minutes you receive a structured research report covering the investment thesis, key financial metrics, analyst outlook, recent developments, and sector positioning.',
+                answer: 'BrewStockAI is a professional stock research tool. You enter a ticker, choose the type of analysis you want, and within about two minutes you receive a structured research report covering the investment thesis, key financial metrics, analyst outlook, recent developments, and sector positioning.',
             },
             {
                 question: 'What types of analysis can I run?',
@@ -50,19 +50,19 @@ export const FAQ_GROUPS = [
         ],
     },
     {
-        heading: 'How the AI Works',
+        heading: 'How the Engine Works',
         items: [
             {
-                question: 'What data does the AI use?',
-                answer: 'Before writing a single word, the AI gathers real data about the company. That includes recent earnings results, estimates for future earnings and revenue, several years of revenue and profit trends, analyst ratings, recent insider buying and selling, price signals such as moving averages, and the latest company news.',
+                question: 'What data does the engine use?',
+                answer: 'Before writing a single word, the engine gathers real data about the company. That includes recent earnings results, estimates for future earnings and revenue, several years of revenue and profit trends, analyst ratings, recent insider buying and selling, price signals such as moving averages, and the latest company news.',
             },
             {
                 question: 'How is the analysis actually produced?',
-                answer: 'The AI weighs the evidence the way a disciplined analyst would: fundamentals first, with technical signals and news treated as confirming or challenging signals rather than the core of the case. The output is a structured report where the numbers used in the reasoning are shown alongside the written analysis.',
+                answer: 'The engine weighs the evidence the way a disciplined analyst would: fundamentals first, with technical signals and news treated as confirming or challenging signals rather than the core of the case. The output is a structured report where the numbers used in the reasoning are shown alongside the written analysis.',
             },
             {
                 question: 'How accurate is it? What are the limitations?',
-                answer: 'Reports are grounded in real financial data, but no analysis, human or AI, can predict the market. AI models can also make mistakes or miss context. Treat every report as a well-organized starting point for your own research, not as a verdict. Always verify the points that matter to your decision.',
+                answer: 'Reports are grounded in real financial data, but no analysis, human or automated, can predict the market. Automated models can also make mistakes or miss context. Treat every report as a well-organized starting point for your own research, not as a verdict. Always verify the points that matter to your decision.',
             },
             {
                 question: 'Is this financial advice?',

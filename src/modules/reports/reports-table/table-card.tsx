@@ -174,7 +174,7 @@ function StatusBadge({ status }: { status: ReportStatus }) {
         return (
             <Badge className="py-3 gap-1.5 border border-accent-blue/25 bg-accent-blue-light text-accent-blue font-bold hover:bg-accent-blue/10 w-32.5 md:w-30">
                 <Loader2 className="size-3 animate-spin" />
-                AI is working...
+                Generating...
             </Badge>
         )
     }

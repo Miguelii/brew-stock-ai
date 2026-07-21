@@ -5,7 +5,7 @@ export const REPORT_SECTIONS = [
         icon: FileText,
         title: 'Summary',
         description:
-            'What the AI found: the overall verdict, top strengths, and the one risk you should know about.',
+            'What the engine found: the overall verdict, top strengths, and the one risk you should know about.',
         featured: false,
     },
     {
@@ -24,7 +24,7 @@ export const REPORT_SECTIONS = [
     },
     {
         icon: Sparkles,
-        title: 'Full AI Report',
+        title: 'Full Report',
         description:
             'A complete, in-depth analysis of the company: growth, profitability, cash flow, and financial health, explained in clear terms.',
         featured: false,
@@ -33,7 +33,7 @@ export const REPORT_SECTIONS = [
         icon: Zap,
         title: "What's Happening Now",
         description:
-            'The most notable recent event our AI found and why it matters. It could be a big announcement, a leadership change, or market-moving news.',
+            'The most notable recent event our engine found and why it matters. It could be a big announcement, a leadership change, or market-moving news.',
         featured: false,
     },
     {

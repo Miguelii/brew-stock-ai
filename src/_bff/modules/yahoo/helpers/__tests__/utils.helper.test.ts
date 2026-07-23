@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasStockData } from '@/_bff/modules/yahoo/helpers/has-stock-data.helper'
+import { hasStockData } from '../utils.helper'
 
 describe('hasStockData', () => {
     it('returns false for nullish values', () => {

@@ -45,12 +45,13 @@ getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient?, useBaseMode
   │
   ├─ basePrompt        = PROMPTS_MAP[promptType]            // per-type prompt
   │
-  ├─ yahooPreFetch     = getYahooTtlData(stockSymbol)       // ticker + financials + fundamentals
-  │                                                          //   + sigDev + reports + scores (TTL-cached)
+  ├─ yahooPreFetch     = getYahooDataWithFallbackService(stockSymbol) // ticker + financials + fundamentals
+  │                                                            //   + sigDev + reports + scores
+  │                                                            //   (fresh-first, stock_data as fallback)
   ├─ tickerForData     = yahooPreFetch?.ticker ?? stockSymbol
   │
   ├─ Effect.all (parallel, both NON-FATAL → null on failure)
-  │    ├─ priceHistory = getPriceHistory(tickerForData)        // RAW 1y daily closes (yahoo/processors)
+  │    ├─ priceHistory = getPriceHistoryService(tickerForData)        // RAW 1y daily closes (yahoo/processors)
   │    └─ news         = getLatestNewsService(tickerForData)   // RAW Finnhub company-news (finnhub/services)
   │
   ├─ technicals        = priceHistory?.length ? computeTechnicalIndicators(priceHistory) : null
@@ -66,8 +67,8 @@ getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient?, useBaseMode
 Key properties:
 
 - **Price history and news are non-fatal.** A failure in either resolves to `null` and the analysis
-  proceeds without that block. Yahoo data itself (`getYahooTtlData`) also resolves to `null` on
-  failure — the analysis still runs on whatever context survives.
+  proceeds without that block. Yahoo data itself (`getYahooDataWithFallback`) also resolves to `null`
+  on failure — the analysis still runs on whatever context survives.
 - **Raw (uncached, session-less) fetchers** are used here — `getPriceHistory`
   (`yahoo/processors/get-price-history.processor.ts`) and `getLatestNewsService`
   (`finnhub/services/get-latest-news.service.ts`). The user-facing tRPC endpoints use separate
@@ -76,7 +77,7 @@ Key properties:
   (`finnhub/services/get-latest-news-cached.service.ts`, exposed by
   `finnhub/controllers/get-latest-news.controller.ts`); see `spec/e2e.md` and the source for the
   split rationale.
-- **Same `ticker`** (resolved once by `getYahooTtlData`) is reused for news and price history so all
+- **Same `ticker`** (resolved once by `getYahooDataWithFallback`) is reused for news and price history so all
   blocks refer to the same symbol.
 
 ---
@@ -141,19 +142,19 @@ Live data from Yahoo Finance — incorporate these insights into your analysis w
 
 All file paths below are relative to `src/_bff/modules/`.
 
-| Block                          | Status   | Source                         | Service / file                                                                                                  | Cache (TTL)           |
-| ------------------------------ | -------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | --------------------- |
-| Key Financial Indicators       | EXISTING | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` (`financialData`, `summaryDetail`, `defaultKeyStatistics`)       | `stock_data` (3 days) |
-| Earnings History               | NEW      | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` + `yahoo/helpers/map-fundamentals.helper.ts` (`earningsHistory`) | `stock_data` (3 days) |
-| Forward Estimates              | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`earningsTrend`)                                                    | `stock_data` (3 days) |
-| Revenue & Net Income Trend     | NEW      | Yahoo `fundamentalsTimeSeries` | `yahoo/helpers/map-fundamentals.helper.ts` (`financials`, annual)                                               | `stock_data` (3 days) |
-| Analyst Rating Distribution    | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`recommendationTrend`)                                              | `stock_data` (3 days) |
-| Insider Activity               | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`insiderTransactions`)                                              | `stock_data` (3 days) |
-| Technical Snapshot             | NEW      | Yahoo `chart` (1y daily)       | `yahoo/processors/get-price-history.processor.ts` → `yahoo/helpers/compute-technical-indicators.helper.ts`      | price-history (12 h)  |
-| Recent Significant Development | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`sigDevs[0]`)                                                   | `stock_data` (3 days) |
-| Analyst Coverage               | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`reports`, 3)                                                   | `stock_data` (3 days) |
-| Company vs Sector Scores       | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`companySnapshot`)                                              | `stock_data` (3 days) |
-| Recent News                    | NEW      | Finnhub `company-news`         | `finnhub/services/get-latest-news.service.ts` (top 3)                                                           | latest-news (1 day)   |
+| Block                          | Status   | Source                         | Service / file                                                                                                  | Cache (TTL)             |
+| ------------------------------ | -------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| Key Financial Indicators       | EXISTING | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` (`financialData`, `summaryDetail`, `defaultKeyStatistics`)       | `stock_data` (fallback) |
+| Earnings History               | NEW      | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` + `yahoo/helpers/map-fundamentals.helper.ts` (`earningsHistory`) | `stock_data` (fallback) |
+| Forward Estimates              | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`earningsTrend`)                                                    | `stock_data` (fallback) |
+| Revenue & Net Income Trend     | NEW      | Yahoo `fundamentalsTimeSeries` | `yahoo/helpers/map-fundamentals.helper.ts` (`financials`, annual)                                               | `stock_data` (fallback) |
+| Analyst Rating Distribution    | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`recommendationTrend`)                                              | `stock_data` (fallback) |
+| Insider Activity               | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`insiderTransactions`)                                              | `stock_data` (fallback) |
+| Technical Snapshot             | NEW      | Yahoo `chart` (1y daily)       | `yahoo/processors/get-price-history.processor.ts` → `yahoo/helpers/compute-technical-indicators.helper.ts`      | price-history (12 h)    |
+| Recent Significant Development | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`sigDevs[0]`)                                                   | `stock_data` (fallback) |
+| Analyst Coverage               | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`reports`, 3)                                                   | `stock_data` (fallback) |
+| Company vs Sector Scores       | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`companySnapshot`)                                              | `stock_data` (fallback) |
+| Recent News                    | NEW      | Finnhub `company-news`         | `finnhub/services/get-latest-news.service.ts` (top 3)                                                           | latest-news (1 day)     |
 
 All field shapes live in `src/types/ReportDTO.ts`.
 
@@ -270,15 +271,18 @@ $0.80/$4.00, Sonnet $3.00/$15.00 per 1M input/output tokens).
 
 ## Caching & resilience
 
-| Store                          | Scope                                               | TTL    | Source constant         |
-| ------------------------------ | --------------------------------------------------- | ------ | ----------------------- |
-| `stock_data` table             | Yahoo financials + fundamentals + insights snapshot | 3 days | `YAHOO_DATA_TTL`        |
-| `unstable_cache` price-history | 1y daily closes (per ticker)                        | 12 h   | `GET_PRICE_HISTORY_TTL` |
-| `unstable_cache` latest-news   | Finnhub company-news (per ticker)                   | 1 day  | `LATEST_NEWS_TTL`       |
+| Store                          | Scope                                               | TTL      | Source constant         |
+| ------------------------------ | --------------------------------------------------- | -------- | ----------------------- |
+| `stock_data` table             | Yahoo financials + fundamentals + insights snapshot | fallback | (none, fresh-first)     |
+| `unstable_cache` price-history | 1y daily closes (per ticker)                        | 12 h     | `GET_PRICE_HISTORY_TTL` |
+| `unstable_cache` latest-news   | Finnhub company-news (per ticker)                   | 1 day    | `LATEST_NEWS_TTL`       |
 
-- The TTL-cached `stock_data` row carries financials **and** fundamentals (column `fundamentals jsonb`).
-  Rows cached before the fundamentals column existed read back as `null` until they refresh past the
-  TTL — handled gracefully by the null-checks in `buildYahooContext`.
+- Yahoo data is **fresh-first**: every analysis fetches live from Yahoo (the package has no rate
+  limit) and upserts the result into `stock_data`. The stored row is used only as a fallback — per
+  field when some Yahoo sub-calls fail, or wholesale when the whole fetch fails.
+- The `stock_data` row carries financials **and** fundamentals (column `fundamentals jsonb`).
+  Missing columns read back as `null` — handled gracefully by the null-checks in
+  `buildYahooContext`.
 - Every supplementary source (price history, news, and Yahoo itself) is **non-fatal**: missing data
   removes its block but never aborts the analysis. The model is told to reason around missing metrics
   rather than invent them.
@@ -308,15 +312,15 @@ src/_bff/modules/yahoo/
 ├── services/
 │   └── get-price-history.service.ts        # cached, session-gated price history (tRPC)
 ├── processors/
-│   ├── get-yahoo-ttl-data.processor.ts     # TTL read/refresh of stock_data (accepts a client)
+│   ├── get-yahoo-data-with-fallback.processor.ts # fresh-first fetch, stock_data as fallback (accepts a client)
 │   ├── get-yahoo-data.processor.ts         # quoteSummary + fundamentalsTimeSeries + insights
 │   ├── get-yahoo-ticker.processor.ts       # symbol → canonical ticker
 │   ├── get-price-history.processor.ts      # RAW 1y daily closes (analysis pipeline)
 │   ├── fetch-history.processor.ts          # fetchHistoryRaw / fetchHistoryCached
-│   └── save-yahoo-data-to-ttl.processor.ts # persist financials + fundamentals
+│   └── save-yahoo-data.processor.ts        # persist financials + fundamentals
 ├── repositories/
 │   └── stock-data.repository.ts            # stock_data table access
-├── constants/index.ts                      # YAHOO_DATA_TTL, GET_PRICE_HISTORY_TTL, cache key
+├── constants/index.ts                      # GET_PRICE_HISTORY_TTL, cache key
 ├── types/index.ts
 └── helpers/
     ├── build-yahoo-context.helper.ts       # assembles the "## Current Market Context" block

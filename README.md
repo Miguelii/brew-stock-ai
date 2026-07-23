@@ -55,15 +55,17 @@ flowchart TD
         ANALYSIS --> PRICE
         ANALYSIS --> FINNHUB["Finnhub\nnews"]
 
-        ANALYSIS --> AI{{"AI Analysis using Claude"}}
-        AI --> SAVE["Save analysis + sentiment"]
+        YAHOO -->|"context"| AI{{"AI Analysis using Claude"}}
+        PRICE -->|"context"| AI
+        FINNHUB -->|"context"| AI
+        AI --> SAVE["Save full report analysis"]
         SAVE --> PUSH["Push notification"]
     end
 
     TQ --> JOB
     JOB -.->|"on failure"| FAIL["mark FAILED\n+ refund credits"]
     FAIL --> PG
-    YAHOO -.->|"TTL cache"| PG
+    YAHOO -.->|"save fresh data\n(DB used as fallback)"| PG
     SAVE -->|"persist"| PG
 
     PUSH -.-> U

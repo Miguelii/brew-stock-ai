@@ -134,7 +134,7 @@ export default async function ReportsIdPage(props: Props) {
                             )}
                             <h1
                                 data-testid="report-ticker-heading"
-                                className="text-4xl md:text-5xl font-bold tracking-tight text-accent-blue font-mono"
+                                className="text-2xl font-bold tracking-tight text-accent-blue font-mono"
                             >
                                 {report.stock}
                             </h1>

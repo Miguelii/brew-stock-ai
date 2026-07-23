@@ -27,14 +27,14 @@ export function ProfileDropdownMenu({ children }: Props) {
 
             <DropdownMenuContent align="end" className="min-w-40 rounded-none">
                 <DropdownMenuItem onClick={() => router.push('/account')}>
-                    <UserIcon size={14} />
+                    <UserIcon className="size-3.5" />
                     Account
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem onClick={() => logout.mutate()}>
-                    <LogOut size={14} />
+                    <LogOut className="size-3.5" />
                     {logout.isPending ? 'Logging out…' : 'Logout'}
                 </DropdownMenuItem>
             </DropdownMenuContent>

@@ -73,7 +73,7 @@ export function AnalysisCard() {
                                 )}
                             >
                                 {type.featured && (
-                                    <span className="absolute top-4 right-4 font-mono text-[10px] font-semibold px-2 py-0.5 rounded-none bg-accent-blue/10 text-accent-blue border border-accent-blue/20 uppercase tracking-wider">
+                                    <span className="absolute top-4 right-4 font-mono text-xs font-semibold px-2 py-0.5 rounded-none bg-accent-blue/10 text-accent-blue border border-accent-blue/20 uppercase tracking-wider">
                                         Most Complete
                                     </span>
                                 )}

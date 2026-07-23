@@ -59,10 +59,10 @@ export default function AboutPage() {
                             single name.
                         </p>
                         <p>
-                            BrewStockAI exists to close that gap. We use AI to turn hours of
-                            research into a few minutes and a few cents. Anyone curious about a
-                            company can read a clear, structured breakdown of its financials, risks,
-                            and competitive position before deciding what to do.
+                            BrewStockAI exists to close that gap. We use a powerfull Engine to turn
+                            hours of research into a few minutes and a few cents. Anyone curious
+                            about a company can read a clear, structured breakdown of its
+                            financials, risks, and competitive position before deciding what to do.
                         </p>
                         <p>
                             Our role is educational. We help you{' '}

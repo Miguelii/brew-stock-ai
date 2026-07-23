@@ -16,7 +16,7 @@ export const dynamic = 'force-static'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 const HOME_REVEAL_WORDS =
-    'You type a ticker. Our AI reads all the data and writes a clear, professional report. In under 120 seconds.'.split(
+    'You type a ticker. Our Engine gathers all the data and writes a clear, professional report. In under 120 seconds.'.split(
         ' '
     )
 

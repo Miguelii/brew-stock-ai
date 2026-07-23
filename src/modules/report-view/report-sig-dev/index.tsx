@@ -14,7 +14,7 @@ export function ReportSigDev({ headline, date }: Props) {
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">What&apos;s Happening Now</CardTitle>
+                <CardTitle className="font-semibold">What&apos;s Happening Now</CardTitle>
                 <p className="text-xs text-muted-foreground">
                     The most notable recent event our engine identified for this company
                 </p>

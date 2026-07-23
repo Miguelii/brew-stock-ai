@@ -44,7 +44,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                 'text-primary transition-all duration-200 hover:bg-muted active:scale-95'
                             )}
                         >
-                            <Menu size={18} />
+                            <Menu className="size-3.5" />
                         </button>
                     </>
                 ) : (
@@ -68,7 +68,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                 aria-label="Close menu"
                                 className="flex items-center justify-center h-8 w-8 rounded-none text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
                             >
-                                <X size={16} />
+                                <X className="size-3.5" />
                             </button>
                         </DrawerClose>
                     </div>
@@ -109,7 +109,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                                 height={20}
                                             />
                                         ) : (
-                                            <UserIcon size={16} className="text-muted-foreground" />
+                                            <UserIcon className="size-3.5 text-muted-foreground" />
                                         )}
                                         Account
                                     </Link>
@@ -120,7 +120,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                     disabled={logout.isPending}
                                     className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-medium text-primary transition-colors hover:bg-muted"
                                 >
-                                    <LogOut size={16} />
+                                    <LogOut className="size-3.5" />
                                     {logout.isPending ? 'Logging out…' : 'Logout'}
                                 </button>
                             </div>

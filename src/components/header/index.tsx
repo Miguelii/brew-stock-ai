@@ -57,7 +57,7 @@ export async function Header({ userPromise }: Props) {
                                             height={36}
                                         />
                                     ) : (
-                                        <UserRound size={18} />
+                                        <UserRound className="size-3.5" />
                                     )}
                                 </ProfileDropdownMenu>
                             </div>

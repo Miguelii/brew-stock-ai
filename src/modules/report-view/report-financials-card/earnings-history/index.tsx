@@ -27,7 +27,7 @@ export function EarningsHistory({ history }: Props) {
                             key={q.period}
                             className="flex items-center justify-between gap-2 px-3 py-2"
                         >
-                            <span className="text-[11px] text-muted-foreground">
+                            <span className="text-xs text-muted-foreground">
                                 {q.quarter ?? q.period}
                             </span>
                             <div className="flex items-center gap-3">
@@ -40,7 +40,7 @@ export function EarningsHistory({ history }: Props) {
                                 {beat != null && (
                                     <span
                                         className={cn(
-                                            'text-[11px] font-semibold whitespace-nowrap',
+                                            'text-xs font-semibold whitespace-nowrap',
                                             beat ? 'text-positive' : 'text-destructive'
                                         )}
                                     >

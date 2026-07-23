@@ -28,7 +28,7 @@ export function ReportSections() {
                                 className="group flex gap-5 border-t border-border pt-6"
                             >
                                 <div className="shrink-0 w-9 h-9 rounded-none bg-accent-blue/10 flex items-center justify-center">
-                                    <Icon className="size-4 text-accent-blue" />
+                                    <Icon className="size-5 text-accent-blue" />
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <h3 className="text-base font-semibold flex items-baseline gap-3">

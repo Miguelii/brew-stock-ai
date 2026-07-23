@@ -113,7 +113,7 @@ export default function DisclaimerPage() {
                         </p>
                     </Section>
 
-                    <Section title="4. AI Output Limitations">
+                    <Section title="4. Output Limitations">
                         <p>
                             Reports are produced by large language models that process public
                             financial data. AI output:

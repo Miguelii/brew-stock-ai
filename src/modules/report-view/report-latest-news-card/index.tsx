@@ -15,7 +15,7 @@ export function ReportLatestNewsCard({ news, ticker }: Props) {
     return (
         <Card className="h-fit overflow-hidden gap-0 pb-0!">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">
+                <CardTitle className="font-semibold">
                     {ticker ? (
                         <>
                             <span>Recent news mentioning </span>
@@ -49,10 +49,10 @@ export function ReportLatestNewsCard({ news, ticker }: Props) {
                                 )}
                             >
                                 <div className="flex items-center gap-1.5">
-                                    <span className="font-mono text-[9px] font-semibold uppercase tracking-widest text-accent-blue">
+                                    <span className="font-mono text-xs font-semibold uppercase tracking-widest text-accent-blue">
                                         {item.source}
                                     </span>
-                                    <span className="text-[9px] text-muted-foreground">
+                                    <span className="text-xs text-muted-foreground">
                                         · {formatDate(item.datetime)}
                                     </span>
                                 </div>
@@ -62,12 +62,12 @@ export function ReportLatestNewsCard({ news, ticker }: Props) {
                                 </p>
 
                                 {item.summary && (
-                                    <p className="line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
+                                    <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
                                         {item.summary}
                                     </p>
                                 )}
 
-                                <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground transition-all duration-200 group-hover:gap-1.5 group-hover:text-accent-blue">
+                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-all duration-200 group-hover:gap-1.5 group-hover:text-accent-blue">
                                     See Full Article
                                     <span className="transition-transform duration-200 group-hover:translate-x-0.5">
                                         →

@@ -24,19 +24,17 @@ export function MetricRow({ label, value, rawValue, metricKey, helper, context }
     return (
         <div className="flex items-start justify-between gap-3 border-t border-border/60 py-2 first:border-t-0 first:pt-0">
             <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-[13px] leading-tight text-muted-foreground">{label}</span>
+                <span className="text-md leading-tight text-muted-foreground">{label}</span>
                 {help && (
-                    <span className="text-[10px] leading-tight text-muted-foreground/70">
-                        {help}
-                    </span>
+                    <span className="text-xs leading-tight text-muted-foreground/70">{help}</span>
                 )}
             </div>
             <div className="flex shrink-0 flex-col items-end text-right gap-1">
-                <span className={cn('text-[13px] font-semibold leading-tight', getColor())}>
+                <span className={cn('text-md font-semibold leading-tight', getColor())}>
                     {value}
                 </span>
                 {hasEvaluation && (
-                    <span className={cn('text-[10px] font-medium leading-none', getColor())}>
+                    <span className={cn('text-xs font-medium leading-none', getColor())}>
                         {evaluation.verdict}
                     </span>
                 )}

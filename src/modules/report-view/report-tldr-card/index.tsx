@@ -19,7 +19,7 @@ export function ReportTldrCard({ report }: Props) {
     return (
         <Card>
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
+                <CardTitle className="font-semibold flex items-center gap-2">
                     <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-bold tracking-widest uppercase bg-accent-blue-light text-accent-blue">
                         Summary of what our engine found:
                     </span>

@@ -45,6 +45,18 @@ html {
     button {
         @apply cursor-pointer;
     }
+
+    body {
+        letter-spacing: -0.15px;
+    }
+
+    /* Monospace text must not inherit the negative tracking */
+    code,
+    pre,
+    kbd,
+    samp {
+        letter-spacing: normal;
+    }
 }
 
 @layer components {

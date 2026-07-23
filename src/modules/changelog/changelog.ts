@@ -6,7 +6,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
         version: 'v1.1',
         title: 'A deeper, more grounded analysis engine',
         description:
-            'Our AI now reads earnings trends, analyst consensus, technical signals, and the latest news, and shows it all directly in your reports.',
+            'Our Engine now reads earnings trends, analyst consensus, technical signals, and the latest news, and shows it all directly in your reports.',
         publishedAt: '2026-06-04',
         tags: ['Improved'],
         highlights: [

@@ -43,7 +43,7 @@ export function ReportSectorScores({ scores }: Props) {
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">How It Compares</CardTitle>
+                <CardTitle className="font-semibold">How It Compares</CardTitle>
                 <p className="text-xs text-muted-foreground">
                     How this company stacks up against others in the same sector (scale 0 to 1,
                     higher is better)
@@ -84,7 +84,7 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
                         </span>
                     </span>
                 </div>
-                <span className="text-[11px] text-muted-foreground">{score.description}</span>
+                <span className="text-xs text-muted-foreground">{score.description}</span>
             </div>
 
             {/* Track */}

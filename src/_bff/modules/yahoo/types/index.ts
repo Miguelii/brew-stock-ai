@@ -16,4 +16,9 @@ export type GetYahooDataResult = {
     fundamentals: StockFundamentals | null
 }
 
-export type YahooTtlResult = { ticker: string; data: GetYahooDataResult; isFresh: boolean } | null
+export type YahooDataWithFallbackResult = {
+    ticker: string
+    data: GetYahooDataResult
+    /** isFresh is true when at least one field came fresh from Yahoo */
+    isFresh: boolean
+} | null

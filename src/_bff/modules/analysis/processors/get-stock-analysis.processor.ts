@@ -3,7 +3,7 @@ import { ServerEnv } from '@/env/server'
 import { AiGenerationError, InvalidPromptTypeError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
-import { getYahooTtlData } from '@/_bff/modules/yahoo/processors/get-yahoo-ttl-data.processor'
+import { getYahooDataWithFallbackService } from '@/_bff/modules/yahoo/services/get-yahoo-data-with-fallback.service'
 import { getLatestNewsService } from '@/_bff/modules/finnhub/services/get-latest-news.service'
 import { computeTechnicalIndicators } from '@/_bff/modules/yahoo/helpers/compute-technical-indicators.helper'
 import { buildYahooContext } from '@/_bff/modules/yahoo/helpers/build-yahoo-context.helper'
@@ -20,9 +20,9 @@ import {
 } from '@/_bff/modules/analysis/constants'
 import { SystemPrompt } from '@/_bff/modules/analysis/prompts/system.prompt'
 import { calculateTokenCost } from '@/_bff/modules/analysis/helpers/calculate-token-cost.helper'
-import { saveYahooDataToTTL } from '@/_bff/modules/yahoo/processors/save-yahoo-data-to-ttl.processor'
+import { saveYahooData } from '@/_bff/modules/yahoo/processors/save-yahoo-data.processor'
 import { saveAnalysisToReport } from '@/_bff/modules/reports/processors/save-analysis-to-report.processor'
-import { getPriceHistory } from '@/_bff/modules/yahoo/processors/get-price-history.processor'
+import { getPriceHistoryService } from '@/_bff/modules/yahoo/services/get-price-history.service'
 
 export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     stockSymbol: string,
@@ -40,7 +40,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         })
     }
 
-    const yahooPreFetch = yield* getYahooTtlData(stockSymbol, supabaseClient)
+    const yahooPreFetch = yield* getYahooDataWithFallbackService(stockSymbol, supabaseClient)
 
     const tickerForData = yahooPreFetch?.ticker ?? stockSymbol
 
@@ -49,10 +49,10 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     // Persist fresh Yahoo data immediately (in parallel with the rest of the pipeline)
     const saveYahooFiber = yahooPreFetch?.isFresh
         ? yield* Effect.fork(
-              saveYahooDataToTTL(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
+              saveYahooData(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
                   Effect.tapError((error) =>
                       Effect.sync(() =>
-                          logger.error('saveYahooDataToTTL failed', {
+                          logger.error('saveYahooData failed', {
                               ticker: finalTicker,
                               error,
                           })
@@ -66,7 +66,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     // Adicional context - a failure here must never abort the const
     const [priceHistory, news] = yield* Effect.all(
         [
-            getPriceHistory(tickerForData).pipe(
+            getPriceHistoryService(tickerForData).pipe(
                 Effect.tapError((error) =>
                     Effect.sync(() =>
                         logger.error('getPriceHistory failed', {

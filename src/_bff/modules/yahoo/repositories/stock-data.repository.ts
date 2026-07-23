@@ -3,10 +3,10 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { SaveStockDataError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
-import { hasStockData } from '../helpers/has-stock-data.helper'
+import { hasStockData } from '@/_bff/modules/yahoo/helpers/utils.helper'
 
-// Returns the raw Supabase response — the TTL processor decides staleness and fallbacks
-export function selectStockDataWithTtl(supabase: SupabaseClient, ticker: string) {
+// Returns the raw Supabase response, the fallback processor decides how to use it
+export function selectStockData(supabase: SupabaseClient, ticker: string) {
     return Effect.tryPromise({
         try: () =>
             supabase.from('stock_data').select('*, last_update_at').eq('id', ticker).maybeSingle(),

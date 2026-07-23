@@ -6,7 +6,7 @@ import { createSbAdminClient } from '@/lib/utils.server'
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
 import { upsertStockData } from '@/_bff/modules/yahoo/repositories/stock-data.repository'
 
-export const saveYahooDataToTTL = Effect.fn('saveYahooDataToTTL')(function* (
+export const saveYahooData = Effect.fn('saveYahooData')(function* (
     ticker: string | null,
     data: GetYahooDataResult,
     supabaseClient?: SupabaseClient

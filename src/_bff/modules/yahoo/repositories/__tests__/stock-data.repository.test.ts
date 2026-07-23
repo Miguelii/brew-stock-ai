@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import {
-    selectStockDataWithTtl,
+    selectStockData,
     upsertStockData,
 } from '@/_bff/modules/yahoo/repositories/stock-data.repository'
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
@@ -18,15 +18,15 @@ const DATA: GetYahooDataResult = {
     fundamentals: null,
 } as unknown as GetYahooDataResult
 
-describe('selectStockDataWithTtl', () => {
-    it('returns the raw response with the TTL column', async () => {
+describe('selectStockData', () => {
+    it('returns the raw response for the ticker', async () => {
         const row = { id: 'AAPL', last_update_at: '2026-06-01' }
         const maybeSingle = vi.fn().mockResolvedValue({ data: row })
         const eq = vi.fn(() => ({ maybeSingle }))
         const select = vi.fn(() => ({ eq }))
         const supabase = { from: () => ({ select }) } as unknown as SupabaseClient
 
-        const res = await Effect.runPromise(selectStockDataWithTtl(supabase, 'AAPL'))
+        const res = await Effect.runPromise(selectStockData(supabase, 'AAPL'))
         expect(res.data).toEqual(row)
         expect(select).toHaveBeenCalledWith('*, last_update_at')
         expect(eq).toHaveBeenCalledWith('id', 'AAPL')

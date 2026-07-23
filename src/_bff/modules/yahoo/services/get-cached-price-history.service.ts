@@ -1,18 +1,19 @@
+import 'server-only'
+
 import { Effect } from 'effect'
 import { YahooPriceHistoryError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
-import { fetchHistoryRaw } from '@/_bff/modules/yahoo/processors/fetch-history.processor'
+import { fetchHistoryCached } from '@/_bff/modules/yahoo/processors/fetch-history.processor'
 
 /**
- * Raw fetcher — no session guard, no `unstable_cache`. Used inside the analysis
- * pipeline (Trigger.dev runtime), where there is no user session and the Next.js
- * data cache is not available.
+ * Cached, session-gated wrapper exposed to the user via tRPC. The session check
+ * avoids spamming the upstream endpoint and `unstable_cache` serves the user.
  */
-export const getPriceHistoryService = Effect.fn('getPriceHistoryService')(function* (
+export const getCachedPriceHistoryService = Effect.fn('getCachedPriceHistoryService')(function* (
     ticker: string
 ) {
     return yield* Effect.tryPromise({
-        try: () => fetchHistoryRaw(ticker),
+        try: () => fetchHistoryCached(ticker)(),
         catch: (cause) =>
             new YahooPriceHistoryError({
                 ticker: `|${ticker}|`,

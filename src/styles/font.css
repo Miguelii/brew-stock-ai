@@ -1,4 +1,8 @@
 @theme inline {
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
+
+    /* 13px step between text-xs (12px) and text-sm (14px) */
+    --text-md: 0.8125rem;
+    --text-md--line-height: 1.5;
 }

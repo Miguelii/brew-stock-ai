@@ -18,9 +18,7 @@ export function ReportMarketOutlookCard({ financials, fundamentals, ticker }: Pr
     return (
         <Card className="h-fit">
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">
-                    Market &amp; Analyst Outlook
-                </CardTitle>
+                <CardTitle className="font-semibold">Market &amp; Analyst Outlook</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
                 <Suspense fallback={<StockPriceChartSkeleton />}>

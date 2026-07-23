@@ -8,7 +8,7 @@ export function TokenPromo() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-background opacity-60" />
                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-background" />
                     </span>
-                    <span className="text-[9px] font-bold tracking-[0.25em] text-background/70 uppercase">
+                    <span className="text-xs font-bold tracking-[0.25em] text-background/70 uppercase">
                         Limited Time Offer
                     </span>
                 </div>

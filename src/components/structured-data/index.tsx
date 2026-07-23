@@ -22,7 +22,7 @@ export function OrganizationSchema() {
         url: WEBSITE_URL,
         logo: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
         description:
-            'Institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators.',
+            'Institutional-grade stock analysis for any equity. Financial metrics, market sentiment, and technical indicators.',
         founder: {
             '@type': 'Person',
             name: SITE_AUTHOR_NAME,
@@ -47,7 +47,7 @@ export function WebSiteSchema() {
         name: 'BrewStockAI',
         url: WEBSITE_URL,
         description:
-            'Institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.',
+            'Institutional-grade stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.',
         inLanguage: 'en-US',
     }
 

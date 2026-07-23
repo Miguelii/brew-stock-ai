@@ -91,7 +91,7 @@ export function TokenPackages({
                                 )}
 
                                 {pkg.hasPromo && (
-                                    <span className="absolute top-3 right-3 text-[9px] font-bold tracking-wider text-accent-blue border border-accent-blue/35 px-1.5 py-0.5 leading-tight">
+                                    <span className="absolute top-3 right-3 text-xs font-bold tracking-wider text-accent-blue border border-accent-blue/35 px-1.5 py-0.5 leading-tight">
                                         50% OFF
                                     </span>
                                 )}

@@ -33,7 +33,7 @@ export function AnalystTargets({ financials }: Props) {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-none">
-                    <span className="text-[11px] leading-none text-muted-foreground">
+                    <span className="text-xs leading-none text-muted-foreground">
                         Lowest analyst target
                     </span>
                     <span
@@ -46,7 +46,7 @@ export function AnalystTargets({ financials }: Props) {
                     </span>
                 </div>
                 <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-none">
-                    <span className="text-[11px] leading-none text-muted-foreground">
+                    <span className="text-xs leading-none text-muted-foreground">
                         Average analyst target
                     </span>
                     <span
@@ -59,7 +59,7 @@ export function AnalystTargets({ financials }: Props) {
                     </span>
                 </div>
                 <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-none">
-                    <span className="text-[11px] leading-none text-muted-foreground">
+                    <span className="text-xs leading-none text-muted-foreground">
                         Highest analyst target
                     </span>
                     <span

@@ -42,10 +42,8 @@ export function AnalystRatingsBar({ ratings }: Props) {
                 {SEGMENTS.map((s) => (
                     <div key={s.key} className="flex items-center gap-1.5">
                         <span className={cn('size-2 rounded-full shrink-0', s.color)} />
-                        <span className="text-[11px] text-muted-foreground">{s.label}</span>
-                        <span className="text-[11px] font-semibold text-primary">
-                            {ratings[s.key]}
-                        </span>
+                        <span className="text-xs text-muted-foreground">{s.label}</span>
+                        <span className="text-xs font-semibold text-primary">{ratings[s.key]}</span>
                     </div>
                 ))}
             </div>

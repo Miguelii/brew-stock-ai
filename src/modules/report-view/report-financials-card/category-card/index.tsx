@@ -39,9 +39,7 @@ export function CategoryCard({ title, question, metrics }: Props) {
                         >
                             {grade.letter}
                         </span>
-                        <span
-                            className={cn('text-[10px] leading-tight', qualityToken(grade.quality))}
-                        >
+                        <span className={cn('text-xs leading-tight', qualityToken(grade.quality))}>
                             {gradeWord(grade.quality)}
                         </span>
                     </div>

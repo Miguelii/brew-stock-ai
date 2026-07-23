@@ -121,7 +121,7 @@ export function PublicHeader() {
                                         exit={{ rotate: 45, opacity: 0 }}
                                         transition={{ duration: 0.15 }}
                                     >
-                                        <X size={16} strokeWidth={2} />
+                                        <X className="size-3.5" strokeWidth={2} />
                                     </m.span>
                                 ) : (
                                     <m.span
@@ -131,7 +131,7 @@ export function PublicHeader() {
                                         exit={{ rotate: -45, opacity: 0 }}
                                         transition={{ duration: 0.15 }}
                                     >
-                                        <Menu size={16} strokeWidth={2} />
+                                        <Menu className="size-3.5" strokeWidth={2} />
                                     </m.span>
                                 )}
                             </AnimatePresence>

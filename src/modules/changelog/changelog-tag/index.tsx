@@ -15,7 +15,7 @@ export function ChangelogTagChip({ tag }: Props) {
     return (
         <span
             className={cn(
-                'inline-flex items-center rounded-none px-2.5 py-0.5 text-[11px] font-semibold',
+                'inline-flex items-center rounded-none px-2.5 py-0.5 text-xs font-semibold',
                 TAG_STYLES[tag]
             )}
         >

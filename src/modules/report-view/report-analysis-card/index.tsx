@@ -10,7 +10,7 @@ export function ReportAnalysisCard({ report }: Props) {
     return (
         <Card>
             <CardHeader className="border-b">
-                <CardTitle className="text-base font-semibold">
+                <CardTitle className="font-semibold">
                     {PROMPT_OPTIONS.find((o) => o.type === report.type)?.label}
                 </CardTitle>
             </CardHeader>

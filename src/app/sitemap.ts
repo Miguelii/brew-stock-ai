@@ -1,14 +1,12 @@
 import { ClientEnv } from '@/env/client'
 import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
 import { CHANGELOG_ENTRIES } from '@/modules/changelog/changelog'
-import { TICKER_PAGES, isTickerEnriched } from '@/modules/analysis/ticker-pages'
+import { TICKER_PAGES } from '@/modules/analysis/ticker-pages'
 import type { MetadataRoute } from 'next'
 import { latestIsoDay } from '@/lib/formatters'
 import { DISCLAIMER_PAGE_LAST_UPDATE_AT, PRIVACY_PAGE_LAST_UPDATE_AT } from '@/lib/constants'
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
-
-const enrichedTickers = TICKER_PAGES.filter((t) => isTickerEnriched(t))
 
 const EDUCATION_HUB_PAGES: MetadataRoute.Sitemap = EDUCATION_HUB_ARTICLES.map((a) => ({
     url: `${siteUrl}/education-hub/${a.slug}`,
@@ -17,8 +15,7 @@ const EDUCATION_HUB_PAGES: MetadataRoute.Sitemap = EDUCATION_HUB_ARTICLES.map((a
     priority: 0.8,
 }))
 
-// Only enriched ticker pages are indexable, so only they belong in the sitemap.
-const TICKER_ANALYSIS_PAGES: MetadataRoute.Sitemap = enrichedTickers.map((t) => ({
+const TICKER_ANALYSIS_PAGES: MetadataRoute.Sitemap = TICKER_PAGES.map((t) => ({
     url: `${siteUrl}/analysis/${t.slug}`,
     changeFrequency: 'monthly',
     lastModified: new Date(t.content.updatedAt),
@@ -32,16 +29,13 @@ const CHANGE_LOG_PAGES: MetadataRoute.Sitemap = CHANGELOG_ENTRIES.map((e) => ({
     priority: 0.7,
 }))
 
-export default function sitemap(): MetadataRoute.Sitemap {
-    // Listing pages change when their newest child does; static marketing pages
-    // carry no lastModified at all — a fabricated date teaches Google to ignore
-    // the field for the whole site.
-    const latestArticleDate = latestIsoDay(
-        EDUCATION_HUB_ARTICLES.map((a) => a.updatedAt ?? a.publishedAt)
-    )
-    const latestChangelogDate = latestIsoDay(CHANGELOG_ENTRIES.map((e) => e.publishedAt))
-    const latestTickerDate = latestIsoDay(enrichedTickers.map((t) => t.content.updatedAt))
+const latestTickerDate = latestIsoDay(TICKER_PAGES.map((t) => t.content.updatedAt))
 
+const latestArticleDate = latestIsoDay(
+    EDUCATION_HUB_ARTICLES.map((a) => a.updatedAt ?? a.publishedAt)
+)
+
+export default function sitemap(): MetadataRoute.Sitemap {
     return [
         {
             url: siteUrl,
@@ -84,12 +78,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: `${siteUrl}/faq`,
             changeFrequency: 'monthly',
             priority: 0.8,
-        },
-        {
-            url: `${siteUrl}/changelog`,
-            lastModified: latestChangelogDate,
-            changeFrequency: 'weekly',
-            priority: 0.7,
         },
         ...EDUCATION_HUB_PAGES,
         ...CHANGE_LOG_PAGES,

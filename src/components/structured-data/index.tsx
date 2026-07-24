@@ -3,6 +3,10 @@ import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 
 const WEBSITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
+const AUTHOR_PAGE_URL = `${WEBSITE_URL}/about`
+
+const AUTHOR_SCHEMA_ID = AUTHOR_PAGE_URL
+
 // JSON.stringify does not HTML-escape; a `</script>` or `<` in the data would
 // break out of the script tag, so escape the three dangerous characters.
 function jsonLdHtml(schema: object): { __html: string } {
@@ -123,10 +127,13 @@ export function ArticleSchema({
         datePublished,
         dateModified: dateModified ?? datePublished,
         inLanguage: 'en-US',
+        // Points at the on-site author entity emitted by `PersonSchema`, so
+        // every article resolves to one described author rather than a bare name.
         author: {
             '@type': 'Person',
+            '@id': AUTHOR_SCHEMA_ID,
             name: SITE_AUTHOR_NAME,
-            url: SITE_AUTHOR_URL,
+            url: AUTHOR_PAGE_URL,
         },
         publisher: {
             '@type': 'Organization',
@@ -144,6 +151,38 @@ export function ArticleSchema({
             id="article-schema"
             type="application/ld+json"
             dangerouslySetInnerHTML={jsonLdHtml(articleSchema)}
+        />
+    )
+}
+
+/**
+ * The site's author entity. Rendered once, on the About page, and referenced by
+ * `@id` from every `ArticleSchema` so the author is a described person rather
+ * than a repeated string.
+ */
+export function PersonSchema() {
+    const personSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        '@id': AUTHOR_SCHEMA_ID,
+        name: SITE_AUTHOR_NAME,
+        url: AUTHOR_PAGE_URL,
+        sameAs: [SITE_AUTHOR_URL],
+        jobTitle: 'Founder and editor, BrewStockAI',
+        description:
+            'Software engineer and private investor. Writes and reviews the educational material published on BrewStockAI, and designed the analysis methodology behind its reports.',
+        worksFor: {
+            '@type': 'Organization',
+            name: 'BrewStockAI',
+            url: WEBSITE_URL,
+        },
+    }
+
+    return (
+        <script
+            id="person-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={jsonLdHtml(personSchema)}
         />
     )
 }

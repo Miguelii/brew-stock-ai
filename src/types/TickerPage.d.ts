@@ -15,6 +15,15 @@ export type TickerContent = {
     competitors: string[]
     /** Education-hub article slugs to cross-link for further reading. */
     relatedArticleSlugs?: string[]
+    /**
+     * Company-specific FAQ entries. These carry the page's unique FAQ value:
+     * the shared, templated questions are deliberately kept to a minimum so the
+     * page does not read as scaled boilerplate.
+     */
+    faq?: {
+        question: string
+        answer: string
+    }[]
 }
 
 export type TickerPage = {
@@ -24,10 +33,11 @@ export type TickerPage = {
     description: string
     sector: string
     /**
-     * Long-form, unique editorial content. Only tickers that have `content`
-     * are treated as indexable: they render rich sections, appear in the
-     * sitemap, and are served without a `noindex` robots tag. Tickers without
-     * it stay noindexed until enriched — the thin-content gate for AdSense.
+     * Long-form, unique editorial content. Required, deliberately: a company
+     * without a write-up should not have a page at all. Serving hundreds of
+     * near-identical templated pages is what reads as thin content to a
+     * publisher-policy review, and `noindex` does not exempt them from it, so
+     * the quality gate lives here in the type rather than in a runtime check.
      */
-    content?: TickerContent
+    content: TickerContent
 }

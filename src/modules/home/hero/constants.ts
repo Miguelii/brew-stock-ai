@@ -3,9 +3,9 @@ import type { Variants } from 'motion/react'
 const EASE = [0.16, 1, 0.3, 1] as const
 
 export const STATS = [
-    { label: '999+ Reports Generated' },
+    { label: '8 Report Sections' },
     { label: '5 Analysis Types' },
-    { label: '< 120s Delivery' },
+    { label: '< ~2min Delivery' },
 ] as const
 
 export const CONTAINER_VARIANTS: Variants = {

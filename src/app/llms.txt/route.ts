@@ -1,6 +1,6 @@
 import { ClientEnv } from '@/env/client'
 import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
-import { TICKER_PAGES, isTickerEnriched } from '@/modules/analysis/ticker-pages'
+import { TICKER_PAGES } from '@/modules/analysis/ticker-pages'
 
 export const dynamic = 'force-static'
 
@@ -12,8 +12,6 @@ const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
  * @see https://llmstxt.org
  */
 export function GET() {
-    const enrichedTickers = TICKER_PAGES.filter((t) => isTickerEnriched(t))
-
     const body = [
         '# BrewStockAI',
         '',
@@ -29,7 +27,7 @@ export function GET() {
         '',
         '## Stock analysis pages',
         '',
-        ...enrichedTickers.map(
+        ...TICKER_PAGES.map(
             (t) =>
                 `- [${t.name} (${t.ticker}) Stock Analysis](${SITE_URL}/analysis/${t.slug}): ${t.description}`
         ),

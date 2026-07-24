@@ -1,9 +1,14 @@
-/* eslint-disable max-lines -- static file intentional exception */
-import type { TickerContent, TickerPage } from '@/types/TickerPage'
-import { TICKER_CONTENT } from '@/modules/analysis/ticker-content'
+/* eslint-disable max-lines -- static editorial content, intentional exception */
+import type { TickerPage } from '@/types/TickerPage'
 
-const TICKER_PAGES_BASE: TickerPage[] = [
-    // Technology
+/**
+ * Every `content` entry must be accurate, durable, and qualitative, and must
+ * never fabricate specific figures. Live numbers belong in a generated report,
+ * where they are dated. `faq` entries must be answerable only for that company:
+ * anything that would read the same with the name swapped is templated filler
+ * and belongs nowhere on the site.
+ */
+export const TICKER_PAGES: TickerPage[] = [
     {
         ticker: 'AAPL',
         name: 'Apple',
@@ -11,6 +16,48 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Technology',
         description:
             'Apple Inc. designs and sells consumer electronics, software, and online services. Known for the iPhone, Mac, iPad, and a growing services ecosystem.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Apple designs premium consumer hardware and sells it at high margins, then layers a fast-growing, high-margin Services business (the App Store, iCloud, Apple Music, advertising, and payments) on top of an installed base of over two billion active devices. Hardware drives the ecosystem; Services monetises the loyalty it creates.',
+            keyProducts: [
+                'iPhone (largest revenue segment)',
+                'Mac and iPad',
+                'Wearables: Apple Watch and AirPods',
+                'Services: App Store, iCloud, Apple Music, Apple Pay, advertising',
+                'Accessories and Home',
+            ],
+            investmentNarrative:
+                "The bull case rests on Apple's ecosystem lock-in: high switching costs, brand strength, and a growing Services mix that lifts overall margins and smooths the cyclicality of hardware upgrades. Capital returns are enormous, with consistent buybacks steadily shrinking the share count.\n\nThe bear case is iPhone dependence and saturation in developed markets, regulatory pressure on App Store fees, and a perception that Apple has been slower than peers to ship a clear generative-AI story. The premium valuation also leaves little room for disappointment.",
+            keyRisks: [
+                'Heavy revenue concentration in the iPhone',
+                'Regulatory and antitrust pressure on App Store fees (EU DMA, US litigation)',
+                'Exposure to China for both sales and manufacturing',
+                'Premium valuation that prices in continued execution',
+            ],
+            whatToWatch:
+                'Watch Services growth and gross margin, iPhone unit trends in China, the pace and reception of Apple Intelligence features, and any regulatory rulings that affect App Store economics. The capital-return cadence (buybacks and dividend) remains a key support for the stock.',
+            competitors: ['Samsung', 'Alphabet (Google)', 'Microsoft', 'Huawei', 'Xiaomi'],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'what-is-pe-ratio',
+                'stock-buybacks-explained',
+            ],
+            faq: [
+                {
+                    question: "Why do investors watch Apple's Services segment so closely?",
+                    answer: 'Services carries a much higher gross margin than hardware and its revenue recurs, so every point of mix shift toward Services lifts group profitability without needing more iPhone sales. It also makes results less lumpy: hardware revenue swings with the upgrade cycle, while App Store, iCloud, and advertising revenue arrive steadily from an installed base Apple has already won.',
+                },
+                {
+                    question: 'How does App Store regulation threaten Apple?',
+                    answer: "The App Store commission is close to pure profit, so rules that force Apple to allow alternative payment methods or third-party app stores (the EU Digital Markets Act, US litigation) attack the highest-margin part of Services. The revenue at stake is modest relative to Apple's total, but the margin is not, which is why rulings move the stock more than the headline numbers suggest.",
+                },
+                {
+                    question: 'What does Apple do with its cash?',
+                    answer: 'Apple returns the bulk of its free cash flow to shareholders through buybacks and a dividend. Sustained repurchases shrink the share count, which lifts earnings per share even when net income is flat, so the buyback pace is itself a driver of reported growth worth tracking alongside the business.',
+                },
+            ],
+        },
     },
     {
         ticker: 'MSFT',
@@ -19,6 +66,51 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Technology',
         description:
             'Microsoft Corporation develops software, cloud services, and devices. Azure, Office 365, and LinkedIn are among its flagship products.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Microsoft earns the bulk of its profit from enterprise software and cloud infrastructure sold largely by subscription. Its three segments generate durable, recurring, high-margin revenue: Productivity (Microsoft 365, LinkedIn), Intelligent Cloud (Azure, server products), and More Personal Computing (Windows, Xbox, Surface, search).',
+            keyProducts: [
+                'Azure cloud platform',
+                'Microsoft 365 / Office',
+                'Windows',
+                'LinkedIn',
+                'Gaming: Xbox and Activision Blizzard',
+                'GitHub and developer tools',
+            ],
+            investmentNarrative:
+                "Bulls point to Azure's secular cloud growth, the deep partnership with OpenAI and Copilot monetisation across the product suite, and one of the strongest balance sheets and recurring-revenue bases in technology. Enterprise switching costs are formidable.\n\nBears focus on the heavy capital expenditure required to build AI data-centre capacity, the uncertainty over how quickly Copilot revenue will scale to justify that spend, and a premium valuation. A deceleration in cloud growth would be the key disappointment.",
+            keyRisks: [
+                'Massive AI / data-centre capex weighing on free cash flow',
+                'Uncertainty over the pace of AI (Copilot) monetisation',
+                'Cloud-growth deceleration versus high expectations',
+                'Antitrust scrutiny of the OpenAI relationship and gaming acquisitions',
+            ],
+            whatToWatch:
+                'Track Azure growth rates (and how much is AI-driven), capital-expenditure trends, Copilot seat adoption and pricing, and commercial bookings / remaining performance obligations as a forward indicator.',
+            competitors: ['Amazon (AWS)', 'Alphabet (Google)', 'Salesforce', 'Oracle', 'Apple'],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'how-to-analyze-cash-flow',
+                'roe-vs-roic',
+            ],
+            faq: [
+                {
+                    question:
+                        'How does Azure differ from AWS and Google Cloud as an investment case?',
+                    answer: "Azure's advantage is distribution rather than technology: Microsoft already sells Windows, Office, and Active Directory to nearly every large enterprise, so cloud contracts arrive through existing relationships and enterprise agreements. That lowers customer-acquisition cost and raises switching costs, but it also means Azure growth is tied to enterprise IT budgets rather than to the startup and consumer-internet demand that shaped AWS.",
+                },
+                {
+                    question: 'Why does AI capital expenditure matter so much for Microsoft?',
+                    answer: 'Data-centre capacity for AI has to be paid for years before the revenue it enables shows up. Heavy capex depresses free cash flow immediately and raises depreciation for years afterwards, so the market is effectively underwriting a bet that Copilot and Azure AI revenue will arrive fast enough to justify the spend. Capex guidance therefore moves the stock as much as earnings do.',
+                },
+                {
+                    question:
+                        'What are remaining performance obligations, and why watch them at Microsoft?',
+                    answer: 'Remaining performance obligations are contracted revenue Microsoft has signed but not yet recognised. Because enterprise cloud deals are multi-year, this backlog leads reported revenue by several quarters, making it one of the better forward indicators of whether commercial momentum is accelerating or slowing.',
+                },
+            ],
+        },
     },
     {
         ticker: 'GOOGL',
@@ -27,6 +119,50 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Technology',
         description:
             "Alphabet Inc. is the parent company of Google, the world's leading search engine, alongside YouTube, Google Cloud, and Waymo.",
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                "Alphabet generates most of its revenue from advertising across Search, YouTube, and the Google Network, monetising the world's largest base of user-intent data. Google Cloud is a growing second pillar, and 'Other Bets' such as Waymo represent long-dated optionality.",
+            keyProducts: [
+                'Google Search and advertising',
+                'YouTube',
+                'Google Cloud Platform',
+                'Android and Google Play',
+                'Google Workspace',
+                'Waymo (autonomous driving)',
+            ],
+            investmentNarrative:
+                "The bull case is Search's dominant economics, YouTube's scale, accelerating Google Cloud profitability, and AI assets (Gemini, DeepMind, custom TPUs) that few rivals can match. The stock has historically traded at a discount to other mega-cap peers.\n\nThe bear case is that generative-AI answer engines could disrupt the traditional search-ad model Alphabet depends on, alongside serious antitrust exposure, including US rulings that could reshape its distribution deals and ad-tech business.",
+            keyRisks: [
+                'Antitrust rulings affecting Search distribution and the ad-tech stack',
+                'Disruption risk to Search from AI chat interfaces',
+                'Heavy reliance on advertising, which is cyclical',
+                'Large AI capex commitments',
+            ],
+            whatToWatch:
+                'Watch Search revenue resilience as AI Overviews roll out, Google Cloud operating margin, the outcome of US antitrust remedies, and capex versus cloud growth. YouTube advertising and subscription trends matter too.',
+            competitors: ['Meta', 'Amazon', 'Microsoft', 'Apple', 'TikTok (ByteDance)'],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'what-is-pe-ratio',
+                'how-to-assess-stock-risk',
+            ],
+            faq: [
+                {
+                    question: 'Could AI chat assistants actually replace Google Search?',
+                    answer: "The risk is not that people stop asking questions, it is that answers get delivered without a results page carrying ads. Alphabet's defence is that high-commercial-intent queries (flights, insurance, products) are exactly the ones users still want to compare and click, and those are where the advertising money is. The bear case is that answering more queries directly reduces the number of monetisable clicks per session.",
+                },
+                {
+                    question: 'What is at stake in the antitrust cases against Alphabet?',
+                    answer: "Two separate threads matter. One concerns the payments that make Google the default search engine on other companies' devices and browsers; unwinding them would raise the cost of holding Search share. The other concerns the ad-tech stack, where remedies could force divestiture of parts of the business that sit between advertisers and publishers.",
+                },
+                {
+                    question:
+                        'Why has Alphabet often traded at a lower multiple than its mega-cap peers?',
+                    answer: 'The market has historically applied a discount for three reasons: concentration in a single, cyclical revenue source (advertising), persistent regulatory overhang, and the losses absorbed by Other Bets. The counter-argument is that Cloud profitability and the AI asset base are worth more than the discount implies.',
+                },
+            ],
+        },
     },
     {
         ticker: 'AMZN',
@@ -35,6 +171,55 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Consumer Discretionary',
         description:
             "Amazon.com operates the world's largest e-commerce marketplace and AWS, the leading cloud computing platform.",
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Amazon runs a high-volume, low-margin e-commerce marketplace and logistics network, but earns the majority of its operating profit from two high-margin engines: Amazon Web Services (cloud) and a fast-growing advertising business. Prime memberships bind the retail flywheel together.',
+            keyProducts: [
+                'Amazon Web Services (AWS)',
+                'Online and physical stores',
+                'Third-party seller services (marketplace)',
+                'Advertising',
+                'Prime subscriptions',
+                'Devices and Alexa',
+            ],
+            investmentNarrative:
+                'Bulls highlight AWS as the profit driver, the rapid scaling of a high-margin ads business, and improving retail and logistics efficiency that is lifting North American margins. Operating leverage is the core story.\n\nBears point to AWS competing hard with Azure and Google Cloud, heavy AI-infrastructure spending, thin retail margins exposed to consumer weakness, and ongoing regulatory and labour scrutiny.',
+            keyRisks: [
+                'Cloud competition and growth deceleration at AWS',
+                'Consumer-spending sensitivity in retail',
+                'Large capital expenditure for AI and logistics',
+                'Regulatory / antitrust and labour-relations pressure',
+            ],
+            whatToWatch:
+                'Track AWS growth and operating margin, advertising revenue growth, North America retail operating margin, and overall capex. AWS backlog and AI-service adoption are forward signals.',
+            competitors: [
+                'Microsoft (Azure)',
+                'Alphabet (Google)',
+                'Walmart',
+                'Alibaba',
+                'Shopify',
+            ],
+            relatedArticleSlugs: [
+                'how-to-analyze-cash-flow',
+                'understanding-competitive-moats',
+                'what-is-ebitda',
+            ],
+            faq: [
+                {
+                    question: 'Why do investors focus on AWS rather than on Amazon retail?',
+                    answer: 'Retail moves enormous revenue at very thin margins, while AWS converts a much smaller revenue base into the majority of operating profit. That means group earnings are far more sensitive to a change in AWS growth or margin than to an equivalent change in retail sales, which is why quarterly reactions often ignore the headline revenue line entirely.',
+                },
+                {
+                    question: 'How does advertising fit into Amazon?',
+                    answer: 'Amazon sells placement to merchants who already want to reach buyers on its own storefront, at the moment those buyers are ready to purchase. The incremental cost of serving those ads is minimal because the traffic and infrastructure already exist, so advertising has become one of the most profitable parts of the company despite being a fraction of its revenue.',
+                },
+                {
+                    question: 'What does operating leverage mean for Amazon?',
+                    answer: 'Amazon spent years building fulfilment and logistics capacity ahead of demand. Once that capacity is in place, additional volume flows through it at a much lower incremental cost, so profits can grow considerably faster than revenue. The reverse is also true: when Amazon starts a new build-out cycle, margins compress before they recover.',
+                },
+            ],
+        },
     },
     {
         ticker: 'TSLA',
@@ -43,6 +228,54 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Consumer Discretionary',
         description:
             'Tesla Inc. designs and manufactures electric vehicles, energy storage systems, and solar products. A leader in EV adoption globally.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Tesla makes most of its revenue selling electric vehicles directly to consumers, supplemented by an energy generation and storage business and a services / software segment that includes Supercharging and Full Self-Driving. The long-term thesis hinges increasingly on autonomy, AI, and robotics rather than vehicle volumes alone.',
+            keyProducts: [
+                'Model 3 / Model Y / Model S / Model X',
+                'Cybertruck',
+                'Energy storage (Powerwall, Megapack)',
+                'Supercharger network',
+                'Full Self-Driving (FSD) software',
+                'Optimus humanoid robot (in development)',
+            ],
+            investmentNarrative:
+                'Bulls value Tesla as more than an automaker, betting on autonomy (robotaxi), energy-storage growth, manufacturing scale, and AI / robotics optionality that could justify a software-like valuation.\n\nBears note that Tesla is valued far above traditional automakers while facing slowing delivery growth, price cuts that compress automotive margins, intensifying EV competition (especially from China), and a valuation heavily dependent on FSD / robotaxi promises that remain unproven at scale.',
+            keyRisks: [
+                'Automotive margin compression from price cuts',
+                'Intensifying EV competition, notably from Chinese makers',
+                'Valuation dependent on unproven autonomy / robotaxi outcomes',
+                'Key-person and governance risk tied to its CEO',
+            ],
+            whatToWatch:
+                'Watch vehicle delivery growth and automotive gross margin (excluding regulatory credits), energy-storage deployments, FSD / robotaxi progress and regulatory approvals, and average selling prices versus incentives.',
+            competitors: [
+                'BYD',
+                'Legacy automakers (GM, Ford, Volkswagen, Toyota)',
+                'Rivian',
+                'Lucid',
+            ],
+            relatedArticleSlugs: [
+                'how-to-assess-stock-risk',
+                'what-is-pe-ratio',
+                'behavioral-biases-investing',
+            ],
+            faq: [
+                {
+                    question: 'Why is Tesla valued so differently from other carmakers?',
+                    answer: 'Traditional automakers are valued on low multiples because vehicle manufacturing is capital-intensive, cyclical, and competitive. Tesla trades far above that because a large part of its market value rests on outcomes outside car sales: autonomy licensed as software, energy storage, and robotics. Whether that premium is justified depends entirely on those non-automotive outcomes arriving, which is the single biggest disagreement between bulls and bears.',
+                },
+                {
+                    question: 'Why exclude regulatory credits when looking at automotive margin?',
+                    answer: 'Regulatory credits are sold to other manufacturers to help them meet emissions rules, and they carry essentially no cost, so they flow straight to profit. They are also finite and shrink as competitors electrify their own fleets. Stripping them out shows the margin the core vehicle business actually earns, which is the number that has to hold up over time.',
+                },
+                {
+                    question: 'What would robotaxi approval change for Tesla?',
+                    answer: 'A vehicle that earns revenue while its owner is not driving changes the economics of the fleet already on the road, and turns a one-time hardware sale into a recurring stream. That is the mechanism behind the software-like valuation. It also depends on regulatory approval jurisdiction by jurisdiction, which makes the timeline hard to underwrite.',
+                },
+            ],
+        },
     },
     {
         ticker: 'NVDA',
@@ -51,6 +284,53 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Technology',
         description:
             'NVIDIA Corporation designs GPUs and system-on-chip units. Dominant in AI training hardware, data centres, and gaming graphics.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'NVIDIA designs the GPUs and networking that have become the default hardware for training and running AI models, and pairs them with the CUDA software platform that locks in developers. Its Data Center segment now dominates revenue, supplemented by gaming, professional visualisation, and automotive.',
+            keyProducts: [
+                'Data Center GPUs (e.g. H100 / Blackwell)',
+                'CUDA software ecosystem',
+                'Networking (Mellanox / InfiniBand)',
+                'GeForce gaming GPUs',
+                'Professional visualisation and automotive / robotics chips',
+            ],
+            investmentNarrative:
+                "The bull case is NVIDIA's commanding position in AI accelerators, the CUDA software moat, and a multi-year build-out of AI data centres by cloud providers and enterprises. Margins and growth have been extraordinary.\n\nThe bear case is customer concentration in a handful of hyperscalers, the cyclicality and potential digestion of AI capex, rising competition from AMD and customers' own custom silicon, and export restrictions to China. Expectations are very high.",
+            keyRisks: [
+                'Concentration in a few large cloud customers',
+                'AI capex cyclicality and potential overbuild / digestion',
+                'Competition from AMD and in-house hyperscaler chips',
+                'US export controls limiting China sales',
+            ],
+            whatToWatch:
+                'Watch Data Center revenue growth and gross margin, hyperscaler capex guidance, the ramp of new architectures, supply and lead times, and China-related export-control developments.',
+            competitors: [
+                'AMD',
+                'Intel',
+                'Broadcom',
+                'Custom silicon from Google, Amazon, and Microsoft',
+            ],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'what-is-pe-ratio',
+                'how-to-assess-stock-risk',
+            ],
+            faq: [
+                {
+                    question: "What is CUDA, and why is it described as NVIDIA's real moat?",
+                    answer: 'CUDA is the software layer researchers and engineers use to program NVIDIA hardware. Nearly two decades of libraries, tooling, and tutorials assume it, and most machine-learning frameworks were optimised against it first. A competitor can match the silicon and still lose the sale, because switching means porting and revalidating code that already works. The moat is the accumulated software, not the chip.',
+                },
+                {
+                    question: 'Why is customer concentration a risk for NVIDIA?',
+                    answer: 'A large share of data-centre revenue comes from a handful of hyperscale cloud providers. Those same customers are designing their own accelerators, so they are simultaneously the source of the demand and the most credible long-term threat to it. A single one of them slowing its build-out has an outsized effect on quarterly results.',
+                },
+                {
+                    question: 'What would an AI capex digestion phase look like?',
+                    answer: 'Semiconductor demand has historically arrived in waves: customers over-order during a build-out, then pause to absorb the capacity they already installed. If AI infrastructure follows that pattern, revenue would flatten or fall for several quarters without the long-term thesis being wrong. Distinguishing a pause from a structural break is the central judgement for holders.',
+                },
+            ],
+        },
     },
     {
         ticker: 'META',
@@ -59,6 +339,56 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Technology',
         description:
             'Meta Platforms operates Facebook, Instagram, and WhatsApp, reaching over 3 billion daily active users. Expanding into AI and the metaverse.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                "Meta earns almost all of its revenue from advertising across Facebook, Instagram, WhatsApp, and Messenger, its 'Family of Apps' reaching billions of daily users. It reinvests heavily in AI (for ad targeting and content recommendation) and in Reality Labs, its long-term metaverse and AR / VR bet.",
+            keyProducts: [
+                'Facebook',
+                'Instagram',
+                'WhatsApp',
+                'Messenger',
+                'Reality Labs (Quest, AR / VR)',
+                'Llama AI models',
+            ],
+            investmentNarrative:
+                "Bulls cite Meta's enormous engaged user base, AI-driven improvements to ad targeting and Reels monetisation, disciplined cost control after the 'Year of Efficiency', and strong free cash flow funding buybacks.\n\nBears focus on the deep, persistent operating losses at Reality Labs, the cyclicality of digital advertising, platform and regulatory risk (privacy rules, antitrust), and competition for attention from TikTok.",
+            keyRisks: [
+                'Large ongoing Reality Labs losses',
+                'Advertising cyclicality and privacy / platform regulation',
+                'Competition from TikTok for engagement',
+                'Antitrust scrutiny',
+            ],
+            whatToWatch:
+                'Track ad revenue growth and pricing / impressions, Reels and AI engagement gains, Reality Labs spending and losses, AI capex, and daily active people across the app family.',
+            competitors: [
+                'Alphabet (Google)',
+                'TikTok (ByteDance)',
+                'Snap',
+                'Pinterest',
+                'Amazon (ads)',
+            ],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'how-to-analyze-cash-flow',
+                'behavioral-biases-investing',
+            ],
+            faq: [
+                {
+                    question: 'What is Reality Labs and why does it lose money?',
+                    answer: 'Reality Labs is the segment building augmented and virtual reality hardware, software, and platforms. It is a deliberate long-horizon investment: Meta is funding a computing platform it does not yet own, so that it never again depends on a rival controlling the operating system and app-store rules its apps run under. The losses are the price of that option, and they are reported separately so investors can value the advertising business on its own.',
+                },
+                {
+                    question: 'How does privacy regulation affect Meta?',
+                    answer: "Ad targeting works best with signal about what users do outside Meta's own apps. Platform-level privacy changes and regulation restrict that signal, which reduces measured conversion and therefore what advertisers will pay per impression. Meta's response has been to rebuild targeting with on-platform AI modelling, which reduces the dependency but does not eliminate it.",
+                },
+                {
+                    question:
+                        'Why does Meta report daily active people across the whole app family?',
+                    answer: "Users overlap heavily between Facebook, Instagram, WhatsApp, and Messenger, so adding each app's users would double-count. The family-level figure measures the actual reach available to advertisers, which is the number that matters commercially.",
+                },
+            ],
+        },
     },
     {
         ticker: 'NFLX',
@@ -67,6 +397,55 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Communication Services',
         description:
             "Netflix is the world's largest subscription streaming service with over 260 million paid subscribers across 190 countries.",
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Netflix is a subscription streaming service that monetises a global content library across tiered plans, and increasingly through a fast-growing ad-supported tier and a paid-sharing initiative. Scale lets it spread heavy content spending across hundreds of millions of members.',
+            keyProducts: [
+                'Standard and Premium subscription plans',
+                'Ad-supported tier',
+                'Original films and series',
+                'Licensed content',
+                'Games (mobile)',
+                'Live events and sports (emerging)',
+            ],
+            investmentNarrative:
+                "Bulls highlight Netflix's global scale advantage, improving free cash flow as content spend matures, new growth levers from advertising and paid sharing, and pricing power from a deep content slate.\n\nBears point to a maturing subscriber base in developed markets, intense competition from Disney, Amazon, and others, content-cost inflation, and a premium valuation that requires sustained margin expansion.",
+            keyRisks: [
+                'Subscriber saturation in mature markets',
+                'Intense streaming competition and content-cost inflation',
+                'Foreign-exchange exposure from international revenue',
+                'Execution risk in scaling advertising',
+            ],
+            whatToWatch:
+                "Track membership additions, average revenue per member, the ad tier's scaling and ad revenue, operating-margin expansion, and free cash flow. Engagement and content-slate strength are leading indicators.",
+            competitors: [
+                'Disney+',
+                'Amazon Prime Video',
+                'Warner Bros. Discovery (Max)',
+                'Apple TV+',
+                'YouTube',
+            ],
+            relatedArticleSlugs: [
+                'what-is-pe-ratio',
+                'how-to-analyze-cash-flow',
+                'understanding-competitive-moats',
+            ],
+            faq: [
+                {
+                    question: "How does the ad-supported tier change Netflix's economics?",
+                    answer: 'It breaks the link between price and revenue per user. A cheaper plan brings in members who would not pay full price, and Netflix then earns from them twice: a smaller subscription fee plus advertising revenue. Whether that is accretive depends on how much advertisers pay per viewing hour, which is why ad revenue per member matters more than raw subscriber counts on the ad tier.',
+                },
+                {
+                    question: 'Is Netflix running out of people to sign up?',
+                    answer: 'In mature markets, largely yes, which is why the growth narrative moved from adding members to earning more per member through pricing, paid sharing, and advertising. Emerging markets still add volume but at lower average revenue, so mix shift can depress the average even when the business is growing.',
+                },
+                {
+                    question: 'Why does content spending make Netflix hard to value on earnings?',
+                    answer: 'Content is capitalised and then amortised over years rather than expensed when the cheque is written, so reported profit and actual cash outflow can diverge significantly. Free cash flow is the more honest measure of whether the content slate is paying for itself.',
+                },
+            ],
+        },
     },
     {
         ticker: 'AMD',
@@ -75,6 +454,49 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Technology',
         description:
             'Advanced Micro Devices designs CPUs and GPUs for PCs, data centres, and gaming consoles. A strong competitor to Intel and NVIDIA.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'AMD designs high-performance CPUs and GPUs and outsources manufacturing to foundries (chiefly TSMC). It competes across data-centre processors and AI accelerators, PC client chips, gaming consoles (semi-custom), and embedded markets (boosted by its Xilinx acquisition).',
+            keyProducts: [
+                'EPYC server CPUs',
+                'Instinct AI accelerators (MI series)',
+                'Ryzen PC processors',
+                'Radeon GPUs',
+                'Semi-custom console chips',
+                'Embedded / FPGA (Xilinx)',
+            ],
+            investmentNarrative:
+                'Bulls see AMD as the clearest second source to NVIDIA in AI accelerators and a persistent share-gainer against Intel in server and PC CPUs, with a credible data-centre GPU roadmap.\n\nBears note that AMD’s AI GPU revenue is a fraction of NVIDIA’s, its ROCm software lags CUDA, the business is cyclical, and the stock often prices in optimistic AI share gains that still have to be proven.',
+            keyRisks: [
+                'Distant second to NVIDIA in AI GPUs and software ecosystem',
+                'Cyclical PC and gaming demand',
+                'Dependence on TSMC for leading-edge manufacturing',
+                'High expectations embedded in the valuation',
+            ],
+            whatToWatch:
+                'Watch the data-centre GPU (Instinct) revenue ramp and guidance, server CPU share gains, PC client recovery, and the gross-margin trajectory as the mix shifts toward data centre.',
+            competitors: ['NVIDIA', 'Intel', 'Broadcom', 'Qualcomm'],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'how-to-assess-stock-risk',
+                'what-is-pe-ratio',
+            ],
+            faq: [
+                {
+                    question: 'Can AMD realistically catch NVIDIA in AI accelerators?',
+                    answer: 'On silicon, AMD is competitive. The harder gap is software: ROCm is younger and less complete than CUDA, and buyers weigh engineering time spent porting models against the price they save on hardware. The realistic bull case is not displacement but a credible second source, because large buyers actively want one to avoid depending on a single supplier.',
+                },
+                {
+                    question: 'Why does AMD depend on TSMC?',
+                    answer: 'AMD is fabless: it designs chips and contracts out manufacturing. That avoids the enormous capital cost of owning leading-edge fabs, but it means capacity allocation, pricing, and process timing are decided by a supplier AMD shares with its competitors, and concentrates a large part of its supply chain in one geography.',
+                },
+                {
+                    question: "Why does AMD's gross margin trend matter more than revenue growth?",
+                    answer: 'AMD sells across very different businesses: data-centre parts carry high margins, while console semi-custom chips carry low ones. Group gross margin therefore reveals which segments are actually driving the quarter. Revenue can grow on a mix that makes the company less profitable.',
+                },
+            ],
+        },
     },
     {
         ticker: 'JPM',
@@ -83,6 +505,55 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Financials',
         description:
             'JPMorgan Chase is the largest US bank by assets, offering investment banking, consumer banking, financial services, and asset management.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'JPMorgan is a diversified, globally systemic bank earning money from net interest income (the spread on loans and deposits) and fee income across consumer banking, corporate and investment banking, asset and wealth management, and commercial banking. Scale and a fortress balance sheet are central to the model.',
+            keyProducts: [
+                'Consumer & Community Banking',
+                'Corporate & Investment Bank (trading, advisory, underwriting)',
+                'Asset & Wealth Management',
+                'Commercial Banking',
+                'Credit cards and payments',
+            ],
+            investmentNarrative:
+                'Bulls view JPMorgan as the best-run large US bank: diversified, well-capitalised, and a share-gainer through cycles, with strong returns on tangible equity and disciplined risk management.\n\nBears note that bank earnings are cyclical and rate-sensitive: net interest income can compress as rates fall, credit losses rise in downturns, and tighter capital rules can limit buybacks. Banks are also macro-exposed and hard to value at a premium.',
+            keyRisks: [
+                'Credit losses rising in an economic downturn',
+                'Net interest income sensitivity to interest-rate changes',
+                'Regulatory capital requirements constraining returns',
+                'Capital-markets revenue volatility',
+            ],
+            whatToWatch:
+                'Watch net interest income guidance, credit-loss provisions and charge-off trends, return on tangible common equity, capital ratios (CET1), and investment-banking / trading revenue.',
+            competitors: [
+                'Bank of America',
+                'Wells Fargo',
+                'Citigroup',
+                'Goldman Sachs',
+                'Morgan Stanley',
+            ],
+            relatedArticleSlugs: [
+                'how-to-read-a-balance-sheet',
+                'how-interest-rates-move-stocks',
+                'how-to-assess-stock-risk',
+            ],
+            faq: [
+                {
+                    question: 'How do interest rates affect JPMorgan?',
+                    answer: 'Banks earn a spread between what they pay depositors and what they charge borrowers. Rising rates usually widen that spread first, because loan rates reprice faster than deposit rates, which lifts net interest income. The effect reverses as deposits reprice and, if rates rose because the economy is overheating, higher borrowing costs eventually increase defaults. Rate moves are therefore good for earnings before they are bad for them.',
+                },
+                {
+                    question: 'What is CET1, and why do bank investors watch it?',
+                    answer: "Common Equity Tier 1 is the regulatory measure of a bank's highest-quality capital against its risk-weighted assets. It caps how much a bank can return to shareholders: capital held to satisfy the ratio cannot be paid out as buybacks or dividends. A change in required CET1 directly changes the capital-return story regardless of how well the business is performing.",
+                },
+                {
+                    question:
+                        'Why is return on tangible common equity used instead of profit margin?',
+                    answer: "A bank's profitability depends on how much capital it must hold against its assets, not just on what it earns. Return on tangible common equity measures profit against the equity actually at risk, which is what makes results comparable between banks of different sizes and business mixes.",
+                },
+            ],
+        },
     },
     {
         ticker: 'V',
@@ -91,30 +562,54 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Financials',
         description:
             "Visa Inc. operates the world's largest retail electronic payments network, processing billions of transactions annually across 200+ countries.",
-    },
-    {
-        ticker: 'PLTR',
-        name: 'Palantir',
-        slug: 'palantir',
-        sector: 'Technology',
-        description:
-            'Palantir Technologies builds data analytics and AI platforms for government agencies and large enterprises worldwide.',
-    },
-    {
-        ticker: 'SPOT',
-        name: 'Spotify',
-        slug: 'spotify',
-        sector: 'Communication Services',
-        description:
-            "Spotify Technology is the world's most popular audio streaming platform with over 600 million monthly active users and 240 million paying subscribers.",
-    },
-    {
-        ticker: 'COIN',
-        name: 'Coinbase',
-        slug: 'coinbase',
-        sector: 'Financials',
-        description:
-            'Coinbase Global is the largest US cryptocurrency exchange, providing trading, custody, and institutional services for digital assets.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Visa operates a global payments network that connects banks, merchants, and cardholders, earning fees on the volume and number of transactions that flow across its rails. It does not lend or take credit risk. It is a high-margin toll-taker on the secular shift from cash to digital payments.',
+            keyProducts: [
+                'Credit and debit network processing',
+                'Cross-border transaction services',
+                'Value-added services (fraud, data, consulting)',
+                'Visa Direct (real-time money movement)',
+                'Tokenisation and security products',
+            ],
+            investmentNarrative:
+                "Bulls love Visa's network-effect moat, near-incremental margins, resilience to credit cycles (it takes no credit risk), and the long runway as cash and cheques continue migrating to digital payments globally.\n\nBears point to regulatory and litigation risk around interchange fees, the threat of account-to-account and real-time payment rails bypassing card networks, and a premium valuation that assumes steady volume growth.",
+            keyRisks: [
+                'Regulatory and litigation pressure on interchange fees',
+                'Disruption from account-to-account / real-time payment rails',
+                'Consumer-spending sensitivity to recessions',
+                'Cross-border (travel) volume volatility',
+            ],
+            whatToWatch:
+                'Track payments-volume growth, cross-border volume (a high-margin driver), value-added services growth, and any regulatory action on interchange. Operating-margin stability is a key quality signal.',
+            competitors: [
+                'Mastercard',
+                'American Express',
+                'PayPal',
+                'Real-time payment networks',
+                'Block',
+            ],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'roe-vs-roic',
+                'what-is-pe-ratio',
+            ],
+            faq: [
+                {
+                    question: 'Does Visa lend money or take credit risk?',
+                    answer: 'No. The issuing bank extends the credit and absorbs the losses if a cardholder does not pay. Visa operates the network that authorises, clears, and settles the transaction, and earns a fee on it. That distinction is why Visa holds up better than lenders in a credit downturn: it is exposed to how much people spend, not to whether they repay.',
+                },
+                {
+                    question: "What is the network effect behind Visa's moat?",
+                    answer: 'Merchants accept Visa because cardholders carry it, and cardholders carry it because merchants accept it. Each new participant makes the network more valuable to the other side, and a challenger has to solve both sides at once to compete. Decades of accumulated acceptance infrastructure make that extremely expensive to replicate.',
+                },
+                {
+                    question: 'Why does cross-border volume get watched separately?',
+                    answer: 'Cross-border transactions carry substantially higher fees than domestic ones, so they contribute disproportionately to revenue. They are also tied to international travel, which makes them more volatile than domestic spending and sensitive to events that have nothing to do with payments.',
+                },
+            ],
+        },
     },
     {
         ticker: 'DIS',
@@ -123,30 +618,55 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Communication Services',
         description:
             'The Walt Disney Company is a diversified entertainment conglomerate with theme parks, studios, streaming (Disney+), and broadcast networks.',
-    },
-    {
-        ticker: 'BABA',
-        name: 'Alibaba',
-        slug: 'alibaba',
-        sector: 'Consumer Discretionary',
-        description:
-            "Alibaba Group operates China's largest e-commerce and cloud computing platforms, including Taobao, Tmall, and Alibaba Cloud.",
-    },
-    {
-        ticker: 'INTC',
-        name: 'Intel',
-        slug: 'intel',
-        sector: 'Technology',
-        description:
-            'Intel Corporation designs and manufactures semiconductors, microprocessors, and integrated circuits used in PCs, servers, and data centres.',
-    },
-    {
-        ticker: 'PYPL',
-        name: 'PayPal',
-        slug: 'paypal',
-        sector: 'Financials',
-        description:
-            'PayPal Holdings operates a digital payments platform with over 400 million active accounts, including Venmo and Braintree.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Disney monetises its intellectual property across three pillars: Entertainment (film studios, linear TV, and Disney+ streaming), Sports (ESPN), and Experiences (theme parks, resorts, cruises, and consumer products). Its franchises feed all three, creating a flywheel from screen to park to merchandise.',
+            keyProducts: [
+                'Disney+ and Hulu streaming',
+                'Film studios (Disney, Pixar, Marvel, Lucasfilm)',
+                'ESPN and sports',
+                'Theme parks and resorts',
+                'Cruise line',
+                'Consumer products and licensing',
+            ],
+            investmentNarrative:
+                'Bulls focus on the path to streaming profitability, the irreplaceable IP and franchise library, and the high-margin, high-demand Experiences (parks) segment that funds the business.\n\nBears point to the structural decline of high-margin linear TV and the cable bundle, the cost of the streaming transition, content-hit dependence, and execution / succession questions. Parks demand is also economically sensitive.',
+            keyRisks: [
+                'Secular decline of linear TV and the cable bundle',
+                'Streaming profitability and content-spend discipline',
+                'Cyclicality of theme-park (Experiences) demand',
+                'Reliance on box-office hits and franchise fatigue',
+            ],
+            whatToWatch:
+                "Watch direct-to-consumer (streaming) operating profitability, Disney+ subscriber and ARPU trends, Experiences segment operating income, and the strategic path for ESPN's streaming transition.",
+            competitors: [
+                'Netflix',
+                'Warner Bros. Discovery',
+                'Comcast (NBCUniversal)',
+                'Paramount',
+            ],
+            relatedArticleSlugs: [
+                'how-to-analyze-cash-flow',
+                'understanding-competitive-moats',
+                'how-to-assess-stock-risk',
+            ],
+            faq: [
+                {
+                    question: 'Why does the decline of cable TV hurt Disney so much?',
+                    answer: 'Carriage fees from the cable bundle were paid per subscriber whether or not anyone watched, which made linear television extraordinarily profitable. Streaming replaces that with a lower-priced, cancel-anytime relationship that costs more to serve. Disney is trading high-margin declining revenue for lower-margin growing revenue, and the gap between the two is the core of the transition problem.',
+                },
+                {
+                    question: 'Why do the theme parks matter so much to the investment case?',
+                    answer: 'Experiences converts intellectual property created elsewhere in the company into high-margin, hard-to-replicate revenue, and it has generated the profit funding the streaming build-out. It is also the most economically sensitive part of Disney, because a park visit is a large discretionary purchase families defer in a downturn.',
+                },
+                {
+                    question:
+                        'What makes the Disney flywheel different from a normal media library?',
+                    answer: 'A successful film does not just earn at the box office: it becomes a park attraction, a cruise theme, a merchandise line, and a streaming catalogue title. Each franchise is monetised repeatedly across segments over decades, which is why Disney is valued on its IP rather than on any single release.',
+                },
+            ],
+        },
     },
     {
         ticker: 'WMT',
@@ -155,443 +675,50 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Consumer Staples',
         description:
             "Walmart is the world's largest retailer by revenue, operating thousands of stores globally and a fast-growing e-commerce business.",
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                "Walmart is the world's largest retailer, using enormous scale and purchasing power to offer low prices across groceries and general merchandise. It increasingly monetises higher-margin streams on top of the low-margin retail base: e-commerce, a third-party marketplace, advertising (Walmart Connect), and membership (Walmart+).",
+            keyProducts: [
+                'Walmart US supercenters and groceries',
+                "Sam's Club membership warehouses",
+                'Walmart International',
+                'E-commerce and marketplace',
+                'Walmart Connect advertising',
+                'Walmart+ membership',
+            ],
+            investmentNarrative:
+                'Bulls highlight Walmart’s defensive scale, grocery dominance, and the growth of high-margin advertising and marketplace revenue that is structurally lifting profitability, plus share gains among higher-income shoppers.\n\nBears point to thin retail margins, intense competition from Amazon and Costco, wage and cost inflation, and a valuation that has risen as investors reward the advertising and omnichannel story.',
+            keyRisks: [
+                'Thin core-retail margins sensitive to cost inflation',
+                'Intense competition from Amazon and Costco',
+                'Consumer-spending and trade-down dynamics',
+                'Execution risk in scaling advertising / marketplace',
+            ],
+            whatToWatch:
+                'Track US comparable-store sales, e-commerce growth, advertising (Walmart Connect) revenue, the operating-margin trend, and grocery market share. Higher-income customer acquisition is a key narrative.',
+            competitors: ['Amazon', 'Costco', 'Target', 'Kroger', 'Dollar General'],
+            relatedArticleSlugs: [
+                'understanding-competitive-moats',
+                'how-to-analyze-cash-flow',
+                'what-is-ebitda',
+            ],
+            faq: [
+                {
+                    question: "Why does Walmart's advertising business matter to investors?",
+                    answer: 'Retail sells goods at a few cents of profit per dollar. Advertising sold against traffic Walmart already has costs almost nothing incrementally, so a small amount of ad revenue can move group operating profit as much as a very large amount of merchandise revenue. It is the main reason the market re-rated a business it used to value purely as a grocer.',
+                },
+                {
+                    question: 'How does Walmart actually compete with Amazon?',
+                    answer: 'Its advantage is physical proximity: stores within a short drive of most of the US population double as fulfilment and pickup points, which makes fast grocery delivery economical in a way a pure warehouse network struggles to match. Groceries also bring customers back weekly, giving Walmart a purchase frequency that general-merchandise competitors do not have.',
+                },
+                {
+                    question: 'What does trade-down mean for Walmart?',
+                    answer: 'When household budgets tighten, shoppers move from more expensive retailers to cheaper ones. Walmart tends to gain customers in exactly the conditions that hurt most retailers, including higher-income shoppers who stay after the pressure eases. It makes the stock behave defensively relative to the rest of the sector.',
+                },
+            ],
+        },
     },
-    {
-        ticker: 'BA',
-        name: 'Boeing',
-        slug: 'boeing',
-        sector: 'Industrials',
-        description:
-            "Boeing is the world's largest aerospace manufacturer, producing commercial jetliners, military aircraft, and space systems.",
-    },
-    // Additional Technology
-    {
-        ticker: 'CRM',
-        name: 'Salesforce',
-        slug: 'salesforce',
-        sector: 'Technology',
-        description:
-            'Salesforce Inc. is the global leader in cloud-based CRM software, offering sales, marketing, analytics, and AI platforms to enterprises worldwide.',
-    },
-    {
-        ticker: 'ORCL',
-        name: 'Oracle',
-        slug: 'oracle',
-        sector: 'Technology',
-        description:
-            'Oracle Corporation provides database software, cloud infrastructure, and enterprise applications to businesses worldwide. A cornerstone of enterprise IT.',
-    },
-    {
-        ticker: 'ADBE',
-        name: 'Adobe',
-        slug: 'adobe',
-        sector: 'Technology',
-        description:
-            'Adobe Inc. provides creative, marketing, and document management software. Known for Photoshop, Illustrator, Acrobat, and the Experience Cloud platform.',
-    },
-    {
-        ticker: 'NOW',
-        name: 'ServiceNow',
-        slug: 'servicenow',
-        sector: 'Technology',
-        description:
-            'ServiceNow provides cloud-based IT service management and workflow automation platforms, helping enterprises digitise and automate business processes.',
-    },
-    {
-        ticker: 'SNOW',
-        name: 'Snowflake',
-        slug: 'snowflake',
-        sector: 'Technology',
-        description:
-            'Snowflake Inc. provides a cloud-based data warehousing platform that enables organisations to store, share, and analyse large-scale data workloads.',
-    },
-    {
-        ticker: 'UBER',
-        name: 'Uber',
-        slug: 'uber',
-        sector: 'Technology',
-        description:
-            'Uber Technologies operates a global ride-hailing, food delivery (Uber Eats), and freight logistics platform across 70+ countries.',
-    },
-    {
-        ticker: 'LYFT',
-        name: 'Lyft',
-        slug: 'lyft',
-        sector: 'Technology',
-        description:
-            'Lyft Inc. operates a ride-hailing platform primarily in North America, competing with Uber and expanding into bikes, scooters, and autonomous vehicles.',
-    },
-    {
-        ticker: 'SNAP',
-        name: 'Snap',
-        slug: 'snap',
-        sector: 'Technology',
-        description:
-            'Snap Inc. operates Snapchat, a multimedia messaging app popular with younger demographics, monetised through advertising and augmented reality features.',
-    },
-    {
-        ticker: 'TWLO',
-        name: 'Twilio',
-        slug: 'twilio',
-        sector: 'Technology',
-        description:
-            'Twilio Inc. provides cloud communications APIs that let developers embed messaging, voice, and video into applications. A backbone of modern customer engagement.',
-    },
-    {
-        ticker: 'DDOG',
-        name: 'Datadog',
-        slug: 'datadog',
-        sector: 'Technology',
-        description:
-            'Datadog Inc. offers a cloud-based monitoring and analytics platform for developers and IT teams, providing observability across infrastructure, applications, and logs.',
-    },
-    {
-        ticker: 'NET',
-        name: 'Cloudflare',
-        slug: 'cloudflare',
-        sector: 'Technology',
-        description:
-            'Cloudflare Inc. provides cloud-based network security, performance, and reliability services. A critical infrastructure layer for millions of websites globally.',
-    },
-    {
-        ticker: 'ZS',
-        name: 'Zscaler',
-        slug: 'zscaler',
-        sector: 'Technology',
-        description:
-            'Zscaler Inc. delivers cloud-native cybersecurity solutions through its Zero Trust Exchange platform, enabling secure access for users, devices, and workloads.',
-    },
-    {
-        ticker: 'CRWD',
-        name: 'CrowdStrike',
-        slug: 'crowdstrike',
-        sector: 'Technology',
-        description:
-            'CrowdStrike Holdings provides cloud-delivered endpoint security, threat intelligence, and cyberattack response services used by enterprises and governments worldwide.',
-    },
-    {
-        ticker: 'PANW',
-        name: 'Palo Alto Networks',
-        slug: 'palo-alto-networks',
-        sector: 'Technology',
-        description:
-            'Palo Alto Networks offers network security, cloud security, and AI-driven security operations platforms used by enterprises in over 150 countries.',
-    },
-    {
-        ticker: 'OKTA',
-        name: 'Okta',
-        slug: 'okta',
-        sector: 'Technology',
-        description:
-            'Okta Inc. provides identity and access management solutions that enable secure user authentication and zero-trust security for organisations of all sizes.',
-    },
-    {
-        ticker: 'MDB',
-        name: 'MongoDB',
-        slug: 'mongodb',
-        sector: 'Technology',
-        description:
-            'MongoDB Inc. provides a general-purpose NoSQL database platform and developer tools. Its Atlas cloud offering is the backbone of many modern applications.',
-    },
-    {
-        ticker: 'TTD',
-        name: 'The Trade Desk',
-        slug: 'trade-desk',
-        sector: 'Technology',
-        description:
-            'The Trade Desk operates a self-service programmatic advertising platform that helps buyers of digital advertising manage data-driven campaigns across channels.',
-    },
-    {
-        ticker: 'RBLX',
-        name: 'Roblox',
-        slug: 'roblox',
-        sector: 'Technology',
-        description:
-            'Roblox Corporation operates a global online entertainment platform and game creation system, with hundreds of millions of monthly active users, primarily Gen Z.',
-    },
-    {
-        ticker: 'U',
-        name: 'Unity Software',
-        slug: 'unity',
-        sector: 'Technology',
-        description:
-            'Unity Software provides a real-time 3D development platform used to create games, simulations, and interactive experiences across mobile, console, and XR.',
-    },
-    {
-        ticker: 'PATH',
-        name: 'UiPath',
-        slug: 'uipath',
-        sector: 'Technology',
-        description:
-            'UiPath Inc. provides enterprise robotic process automation (RPA) software that automates repetitive business tasks across finance, HR, and operations.',
-    },
-    {
-        ticker: 'AI',
-        name: 'C3.ai',
-        slug: 'c3ai',
-        sector: 'Technology',
-        description:
-            'C3.ai provides enterprise AI software applications for digital transformation, serving industries including energy, financial services, and defence.',
-    },
-    {
-        ticker: 'SMCI',
-        name: 'Super Micro Computer',
-        slug: 'supermicro',
-        sector: 'Technology',
-        description:
-            'Super Micro Computer designs and manufactures high-performance server and storage solutions, benefiting significantly from AI infrastructure buildout.',
-    },
-    {
-        ticker: 'ARM',
-        name: 'Arm Holdings',
-        slug: 'arm',
-        sector: 'Technology',
-        description:
-            'Arm Holdings licenses CPU and GPU chip architectures used in virtually every smartphone globally, and increasingly in data centre and AI chips.',
-    },
-    {
-        ticker: 'AVGO',
-        name: 'Broadcom',
-        slug: 'broadcom',
-        sector: 'Technology',
-        description:
-            'Broadcom Inc. designs and supplies semiconductor and infrastructure software solutions. A critical supplier for data centres, networking, and broadband.',
-    },
-    {
-        ticker: 'QCOM',
-        name: 'Qualcomm',
-        slug: 'qualcomm',
-        sector: 'Technology',
-        description:
-            'Qualcomm Incorporated designs wireless technology and semiconductors, including Snapdragon chips that power billions of Android devices and automotive systems.',
-    },
-    {
-        ticker: 'TXN',
-        name: 'Texas Instruments',
-        slug: 'texas-instruments',
-        sector: 'Technology',
-        description:
-            'Texas Instruments designs and manufactures analog and embedded processing semiconductors used in industrial, automotive, and consumer electronics applications.',
-    },
-    {
-        ticker: 'AMAT',
-        name: 'Applied Materials',
-        slug: 'applied-materials',
-        sector: 'Technology',
-        description:
-            'Applied Materials provides equipment, services, and software used to fabricate semiconductor chips. A key enabler of the global semiconductor supply chain.',
-    },
-    {
-        ticker: 'LRCX',
-        name: 'Lam Research',
-        slug: 'lam-research',
-        sector: 'Technology',
-        description:
-            'Lam Research Corporation supplies wafer fabrication equipment and services to the semiconductor industry, critical to memory and logic chip manufacturing.',
-    },
-    {
-        ticker: 'KLAC',
-        name: 'KLA Corporation',
-        slug: 'kla',
-        sector: 'Technology',
-        description:
-            'KLA Corporation provides process control and yield management solutions for the semiconductor and related nanoelectronics industries.',
-    },
-    {
-        ticker: 'ASML',
-        name: 'ASML',
-        slug: 'asml',
-        sector: 'Technology',
-        description:
-            'ASML Holding is the sole manufacturer of extreme ultraviolet (EUV) lithography machines, making it indispensable to the production of advanced semiconductors.',
-    },
-    {
-        ticker: 'TSM',
-        name: 'TSMC',
-        slug: 'tsmc',
-        sector: 'Technology',
-        description:
-            "Taiwan Semiconductor Manufacturing Company is the world's largest dedicated chip foundry, producing chips for Apple, NVIDIA, AMD, and Qualcomm.",
-    },
-    {
-        ticker: 'SHOP',
-        name: 'Shopify',
-        slug: 'shopify',
-        sector: 'Technology',
-        description:
-            'Shopify Inc. provides an e-commerce platform and ecosystem of tools enabling merchants of all sizes to set up, manage, and grow online businesses.',
-    },
-    {
-        ticker: 'SQ',
-        name: 'Block',
-        slug: 'block',
-        sector: 'Technology',
-        description:
-            'Block Inc. (formerly Square) operates financial services and digital payments ecosystems including Square, Cash App, and Afterpay.',
-    },
-    {
-        ticker: 'HOOD',
-        name: 'Robinhood',
-        slug: 'robinhood',
-        sector: 'Financials',
-        description:
-            'Robinhood Markets operates a commission-free trading platform for stocks, options, ETFs, and crypto, targeting retail investors and younger demographics.',
-    },
-    // Financials
-    {
-        ticker: 'GS',
-        name: 'Goldman Sachs',
-        slug: 'goldman-sachs',
-        sector: 'Financials',
-        description:
-            'Goldman Sachs Group is a leading global investment banking, securities, and investment management firm serving corporations, governments, and institutions.',
-    },
-    {
-        ticker: 'MS',
-        name: 'Morgan Stanley',
-        slug: 'morgan-stanley',
-        sector: 'Financials',
-        description:
-            'Morgan Stanley provides investment banking, wealth management, and investment management services to corporations, governments, and individuals worldwide.',
-    },
-    {
-        ticker: 'BAC',
-        name: 'Bank of America',
-        slug: 'bank-of-america',
-        sector: 'Financials',
-        description:
-            'Bank of America Corporation is one of the largest US banks, serving 68 million consumers and businesses through retail banking, wealth management, and investment banking.',
-    },
-    {
-        ticker: 'WFC',
-        name: 'Wells Fargo',
-        slug: 'wells-fargo',
-        sector: 'Financials',
-        description:
-            'Wells Fargo & Company is a diversified financial services company with $1.9 trillion in assets, offering banking, investments, mortgage, and consumer finance products.',
-    },
-    {
-        ticker: 'C',
-        name: 'Citigroup',
-        slug: 'citigroup',
-        sector: 'Financials',
-        description:
-            'Citigroup Inc. is a global bank operating in 160+ countries, providing consumer banking, corporate and investment banking, and wealth management services.',
-    },
-    {
-        ticker: 'AXP',
-        name: 'American Express',
-        slug: 'american-express',
-        sector: 'Financials',
-        description:
-            'American Express is a global financial services company best known for its charge cards, credit cards, and travel-related services targeting premium customers.',
-    },
-    {
-        ticker: 'MA',
-        name: 'Mastercard',
-        slug: 'mastercard',
-        sector: 'Financials',
-        description:
-            'Mastercard Incorporated is a global technology company in the payments industry, connecting consumers, financial institutions, merchants, and governments.',
-    },
-    {
-        ticker: 'BLK',
-        name: 'BlackRock',
-        slug: 'blackrock',
-        sector: 'Financials',
-        description:
-            "BlackRock Inc. is the world's largest asset manager with over $10 trillion in assets under management, known for iShares ETFs and the Aladdin risk platform.",
-    },
-    {
-        ticker: 'BRK.B',
-        name: 'Berkshire Hathaway',
-        slug: 'berkshire-hathaway',
-        sector: 'Financials',
-        description:
-            "Berkshire Hathaway Inc. is Warren Buffett's conglomerate holding company, owning businesses across insurance, railroads, energy, manufacturing, and retail.",
-    },
-    {
-        ticker: 'SCHW',
-        name: 'Charles Schwab',
-        slug: 'charles-schwab',
-        sector: 'Financials',
-        description:
-            'Charles Schwab Corporation provides brokerage, banking, wealth management, and custody services to retail investors and independent investment advisors.',
-    },
-    // Consumer & Retail
-    {
-        ticker: 'COST',
-        name: 'Costco',
-        slug: 'costco',
-        sector: 'Consumer Staples',
-        description:
-            'Costco Wholesale Corporation operates a membership-based warehouse club chain with 870+ locations worldwide, known for bulk products and exceptional member loyalty.',
-    },
-    {
-        ticker: 'HD',
-        name: 'Home Depot',
-        slug: 'home-depot',
-        sector: 'Consumer Discretionary',
-        description:
-            "Home Depot is the world's largest home improvement retailer, operating 2,300+ stores across North America and serving DIY homeowners and professional contractors.",
-    },
-    {
-        ticker: 'MCD',
-        name: "McDonald's",
-        slug: 'mcdonalds',
-        sector: 'Consumer Discretionary',
-        description:
-            "McDonald's Corporation is the world's largest fast-food chain with 40,000+ restaurants in over 100 countries, operating primarily through a franchised business model.",
-    },
-    {
-        ticker: 'SBUX',
-        name: 'Starbucks',
-        slug: 'starbucks',
-        sector: 'Consumer Discretionary',
-        description:
-            "Starbucks Corporation is the world's largest coffeehouse chain with 35,000+ stores globally, operating through company-operated and licensed locations.",
-    },
-    {
-        ticker: 'NKE',
-        name: 'Nike',
-        slug: 'nike',
-        sector: 'Consumer Discretionary',
-        description:
-            "Nike Inc. is the world's leading athletic footwear, apparel, and equipment brand, with a global direct-to-consumer strategy and powerful innovation pipeline.",
-    },
-    {
-        ticker: 'LULU',
-        name: 'Lululemon',
-        slug: 'lululemon',
-        sector: 'Consumer Discretionary',
-        description:
-            'Lululemon Athletica is a premium athletic apparel brand known for yoga wear, with a loyal community-driven customer base and fast-growing international presence.',
-    },
-    {
-        ticker: 'TGT',
-        name: 'Target',
-        slug: 'target',
-        sector: 'Consumer Discretionary',
-        description:
-            'Target Corporation is a US retail chain offering general merchandise through 2,000+ stores and a growing digital commerce platform.',
-    },
-    {
-        ticker: 'AMGN',
-        name: 'Amgen',
-        slug: 'amgen',
-        sector: 'Healthcare',
-        description:
-            'Amgen Inc. is a leading biotechnology company focused on human therapeutics, with blockbuster drugs in oncology, cardiovascular disease, and inflammation.',
-    },
-    {
-        ticker: 'LOW',
-        name: "Lowe's",
-        slug: 'lowes',
-        sector: 'Consumer Discretionary',
-        description:
-            "Lowe's Companies is the second-largest US home improvement retailer, with 1,700+ stores serving DIY customers and professional contractors.",
-    },
-    // Healthcare & Biotech
     {
         ticker: 'JNJ',
         name: 'Johnson & Johnson',
@@ -599,267 +726,47 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Healthcare',
         description:
             'Johnson & Johnson is a diversified healthcare company with leading businesses in pharmaceuticals, medical devices, and consumer health products.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Johnson & Johnson is a diversified healthcare company operating in two segments after spinning off its consumer-health unit (Kenvue): Innovative Medicine (branded pharmaceuticals) and MedTech (medical devices). Patent-protected drugs and a broad device portfolio generate stable, defensive cash flows.',
+            keyProducts: [
+                'Innovative Medicine: oncology, immunology, and neuroscience drugs',
+                'MedTech: surgical, orthopaedics, cardiovascular, and vision devices',
+                'Pharmaceutical pipeline therapies',
+            ],
+            investmentNarrative:
+                'Bulls view J&J as a defensive, high-quality healthcare compounder with a diversified drug and device portfolio, a deep pipeline, and a long record of dividend increases (a Dividend King).\n\nBears focus on patent-cliff risk for key drugs (notably biosimilar competition for Stelara), the talc-related litigation overhang, and the slower growth typical of large-cap pharma.',
+            keyRisks: [
+                'Patent cliffs and biosimilar competition for major drugs',
+                'Talc and other product-liability litigation',
+                'Drug-pricing regulation and reform',
+                'Pipeline and clinical-trial setbacks',
+            ],
+            whatToWatch:
+                'Watch pharmaceutical pipeline progress and new-drug launches offsetting patent expiries, MedTech growth, litigation resolution, and dividend growth. Operating-margin stability signals quality.',
+            competitors: ['Pfizer', 'Merck', 'AbbVie', 'Medtronic', 'Abbott Laboratories'],
+            relatedArticleSlugs: [
+                'how-dividends-actually-work',
+                'how-to-assess-stock-risk',
+                'dividend-growth-investing',
+            ],
+            faq: [
+                {
+                    question: 'What is a patent cliff?',
+                    answer: 'Branded drugs are protected by patents for a fixed period. When protection lapses, generic or biosimilar versions enter at much lower prices and the original product can lose most of its revenue within a couple of years. Because that revenue carried very high margins, the profit impact is larger than the revenue impact, and it arrives on a known date, which is why pipelines are valued against scheduled expiries.',
+                },
+                {
+                    question: 'What was the Kenvue spin-off?',
+                    answer: 'Johnson & Johnson separated its consumer-health business, the household brands sold over the counter, into an independent company called Kenvue. What remains is a focused pharmaceutical and medical-device company with higher growth and higher risk: consumer health was the slowest-growing but most predictable part of the old group.',
+                },
+                {
+                    question: 'How should investors think about the talc litigation?',
+                    answer: 'Product-liability litigation of this scale creates an overhang because the eventual cost and timing are both unknown, and markets discount uncertainty more harshly than they discount a large but defined liability. Resolution tends to matter to the share price out of proportion to the amount finally paid.',
+                },
+            ],
+        },
     },
-    {
-        ticker: 'UNH',
-        name: 'UnitedHealth Group',
-        slug: 'unitedhealth',
-        sector: 'Healthcare',
-        description:
-            'UnitedHealth Group is the largest US health insurer, operating through UnitedHealthcare (insurance) and Optum (health services and technology).',
-    },
-    {
-        ticker: 'LLY',
-        name: 'Eli Lilly',
-        slug: 'eli-lilly',
-        sector: 'Healthcare',
-        description:
-            'Eli Lilly and Company develops pharmaceutical products in diabetes, oncology, immunology, and neurology. Its GLP-1 drugs Mounjaro and Zepbound have seen explosive growth.',
-    },
-    {
-        ticker: 'PFE',
-        name: 'Pfizer',
-        slug: 'pfizer',
-        sector: 'Healthcare',
-        description:
-            'Pfizer Inc. is a global biopharmaceutical company known for COVID-19 vaccines, oncology, and rare disease treatments, operating across all major therapeutic areas.',
-    },
-    {
-        ticker: 'MRNA',
-        name: 'Moderna',
-        slug: 'moderna',
-        sector: 'Healthcare',
-        description:
-            'Moderna Inc. is a biotechnology company that pioneered mRNA therapeutics, known for its COVID-19 vaccine and a pipeline spanning infectious diseases and oncology.',
-    },
-    {
-        ticker: 'ABBV',
-        name: 'AbbVie',
-        slug: 'abbvie',
-        sector: 'Healthcare',
-        description:
-            'AbbVie Inc. is a biopharmaceutical company focused on immunology, oncology, and neuroscience. Humira and Skyrizi are among its best-selling drugs.',
-    },
-    {
-        ticker: 'MRK',
-        name: 'Merck',
-        slug: 'merck',
-        sector: 'Healthcare',
-        description:
-            'Merck & Co. is a global pharmaceutical leader with major franchises in oncology (Keytruda), vaccines, and infectious diseases.',
-    },
-    {
-        ticker: 'BMY',
-        name: 'Bristol-Myers Squibb',
-        slug: 'bristol-myers-squibb',
-        sector: 'Healthcare',
-        description:
-            'Bristol-Myers Squibb is a global biopharmaceutical company focused on oncology, hematology, immunology, and cardiovascular disease.',
-    },
-    {
-        ticker: 'GILD',
-        name: 'Gilead Sciences',
-        slug: 'gilead',
-        sector: 'Healthcare',
-        description:
-            'Gilead Sciences Inc. develops innovative medicines in HIV, liver disease, haematology/oncology, and inflammation.',
-    },
-    {
-        ticker: 'ISRG',
-        name: 'Intuitive Surgical',
-        slug: 'intuitive-surgical',
-        sector: 'Healthcare',
-        description:
-            'Intuitive Surgical designs and manufactures the da Vinci robotic surgical system, the global leader in minimally invasive robotic surgery.',
-    },
-    {
-        ticker: 'DXCM',
-        name: 'DexCom',
-        slug: 'dexcom',
-        sector: 'Healthcare',
-        description:
-            'DexCom Inc. develops continuous glucose monitoring (CGM) systems for people with diabetes, with strong growth from expanding international markets and direct-to-consumer sales.',
-    },
-    {
-        ticker: 'INTU',
-        name: 'Intuit',
-        slug: 'intuit',
-        sector: 'Technology',
-        description:
-            'Intuit Inc. provides financial management software including TurboTax, QuickBooks, Credit Karma, and Mailchimp, serving consumers and small businesses.',
-    },
-    // Energy
-    {
-        ticker: 'XOM',
-        name: 'ExxonMobil',
-        slug: 'exxonmobil',
-        sector: 'Energy',
-        description:
-            "ExxonMobil Corporation is one of the world's largest publicly traded oil and gas companies, with upstream, downstream, and chemical operations globally.",
-    },
-    {
-        ticker: 'CVX',
-        name: 'Chevron',
-        slug: 'chevron',
-        sector: 'Energy',
-        description:
-            "Chevron Corporation is a global integrated energy company operating in oil, natural gas, and renewable energy, ranking among the world's largest corporations.",
-    },
-    {
-        ticker: 'COP',
-        name: 'ConocoPhillips',
-        slug: 'conocophillips',
-        sector: 'Energy',
-        description:
-            "ConocoPhillips is one of the world's largest independent oil and gas exploration and production companies, with major assets in the US, Norway, and Asia Pacific.",
-    },
-    {
-        ticker: 'SLB',
-        name: 'SLB',
-        slug: 'slb',
-        sector: 'Energy',
-        description:
-            "SLB (formerly Schlumberger) is the world's leading oilfield services company, providing technology, information, and integrated project management services.",
-    },
-    {
-        ticker: 'OXY',
-        name: 'Occidental Petroleum',
-        slug: 'occidental',
-        sector: 'Energy',
-        description:
-            'Occidental Petroleum is an international oil and gas company with operations in the US, Middle East, and Latin America, partially owned by Berkshire Hathaway.',
-    },
-    {
-        ticker: 'NEE',
-        name: 'NextEra Energy',
-        slug: 'nextera-energy',
-        sector: 'Utilities',
-        description:
-            "NextEra Energy is the world's largest producer of renewable energy from wind and solar, while also operating one of the largest regulated electric utilities in the US.",
-    },
-    {
-        ticker: 'ENPH',
-        name: 'Enphase Energy',
-        slug: 'enphase',
-        sector: 'Energy',
-        description:
-            'Enphase Energy designs and manufactures microinverter-based solar and storage systems for residential and commercial customers globally.',
-    },
-    // Industrials
-    {
-        ticker: 'CAT',
-        name: 'Caterpillar',
-        slug: 'caterpillar',
-        sector: 'Industrials',
-        description:
-            "Caterpillar Inc. is the world's leading manufacturer of construction and mining equipment, diesel and natural gas engines, and industrial gas turbines.",
-    },
-    {
-        ticker: 'DE',
-        name: 'Deere & Company',
-        slug: 'deere',
-        sector: 'Industrials',
-        description:
-            "Deere & Company manufactures agricultural, construction, and forestry machinery under the John Deere brand, the world's largest farm equipment maker.",
-    },
-    {
-        ticker: 'GE',
-        name: 'GE Aerospace',
-        slug: 'ge-aerospace',
-        sector: 'Industrials',
-        description:
-            'GE Aerospace (formerly General Electric) is a leading designer and manufacturer of jet engines and aviation systems for commercial and military aircraft.',
-    },
-    {
-        ticker: 'HON',
-        name: 'Honeywell',
-        slug: 'honeywell',
-        sector: 'Industrials',
-        description:
-            'Honeywell International is a diversified technology and manufacturing conglomerate operating in aerospace, building technologies, performance materials, and safety.',
-    },
-    {
-        ticker: 'RTX',
-        name: 'RTX Corporation',
-        slug: 'rtx',
-        sector: 'Industrials',
-        description:
-            'RTX Corporation (formerly Raytheon Technologies) is a global defence and aerospace manufacturer, producing jet engines (Pratt & Whitney), missiles, and radar systems.',
-    },
-    {
-        ticker: 'LMT',
-        name: 'Lockheed Martin',
-        slug: 'lockheed-martin',
-        sector: 'Industrials',
-        description:
-            "Lockheed Martin is the world's largest defence contractor, producing fighter jets (F-35), missiles, space systems, and advanced technology for governments.",
-    },
-    {
-        ticker: 'NOC',
-        name: 'Northrop Grumman',
-        slug: 'northrop-grumman',
-        sector: 'Industrials',
-        description:
-            'Northrop Grumman is a global defence and aerospace company specialising in autonomous systems, cyber, C4ISR, and strike technologies for the US and allied governments.',
-    },
-    {
-        ticker: 'UPS',
-        name: 'UPS',
-        slug: 'ups',
-        sector: 'Industrials',
-        description:
-            "United Parcel Service is the world's largest package delivery company and a leading provider of supply chain management solutions.",
-    },
-    {
-        ticker: 'FDX',
-        name: 'FedEx',
-        slug: 'fedex',
-        sector: 'Industrials',
-        description:
-            'FedEx Corporation provides transportation, e-commerce, and business services globally through FedEx Express, FedEx Ground, and FedEx Freight.',
-    },
-    // Communication Services
-    {
-        ticker: 'T',
-        name: 'AT&T',
-        slug: 'att',
-        sector: 'Communication Services',
-        description:
-            'AT&T Inc. is the largest US wireless carrier and a major provider of broadband and pay-TV services through DirecTV.',
-    },
-    {
-        ticker: 'VZ',
-        name: 'Verizon',
-        slug: 'verizon',
-        sector: 'Communication Services',
-        description:
-            'Verizon Communications is a leading US telecommunications company offering wireless, broadband, and business communications services to consumers and enterprises.',
-    },
-    {
-        ticker: 'TMUS',
-        name: 'T-Mobile',
-        slug: 't-mobile',
-        sector: 'Communication Services',
-        description:
-            'T-Mobile US is the second-largest US wireless carrier, known for its disruptive "Un-carrier" strategy and accelerated 5G network build-out.',
-    },
-    {
-        ticker: 'CMCSA',
-        name: 'Comcast',
-        slug: 'comcast',
-        sector: 'Communication Services',
-        description:
-            'Comcast Corporation is the largest US cable operator and home internet provider, also owning NBCUniversal studios and theme parks.',
-    },
-    {
-        ticker: 'CHTR',
-        name: 'Charter Communications',
-        slug: 'charter',
-        sector: 'Communication Services',
-        description:
-            'Charter Communications is the second-largest US cable company, operating the Spectrum brand for residential and business internet, TV, and phone services.',
-    },
-    // Consumer Staples
     {
         ticker: 'KO',
         name: 'Coca-Cola',
@@ -867,410 +774,49 @@ const TICKER_PAGES_BASE: TickerPage[] = [
         sector: 'Consumer Staples',
         description:
             "The Coca-Cola Company is the world's largest beverage company, with 200+ brands sold in 200+ countries. Known for its iconic brand and high dividend consistency.",
-    },
-    {
-        ticker: 'PEP',
-        name: 'PepsiCo',
-        slug: 'pepsico',
-        sector: 'Consumer Staples',
-        description:
-            "PepsiCo Inc. is a global food and beverage giant owning brands like Pepsi, Lay's, Gatorade, Quaker, and Tropicana across 200 countries.",
-    },
-    {
-        ticker: 'PG',
-        name: 'Procter & Gamble',
-        slug: 'procter-and-gamble',
-        sector: 'Consumer Staples',
-        description:
-            'Procter & Gamble Company sells consumer goods across 180+ countries under brands like Tide, Pampers, Gillette, Oral-B, and Head & Shoulders.',
-    },
-    {
-        ticker: 'PM',
-        name: 'Philip Morris',
-        slug: 'philip-morris',
-        sector: 'Consumer Staples',
-        description:
-            'Philip Morris International is a global tobacco company transitioning to smoke-free products, with IQOS being its flagship heated tobacco product.',
-    },
-    {
-        ticker: 'MO',
-        name: 'Altria',
-        slug: 'altria',
-        sector: 'Consumer Staples',
-        description:
-            'Altria Group manufactures and markets cigarettes, smokeless tobacco, and oral nicotine products primarily in the United States, known for its high dividend yield.',
-    },
-    {
-        ticker: 'MDLZ',
-        name: 'Mondelez',
-        slug: 'mondelez',
-        sector: 'Consumer Staples',
-        description:
-            'Mondelez International is a global snacking company owning brands like Oreo, Cadbury, Toblerone, and Ritz, sold in 150+ countries.',
-    },
-    {
-        ticker: 'CL',
-        name: 'Colgate-Palmolive',
-        slug: 'colgate',
-        sector: 'Consumer Staples',
-        description:
-            'Colgate-Palmolive Company produces and distributes consumer products including oral care, personal care, home care, and pet nutrition brands globally.',
-    },
-    // Real Estate
-    {
-        ticker: 'AMT',
-        name: 'American Tower',
-        slug: 'american-tower',
-        sector: 'Real Estate',
-        description:
-            'American Tower Corporation is a global REIT that owns and operates wireless and broadcast communications infrastructure across 22 countries.',
-    },
-    {
-        ticker: 'PLD',
-        name: 'Prologis',
-        slug: 'prologis',
-        sector: 'Real Estate',
-        description:
-            "Prologis Inc. is the world's largest industrial REIT, owning logistics and distribution facilities in key markets across 19 countries.",
-    },
-    {
-        ticker: 'EQIX',
-        name: 'Equinix',
-        slug: 'equinix',
-        sector: 'Real Estate',
-        description:
-            "Equinix Inc. is the world's largest data centre REIT, operating 240+ International Business Exchange (IBX) facilities across 33 countries.",
-    },
-    {
-        ticker: 'WELL',
-        name: 'Welltower',
-        slug: 'welltower',
-        sector: 'Real Estate',
-        description:
-            'Welltower Inc. is a leading healthcare REIT investing in senior housing, post-acute communities, and outpatient medical properties across North America and the UK.',
-    },
-    // Materials & Mining
-    {
-        ticker: 'NEM',
-        name: 'Newmont',
-        slug: 'newmont',
-        sector: 'Materials',
-        description:
-            "Newmont Corporation is the world's largest gold mining company, with operations in North and South America, Australia, and Africa.",
-    },
-    {
-        ticker: 'FCX',
-        name: 'Freeport-McMoRan',
-        slug: 'freeport-mcmoran',
-        sector: 'Materials',
-        description:
-            'Freeport-McMoRan is one of the largest copper producers in the world, with major mining operations in the Americas and Indonesia. A key beneficiary of the energy transition.',
-    },
-    {
-        ticker: 'LIN',
-        name: 'Linde',
-        slug: 'linde',
-        sector: 'Materials',
-        description:
-            "Linde plc is the world's largest industrial gas company, supplying oxygen, nitrogen, hydrogen, and helium to healthcare, manufacturing, and energy industries.",
-    },
-    // Crypto & Alternative Assets
-    {
-        ticker: 'MSTR',
-        name: 'MicroStrategy',
-        slug: 'microstrategy',
-        sector: 'Technology',
-        description:
-            'MicroStrategy (now Strategy) has become the largest corporate holder of Bitcoin, pursuing a Bitcoin treasury strategy while operating a business intelligence software division.',
-    },
-    {
-        ticker: 'MARA',
-        name: 'MARA Holdings',
-        slug: 'mara',
-        sector: 'Technology',
-        description:
-            'MARA Holdings (formerly Marathon Digital) is one of the largest Bitcoin mining companies, operating large-scale digital asset mining infrastructure.',
-    },
-    {
-        ticker: 'RIOT',
-        name: 'Riot Platforms',
-        slug: 'riot-platforms',
-        sector: 'Technology',
-        description:
-            'Riot Platforms Inc. is a major US Bitcoin mining company with facilities in Texas, focused on large-scale, low-cost Bitcoin production.',
-    },
-    // Automotive
-    {
-        ticker: 'F',
-        name: 'Ford Motor',
-        slug: 'ford',
-        sector: 'Consumer Discretionary',
-        description:
-            'Ford Motor Company designs, manufactures, and sells vehicles globally, with a growing EV division (Ford Model e) and a profitable commercial vehicle segment (Ford Pro).',
-    },
-    {
-        ticker: 'GM',
-        name: 'General Motors',
-        slug: 'general-motors',
-        sector: 'Consumer Discretionary',
-        description:
-            "General Motors Company is one of the world's largest automakers, with brands including Chevrolet, GMC, Cadillac, and Buick, and a growing EV portfolio.",
-    },
-    {
-        ticker: 'RIVN',
-        name: 'Rivian',
-        slug: 'rivian',
-        sector: 'Consumer Discretionary',
-        description:
-            'Rivian Automotive is an electric vehicle manufacturer focused on trucks and SUVs, with the R1T pickup, R1S SUV, and commercial delivery vans for Amazon.',
-    },
-    {
-        ticker: 'LCID',
-        name: 'Lucid Group',
-        slug: 'lucid',
-        sector: 'Consumer Discretionary',
-        description:
-            'Lucid Group Inc. designs and manufactures premium electric vehicles led by the Lucid Air, targeting the luxury EV segment with superior range technology.',
-    },
-    // Travel & Hospitality
-    {
-        ticker: 'MAR',
-        name: 'Marriott International',
-        slug: 'marriott',
-        sector: 'Consumer Discretionary',
-        description:
-            "Marriott International is the world's largest hotel company, with 30 brands and 8,700+ properties across 139 countries, including Sheraton, W Hotels, and Ritz-Carlton.",
-    },
-    {
-        ticker: 'HLT',
-        name: 'Hilton',
-        slug: 'hilton',
-        sector: 'Consumer Discretionary',
-        description:
-            'Hilton Worldwide Holdings operates 22 hotel brands with 7,500+ properties globally, from economy to luxury, through a capital-light franchise model.',
-    },
-    {
-        ticker: 'DAL',
-        name: 'Delta Air Lines',
-        slug: 'delta',
-        sector: 'Industrials',
-        description:
-            "Delta Air Lines is one of the world's largest airlines, operating a global network of flights and known for premium customer service and operational reliability.",
-    },
-    {
-        ticker: 'AAL',
-        name: 'American Airlines',
-        slug: 'american-airlines',
-        sector: 'Industrials',
-        description:
-            "American Airlines Group is the world's largest airline by fleet size, operating domestic and international routes and managing the AAdvantage loyalty program.",
-    },
-    {
-        ticker: 'UAL',
-        name: 'United Airlines',
-        slug: 'united-airlines',
-        sector: 'Industrials',
-        description:
-            'United Airlines Holdings is a major US carrier with a vast global network, hub operations in Chicago, New York, Houston, Los Angeles, and San Francisco.',
-    },
-    {
-        ticker: 'BKNG',
-        name: 'Booking Holdings',
-        slug: 'booking-holdings',
-        sector: 'Consumer Discretionary',
-        description:
-            "Booking Holdings operates the world's largest online travel companies including Booking.com, Priceline, Kayak, and Agoda.",
-    },
-    {
-        ticker: 'ABNB',
-        name: 'Airbnb',
-        slug: 'airbnb',
-        sector: 'Consumer Discretionary',
-        description:
-            'Airbnb Inc. operates a global short-term rental and experiences marketplace, connecting hosts and guests across 220+ countries and 100,000+ cities.',
-    },
-    // SaaS & Cloud
-    {
-        ticker: 'HUBS',
-        name: 'HubSpot',
-        slug: 'hubspot',
-        sector: 'Technology',
-        description:
-            'HubSpot Inc. provides an all-in-one CRM platform for marketing, sales, and customer service, targeting small and mid-market businesses globally.',
-    },
-    {
-        ticker: 'ZM',
-        name: 'Zoom Video',
-        slug: 'zoom',
-        sector: 'Technology',
-        description:
-            'Zoom Video Communications provides a cloud-based video conferencing, phone, and collaboration platform used by enterprises and individuals worldwide.',
-    },
-    {
-        ticker: 'DOCU',
-        name: 'DocuSign',
-        slug: 'docusign',
-        sector: 'Technology',
-        description:
-            'DocuSign Inc. is the global standard for e-signatures and digital agreement management, used by hundreds of thousands of businesses to automate contract workflows.',
-    },
-    {
-        ticker: 'WDAY',
-        name: 'Workday',
-        slug: 'workday',
-        sector: 'Technology',
-        description:
-            'Workday Inc. provides enterprise cloud applications for human resources, finance, and planning, serving large organisations across healthcare, education, and financial services.',
-    },
-    {
-        ticker: 'VEEV',
-        name: 'Veeva Systems',
-        slug: 'veeva',
-        sector: 'Technology',
-        description:
-            'Veeva Systems provides cloud-based software for the global life sciences industry, covering clinical, regulatory, quality, and commercial operations.',
-    },
-    {
-        ticker: 'TEAM',
-        name: 'Atlassian',
-        slug: 'atlassian',
-        sector: 'Technology',
-        description:
-            'Atlassian Corporation provides software collaboration tools including Jira, Confluence, and Trello, used by millions of software development teams worldwide.',
-    },
-    // Emerging & High-Growth
-    {
-        ticker: 'APP',
-        name: 'AppLovin',
-        slug: 'applovin',
-        sector: 'Technology',
-        description:
-            'AppLovin Corporation provides a software platform and technology solutions for mobile app marketing and monetisation, with rapid growth from its AXON AI engine.',
-    },
-    {
-        ticker: 'CELH',
-        name: 'Celsius Holdings',
-        slug: 'celsius',
-        sector: 'Consumer Staples',
-        description:
-            'Celsius Holdings manufactures and markets functional energy drinks positioned as fitness beverages, with rapid market share gains in the US and international expansion.',
-    },
-    {
-        ticker: 'SOUN',
-        name: 'SoundHound AI',
-        slug: 'soundhound',
-        sector: 'Technology',
-        description:
-            'SoundHound AI provides voice AI and conversational intelligence solutions for restaurants, automotive, and enterprise customers.',
-    },
-    {
-        ticker: 'IONQ',
-        name: 'IonQ',
-        slug: 'ionq',
-        sector: 'Technology',
-        description:
-            'IonQ Inc. develops and commercialises quantum computers, targeting pharmaceutical, financial, and logistics applications with trapped-ion quantum technology.',
-    },
-    {
-        ticker: 'RGTI',
-        name: 'Rigetti Computing',
-        slug: 'rigetti',
-        sector: 'Technology',
-        description:
-            'Rigetti Computing Inc. builds superconducting quantum computers and offers access through cloud platforms, with applications in optimisation and simulation.',
-    },
-    {
-        ticker: 'NKLA',
-        name: 'Nikola',
-        slug: 'nikola',
-        sector: 'Industrials',
-        description:
-            'Nikola Corporation designs hydrogen fuel cell and battery-electric heavy-duty trucks, targeting long-haul commercial freight with zero-emission technology.',
-    },
-    {
-        ticker: 'SOFI',
-        name: 'SoFi Technologies',
-        slug: 'sofi',
-        sector: 'Financials',
-        description:
-            'SoFi Technologies is a digital personal finance platform offering student loan refinancing, mortgages, personal loans, investing, and banking services.',
-    },
-    {
-        ticker: 'AFRM',
-        name: 'Affirm',
-        slug: 'affirm',
-        sector: 'Financials',
-        description:
-            'Affirm Holdings provides buy-now-pay-later (BNPL) financing solutions, partnering with merchants to offer flexible payment options at the point of sale.',
-    },
-    {
-        ticker: 'UPST',
-        name: 'Upstart',
-        slug: 'upstart',
-        sector: 'Financials',
-        description:
-            'Upstart Holdings operates an AI-powered lending marketplace that partners with banks and credit unions to offer personal loans using alternative credit models.',
-    },
-    {
-        ticker: 'OPEN',
-        name: 'Opendoor',
-        slug: 'opendoor',
-        sector: 'Real Estate',
-        description:
-            'Opendoor Technologies is a digital real estate marketplace that enables homeowners to sell instantly and buyers to purchase homes online.',
-    },
-    {
-        ticker: 'DASH',
-        name: 'DoorDash',
-        slug: 'doordash',
-        sector: 'Consumer Discretionary',
-        description:
-            'DoorDash Inc. is the largest US food delivery platform, connecting consumers with local restaurants, grocery stores, and convenience retailers.',
-    },
-    {
-        ticker: 'PINS',
-        name: 'Pinterest',
-        slug: 'pinterest',
-        sector: 'Technology',
-        description:
-            'Pinterest Inc. operates a visual discovery and inspiration platform with over 480 million monthly active users, monetised primarily through shopping-intent advertising.',
-    },
-    {
-        ticker: 'MTCH',
-        name: 'Match Group',
-        slug: 'match-group',
-        sector: 'Technology',
-        description:
-            'Match Group operates a portfolio of online dating apps including Tinder, Hinge, OkCupid, and Match.com, serving millions of users globally.',
-    },
-    {
-        ticker: 'DUOL',
-        name: 'Duolingo',
-        slug: 'duolingo',
-        sector: 'Technology',
-        description:
-            "Duolingo Inc. operates the world's most popular language learning app, with over 100 million monthly active users and a subscription-based monetisation model.",
-    },
-    {
-        ticker: 'COUR',
-        name: 'Coursera',
-        slug: 'coursera',
-        sector: 'Technology',
-        description:
-            'Coursera Inc. is a leading online learning platform offering university-level courses, professional certificates, and degrees from 300+ global institutions.',
+        content: {
+            updatedAt: '2026-07-02',
+            businessModel:
+                'Coca-Cola is primarily a brand and concentrate company: it sells concentrates and syrups to a global network of bottling partners, focusing its own capital on marketing and brand-building rather than capital-intensive bottling. This asset-light model produces high margins and steady cash flow across 200+ countries.',
+            keyProducts: [
+                'Coca-Cola and Trademark sparkling brands',
+                'Water, sports, coffee, and tea (smartwater, Powerade, Costa)',
+                'Juice, dairy, and plant-based beverages',
+                'Concentrate and syrup sales to bottlers',
+            ],
+            investmentNarrative:
+                'Bulls value Coca-Cola as a defensive dividend-growth compounder: an iconic brand moat, global distribution, pricing power that helps offset inflation, and a decades-long record of rising dividends (a Dividend King).\n\nBears note slow volume growth in a maturing category, shifting consumer preferences away from sugary drinks, foreign-exchange headwinds from heavy international exposure, and a valuation that is full for a low-growth staple.',
+            keyRisks: [
+                'Health / regulatory trends and sugar taxes pressuring volumes',
+                'Significant foreign-exchange exposure',
+                'Slow organic volume growth in a mature category',
+                'Input-cost and commodity inflation',
+            ],
+            whatToWatch:
+                'Watch organic revenue growth (price / mix versus volume), operating margin, currency-neutral results, and dividend growth. Market-share trends in key emerging markets matter for the long-term story.',
+            competitors: ['PepsiCo', 'Keurig Dr Pepper', 'Nestlé', 'Private-label beverages'],
+            relatedArticleSlugs: [
+                'how-dividends-actually-work',
+                'dividend-growth-investing',
+                'understanding-competitive-moats',
+            ],
+            faq: [
+                {
+                    question: 'What does it mean that Coca-Cola is a Dividend King?',
+                    answer: 'A Dividend King has raised its dividend every year for at least fifty consecutive years. The label matters less as a badge than as evidence: sustaining that record through multiple recessions requires cash generation stable enough that management never had to choose between the dividend and the business. It also creates a strong institutional reluctance to ever cut, which is itself a form of commitment to shareholders.',
+                },
+                {
+                    question: 'Why is Coca-Cola called an asset-light business?',
+                    answer: 'Coca-Cola largely sells concentrate to independent bottlers rather than running bottling plants and delivery fleets itself. The capital-intensive, low-margin part of the value chain sits with partners, while Coca-Cola keeps the brand, the formula, and the marketing. That structure produces high margins and high returns on capital from a relatively small asset base.',
+                },
+                {
+                    question: 'Why do currency movements matter so much to Coca-Cola?',
+                    answer: 'A large share of revenue is earned outside the United States but reported in dollars, so a strong dollar shrinks reported results even when local-currency sales grow. This is why Coca-Cola reports currency-neutral organic growth alongside the headline numbers, and why the two can point in opposite directions.',
+                },
+            ],
+        },
     },
 ]
-
-/** Base ticker list merged with long-form editorial content keyed by slug. */
-export const TICKER_PAGES: TickerPage[] = TICKER_PAGES_BASE.map((ticker) => {
-    const content = TICKER_CONTENT[ticker.slug]
-    return content ? { ...ticker, content } : ticker
-})
-
-/** A ticker is treated as indexable only once it has long-form `content`. */
-export const isTickerEnriched = (
-    ticker: TickerPage
-): ticker is TickerPage & { content: TickerContent } => ticker.content != null
 
 /**
  * Case-insensitive lookup keyed by both the lowercased slug AND the lowercased

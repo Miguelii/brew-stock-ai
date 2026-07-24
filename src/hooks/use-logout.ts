@@ -1,6 +1,5 @@
 'use client'
 
-import { HOME_PAGE_PATH } from '@/lib/constants'
 import { trpcClient } from '@/_trpc/client'
 import { useRouter } from 'next/navigation'
 
@@ -10,7 +9,7 @@ export const useLogout = () => {
     const logout = trpcClient.auth.logout.useMutation({
         onSuccess: () => {
             router.refresh()
-            router.push(HOME_PAGE_PATH)
+            router.push('/')
             window?.location?.reload()
         },
     })

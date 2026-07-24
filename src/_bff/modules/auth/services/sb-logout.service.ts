@@ -5,7 +5,6 @@ import { Effect } from 'effect'
 import { CreateSbClientError, LogoutError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { revalidatePath } from 'next/cache'
-import { HOME_PAGE_PATH } from '@/lib/constants'
 
 export const sbLogout = Effect.fn('sbLogout')(function* () {
     const supabase = yield* Effect.tryPromise({
@@ -25,7 +24,7 @@ export const sbLogout = Effect.fn('sbLogout')(function* () {
             error_hash: ErrorCode.AUTH_LOGOUT_SIGN_OUT_ERR,
         })
 
-    revalidatePath(HOME_PAGE_PATH, 'layout')
+    revalidatePath('/', 'layout')
 
     return { status: 200 }
 })

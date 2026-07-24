@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { sbLogout } from '@/_bff/modules/auth/services/sb-logout.service'
-import { HOME_PAGE_PATH } from '@/lib/constants'
 import { failureTag } from '@/_bff/__tests__/utils'
 
 const { createSbServerClientMock, revalidatePathMock } = vi.hoisted(() => ({
@@ -26,7 +25,7 @@ describe('sbLogout', () => {
 
         expect(result).toEqual({ status: 200 })
         expect(signOut).toHaveBeenCalled()
-        expect(revalidatePathMock).toHaveBeenCalledWith(HOME_PAGE_PATH, 'layout')
+        expect(revalidatePathMock).toHaveBeenCalledWith('/', 'layout')
     })
 
     it('fails with LogoutError and skips revalidation when sign-out fails', async () => {

@@ -12,21 +12,21 @@ const EDUCATION_HUB_PAGES: MetadataRoute.Sitemap = EDUCATION_HUB_ARTICLES.map((a
     url: `${siteUrl}/education-hub/${a.slug}`,
     changeFrequency: 'monthly',
     lastModified: new Date(a.updatedAt ?? a.publishedAt),
-    priority: 0.8,
+    priority: 0.7,
 }))
 
 const TICKER_ANALYSIS_PAGES: MetadataRoute.Sitemap = TICKER_PAGES.map((t) => ({
     url: `${siteUrl}/analysis/${t.slug}`,
     changeFrequency: 'monthly',
     lastModified: new Date(t.content.updatedAt),
-    priority: 0.7,
+    priority: 0.8,
 }))
 
 const CHANGE_LOG_PAGES: MetadataRoute.Sitemap = CHANGELOG_ENTRIES.map((e) => ({
     url: `${siteUrl}/changelog/${e.slug}`,
-    changeFrequency: 'monthly',
+    changeFrequency: 'yearly',
     lastModified: new Date(e.publishedAt),
-    priority: 0.7,
+    priority: 0.3,
 }))
 
 const latestTickerDate = latestIsoDay(TICKER_PAGES.map((t) => t.content.updatedAt))
@@ -34,6 +34,8 @@ const latestTickerDate = latestIsoDay(TICKER_PAGES.map((t) => t.content.updatedA
 const latestArticleDate = latestIsoDay(
     EDUCATION_HUB_ARTICLES.map((a) => a.updatedAt ?? a.publishedAt)
 )
+
+const latestChangelogDate = latestIsoDay(CHANGELOG_ENTRIES.map((e) => e.publishedAt))
 
 export default function sitemap(): MetadataRoute.Sitemap {
     return [
@@ -46,13 +48,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: `${siteUrl}/analysis`,
             lastModified: latestTickerDate,
             changeFrequency: 'weekly',
-            priority: 1,
+            priority: 0.9,
         },
         {
             url: `${siteUrl}/education-hub`,
             lastModified: latestArticleDate,
             changeFrequency: 'weekly',
             priority: 0.9,
+        },
+        {
+            url: `${siteUrl}/changelog`,
+            lastModified: latestChangelogDate,
+            changeFrequency: 'weekly',
+            priority: 0.6,
         },
         {
             url: `${siteUrl}/pricing`,
@@ -62,7 +70,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         {
             url: `${siteUrl}/contact`,
             changeFrequency: 'weekly',
-            priority: 0.8,
+            priority: 0.5,
         },
         {
             url: `${siteUrl}/example-report`,
@@ -72,12 +80,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         {
             url: `${siteUrl}/about`,
             changeFrequency: 'monthly',
-            priority: 0.8,
+            priority: 0.6,
         },
         {
             url: `${siteUrl}/faq`,
             changeFrequency: 'monthly',
-            priority: 0.8,
+            priority: 0.7,
         },
         ...EDUCATION_HUB_PAGES,
         ...CHANGE_LOG_PAGES,

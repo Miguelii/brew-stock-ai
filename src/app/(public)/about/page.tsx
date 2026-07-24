@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import { ClientEnv } from '@/env/client'
-import { BreadcrumbSchema } from '@/components/structured-data'
+import { BreadcrumbSchema, PersonSchema } from '@/components/structured-data'
 import { Section } from '@/components/ui/section'
 
 export const dynamic = 'force-static'
@@ -39,6 +39,7 @@ export default function AboutPage() {
                     { name: 'About', url: META_URL },
                 ]}
             />
+            <PersonSchema />
 
             <main id="main" className="main-container">
                 <div className="space-y-2">
@@ -59,7 +60,7 @@ export default function AboutPage() {
                             single name.
                         </p>
                         <p>
-                            BrewStockAI exists to close that gap. We use a powerfull Engine to turn
+                            BrewStockAI exists to close that gap. We use a powerful engine to turn
                             hours of research into a few minutes and a few cents. Anyone curious
                             about a company can read a clear, structured breakdown of its
                             financials, risks, and competitive position before deciding what to do.

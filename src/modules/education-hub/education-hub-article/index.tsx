@@ -6,6 +6,7 @@ import * as motion from 'motion/react-client'
 import type { EducationHubArticle } from '@/types/EducationHubArticle'
 import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
 import { AD_SLOT_IN_ARTICLE } from '@/lib/constants'
+import { SectionBlocks } from './section-blocks'
 
 const RELATED_COUNT = 3
 
@@ -21,9 +22,36 @@ export function EducationHubArticle({ article }: Props) {
         (a) => a.slug !== article.slug && a.theme !== article.theme
     )
     const related = [...sameTheme, ...otherThemes].slice(0, RELATED_COUNT)
+    const takeaways = article.keyTakeaways ?? []
 
     return (
         <>
+            {takeaways.length > 0 && (
+                <motion.aside
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="mb-10 rounded-lg border border-border bg-card p-6"
+                >
+                    <h2 className="text-xs font-semibold tracking-widest uppercase text-accent-blue mb-4">
+                        Key takeaways
+                    </h2>
+                    <ul className="flex flex-col gap-2.5">
+                        {takeaways.map((takeaway) => (
+                            <li
+                                key={takeaway.slice(0, 48)}
+                                className="flex gap-3 text-primary-muted leading-relaxed text-sm"
+                            >
+                                <span aria-hidden className="text-accent-blue shrink-0">
+                                    &bull;
+                                </span>
+                                <span>{takeaway}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </motion.aside>
+            )}
+
             <article className="prose-sm max-w-none">
                 {article.sections.map((section, i) => (
                     <Fragment key={`article-section-${section.heading || i}`}>
@@ -45,6 +73,7 @@ export function EducationHubArticle({ article }: Props) {
                             <p className="text-primary-muted leading-relaxed text-base">
                                 {section.body}
                             </p>
+                            <SectionBlocks section={section} />
                         </motion.div>
                         {i === 1 && (
                             <AdBlock

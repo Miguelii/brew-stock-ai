@@ -1,20 +1,14 @@
 import { ChevronDownIcon } from 'lucide-react'
 import * as motion from 'motion/react-client'
 
-type FaqQuestion = {
-    question: string
-    answer: string
-}
-
 type Props = {
     companyName: string
-    questions: FaqQuestion[]
+    questions: {
+        question: string
+        answer: string
+    }[]
 }
 
-/**
- * Visible FAQ block for ticker pages. Must render the exact same questions
- * passed to `FAQSchema` so the JSON-LD always mirrors on-page content.
- */
 export function TickerFaq({ companyName, questions }: Props) {
     return (
         <motion.section

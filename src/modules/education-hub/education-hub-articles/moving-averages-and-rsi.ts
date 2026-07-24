@@ -6,31 +6,144 @@ export const MOVING_AVERAGES_AND_RSI_ARTICLE: EducationHubArticle = {
     description:
         'You do not have to become a chart trader to use technical signals. Two indicators, the moving average and RSI, can sharpen your entries and flag trouble the fundamentals have not reported yet.',
     publishedAt: '2025-10-27',
-    readingTimeMinutes: 6,
+    updatedAt: '2026-07-23',
+    readingTimeMinutes: 10,
     theme: 'stock-analysis',
+    keyTakeaways: [
+        'Technical indicators describe crowd behaviour. They do not predict, and they do not know anything about the business.',
+        'A moving average tells you which way the trend runs. RSI tells you whether the recent move is stretched.',
+        'RSI measures stretch, not value. A great stock can stay overbought for months and a failing one can stay oversold to zero.',
+        'Crossovers are lagging confirmations and they whipsaw badly in sideways markets.',
+        'For a long-term investor these tools decide when, never what. The fundamentals decide what.',
+    ],
     sections: [
         {
             body: 'Fundamental investors love to dismiss technical analysis as astrology with charts, and plenty of it deserves the scorn. But two of its tools have survived every fad cycle for a simple reason: they compress real information about supply, demand, and crowd behaviour into a single readable number. You can analyse a business on its fundamentals and still use these signals to answer the questions fundamentals are slowest to answer: is the market turning against this stock, and is right now an unusually stretched moment to buy it?',
         },
         {
-            heading: 'Moving Averages: The Trend, Smoothed',
-            body: 'A moving average is just the average closing price over a window (most commonly 50 days or 200 days), recalculated daily so it glides behind the price. Its job is to filter noise into trend. When a stock trades above its rising 200-day average, the long-term trend is up; below a falling one, the path of least resistance is down. The 50-day tells the same story for the medium term. Neither predicts anything by itself: a moving average is a description of where the crowd has been, which matters because crowds in markets have momentum: trends persist more often than intuition suggests.',
+            heading: 'Moving averages: the trend, smoothed',
+            body: 'A moving average is the average closing price over a window, recalculated each day so it glides behind the price. Its job is to filter noise into trend. The window you choose decides what question you are asking.',
+            table: {
+                caption: 'Common windows and what they are used for',
+                headers: ['Window', 'Horizon', 'Typical use'],
+                rows: [
+                    [
+                        '20-day',
+                        'Weeks',
+                        'Short-term momentum. Noisy enough that long-term investors can usually ignore it.',
+                    ],
+                    [
+                        '50-day',
+                        'Months',
+                        'Medium-term trend. Often acts as a reference level that traders watch, which makes it partly self-fulfilling.',
+                    ],
+                    [
+                        '200-day',
+                        'About a year',
+                        'The long-term trend. The single most widely watched line in markets, and the one most relevant to an investor.',
+                    ],
+                ],
+            },
+            afterBody:
+                'When a stock trades above a rising 200-day average, the long-term trend is up. Below a falling one, the path of least resistance is down. Neither predicts anything by itself: a moving average is a description of where the crowd has been. That matters only because trends in markets persist somewhat more often than intuition suggests, not because the line has any power of its own.',
         },
         {
-            heading: 'Golden Crosses, Death Crosses, and What They Are Worth',
-            body: 'The famous signals come from the two averages crossing. A "golden cross", when the 50-day rises above the 200-day, marks medium-term momentum turning up relative to the long-term trend, and historically has tended to precede decent average returns. The "death cross" is the mirror image and accompanied the major slides of 2008 and 2022. The honest caveat: these are lagging confirmations, not predictions, and they whipsaw in sideways markets, flashing buy and sell repeatedly while the stock goes nowhere. Treat a cross as a weather report saying conditions have changed, not as a forecast of what happens tomorrow.',
+            heading: 'Golden crosses, death crosses, and what they are worth',
+            body: 'The famous signals come from two averages crossing. A golden cross, when the 50-day rises above the 200-day, marks medium-term momentum turning up relative to the long-term trend. The death cross is the mirror image, and it has accompanied most major market declines, which is exactly what you would expect from a signal defined by prices having already fallen.',
+            callout: {
+                title: 'Why crossovers disappoint',
+                body: 'Both averages are calculated from past prices, so a cross can only confirm a move that already happened. In a trending market that confirmation is useful. In a sideways market the two lines cross back and forth repeatedly, generating a stream of buy and sell signals while the stock goes nowhere and each round trip costs you spread and tax. Treat a cross as a weather report saying conditions have changed, never as a forecast of tomorrow.',
+            },
         },
         {
-            heading: 'RSI: A Thermometer for Overreaction',
-            body: 'The Relative Strength Index measures the speed of recent gains versus recent losses over (typically) 14 days, scaled from 0 to 100. Readings above 70 are conventionally "overbought", meaning the recent buying has been unusually one-sided, and below 30 "oversold." The crucial subtlety is that RSI measures stretch, not value. A great company\'s stock can read 75 simply because good news arrived; a dying company can sit at 25 the whole way to zero. In strong uptrends, RSI can stay overbought for months. Selling a winner just because RSI hit 70 has been one of the most expensive habits in bull markets. Its best use is the opposite case: a quality stock you already wanted, knocked to an oversold reading by a panic, is the setup where RSI genuinely earns its keep.',
+            heading: 'RSI: a thermometer for overreaction',
+            body: 'The Relative Strength Index measures the size of recent gains against recent losses, conventionally over 14 days, scaled from 0 to 100. Readings above 70 are described as overbought, meaning recent buying has been unusually one-sided, and below 30 as oversold.',
+            table: {
+                caption: 'Reading RSI honestly',
+                headers: ['Reading', 'Conventional label', 'What it actually means'],
+                rows: [
+                    [
+                        'Above 70',
+                        'Overbought',
+                        'The recent move up has been fast and one-sided. It says nothing about whether the price is too high.',
+                    ],
+                    [
+                        '30 to 70',
+                        'Neutral',
+                        'Nothing unusual is happening. This is where most stocks sit most of the time.',
+                    ],
+                    [
+                        'Below 30',
+                        'Oversold',
+                        'The recent move down has been fast and one-sided. It says nothing about whether the price is now cheap.',
+                    ],
+                ],
+                footnote:
+                    'The labels are the source of most of the damage this indicator causes. "Overbought" sounds like "too expensive" and means nothing of the kind.',
+            },
+            afterBody:
+                "The crucial subtlety is that RSI measures stretch, not value. A great company's stock can read 75 simply because genuinely good news arrived, and in a strong uptrend it can stay above 70 for months. A deteriorating company can sit below 30 the entire way down. Selling a winner because RSI hit 70 has been one of the most expensive habits available to investors.",
         },
         {
-            heading: 'How the Two Work Together',
-            body: 'The combination is more useful than either alone, because they answer different questions: the moving average says which way the river flows, RSI says whether the current swimmer is exhausted. The classic disciplined setup is trading with the trend and entering on stretch: a stock above its rising 200-day average (healthy trend) that dips to a low RSI in a broad market scare (temporary stretch) offers a better-odds entry than chasing the same stock ten percent higher on an overbought reading. The reverse combination is the warning: a stock below a falling 200-day average where every RSI bounce fails is a market telling you, repeatedly, that something is wrong.',
+            heading: 'Where RSI genuinely earns its keep',
+            body: 'The indicator is close to useless as a standalone signal and quite useful as a timing input on a decision you have already made on other grounds.',
+            list: {
+                items: [
+                    'A company you have already researched and want to own, knocked to an oversold reading by a broad market panic rather than by company-specific news. This is the setup the indicator was built for.',
+                    'Staggering an entry. If you intend to buy and the reading is stretched upward, splitting the purchase across several weeks costs little and removes the worst-case timing outcome.',
+                    'Noticing divergence. When a stock makes a new high but RSI makes a lower high, the move up is being driven by fewer and weaker buyers. It is not a sell signal, it is a reason to re-read the thesis.',
+                ],
+            },
+            afterBody:
+                'What connects all three is that the fundamental decision came first. RSI adjusted the timing of an action already justified, which is the only role it plays reliably.',
         },
         {
-            heading: 'The Right Size for These Tools',
-            body: 'For a long-term investor, technicals should never overrule the fundamental case. A wonderful business does not become a bad one because of a death cross. Their proper jobs are narrower and genuinely valuable: timing entries into stocks you have already researched, staggering purchases when readings are stretched, and acting as an early smoke detector: persistent price weakness sometimes knows things before the quarterly report admits them, as holders closest to the company quietly leave. Use the fundamentals to decide what to own and roughly what it is worth. Let the technicals fine-tune when, and occasionally warn you to re-check why.',
+            heading: 'How the two work together',
+            body: 'The combination is more useful than either alone, because they answer different questions. The moving average says which way the river flows; RSI says whether the current swimmer is exhausted.',
+            table: {
+                caption: 'Four combinations',
+                headers: ['Trend (vs 200-day)', 'RSI', 'What it suggests'],
+                rows: [
+                    [
+                        'Above a rising average',
+                        'Oversold',
+                        'The best-odds entry available to a patient buyer: a healthy trend interrupted by a temporary scare.',
+                    ],
+                    [
+                        'Above a rising average',
+                        'Overbought',
+                        'A working trend, stretched. Not a reason to sell a good business, but a poor moment to chase.',
+                    ],
+                    [
+                        'Below a falling average',
+                        'Oversold',
+                        'The most dangerous combination. Repeatedly buying oversold readings in a downtrend is how people average into losses.',
+                    ],
+                    [
+                        'Below a falling average',
+                        'Overbought',
+                        'A bounce inside a downtrend. Often where recoveries fail.',
+                    ],
+                ],
+            },
+            afterBody:
+                'The bottom-left cell deserves emphasis. A stock below a falling long-term average where every RSI bounce fails is the market telling you, repeatedly, that something is wrong. Sometimes the market is wrong. But the correct response is to go back and re-examine the business, not to keep buying because the indicator says cheap.',
+        },
+        {
+            heading: 'The right size for these tools',
+            body: 'For a long-term investor, technicals should never overrule the fundamental case. A wonderful business does not become a bad one because two lines crossed, and a failing one does not become sound because a momentum reading recovered.',
+            list: {
+                ordered: true,
+                items: [
+                    'Use the fundamentals to decide what to own and roughly what it is worth. That decision is made before any chart is opened.',
+                    'Use the trend to avoid buying into something the market has been abandoning for a year, and to make yourself explain why the market is wrong before you do it anyway.',
+                    'Use RSI to fine-tune entry timing and to stagger purchases, not to trigger them.',
+                    'Treat persistent price weakness as a smoke detector. It is occasionally right before the quarterly report admits anything, because holders closest to the company sometimes leave quietly.',
+                    'Never let a technical signal decide a sale on its own. If the reason to sell is not something about the business or the price relative to value, it is probably not a reason.',
+                ],
+            },
+            afterBody:
+                'Used this way the two indicators are modest, honest tools: they describe what the crowd is doing, which is worth knowing precisely because you are trading against that crowd. Used as a decision system, they are a way of paying attention to everything except the company you are buying.',
         },
     ],
 }

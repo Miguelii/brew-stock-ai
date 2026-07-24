@@ -25,7 +25,7 @@ import { PROMPT_OPTIONS } from '@/_bff/modules/analysis/constants'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAnalysisCardHandlers } from '@/modules/analysis/analysis-form-card/use-analysis-card-handlers'
 import { useGetCredits } from '@/hooks/use-get-credits'
-import { pluralizeCredits } from '@/lib/utils'
+import { cn, pluralizeCredits } from '@/lib/utils'
 
 type Props = {
     isAuthenticated: boolean
@@ -94,12 +94,19 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                             name="stockSymbol"
                             render={({ field }) => (
                                 <FormItem className="w-full">
-                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-primary-muted">
+                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                                         Company Ticker
                                     </FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-muted pointer-events-none" />
+                                            <SearchIcon
+                                                className={cn(
+                                                    'absolute left-3 top-1/2 -translate-y-1/2 size-4 pointer-events-none',
+                                                    field.value
+                                                        ? 'text-primary'
+                                                        : 'text-primary-muted'
+                                                )}
+                                            />
                                             <Input
                                                 data-testid="ticker-input"
                                                 placeholder="Enter AAPL, TSLA, etc."
@@ -122,7 +129,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                             name="promptType"
                             render={({ field }) => (
                                 <FormItem className="w-full sm:min-w-[10%]">
-                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-primary-muted">
+                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                                         Analysis Type
                                     </FormLabel>
                                     <FormControl>
@@ -134,14 +141,24 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                             >
                                                 <BarChart2Icon
                                                     aria-hidden="true"
-                                                    className="size-4 text-primary-muted shrink-0"
+                                                    className={cn(
+                                                        'size-4 shrink-0',
+                                                        field.value
+                                                            ? 'text-primary'
+                                                            : 'text-primary-muted'
+                                                    )}
                                                 />
-                                                <SelectValue placeholder="Select type">
+                                                <SelectValue>
                                                     {(() => {
                                                         const selected = PROMPT_OPTIONS.find(
                                                             (o) => o.type === field.value
                                                         )
-                                                        if (!selected) return 'Select type'
+                                                        if (!selected)
+                                                            return (
+                                                                <span className="text-primary-muted">
+                                                                    Select type
+                                                                </span>
+                                                            )
                                                         return (
                                                             <span className="flex items-center gap-2">
                                                                 <span className="truncate">

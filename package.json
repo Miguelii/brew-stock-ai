@@ -11,7 +11,7 @@
         "start": "next start",
         "lint": "vp lint",
         "fmt": "vp fmt",
-        "typecheck": "npx tsc --noEmit",
+        "typecheck": "next typegen && tsc --noEmit",
         "test": "vp test run",
         "test:watch": "vp test",
         "check": "pnpm lint && pnpm typecheck",

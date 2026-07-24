@@ -43,32 +43,31 @@ flowchart TD
     CR --> TQ
     CR -.->|"reportId returned immediately"| UI
 
-    subgraph BG["Background Job (Trigger.dev)"]
-        JOB["process-report Job"] --> ANALYSIS["getStockAnalysis"]
-
+    subgraph EXT["External Data Providers"]
         subgraph YF["Yahoo Finance"]
             YAHOO["fundamentals + scores + reports"]
             PRICE["price history\n+ technical indicators"]
         end
+        FINNHUB["Finnhub\nnews"]
+    end
 
-        ANALYSIS --> YAHOO
-        ANALYSIS --> PRICE
-        ANALYSIS --> FINNHUB["Finnhub\nnews"]
-
-        YAHOO -->|"context"| AI{{"AI Analysis using Claude"}}
-        PRICE -->|"context"| AI
-        FINNHUB -->|"context"| AI
+    subgraph BG["Background Job (Trigger.dev)"]
+        JOB["process-report Job"] --> ANALYSIS["getStockAnalysis"]
+        ANALYSIS --> AI{{"AI Analysis using Claude"}}
         AI --> SAVE["Save full report analysis"]
         SAVE --> PUSH["Push notification"]
     end
 
+    ANALYSIS -->|"fetch fresh data"| EXT
+    EXT -->|"context"| AI
+
     TQ --> JOB
     JOB -.->|"on failure"| FAIL["mark FAILED\n+ refund credits"]
     FAIL --> PG
-    YAHOO -.->|"save fresh data\n(DB used as fallback)"| PG
     SAVE -->|"persist"| PG
 
     PUSH -.-> U
-    UI -->|"poll while GENERATING\n"| PG
+    UI -->|"poll while GENERATING"| PG
     UI -->|"latest news on view\n(TTL cache)"| FINNHUB
+    UI -->|"price history chart\n(TTL cache)"| PRICE
 ```

@@ -39,8 +39,8 @@ importers:
         specifier: ^5.100.1
         version: 5.101.2(react@19.2.7)
       '@trigger.dev/sdk':
-        specifier: 4.5.3
-        version: 4.5.3(ai@7.0.18(zod@4.4.3))(react@19.2.7)(zod@4.4.3)
+        specifier: 4.5.7
+        version: 4.5.7(ai@7.0.18(zod@4.4.3))(react@19.2.7)(zod@4.4.3)
       '@trpc/client':
         specifier: ^11.16.0
         version: 11.18.0(@trpc/server@11.18.0(typescript@6.0.3))(typescript@6.0.3)
@@ -1924,12 +1924,12 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@trigger.dev/core@4.5.3':
-    resolution: {integrity: sha512-xtVvpQIDKIKWcWW4obdb5pXlhTxVKQL3ZvRlcY8K1LARlNhn++j3j0O1KZN7llVF5Rd7tAGGgkBE7948IGuYXA==}
+  '@trigger.dev/core@4.5.7':
+    resolution: {integrity: sha512-Q5vI1zLtIxZMLq3LzdbrWNHtLkhyIvUtQ1toX0Bayn71RdMraTl3zhB95I/6LHuz7ZS7HSyO/zDy6Cs0gIm5rw==}
     engines: {node: '>=18.20.0'}
 
-  '@trigger.dev/sdk@4.5.3':
-    resolution: {integrity: sha512-yzeeBk8V1px1fmOMmugXFlbkADyFnh3eJFRVuA3TKyUF4veZ1WgOWX7bzx0wBT5RnyLZmA6at/laXL8NmNmqaA==}
+  '@trigger.dev/sdk@4.5.7':
+    resolution: {integrity: sha512-aYUQ/U6wyf96Bkm/beJte4HPO5E5bWTWIxQkF4Hjrj7r2M0iOuCdYZ0OOhVwUn9OmqCkBshGbzWTXF4IzNhQ5Q==}
     engines: {node: '>=18.20.0'}
     peerDependencies:
       '@ai-sdk/otel': '>=1.0.0-0 <2'
@@ -6053,7 +6053,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
-  '@trigger.dev/core@4.5.3':
+  '@trigger.dev/core@4.5.7':
     dependencies:
       '@bugsnag/cuid': 3.2.2
       '@electric-sql/client': 1.0.14
@@ -6095,11 +6095,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/sdk@4.5.3(ai@7.0.18(zod@4.4.3))(react@19.2.7)(zod@4.4.3)':
+  '@trigger.dev/sdk@4.5.7(ai@7.0.18(zod@4.4.3))(react@19.2.7)(zod@4.4.3)':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.41.1
-      '@trigger.dev/core': 4.5.3
+      '@trigger.dev/core': 4.5.7
       chalk: 5.6.2
       cronstrue: 2.59.0
       debug: 4.4.3

@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     // Prevent Next.js from bundling these packages (they contain native binaries)
     serverExternalPackages: ['@sparticuz/chromium', '@sparticuz/chromium-min', 'puppeteer-core'],
     experimental: {
+        useTypeScriptCli: true,
         optimizePackageImports: [
             '@base-ui/react',
             '@hookform/resolvers',

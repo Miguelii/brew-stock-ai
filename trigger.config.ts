@@ -2,7 +2,7 @@ import { defineConfig } from '@trigger.dev/sdk/v3'
 
 export default defineConfig({
     project: 'proj_owwdlmiwmyjoanyavhwh',
-    runtime: 'node-22',
+    runtime: 'node-24',
     logLevel: 'log',
     maxDuration: 3600,
     retries: {

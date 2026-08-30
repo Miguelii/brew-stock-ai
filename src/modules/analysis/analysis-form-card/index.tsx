@@ -210,21 +210,15 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
 
                         <Button
                             data-testid="generate-report-button"
-                            type={isAuthenticated && !hasNoCredits ? 'submit' : 'button'}
-                            disabled={isPending}
-                            className="h-11! w-full gap-2 cursor-pointer"
-                            onClick={() => {
-                                if (!isAuthenticated) {
-                                    router.push(
-                                        `${AUTH_PAGE_PATH}?returnTo=${encodeURIComponent(pathname)}`
-                                    )
-                                } else if (hasNoCredits) {
-                                    router.push('/tokens')
-                                }
-                            }}
+                            type="button"
+                            disabled
+                            className="h-11! w-full gap-2 cursor-not-allowed opacity-60 disabled:bg-accent-blue/50"
                         >
                             {getButtonLabel()}
                         </Button>
+                        <p className="text-xs text-muted-foreground text-center">
+                            Temporarily unavailable.
+                        </p>
                     </form>
                 </Form>
                 <p className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">

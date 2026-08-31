@@ -13,10 +13,9 @@ import {
     WebApplicationSchema,
     WebSiteSchema,
 } from '@/components/structured-data'
-import { GOOGLE_ADSENSE_ACCOUNT_ID, SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
+import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { GtmScript } from '@/components/scripts/gtm-script'
-import { AdsenseScript } from '@/components/scripts/adsence-script'
 import { TrpcContextProvider } from '@/_trpc/context/trpc-context.provider'
 
 const geistSans = Geist({
@@ -122,12 +121,10 @@ export default function RootLayout({ children }: Props) {
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <meta name="apple-mobile-web-app-title" content="BrewStockAI" />
-                <meta name="google-adsense-account" content={GOOGLE_ADSENSE_ACCOUNT_ID} />
             </head>
             <VercelAnalytics />
             <VercelSpeedInsights />
             <GtmScript />
-            <AdsenseScript />
             <body className="min-h-screen flex flex-col">
                 <TrpcContextProvider>
                     <WebSiteSchema />

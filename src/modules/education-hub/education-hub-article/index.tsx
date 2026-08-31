@@ -1,11 +1,9 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
 import { ArrowRightIcon } from 'lucide-react'
-import { AdBlock } from '@/components/ad-block'
 import * as motion from 'motion/react-client'
 import type { EducationHubArticle } from '@/types/EducationHubArticle'
 import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
-import { AD_SLOT_IN_ARTICLE } from '@/lib/constants'
 import { SectionBlocks } from './section-blocks'
 
 const RELATED_COUNT = 3
@@ -75,13 +73,6 @@ export function EducationHubArticle({ article }: Props) {
                             </p>
                             <SectionBlocks section={section} />
                         </motion.div>
-                        {i === 1 && (
-                            <AdBlock
-                                slot={AD_SLOT_IN_ARTICLE}
-                                format="horizontal"
-                                className="my-6"
-                            />
-                        )}
                     </Fragment>
                 ))}
             </article>

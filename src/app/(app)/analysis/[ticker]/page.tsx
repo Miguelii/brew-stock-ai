@@ -7,9 +7,7 @@ import { AnalysisHero } from '@/modules/analysis/analysis-hero'
 import { TickerFaq } from '@/modules/analysis/ticker-faq'
 import { TickerContentSections } from '@/modules/analysis/ticker-content-sections'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
-import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
-import { AD_SLOT_TICKER } from '@/lib/constants'
 
 type Props = PageProps<'/analysis/[ticker]'>
 
@@ -101,12 +99,6 @@ export default async function TickerPage({ params }: Props) {
                         <AnalysisFormCard isAuthenticated={!!user} defaultTicker={page.ticker} />
                     </AnalysisHero>
                 </section>
-
-                <AdBlock
-                    slot={AD_SLOT_TICKER}
-                    format="horizontal"
-                    className="hidden md:block max-w-7xl mx-auto px-6 mt-8"
-                />
 
                 <section className="max-w-7xl mx-auto mt-16 lg:mt-26 flex flex-col gap-12 lg:gap-16">
                     <TickerContentSections page={page} />

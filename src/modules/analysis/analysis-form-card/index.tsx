@@ -20,12 +20,12 @@ import {
 } from '@/components/ui/select'
 import { useAnalysisForm } from '@/modules/analysis/analysis-form-card/use-analysis-form'
 import { Input } from '@/components/ui/input'
-import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
+import { AUTH_PAGE_PATH, IS_APP_MAINTENANCE, MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 import { PROMPT_OPTIONS } from '@/_bff/modules/analysis/constants'
-import { usePathname, useRouter } from 'next/navigation'
 import { useAnalysisCardHandlers } from '@/modules/analysis/analysis-form-card/use-analysis-card-handlers'
 import { useGetCredits } from '@/hooks/use-get-credits'
 import { cn, pluralizeCredits } from '@/lib/utils'
+import { usePathname, useRouter } from 'next/navigation'
 
 type Props = {
     isAuthenticated: boolean
@@ -210,21 +210,39 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
 
                         <Button
                             data-testid="generate-report-button"
-                            type="button"
-                            disabled
-                            className="h-11! w-full gap-2 cursor-not-allowed opacity-60 disabled:bg-accent-blue/50"
+                            type={isAuthenticated && !hasNoCredits ? 'submit' : 'button'}
+                            disabled={IS_APP_MAINTENANCE || isPending}
+                            className={cn(
+                                'h-11! w-full gap-2 cursor-pointer',
+                                IS_APP_MAINTENANCE
+                                    ? 'cursor-not-allowed! opacity-60! disabled:bg-accent-blue/50!'
+                                    : ''
+                            )}
+                            onClick={() => {
+                                if (!isAuthenticated) {
+                                    router.push(
+                                        `${AUTH_PAGE_PATH}?returnTo=${encodeURIComponent(pathname)}`
+                                    )
+                                } else if (hasNoCredits) {
+                                    router.push('/tokens')
+                                }
+                            }}
                         >
                             {getButtonLabel()}
                         </Button>
-                        <p className="text-xs text-muted-foreground text-center">
-                            Temporarily unavailable.
-                        </p>
+                        {IS_APP_MAINTENANCE ? (
+                            <p className="text-xs text-muted-foreground text-center">
+                                Temporarily unavailable for maintenance.
+                            </p>
+                        ) : null}
                     </form>
                 </Form>
-                <p className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
-                    <ClockIcon className="size-3 shrink-0" />
-                    Analysis runs in the background and typically takes ~1-2 min.
-                </p>
+                {!IS_APP_MAINTENANCE ? (
+                    <p className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
+                        <ClockIcon className="size-3 shrink-0" />
+                        Analysis runs in the background and typically takes ~1-2 min.
+                    </p>
+                ) : null}
             </CardContent>
         </Card>
     )

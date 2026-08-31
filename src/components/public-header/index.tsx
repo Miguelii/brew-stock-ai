@@ -8,12 +8,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
 import { useHotkeys } from 'react-hotkeys-hook'
-
-const NAV_LINKS = [
-    { label: 'Reports', href: '/example-report' },
-    { label: 'Pricing', href: '/pricing' },
-    { label: 'FAQs', href: '/faq' },
-] as const
+import { NAV_LINKS } from './constants'
 
 const subscribeToScroll = (callback: () => void) => {
     window.addEventListener('scroll', callback, { passive: true })

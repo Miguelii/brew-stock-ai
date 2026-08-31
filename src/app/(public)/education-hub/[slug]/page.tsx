@@ -7,12 +7,11 @@ import {
     EDUCATION_HUB_ARTICLES,
 } from '@/modules/education-hub/education-hub-articles'
 import { ArticleSchema, BreadcrumbSchema } from '@/components/structured-data'
-import { AdBlock } from '@/components/ad-block'
 import { ClientEnv } from '@/env/client'
 import * as motion from 'motion/react-client'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
 import { StartAnalysisPreviewCard } from '@/modules/education-hub/start-analysis-preview-card'
-import { AD_SLOT_ARTICLE_BOTTOM, SITE_AUTHOR_NAME } from '@/lib/constants'
+import { SITE_AUTHOR_NAME } from '@/lib/constants'
 import { fmtDate } from '@/lib/formatters'
 
 export const dynamic = 'force-static'
@@ -126,8 +125,6 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
                     </header>
 
                     <EducationHubArticle article={article} />
-
-                    <AdBlock slot={AD_SLOT_ARTICLE_BOTTOM} format="rectangle" className="mt-10" />
 
                     <StartAnalysisPreviewCard />
                 </motion.div>

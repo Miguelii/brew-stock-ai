@@ -1,29 +1,4 @@
-import type { Variants } from 'motion/react'
-
-const EASE = [0.16, 1, 0.3, 1] as const
-
-export const STATS = [
-    { label: '8 Report Sections' },
-    { label: '5 Analysis Types' },
-    { label: '< ~2min Delivery' },
-] as const
-
-export const CONTAINER_VARIANTS: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.08 },
-    },
-}
-
-export const ITEM_VARIANTS: Variants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.7, ease: EASE },
-    },
-}
+export const HERO_LINES = ['Professional stock analysis.', 'For smarter investing.'] as const
 
 export const TICKERS = ['NVDA', 'AAPL', 'ASML', 'GOOGL'] as const
 

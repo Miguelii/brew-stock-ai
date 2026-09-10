@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
             'react-hook-form',
             'vaul',
             'input-otp',
+            'lenis',
         ],
     },
     images: {

@@ -1,76 +1,74 @@
-import { BackgroundLines } from '@/modules/home/hero/background-lines'
 import Link from 'next/link'
+import { ArrowUpRight, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, FileText } from 'lucide-react'
-import * as motion from 'motion/react-client'
+import { HeroCard } from '@/modules/home/hero/hero-card'
+import { HeroHeadline } from '@/modules/home/hero/hero-headline'
+import { HeroScene } from '@/modules/home/hero/hero-scene'
 import { TickerDemo } from '@/modules/home/hero/ticker-demo'
-import { CONTAINER_VARIANTS, ITEM_VARIANTS, STATS } from './constants'
+import { HERO_LINES } from '@/modules/home/hero/constants'
+import { PRODUCT_STATS } from '@/lib/analysis-content'
 
 export function Hero() {
     return (
-        <BackgroundLines className="flex items-center justify-center w-full flex-col px-4 h-full">
-            <motion.div
-                variants={CONTAINER_VARIANTS}
-                initial="hidden"
-                animate="visible"
-                className="flex flex-col items-center text-center max-w-7xl mx-auto relative z-20 mt-10"
-            >
-                {/* <ReleaseBanner /> */}
-                <motion.h1
-                    variants={ITEM_VARIANTS}
-                    className="bg-clip-text text-transparent bg-linear-to-b from-foreground to-foreground/70 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] py-3"
-                >
-                    Professional Stock Analysis
-                    <br />
-                    For Smarter Investing
-                </motion.h1>
-                <motion.div variants={ITEM_VARIANTS} className="mt-6 flex w-full justify-center">
-                    <TickerDemo />
-                </motion.div>
-                <motion.p
-                    variants={ITEM_VARIANTS}
-                    className="mt-6 max-w-2xl text-base md:text-lg text-muted-foreground"
-                >
+        <section
+            data-tone="navy"
+            className="relative isolate flex min-h-svh flex-col justify-center overflow-hidden bg-tone pt-36 pb-20 lg:pt-44 lg:pb-24"
+        >
+            <HeroScene />
+
+            <div className="section-shell relative z-10">
+                <HeroHeadline lines={HERO_LINES} className="mt-7 text-amber-soft" />
+
+                <p className="mt-7 max-w-[52ch] text-lg leading-snug font-bold text-white">
                     Professional-level stock analysis covering the key numbers, market sentiment,
-                    and price signals. All for less than a coffee ☕.
-                </motion.p>
-                <motion.div
-                    variants={ITEM_VARIANTS}
-                    className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-fit"
-                >
+                    and price signals. All for less than a coffee ☕
+                </p>
+
+                <div className="mt-9 flex w-full flex-col items-stretch gap-3 sm:w-fit sm:flex-row sm:items-center">
                     <Link href="/analysis" prefetch={false} className="contents">
-                        <Button size="lg" className="group gap-2 pl-4 pr-1.5 h-10 w-full sm:w-fit">
-                            Start Free Analysis
-                            <span className="flex size-7 items-center justify-center transition-transform duration-500 ease-out-strong group-hover:translate-x-0.5">
-                                <ArrowRight className="size-4" />
-                            </span>
+                        <Button size="xl" variant="ink" className="group">
+                            Start free analysis
+                            <ArrowUpRight className="size-5 transition-transform duration-300 ease-out-strong group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
                         </Button>
                     </Link>
                     <Link href="/example-report" prefetch={false} className="contents">
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="gap-2 px-4 h-10 w-full sm:w-fit"
-                        >
-                            <FileText className="size-4" />
-                            See a Sample Report
+                        <Button size="xl" variant="white">
+                            <FileText className="size-5" />
+                            See a sample report
                         </Button>
                     </Link>
-                </motion.div>
-                <motion.div
-                    variants={ITEM_VARIANTS}
-                    className="mt-8 mb-12 flex flex-wrap justify-center gap-3"
-                >
-                    {STATS.map((stat) => (
+                </div>
+
+                <div className="mt-9 flex flex-wrap gap-2.5">
+                    {PRODUCT_STATS.map((stat) => (
                         <span
                             key={stat.label}
-                            className="px-4 py-1.5 rounded-full border border-border bg-card/60 text-xs text-muted-foreground backdrop-blur-sm"
+                            className="eyebrow inline-flex items-center rounded-full bg-white/12 px-4 py-2 text-white"
                         >
                             {stat.label}
                         </span>
                     ))}
-                </motion.div>
-            </motion.div>
-        </BackgroundLines>
+                </div>
+            </div>
+
+            <div className="section-shell relative z-10 mt-14 flex justify-center lg:mt-20">
+                <HeroCard>
+                    <div className="flex items-start justify-between gap-4">
+                        <h2 className="display display-card text-amber-soft">
+                            Live
+                            <br />
+                            preview
+                        </h2>
+                        <span className="eyebrow shrink-0 rounded-full bg-white px-3 py-1.5 text-[11px] text-tangerine-deep">
+                            Demo
+                        </span>
+                    </div>
+
+                    <div className="mt-auto">
+                        <TickerDemo />
+                    </div>
+                </HeroCard>
+            </div>
+        </section>
     )
 }

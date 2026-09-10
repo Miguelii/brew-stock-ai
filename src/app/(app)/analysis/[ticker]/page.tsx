@@ -93,20 +93,21 @@ export default async function TickerPage({ params }: Props) {
                 description={page.description}
                 url={pageUrl}
             />
-            <main id="main" className="w-full px-6 py-16 lg:py-24">
-                <section className="flex-1 max-w-7xl mx-auto">
-                    <AnalysisHero companyName={`${page.name} (${page.ticker})`}>
-                        <AnalysisFormCard isAuthenticated={!!user} defaultTicker={page.ticker} />
-                    </AnalysisHero>
-                </section>
+            {/* The hero is full-bleed under the fixed header, so it cancels its spacer. */}
+            <main id="main" className="-mt-20 w-full overflow-x-clip">
+                <AnalysisHero companyName={`${page.name} (${page.ticker})`}>
+                    <AnalysisFormCard isAuthenticated={!!user} defaultTicker={page.ticker} />
+                </AnalysisHero>
 
-                <section className="max-w-7xl mx-auto mt-16 lg:mt-26 flex flex-col gap-12 lg:gap-16">
-                    <TickerContentSections page={page} />
+                <section data-tone="paper" className="bg-tone text-tone-ink">
+                    <div className="section-shell section-pad flex flex-col gap-12 lg:gap-16">
+                        <TickerContentSections page={page} />
 
-                    <TickerFaq
-                        companyName={`${page.name} (${page.ticker})`}
-                        questions={faqQuestions}
-                    />
+                        <TickerFaq
+                            companyName={`${page.name} (${page.ticker})`}
+                            questions={faqQuestions}
+                        />
+                    </div>
                 </section>
             </main>
         </>

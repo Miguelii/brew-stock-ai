@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { ArrowRightIcon, ChevronDownIcon } from 'lucide-react'
-import * as motion from 'motion/react-client'
+import { Reveal } from '@/components/motion/reveal'
 import { FAQ_GROUPS, type FaqItem } from '@/modules/faq/faq-content'
-import { SectionHeader } from '@/modules/home/section-header'
+import { SectionHeader } from '@/components/section-header'
 
 const FEATURED_QUESTIONS = [
     'What is BrewStockAI?',
@@ -22,46 +22,44 @@ export function HomeFaq() {
     })
 
     return (
-        <section className="border-b border-border">
-            <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20">
+        <section data-tone="paper" className="bg-tone text-tone-ink">
+            <div className="section-shell section-pad">
+                <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
                     <div>
                         <SectionHeader
+                            eyebrow="FAQ"
                             title="Questions, answered"
                             lede="The short version of what people ask before their first report."
                             className="mb-8"
                         />
                         <Link
                             href="/faq"
-                            className="inline-flex items-center gap-2 text-accent-blue font-medium group"
+                            className="group inline-flex items-center gap-2 border-b-2 border-ink pb-1 text-lg font-bold"
                         >
                             Read the full FAQ
-                            <ArrowRightIcon className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
+                            <ArrowRightIcon className="size-4 transition-transform duration-300 ease-out-strong group-hover:translate-x-1.5" />
                         </Link>
                     </div>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 24 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: '-8%' }}
-                        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                        className="flex flex-col"
-                    >
+                    <Reveal className="flex flex-col">
                         {items.map((item) => (
-                            <details key={item.question} className="group border-t border-border">
-                                <summary className="flex items-center justify-between gap-4 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                                    <h3 className="text-base font-semibold group-hover:text-accent-blue transition-colors duration-200">
+                            <details
+                                key={item.question}
+                                className="faq-accordion group border-t-2 border-ink/10"
+                            >
+                                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-6 [&::-webkit-details-marker]:hidden">
+                                    <h3 className="text-lg leading-tight font-extrabold transition-colors duration-200 group-hover:text-blue">
                                         {item.question}
                                     </h3>
-                                    <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
+                                    <ChevronDownIcon className="size-5 shrink-0 text-ink/45 transition-transform duration-300 ease-out-strong group-open:rotate-180" />
                                 </summary>
-                                <p className="text-primary-muted leading-relaxed text-sm pb-6 max-w-3xl">
+                                <p className="max-w-[62ch] pb-7 leading-snug opacity-70">
                                     {item.answer}
                                 </p>
                             </details>
                         ))}
-                        <div className="border-t border-border" />
-                    </motion.div>
+                        <div className="border-t-2 border-ink/10" />
+                    </Reveal>
                 </div>
             </div>
         </section>

@@ -15,34 +15,30 @@ export const dynamic = 'force-static'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
-const HOME_REVEAL_WORDS =
-    'You type a ticker. Our Engine gathers all the data and writes a clear, professional report. In under 120 seconds.'.split(
-        ' '
-    )
-
 export default function HomePage() {
     return (
         <>
             <BreadcrumbSchema items={[{ name: 'Home', url: `${SITE_URL}/` }]} />
 
-            <main id="main" className="flex-1 overflow-x-hidden">
+            {/* The hero is full-bleed under the fixed header, so it cancels its spacer. */}
+            <main id="main" className="-mt-20 flex-1 overflow-x-clip">
                 <Hero />
-
-                <AnalysisCard />
 
                 <HowItWorks />
 
+                <AnalysisCard />
+
                 <ReportSections />
 
-                <WordRevealCard words={HOME_REVEAL_WORDS} />
-
-                <FeaturedArticles />
+                <WordRevealCard lede="You type a ticker. Our engine gathers all the data and writes a clear, professional report. In under 120 seconds." />
 
                 <PricingCard packages={PACKAGES} />
 
-                <HomeFaq />
+                <FeaturedArticles />
 
                 <FinalCTA secondCTA="report" />
+
+                <HomeFaq />
             </main>
         </>
     )

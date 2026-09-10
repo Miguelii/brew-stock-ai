@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { motion } from 'motion/react'
 import { CheckIcon, SearchIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { TICKERS, TYPE_INTERVAL_MS, GENERATING_MS, READY_MS } from './constants'
+import { TICKERS, TYPE_INTERVAL_MS, GENERATING_MS, READY_MS } from '@/modules/home/hero/constants'
 
 type Phase = 'typing' | 'generating' | 'ready'
 
@@ -41,59 +41,53 @@ export function TickerDemo() {
 
     const displayed = ticker.slice(0, typedCount)
 
-    const effectivePhase: Phase = phase
-
     return (
         <Link
             href="/analysis"
             prefetch={false}
             aria-label="Start a stock analysis"
-            className="group block w-full max-w-md"
+            className="group block w-full"
         >
-            <div className="rounded-none bg-card/40 p-1.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-500 ease-out-strong group-hover:-translate-y-0.5 group-hover:shadow-lg group-hover:shadow-accent-blue/5">
-                <div className="rounded-none bg-card ring-1 ring-foreground/10">
-                    <div className="flex items-center gap-3 px-4 py-3">
-                        <SearchIcon className="size-4 shrink-0 text-primary-muted" />
-                        <span className="flex-1 text-left font-mono text-sm font-semibold tracking-widest text-foreground">
-                            {displayed}
-                            {effectivePhase === 'typing' && (
-                                <span
-                                    aria-hidden
-                                    className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-caret-blink bg-accent-blue"
-                                />
-                            )}
-                        </span>
-                        <span
-                            className={cn(
-                                'flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest',
-                                effectivePhase === 'ready'
-                                    ? 'text-accent-green'
-                                    : 'text-primary-muted'
-                            )}
-                        >
-                            {effectivePhase === 'typing' && 'Try it free'}
-                            {effectivePhase === 'generating' && 'Analyzing'}
-                            {effectivePhase === 'ready' && (
-                                <>
-                                    <CheckIcon className="size-3" />
-                                    Report ready
-                                </>
-                            )}
-                        </span>
-                    </div>
-                    <div className="h-0.5 w-full overflow-hidden bg-border">
-                        {effectivePhase === 'generating' && (
-                            <motion.div
-                                initial={{ scaleX: 0 }}
-                                animate={{ scaleX: 1 }}
-                                transition={{ duration: GENERATING_MS / 1000, ease: 'linear' }}
-                                className="h-full w-full origin-left bg-accent-blue"
+            <div className="overflow-hidden rounded-[var(--radius-surface-inner)] bg-card transition-transform duration-500 ease-out-strong group-hover:-translate-y-0.5">
+                <div className="flex items-center gap-3 px-4 py-3.5">
+                    <SearchIcon className="size-4 shrink-0 text-ink/40" />
+                    <span className="flex-1 text-left font-mono text-sm font-semibold tracking-widest text-ink">
+                        {displayed}
+                        {phase === 'typing' && (
+                            <span
+                                aria-hidden
+                                className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-caret-blink bg-blue"
                             />
                         )}
-                        {effectivePhase === 'ready' && (
-                            <div className="h-full w-full bg-accent-green" />
+                    </span>
+                    <span
+                        className={cn(
+                            'flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest',
+                            phase === 'generating' && 'text-blue',
+                            phase === 'ready' && 'text-green',
+                            phase === 'typing' && 'text-ink/45'
                         )}
-                    </div>
+                    >
+                        {phase === 'typing' && 'Try it free'}
+                        {phase === 'generating' && 'Analyzing'}
+                        {phase === 'ready' && (
+                            <>
+                                <CheckIcon className="size-3" />
+                                Report ready
+                            </>
+                        )}
+                    </span>
+                </div>
+                <div className="h-1 w-full overflow-hidden bg-ink/8">
+                    {phase === 'generating' && (
+                        <motion.div
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: GENERATING_MS / 1000, ease: 'linear' }}
+                            className="h-full w-full origin-left bg-blue"
+                        />
+                    )}
+                    {phase === 'ready' && <div className="h-full w-full bg-green" />}
                 </div>
             </div>
         </Link>

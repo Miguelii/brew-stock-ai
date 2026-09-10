@@ -13,15 +13,15 @@ export function CreditsDisplay() {
         <Link
             href="/tokens"
             prefetch={false}
-            className="flex items-center gap-1.5 px-3 h-9 rounded-none border border-border bg-card text-sm tabular-nums hover:bg-muted transition-colors"
+            className="flex h-10 items-center gap-1.5 rounded-full bg-card px-5 text-[15px] font-bold text-ink tabular-nums transition-[filter] duration-300 ease-out-strong hover:brightness-92"
         >
-            <CoinsIcon className="w-4 h-4 text-accent-blue shrink-0" />
+            <CoinsIcon className="size-4 shrink-0 text-blue" />
             {isLoading ? (
-                <Skeleton className="w-4 h-3.5 rounded bg-muted-foreground/20" />
+                <Skeleton className="h-3.5 w-4 rounded bg-ink/15" />
             ) : (
-                <span className="font-semibold">{credits}</span>
+                <span>{credits}</span>
             )}
-            <span>{pluralizeCredits(credits)}</span>
+            <span className="font-medium text-ink/60">{pluralizeCredits(credits)}</span>
         </Link>
     )
 }

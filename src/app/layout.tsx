@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Anton, Geist, Geist_Mono } from 'next/font/google'
 import '@/styles/globals.css'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
 import { SpeedInsights as VercelSpeedInsights } from '@vercel/speed-insights/next'
@@ -30,6 +30,13 @@ const geistMono = Geist_Mono({
     display: 'swap',
 })
 
+const anton = Anton({
+    variable: '--font-anton',
+    weight: '400',
+    subsets: ['latin'],
+    display: 'swap',
+})
+
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
 export const viewport: Viewport = {
@@ -39,7 +46,7 @@ export const viewport: Viewport = {
     height: 'device-height',
 }
 
-const META_TITLE = 'BrewStockAI | AI-Powered Stock Analysis'
+const META_TITLE = 'BrewStockAI | Professional Stock Analysis'
 const META_DESCRIPTION =
     'Get institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.'
 
@@ -52,7 +59,7 @@ export const metadata: Metadata = {
     description: META_DESCRIPTION,
     keywords: [
         'AI stock analysis',
-        'stock market AI',
+        'stock market',
         'financial analysis tool',
         'market sentiment analysis',
         'technical indicators',
@@ -115,7 +122,8 @@ export default function RootLayout({ children }: Props) {
             className={cn(
                 geistSans.variable,
                 geistMono.variable,
-                'bg-background antialiased font-sans text-primary'
+                anton.variable,
+                'bg-paper antialiased font-sans text-ink'
             )}
         >
             <head>

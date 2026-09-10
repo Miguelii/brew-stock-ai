@@ -1,7 +1,9 @@
-import { Button } from '@/components/ui/button'
-import { ArrowRightIcon, BadgeEuroIcon, FileTextIcon } from 'lucide-react'
-import * as motion from 'motion/react-client'
 import Link from 'next/link'
+import { ArrowUpRight, BadgeEuroIcon, FileTextIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Reveal } from '@/components/motion/reveal'
+import { GiantWord } from '@/modules/home/giant-word'
+import { CtaScene } from '@/components/scene/cta-scene'
 
 type Props = {
     secondCTA: 'report' | 'pricing'
@@ -27,50 +29,47 @@ export function FinalCTA({ secondCTA }: Props) {
     const { label, href, icon: Icon } = getSecondCTABtnProps(secondCTA)
 
     return (
-        <section className="bg-primary">
-            <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-8%' }}
-                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col items-center text-center gap-6"
-                >
-                    <span className="font-mono text-xs tracking-widest uppercase text-primary-foreground/50">
-                        Get Started
-                    </span>
-                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-primary-foreground max-w-3xl">
+        <section
+            data-tone="tangerine"
+            className="relative isolate overflow-hidden bg-tone text-tone-ink"
+        >
+            <div className="section-shell relative z-10 pt-20 pb-24 lg:pt-30 lg:pb-36">
+                <span className="eyebrow opacity-80">Get started</span>
+
+                <div className="mt-6 max-w-[74%] text-tone-soft">
+                    <GiantWord word="Free" />
+                </div>
+
+                <Reveal className="mt-8">
+                    <h2 className="max-w-[20ch] text-[clamp(26px,3vw,40px)] leading-[1.1] font-extrabold">
                         Your first analysis is free
                     </h2>
-                    <p className="text-primary-foreground/60 text-lg max-w-xl">
+                    <p className="mt-4 max-w-[46ch] text-lg leading-snug opacity-85">
                         Pick a ticker, choose a report type, get a detailed breakdown.
                     </p>
-                    <div className="mt-2 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-fit">
+
+                    <div className="mt-8 flex w-full flex-col items-stretch gap-3 sm:w-fit sm:flex-row sm:items-center">
                         <Link href="/analysis" prefetch={false} className="contents">
-                            <Button
-                                size="lg"
-                                className="gap-2 text-base px-8 h-12 bg-background text-primary hover:bg-background/90 hover:text-primary w-full sm:w-fit"
-                            >
+                            <Button size="xl" variant="ink" className="group">
                                 Start free analysis
-                                <ArrowRightIcon className="size-4" />
+                                <ArrowUpRight className="size-5 transition-transform duration-300 ease-out-strong group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
                             </Button>
                         </Link>
                         <Link href={href} prefetch={false} className="contents">
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="gap-2 text-base px-8 h-12 bg-transparent border-primary-foreground/25 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground w-full sm:w-fit"
-                            >
-                                <Icon className="size-4" />
+                            <Button size="xl" variant="white">
+                                <Icon className="size-5" />
                                 {label}
                             </Button>
                         </Link>
                     </div>
-                    <p className="font-mono text-xs text-primary-foreground/40 tracking-wide">
+
+                    <p className="eyebrow mt-8 opacity-70">
                         No credit card required · First analysis free
                     </p>
-                </motion.div>
+                </Reveal>
             </div>
+
+            <CtaScene className="pointer-events-none absolute right-0 bottom-0 z-0 w-[clamp(180px,24vw,330px)] opacity-90" />
         </section>
     )
 }

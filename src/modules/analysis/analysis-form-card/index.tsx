@@ -10,7 +10,14 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
 import {
     Select,
     SelectContent,
@@ -85,8 +92,8 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     }
 
     return (
-        <Card className="pt-0 drop-shadow-md w-full md:w-[75%] lg:w-[43%]">
-            <CardContent className="p-6">
+        <Card className="rounded-[var(--radius-surface)] w-full gap-0 border-0 bg-card py-0 shadow-none ring-0">
+            <CardContent className="p-7">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                         <FormField
@@ -94,23 +101,21 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                             name="stockSymbol"
                             render={({ field }) => (
                                 <FormItem className="w-full">
-                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                                    <FormLabel className="eyebrow text-ink/50">
                                         Company Ticker
                                     </FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <SearchIcon
                                                 className={cn(
-                                                    'absolute left-3 top-1/2 -translate-y-1/2 size-4 pointer-events-none',
-                                                    field.value
-                                                        ? 'text-primary'
-                                                        : 'text-primary-muted'
+                                                    'pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2',
+                                                    field.value ? 'text-ink' : 'text-ink/40'
                                                 )}
                                             />
                                             <Input
                                                 data-testid="ticker-input"
                                                 placeholder="Enter AAPL, TSLA, etc."
-                                                className="h-10 w-full border border-border bg-background pl-9 pr-3 text-sm text-primary placeholder:text-primary-muted focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue transition uppercase"
+                                                className="h-12 w-full rounded-full border border-border bg-paper pr-4 pl-11 text-sm font-semibold tracking-wide text-ink uppercase transition placeholder:font-normal placeholder:tracking-normal placeholder:text-ink/40 focus:border-blue focus:ring-2 focus:ring-blue/25 focus:outline-none"
                                                 {...field}
                                                 onChange={(e) =>
                                                     field.onChange(e.target.value.toUpperCase())
@@ -120,6 +125,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                             />
                                         </div>
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -129,7 +135,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                             name="promptType"
                             render={({ field }) => (
                                 <FormItem className="w-full sm:min-w-[10%]">
-                                    <FormLabel className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                                    <FormLabel className="eyebrow text-ink/50">
                                         Analysis Type
                                     </FormLabel>
                                     <FormControl>
@@ -137,15 +143,13 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                             <SelectTrigger
                                                 data-testid="analysis-type-select"
                                                 aria-label="Analysis Type"
-                                                className="h-10! w-full bg-background border-border text-primary rounded-none"
+                                                className="h-12! w-full rounded-full border-border bg-paper px-4 text-ink"
                                             >
                                                 <BarChart2Icon
                                                     aria-hidden="true"
                                                     className={cn(
                                                         'size-4 shrink-0',
-                                                        field.value
-                                                            ? 'text-primary'
-                                                            : 'text-primary-muted'
+                                                        field.value ? 'text-ink' : 'text-ink/40'
                                                     )}
                                                 />
                                                 <SelectValue>
@@ -155,7 +159,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                                         )
                                                         if (!selected)
                                                             return (
-                                                                <span className="text-primary-muted">
+                                                                <span className="text-ink/40">
                                                                     Select type
                                                                 </span>
                                                             )
@@ -164,7 +168,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                                                 <span className="truncate">
                                                                     {selected.label}
                                                                 </span>
-                                                                <span className="flex items-center gap-0.5 text-xs text-accent-blue font-semibold shrink-0">
+                                                                <span className="flex shrink-0 items-center gap-1 rounded-full bg-blue/10 px-2 py-0.5 font-mono text-[11px] font-medium text-blue">
                                                                     <CoinsIcon
                                                                         aria-hidden="true"
                                                                         className="size-3"
@@ -178,17 +182,17 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                                     })()}
                                                 </SelectValue>
                                             </SelectTrigger>
-                                            <SelectContent className="rounded-none">
+                                            <SelectContent className="rounded-[var(--radius-surface-inner)]">
                                                 {PROMPT_OPTIONS.map((option) => (
                                                     <SelectItem
                                                         key={option.type}
                                                         data-testid="analysis-type-option"
                                                         value={option.type}
-                                                        className="px-3"
+                                                        className="rounded-full px-3"
                                                     >
                                                         <span className="flex items-center justify-between gap-4 w-full">
                                                             <span>{option.label}</span>
-                                                            <span className="flex items-center gap-0.5 text-xs text-accent-blue font-semibold shrink-0">
+                                                            <span className="flex shrink-0 items-center gap-1 rounded-full bg-blue/10 px-2 py-0.5 font-mono text-[11px] font-medium text-blue">
                                                                 <CoinsIcon
                                                                     aria-hidden="true"
                                                                     className="size-3"
@@ -204,6 +208,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                                             </SelectContent>
                                         </Select>
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -212,8 +217,9 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                             data-testid="generate-report-button"
                             type={isAuthenticated && !hasNoCredits ? 'submit' : 'button'}
                             disabled={IS_APP_MAINTENANCE || isPending}
+                            size="xl"
                             className={cn(
-                                'h-11! w-full gap-2 cursor-pointer',
+                                'w-full cursor-pointer',
                                 IS_APP_MAINTENANCE
                                     ? 'cursor-not-allowed! opacity-60! disabled:bg-accent-blue/50!'
                                     : ''
@@ -231,15 +237,15 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                             {getButtonLabel()}
                         </Button>
                         {IS_APP_MAINTENANCE ? (
-                            <p className="text-xs text-muted-foreground text-center">
+                            <p className="text-center font-mono text-[13px] text-ink/50">
                                 Temporarily unavailable for maintenance.
                             </p>
                         ) : null}
                     </form>
                 </Form>
                 {!IS_APP_MAINTENANCE ? (
-                    <p className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
-                        <ClockIcon className="size-3 shrink-0" />
+                    <p className="mt-4 flex items-center gap-1.5 font-mono text-[13px] leading-snug text-ink/50">
+                        <ClockIcon className="size-3.5 shrink-0" />
                         Analysis runs in the background and typically takes ~1-2 min.
                     </p>
                 ) : null}

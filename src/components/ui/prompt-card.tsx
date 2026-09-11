@@ -28,7 +28,7 @@ export function PromptCard({
     isPending,
 }: Props) {
     return (
-        <div className="fixed bottom-4 right-4 z-50 w-72 bg-card border border-border shadow-lg p-4 flex flex-col gap-3">
+        <div className="fixed bottom-4 right-4 z-50 w-72 bg-card border border-border shadow-lg p-4 flex flex-col gap-3 rounded-[min(var(--radius-md),10px)]">
             <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
                     {icon}
@@ -51,7 +51,7 @@ export function PromptCard({
             <div className="flex gap-2">
                 <Button
                     size="sm"
-                    className="flex-1 bg-accent-blue hover:bg-accent-blue-dark text-background rounded-none text-xs"
+                    className="flex-1 bg-accent-blue hover:bg-accent-blue-dark text-background text-xs"
                     onClick={primaryAction.onClick}
                     disabled={isPending}
                 >
@@ -61,7 +61,7 @@ export function PromptCard({
                 <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 rounded-none text-xs"
+                    className="flex-1 text-xs"
                     onClick={secondaryAction.onClick}
                     disabled={isPending}
                 >

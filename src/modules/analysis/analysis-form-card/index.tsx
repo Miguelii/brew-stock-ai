@@ -92,7 +92,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
     }
 
     return (
-        <Card className="w-full gap-0 border-0 bg-card py-0">
+        <Card className="w-full gap-0 border border-ink/10 bg-card py-0">
             <CardContent className="p-7">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">

@@ -27,3 +27,8 @@ minimumReleaseAgeExclude:
     - '@next/swc-win32-arm64-msvc@16.3.0'
     - '@next/swc-win32-x64-msvc@16.3.0'
     - next@16.3.0
+    - flags@4.3.1
+    - '@flags-sdk/vercel@1.4.8'
+    - '@vercel/functions@3.9.7'
+    - '@vercel/flags-core@1.8.1'
+    - '@vercel/oidc@3.8.7'

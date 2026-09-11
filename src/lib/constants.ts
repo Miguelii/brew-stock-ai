@@ -1,9 +1,5 @@
 import type { GTMWithoutPrefix } from '@/types/GTM'
 
-// #### GENERAL ####
-export const IS_APP_MAINTENANCE = true
-//############
-
 // #### PATHS ####
 export const SW_PATH = '/sw.js'
 

@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
-import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
-import { TICKER_PAGES, resolveTickerPage } from '@/modules/analysis/ticker-pages'
+import { TICKER_PAGES, resolveTickerPage } from '@/lib/ticker-pages'
 import { AnalysisHero } from '@/modules/analysis/analysis-hero'
 import { TickerFaq } from '@/modules/analysis/ticker-faq'
 import { TickerContentSections } from '@/modules/analysis/ticker-content-sections'
 import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
+import { getAnalysisPageData } from '@/lib/get-analysis-page-data.helper'
 
 type Props = PageProps<'/analysis/[ticker]'>
 
@@ -51,7 +51,7 @@ export default async function TickerPage({ params }: Props) {
     const page = resolveTickerPage(ticker)
     if (!page) notFound()
 
-    const user = await getCachedSession()
+    const { user, isMaintenance } = await getAnalysisPageData()
 
     const { content } = page
 
@@ -96,7 +96,11 @@ export default async function TickerPage({ params }: Props) {
             {/* The hero is full-bleed under the fixed header, so it cancels its spacer. */}
             <main id="main" className="-mt-20 w-full overflow-x-clip">
                 <AnalysisHero companyName={`${page.name} (${page.ticker})`}>
-                    <AnalysisFormCard isAuthenticated={!!user} defaultTicker={page.ticker} />
+                    <AnalysisFormCard
+                        isAuthenticated={!!user}
+                        defaultTicker={page.ticker}
+                        isMaintenance={isMaintenance}
+                    />
                 </AnalysisHero>
 
                 <section data-tone="paper" className="bg-tone text-tone-ink">

@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/select'
 import { useAnalysisForm } from '@/modules/analysis/analysis-form-card/use-analysis-form'
 import { Input } from '@/components/ui/input'
-import { AUTH_PAGE_PATH, IS_APP_MAINTENANCE, MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
+import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
 import { PROMPT_OPTIONS } from '@/_bff/modules/analysis/constants'
 import { useAnalysisCardHandlers } from '@/modules/analysis/analysis-form-card/use-analysis-card-handlers'
 import { useGetCredits } from '@/hooks/use-get-credits'
@@ -37,9 +37,10 @@ import { usePathname, useRouter } from 'next/navigation'
 type Props = {
     isAuthenticated: boolean
     defaultTicker?: string
+    isMaintenance: boolean
 }
 
-export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
+export function AnalysisFormCard({ isAuthenticated, defaultTicker, isMaintenance }: Props) {
     const router = useRouter()
     const pathname = usePathname()
 
@@ -216,11 +217,11 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                         <Button
                             data-testid="generate-report-button"
                             type={isAuthenticated && !hasNoCredits ? 'submit' : 'button'}
-                            disabled={IS_APP_MAINTENANCE || isPending}
+                            disabled={isMaintenance || isPending}
                             size="xl"
                             className={cn(
                                 'w-full cursor-pointer',
-                                IS_APP_MAINTENANCE
+                                isMaintenance
                                     ? 'cursor-not-allowed! opacity-60! disabled:bg-accent-blue/50!'
                                     : ''
                             )}
@@ -236,14 +237,14 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker }: Props) {
                         >
                             {getButtonLabel()}
                         </Button>
-                        {IS_APP_MAINTENANCE ? (
+                        {isMaintenance ? (
                             <p className="text-center font-mono text-[13px] text-ink/50">
                                 Temporarily unavailable for maintenance.
                             </p>
                         ) : null}
                     </form>
                 </Form>
-                {!IS_APP_MAINTENANCE ? (
+                {!isMaintenance ? (
                     <p className="mt-4 flex items-center gap-1.5 font-mono text-[13px] leading-snug text-ink/50">
                         <ClockIcon className="size-3.5 shrink-0" />
                         Analysis runs in the background and typically takes ~1-2 min.

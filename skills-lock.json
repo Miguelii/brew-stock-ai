@@ -1,0 +1,11 @@
+{
+    "version": 1,
+    "skills": {
+        "flags-sdk": {
+            "source": "vercel/flags",
+            "sourceType": "github",
+            "skillPath": "skills/flags-sdk/SKILL.md",
+            "computedHash": "24838247d3fbc304445c81061a3871849d3b9fd4684fec7f41413fc2cbd3567f"
+        }
+    }
+}

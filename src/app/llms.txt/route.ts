@@ -1,6 +1,6 @@
 import { ClientEnv } from '@/env/client'
 import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
-import { TICKER_PAGES } from '@/modules/analysis/ticker-pages'
+import { TICKER_PAGES } from '@/lib/ticker-pages'
 
 export const dynamic = 'force-static'
 

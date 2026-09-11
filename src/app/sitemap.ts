@@ -1,7 +1,7 @@
 import { ClientEnv } from '@/env/client'
 import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
 import { CHANGELOG_ENTRIES } from '@/modules/changelog/changelog'
-import { TICKER_PAGES } from '@/modules/analysis/ticker-pages'
+import { TICKER_PAGES } from '@/lib/ticker-pages'
 import type { MetadataRoute } from 'next'
 import { latestIsoDay } from '@/lib/formatters'
 import { DISCLAIMER_PAGE_LAST_UPDATE_AT, PRIVACY_PAGE_LAST_UPDATE_AT } from '@/lib/constants'

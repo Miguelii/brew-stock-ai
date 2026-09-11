@@ -33,7 +33,7 @@ export function ReportExport({ reportId }: Props) {
             data-testid="export-pdf-button"
             variant="white"
             size="xl"
-            className="w-full shrink-0 md:w-fit md:min-w-45 h-12"
+            className="w-full shrink-0 md:w-fit md:min-w-35 h-10"
             onClick={() => exportMutation.mutate({ id: reportId })}
             disabled={exportMutation.isPending}
         >

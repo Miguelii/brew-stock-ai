@@ -10,7 +10,7 @@ export default function ReportsIdLoading() {
             {/* Hero */}
             <div data-tone="navy" className="bg-tone pt-22 pb-9 lg:pt-24 lg:pb-10">
                 <div className="section-shell">
-                    <Skeleton className="h-10 w-28 rounded-full bg-tone-ink/15" />
+                    <Skeleton className="h-8 w-28 rounded-full bg-tone-ink/15" />
 
                     <div className="mt-6 flex w-full flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
                         <div className="flex flex-col gap-4">
@@ -18,7 +18,7 @@ export default function ReportsIdLoading() {
                             <Skeleton className="h-16 w-44 bg-tone-ink/15" />
                             <Skeleton className="h-5 w-72 bg-tone-ink/15" />
                         </div>
-                        <Skeleton className="h-14 w-45 rounded-full bg-tone-ink/15" />
+                        <Skeleton className="h-10 w-45 rounded-full bg-tone-ink/15" />
                     </div>
                 </div>
             </div>

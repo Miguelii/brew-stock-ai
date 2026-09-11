@@ -5,7 +5,7 @@ import { AnalysisTypesGrid } from '@/modules/analysis/analysis-types-grid'
 import { HowItWorksStrip } from '@/modules/analysis/how-it-works-strip'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
-import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
+import { getAnalysisPageData } from '@/lib/get-analysis-page-data.helper'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'AI Stock Analysis'
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AnalysisPage() {
-    const user = await getCachedSession()
+    const { user, isMaintenance } = await getAnalysisPageData()
     return (
         <>
             <BreadcrumbSchema
@@ -43,7 +43,7 @@ export default async function AnalysisPage() {
             {/* The hero is full-bleed under the fixed header, so it cancels its spacer. */}
             <main id="main" className="-mt-20 flex-1 overflow-x-clip">
                 <AnalysisHero>
-                    <AnalysisFormCard isAuthenticated={!!user} />
+                    <AnalysisFormCard isAuthenticated={!!user} isMaintenance={isMaintenance} />
                 </AnalysisHero>
 
                 <AnalysisTypesGrid />

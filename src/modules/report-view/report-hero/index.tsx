@@ -21,8 +21,8 @@ export function ReportHero({ report, typeLabel }: Props) {
 
             <div className="section-shell relative z-10">
                 <Link href="/reports" prefetch={false} className="w-fit">
-                    <Button variant="white" className="h-10 px-5 text-[15px] font-bold">
-                        <ArrowLeftIcon className="size-4" />
+                    <Button variant="white" className="h-8! px-5 text-[15px] font-bold">
+                        <ArrowLeftIcon className="size-3" />
                         Back
                     </Button>
                 </Link>
@@ -32,7 +32,7 @@ export function ReportHero({ report, typeLabel }: Props) {
                         {typeLabel && (
                             <span
                                 data-testid="report-type-badge"
-                                className="eyebrow inline-flex items-center rounded-full bg-paper px-4 py-2.5 text-navy-deep"
+                                className="eyebrow inline-flex items-center rounded-full px-0 text-tone-ink"
                             >
                                 {typeLabel}
                             </span>

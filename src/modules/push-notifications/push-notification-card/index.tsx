@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useOptimistic, useState, useTransition } from 'react'
 import { BellIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
@@ -9,27 +9,14 @@ import { trpcClient } from '@/_trpc/client'
 import { SW_PATH } from '@/lib/constants'
 import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY } from '@/modules/push-notifications/constants'
 import { PromptCard } from '@/components/ui/prompt-card'
-
-function urlBase64ToUint8Array(base64String: string) {
-    const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-    const base64 = (base64String + padding).replaceAll('-', '+').replaceAll('_', '/')
-    const rawData = window.atob(base64)
-    const outputArray = new Uint8Array(rawData.length)
-    for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.codePointAt(i) ?? 0
-    }
-    return outputArray
-}
+import { urlBase64ToUint8Array } from './push-notification-card.helpers'
 
 export function PushNotificationCard() {
     const [open, setOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
+    const [optimisticOpen, setOptimisticOpen] = useOptimistic(open, (_, next: boolean) => next)
+    const [isPending, startTransition] = useTransition()
 
     const subscribeMutation = trpcClient.core.subscribePush.useMutation({
-        onSuccess: () => {
-            toast.success('Notifications enabled.')
-            setOpen(false)
-        },
         onError: (error) => {
             console.error(error)
             toastError('Could not enable notifications.', error, 'Please try again later.')
@@ -53,28 +40,35 @@ export function PushNotificationCard() {
             .catch(() => {})
     }, [])
 
-    async function handleEnable() {
-        setIsLoading(true)
-        try {
-            const registration = await navigator.serviceWorker.ready
-            const sub = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(ClientEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY),
-            })
-            await subscribeMutation.mutateAsync({
-                subscription: sub.toJSON() as {
-                    endpoint: string
-                    expirationTime: number | null
-                    keys: { p256dh: string; auth: string }
-                },
-            })
-        } catch (error) {
-            console.error(error)
-            toastError('Could not enable notifications.', error, 'Check your browser permissions.')
-            setOpen(false)
-        } finally {
-            setIsLoading(false)
-        }
+    function handleEnable() {
+        startTransition(async () => {
+            setOptimisticOpen(false)
+            try {
+                const registration = await navigator.serviceWorker.ready
+                const sub = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(
+                        ClientEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+                    ),
+                })
+                await subscribeMutation.mutateAsync({
+                    subscription: sub.toJSON() as {
+                        endpoint: string
+                        expirationTime: number | null
+                        keys: { p256dh: string; auth: string }
+                    },
+                })
+                setOpen(false)
+                toast.success('Notifications enabled.')
+            } catch (error) {
+                console.error(error)
+                toastError(
+                    'Could not enable notifications.',
+                    error,
+                    'Check your browser permissions.'
+                )
+            }
+        })
     }
 
     function handleDismiss() {
@@ -82,7 +76,7 @@ export function PushNotificationCard() {
         setOpen(false)
     }
 
-    if (!open) return null
+    if (!optimisticOpen) return null
 
     return (
         <PromptCard
@@ -91,7 +85,7 @@ export function PushNotificationCard() {
             }
             title="Enable notifications"
             description="Get notified when your analysis reports are ready."
-            isPending={isLoading || subscribeMutation.isPending}
+            isPending={isPending}
             onDismiss={handleDismiss}
             primaryAction={{ label: 'Enable', onClick: handleEnable }}
             secondaryAction={{ label: 'Later', onClick: handleDismiss }}

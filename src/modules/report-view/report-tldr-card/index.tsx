@@ -18,9 +18,9 @@ export function ReportTldrCard({ report }: Props) {
 
     return (
         <Card>
-            <CardHeader className="border-b">
-                <CardTitle className="font-semibold flex items-center gap-2">
-                    <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-bold tracking-widest uppercase bg-accent-blue-light text-accent-blue">
+            <CardHeader className="border-b-2 border-ink/8 pb-4">
+                <CardTitle className="flex items-center gap-2">
+                    <span className="eyebrow inline-flex items-center rounded-full bg-blue-soft px-3 py-1.5 text-blue">
                         Summary of what our engine found:
                     </span>
                 </CardTitle>

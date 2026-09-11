@@ -9,8 +9,8 @@ type Props = {
 export function ReportAnalysisCard({ report }: Props) {
     return (
         <Card>
-            <CardHeader className="border-b">
-                <CardTitle className="font-semibold">
+            <CardHeader className="border-b-2 border-ink/8 pb-4">
+                <CardTitle className="display text-2xl">
                     {PROMPT_OPTIONS.find((o) => o.type === report.type)?.label}
                 </CardTitle>
             </CardHeader>

@@ -14,12 +14,12 @@ export function ReportLatestNewsCard({ news, ticker }: Props) {
 
     return (
         <Card className="h-fit overflow-hidden gap-0 pb-0!">
-            <CardHeader className="border-b">
-                <CardTitle className="font-semibold">
+            <CardHeader className="border-b-2 border-ink/8 pb-4">
+                <CardTitle className="display text-2xl">
                     {ticker ? (
                         <>
                             <span>Recent news mentioning </span>
-                            <span className="text-accent-blue">{ticker}</span>
+                            <span className="text-blue">{ticker}</span>
                         </>
                     ) : (
                         'Recent news'
@@ -29,9 +29,7 @@ export function ReportLatestNewsCard({ news, ticker }: Props) {
             <CardContent className="p-0">
                 {isEmpty ? (
                     <div className="flex items-center justify-center px-4 py-10">
-                        <span className="text-xs text-muted-foreground">
-                            No recent news available
-                        </span>
+                        <span className="text-xs text-ink/60">No recent news available</span>
                     </div>
                 ) : (
                     news.map((item, i) => {
@@ -44,30 +42,30 @@ export function ReportLatestNewsCard({ news, ticker }: Props) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={cn(
-                                    'group flex flex-col gap-1 px-4 py-4 transition-colors duration-200 hover:bg-muted/40',
-                                    !isLast && 'border-b border-border'
+                                    'group flex flex-col gap-1 px-4 py-4 transition-colors duration-200 hover:bg-paper',
+                                    !isLast && 'border-b border-ink/10'
                                 )}
                             >
                                 <div className="flex items-center gap-1.5">
-                                    <span className="font-mono text-xs font-semibold uppercase tracking-widest text-accent-blue">
+                                    <span className="font-mono text-xs font-semibold uppercase tracking-widest text-blue">
                                         {item.source}
                                     </span>
-                                    <span className="text-xs text-muted-foreground">
+                                    <span className="text-xs text-ink/60">
                                         · {formatDate(item.datetime)}
                                     </span>
                                 </div>
 
-                                <p className="text-xs font-medium leading-snug text-primary transition-colors duration-200 group-hover:text-accent-blue">
+                                <p className="text-xs font-medium leading-snug text-ink transition-colors duration-200 group-hover:text-blue">
                                     {item.headline}
                                 </p>
 
                                 {item.summary && (
-                                    <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                                    <p className="line-clamp-2 text-xs leading-relaxed text-ink/60">
                                         {item.summary}
                                     </p>
                                 )}
 
-                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-all duration-200 group-hover:gap-1.5 group-hover:text-accent-blue">
+                                <span className="inline-flex items-center gap-1 text-xs text-ink/60 transition-all duration-200 group-hover:gap-1.5 group-hover:text-blue">
                                     See Full Article
                                     <span className="transition-transform duration-200 group-hover:translate-x-0.5">
                                         →

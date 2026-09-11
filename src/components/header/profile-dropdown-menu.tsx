@@ -21,11 +21,14 @@ export function ProfileDropdownMenu({ children }: Props) {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-card text-accent-blue transition-colors hover:bg-accent/30 border border-border focus:outline-none overflow-hidden">
+            <DropdownMenuTrigger className="flex size-10 border border-ink/10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-card text-ink transition-[filter] duration-300 ease-out-strong hover:brightness-92 focus:outline-none">
                 {children}
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="min-w-40 rounded-none">
+            <DropdownMenuContent
+                align="end"
+                className="min-w-44 rounded-[var(--radius-surface-inner)]"
+            >
                 <DropdownMenuItem onClick={() => router.push('/account')}>
                     <UserIcon className="size-3.5" />
                     Account

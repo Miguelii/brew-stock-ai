@@ -167,14 +167,14 @@ export function metricHelp(key: MetricKey | undefined): string | undefined {
 
 const QUALITY_TEXT: Record<MetricQuality, string> = {
     good: 'text-positive',
-    neutral: 'text-primary',
+    neutral: 'text-ink',
     caution: 'text-warning',
     concern: 'text-destructive',
 }
 
 const QUALITY_BG: Record<MetricQuality, string> = {
     good: 'bg-positive/10',
-    neutral: 'bg-muted',
+    neutral: 'bg-ink/8',
     caution: 'bg-warning/10',
     concern: 'bg-destructive/10',
 }

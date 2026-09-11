@@ -32,10 +32,10 @@ export const metadata: Metadata = {
     },
 }
 
-export const REPORT_REVEAL_WORDS =
-    'All the risks, numbers, and opportunities of a stock, explained in plain English. In under two minutes.'.split(
-        ' '
-    )
+const REPORT_REVEAL_WORDS = ['Risks', 'Numbers', 'Upside'] as const
+
+const REPORT_REVEAL_LEDE =
+    'All the risks, numbers, and opportunities of a stock, explained in plain English. In under two minutes.'
 
 export default function ExampleReport() {
     return (
@@ -47,14 +47,14 @@ export default function ExampleReport() {
                 ]}
             />
 
-            <main id="main" className="overflow-x-hidden w-full">
+            <main id="main" className="overflow-x-clip w-full">
                 <ReportHero />
 
                 <ReportMacbookScroll />
 
                 <ReportSections />
 
-                <WordRevealCard words={REPORT_REVEAL_WORDS} />
+                <WordRevealCard words={REPORT_REVEAL_WORDS} lede={REPORT_REVEAL_LEDE} />
 
                 <FinalCTA secondCTA="pricing" />
             </main>

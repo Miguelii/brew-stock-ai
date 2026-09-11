@@ -8,7 +8,6 @@ import { ClientEnv } from '@/env/client'
 import * as motion from 'motion/react-client'
 import { ChangelogEntryBody } from '@/modules/changelog/changelog-entry-body'
 import { ChangelogMeta } from '@/modules/changelog/changelog-meta'
-import { StartAnalysisPreviewCard } from '@/modules/education-hub/start-analysis-preview-card'
 
 export const dynamic = 'force-static'
 
@@ -94,8 +93,6 @@ export default async function ChangelogEntryPage({ params }: PageProps<'/changel
                         </header>
 
                         <ChangelogEntryBody entry={entry} />
-
-                        <StartAnalysisPreviewCard />
                     </motion.div>
                 </div>
             </main>

@@ -10,7 +10,6 @@ import { ArticleSchema, BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 import * as motion from 'motion/react-client'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
-import { StartAnalysisPreviewCard } from '@/modules/education-hub/start-analysis-preview-card'
 import { SITE_AUTHOR_NAME } from '@/lib/constants'
 import { fmtDate } from '@/lib/formatters'
 
@@ -125,8 +124,6 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
                     </header>
 
                     <EducationHubArticle article={article} />
-
-                    <StartAnalysisPreviewCard />
                 </motion.div>
             </main>
         </>

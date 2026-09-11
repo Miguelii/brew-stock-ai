@@ -12,6 +12,7 @@ import { AUTH_PAGE_PATH } from '@/lib/constants'
 import { CreditsDisplay } from '@/components/header/credits-display'
 import { LoginLink } from '@/components/header/nav-links'
 import Image from 'next/image'
+import Logo from '@/components/logo'
 
 type Props = {
     nav: NavLink[]
@@ -31,7 +32,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
 
     return (
         <>
-            <div className="md:hidden flex flex-row gap-3">
+            <div className="flex flex-row items-center gap-2.5 md:hidden">
                 {isAuthenticated ? (
                     <>
                         <CreditsDisplay />
@@ -40,11 +41,11 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                             aria-label="Open menu"
                             onClick={() => setOpen(true)}
                             className={cn(
-                                'flex items-center justify-center h-9 w-9 rounded-none border border-border bg-card',
-                                'text-primary transition-all duration-200 hover:bg-muted active:scale-95'
+                                'flex size-12 items-center justify-center rounded-full bg-card border border-ink/10',
+                                'text-ink transition-[filter] duration-300 ease-out-strong hover:brightness-92'
                             )}
                         >
-                            <Menu className="size-3.5" />
+                            <Menu className="size-5" strokeWidth={2.5} />
                         </button>
                     </>
                 ) : (
@@ -53,22 +54,17 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
             </div>
 
             <Drawer open={open} onOpenChange={setOpen} direction="right">
-                <DrawerContent className="w-70 bg-card p-0 border-l border-border flex flex-col rounded-none! z-98">
+                <DrawerContent className="z-[101] flex w-70 flex-col border-l border-border bg-card p-0">
                     {/* Header */}
                     <div className="flex items-center justify-between h-16 px-5 border-b border-border shrink-0">
-                        <div className="flex items-center gap-1.5">
-                            <div className="font-bold text-lg tracking-tight pt-1.5">
-                                <span>BrewStock</span>
-                                <span className="text-accent-blue font-mono">AI</span>
-                            </div>
-                        </div>
+                        <Logo />
                         <DrawerClose asChild>
                             <button
                                 type="button"
                                 aria-label="Close menu"
-                                className="flex items-center justify-center h-8 w-8 rounded-none text-primary transition-all duration-200 hover:bg-muted hover:text-primary active:scale-95"
+                                className="flex size-9 items-center justify-center rounded-full text-ink transition-colors duration-200 hover:bg-ink/7"
                             >
-                                <X className="size-3.5" />
+                                <X className="size-5" strokeWidth={2.5} />
                             </button>
                         </DrawerClose>
                     </div>
@@ -80,7 +76,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                 <Link
                                     href={link.href}
                                     prefetch={false}
-                                    className="flex items-center px-3 py-2.5 rounded-none text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
+                                    className="flex items-center rounded-full px-4 py-2.5 text-[15px] font-bold text-ink transition-colors hover:bg-ink/7"
                                 >
                                     {link.label}
                                 </Link>
@@ -97,7 +93,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                     <Link
                                         href="/account"
                                         prefetch={false}
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-medium text-primary transition-colors hover:bg-muted"
+                                        className="flex items-center gap-3 rounded-full px-4 py-2.5 text-[15px] font-bold text-ink transition-colors hover:bg-ink/7"
                                     >
                                         {avatar_url ? (
                                             <Image
@@ -109,7 +105,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                                 height={20}
                                             />
                                         ) : (
-                                            <UserIcon className="size-3.5 text-muted-foreground" />
+                                            <UserIcon className="size-4 text-ink/50" />
                                         )}
                                         Account
                                     </Link>
@@ -118,9 +114,9 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                     type="button"
                                     onClick={onClickHandler}
                                     disabled={logout.isPending}
-                                    className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-medium text-primary transition-colors hover:bg-muted"
+                                    className="flex cursor-pointer items-center gap-3 rounded-full px-4 py-2.5 text-[15px] font-bold text-ink transition-colors hover:bg-ink/7"
                                 >
-                                    <LogOut className="size-3.5" />
+                                    <LogOut className="size-4" />
                                     {logout.isPending ? 'Logging out…' : 'Logout'}
                                 </button>
                             </div>
@@ -129,7 +125,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                 <Link
                                     href={AUTH_PAGE_PATH}
                                     prefetch={false}
-                                    className="flex items-center justify-center w-full px-4 py-2.5 rounded-none bg-accent-blue text-background text-sm font-semibold transition-all duration-200 hover:bg-accent-blue/90 active:scale-[0.98]"
+                                    className="flex w-full items-center justify-center rounded-full bg-tangerine px-4 py-3 text-base font-bold text-on-brand transition-[filter] duration-300 ease-out-strong hover:brightness-92"
                                 >
                                     Login
                                 </Link>

@@ -1,0 +1,61 @@
+/*
+ * Contextual palette. A section declares data-tone="green" and everything inside
+ * it reads only --tone / --tone-soft / --tone-deep / --tone-ink, so one attribute
+ * swaps the whole block. Tailwind exposes these as bg-tone, text-tone-ink, etc.
+ */
+
+[data-tone] {
+    --tone: var(--blue);
+    --tone-soft: var(--blue-soft);
+    --tone-deep: var(--blue-deep);
+    --tone-ink: var(--on-brand);
+}
+
+[data-tone='paper'] {
+    --tone: var(--paper);
+    --tone-soft: #fffaf1;
+    --tone-deep: var(--ink);
+    --tone-ink: var(--ink);
+}
+
+[data-tone='blue'] {
+    --tone: var(--blue);
+    --tone-soft: var(--blue-soft);
+    --tone-deep: var(--blue-deep);
+    --tone-ink: var(--on-brand);
+}
+
+[data-tone='navy'] {
+    --tone: var(--navy);
+    --tone-soft: var(--navy-soft);
+    --tone-deep: var(--navy-deep);
+    --tone-ink: var(--on-brand);
+}
+
+[data-tone='green'] {
+    --tone: var(--green);
+    --tone-soft: var(--green-soft);
+    --tone-deep: var(--green-deep);
+    --tone-ink: var(--on-brand);
+}
+
+[data-tone='amber'] {
+    --tone: var(--amber);
+    --tone-soft: var(--amber-soft);
+    --tone-deep: var(--amber-deep);
+    --tone-ink: var(--amber-deep);
+}
+
+[data-tone='tangerine'] {
+    --tone: var(--tangerine);
+    --tone-soft: var(--tangerine-soft);
+    --tone-deep: var(--tangerine-deep);
+    --tone-ink: var(--on-brand);
+}
+
+[data-tone='slate'] {
+    --tone: var(--slate);
+    --tone-soft: var(--slate-soft);
+    --tone-deep: var(--slate-deep);
+    --tone-ink: var(--on-brand);
+}

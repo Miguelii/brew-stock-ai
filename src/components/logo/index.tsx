@@ -1,20 +1,20 @@
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 type Props = {
     linkToHome?: boolean
+    className?: string
 }
 
-export default function Logo({ linkToHome = true }: Props) {
+export default function Logo({ linkToHome = true, className }: Props) {
     return (
         <Link
-            className="flex items-center gap-2 justify-start"
+            className={cn('font-display text-[20px] leading-none', className)}
+            style={{ letterSpacing: 0 }}
             href={linkToHome ? '/' : '/analysis'}
             prefetch={false}
         >
-            <div className="font-bold text-lg tracking-tight">
-                <span>BrewStock</span>
-                <span className="text-accent-blue font-mono">AI</span>
-            </div>
+            BrewStock<span className="text-blue">AI</span>
         </Link>
     )
 }

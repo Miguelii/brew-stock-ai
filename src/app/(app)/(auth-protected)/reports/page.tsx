@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Separator } from '@/components/ui/separator'
 import { ReportsTable } from '@/modules/reports/reports-table'
 import { ReportsRefetch } from '@/modules/reports/reports-refetch'
 import { ClientEnv } from '@/env/client'
@@ -37,23 +36,23 @@ export default function Report() {
                     { name: META_TITLE, url: META_URL },
                 ]}
             />
-            <main className="main-container-lg" id="main">
-                <div className="flex flex-col gap-6 md:gap-0 md:flex-row w-full justify-between items-start md:items-center">
-                    <div className="space-y-1">
-                        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                            Analysis Reports
-                        </h1>
-                        <p className="text-sm text-muted-foreground">
-                            Track the status of your requested reports.
-                        </p>
+            <main id="main" data-tone="paper" className="bg-tone text-tone-ink">
+                <div className="section-shell pt-10 pb-20 lg:pb-30">
+                    <div className="flex w-full flex-col items-start justify-between gap-6 md:flex-row md:items-end md:gap-0">
+                        <div>
+                            <h1 className="display display-section">Analysis reports</h1>
+                            <p className="mt-4 text-lg leading-snug opacity-70">
+                                Track the status of your requested reports.
+                            </p>
+                        </div>
+
+                        <ReportsRefetch />
                     </div>
 
-                    <ReportsRefetch />
+                    <div className="mt-10">
+                        <ReportsTable />
+                    </div>
                 </div>
-
-                <Separator />
-
-                <ReportsTable />
             </main>
         </>
     )

@@ -40,7 +40,7 @@ export default function EducationHubPage() {
             />
 
             <main id="main" className="flex-1 main-container ">
-                <section className="border-b border-border bg-card/50">
+                <section className="border-b border-border">
                     <div className="pb-12 lg:pb-12">
                         <motion.div
                             initial={{ opacity: 0, y: 24 }}

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { AnalysisHero } from '@/modules/analysis/analysis-hero'
 import { AnalysisFormCard } from '@/modules/analysis/analysis-form-card'
+import { AnalysisTypesGrid } from '@/modules/analysis/analysis-types-grid'
+import { HowItWorksStrip } from '@/modules/analysis/how-it-works-strip'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
 import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
@@ -38,13 +40,15 @@ export default async function AnalysisPage() {
                     { name: 'Analysis', url: META_URL },
                 ]}
             />
-            <main
-                id="main"
-                className="flex-1 max-w-7xl mx-auto w-full px-6 pt-16 pb-20 lg:pt-24 lg:pb-36"
-            >
+            {/* The hero is full-bleed under the fixed header, so it cancels its spacer. */}
+            <main id="main" className="-mt-20 flex-1 overflow-x-clip">
                 <AnalysisHero>
                     <AnalysisFormCard isAuthenticated={!!user} />
                 </AnalysisHero>
+
+                <AnalysisTypesGrid />
+
+                <HowItWorksStrip />
             </main>
         </>
     )

@@ -27,7 +27,7 @@ export function AuthLayout({ children }: Props) {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-background">Francisca Mendes</p>
-                            <p className="text-xs text-muted-foreground">Investor</p>
+                            <p className="text-xs text-background">Investor</p>
                         </div>
                     </div>
                 </div>

@@ -39,9 +39,9 @@ export const CONSENT_COOKIE = 'brew_stock_cookie_consent'
 //############
 
 // #### SEO IDENTITY REUSED ####
-export const SITE_AUTHOR_NAME = 'Miguel Gonçalves'
+export const SITE_AUTHOR_NAME = 'BrewStockAI'
 
-export const SITE_AUTHOR_URL = 'https://www.linkedin.com/in/miguelgoncalves18/'
+export const SITE_AUTHOR_URL = 'https://brewstockai.com'
 //############
 
 // #### LAST UPDATE PAGES ####

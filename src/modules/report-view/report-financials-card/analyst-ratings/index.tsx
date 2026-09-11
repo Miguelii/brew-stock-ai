@@ -8,7 +8,7 @@ type Props = {
 const SEGMENTS = [
     { key: 'strongBuy', label: 'Strong Buy', color: 'bg-positive' },
     { key: 'buy', label: 'Buy', color: 'bg-positive/60' },
-    { key: 'hold', label: 'Hold', color: 'bg-muted-foreground/40' },
+    { key: 'hold', label: 'Hold', color: 'bg-ink/30' },
     { key: 'sell', label: 'Sell', color: 'bg-destructive/60' },
     { key: 'strongSell', label: 'Strong Sell', color: 'bg-destructive' },
 ] as const
@@ -20,11 +20,11 @@ export function AnalystRatingsBar({ ratings }: Props) {
 
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <span className="text-xs font-medium text-ink/60 uppercase tracking-wide">
                 Analyst recommendations ({total})
             </span>
 
-            <div className="flex h-2.5 w-full overflow-hidden rounded bg-muted">
+            <div className="flex h-2.5 w-full overflow-hidden rounded bg-ink/8">
                 {SEGMENTS.map((s) => {
                     const count = ratings[s.key]
                     if (count === 0) return null
@@ -42,8 +42,8 @@ export function AnalystRatingsBar({ ratings }: Props) {
                 {SEGMENTS.map((s) => (
                     <div key={s.key} className="flex items-center gap-1.5">
                         <span className={cn('size-2 rounded-full shrink-0', s.color)} />
-                        <span className="text-xs text-muted-foreground">{s.label}</span>
-                        <span className="text-xs font-semibold text-primary">{ratings[s.key]}</span>
+                        <span className="text-xs text-ink/60">{s.label}</span>
+                        <span className="text-xs font-semibold text-ink">{ratings[s.key]}</span>
                     </div>
                 ))}
             </div>

@@ -18,11 +18,11 @@ export function CategoryCard({ title, question, metrics }: Props) {
     const grade = gradeCategory(metrics)
 
     return (
-        <div className="flex flex-col rounded-none border border-border/60 bg-muted/30 p-4">
-            <div className="mb-3 flex items-start justify-between gap-3 border-b border-border/60 pb-1.5">
+        <div className="flex flex-col rounded-[var(--radius-surface-inner)] border border-ink/10 bg-paper p-4">
+            <div className="mb-3 flex items-start justify-between gap-3 border-b border-ink/10 pb-1.5">
                 <div className="flex min-w-0 flex-col">
-                    <span className="text-sm font-semibold text-primary">{title}</span>
-                    <span className="text-xs text-muted-foreground">{question}</span>
+                    <span className="text-sm font-semibold text-ink">{title}</span>
+                    <span className="text-xs text-ink/60">{question}</span>
                 </div>
                 {grade && (
                     <div

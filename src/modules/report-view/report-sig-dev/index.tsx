@@ -13,22 +13,16 @@ export function ReportSigDev({ headline, date }: Props) {
 
     return (
         <Card className="h-fit">
-            <CardHeader className="border-b">
-                <CardTitle className="font-semibold">What&apos;s Happening Now</CardTitle>
-                <p className="text-xs text-muted-foreground">
+            <CardHeader className="border-b-2 border-ink/8 pb-4">
+                <CardTitle className="display text-2xl">What&apos;s Happening Now</CardTitle>
+                <p className="text-xs text-ink/60">
                     The most notable recent event our engine identified for this company
                 </p>
             </CardHeader>
             <CardContent className="flex flex-col md:flex-row gap-4 md:justify-between">
-                <p
-                    className={cn(
-                        headline ? 'font-semibold text-primary' : 'text-muted-foreground'
-                    )}
-                >
-                    {text}
-                </p>
+                <p className={cn(headline ? 'font-semibold text-ink' : 'text-ink/60')}>{text}</p>
 
-                {date && <p className="text-muted-foreground">{parsedDate(date)}</p>}
+                {date && <p className="text-ink/60">{parsedDate(date)}</p>}
             </CardContent>
         </Card>
     )

@@ -26,7 +26,7 @@ export function TokenPackages({
 }: Props) {
     const [pending, startTransition] = useTransition()
 
-    const showPromoBanner = packages.some((item) => item.hasPromo === true) != null
+    const showPromoBanner = packages.some((item) => item.hasPromo === true)
 
     const checkout = trpcClient.credits.createCheckoutSession.useMutation({
         onSuccess: (url) => {
@@ -41,25 +41,6 @@ export function TokenPackages({
 
     return (
         <div className="w-full">
-            <style>{`
-                @keyframes shimmer-sweep {
-                    0%   { transform: translateX(-100%); }
-                    100% { transform: translateX(200%); }
-                }
-                .promo-shimmer::after {
-                    content: '';
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient(
-                        105deg,
-                        transparent 40%,
-                        rgba(59,130,246,0.08) 50%,
-                        transparent 60%
-                    );
-                    animation: shimmer-sweep 3.2s ease-in-out infinite;
-                }
-            `}</style>
-
             {showPromoBanner ? <TokenPromo /> : null}
 
             <div
@@ -79,19 +60,19 @@ export function TokenPackages({
                             key={pkg.id}
                             data-testid={`token-package-${pkg.id}`}
                             className={cn(
-                                'relative flex flex-col rounded-none gap-0 pt-0 overflow-visible transition-shadow duration-300',
-                                pkg.highlight && 'border-accent-blue bg-accent-blue/5 shadow-md'
+                                'relative flex flex-col gap-0 overflow-visible border-0 bg-card pt-0 text-ink',
+                                pkg.highlight && 'ring-[3px] ring-ink'
                             )}
                         >
                             <CardContent className="flex flex-col gap-4 p-6">
                                 {pkg.highlight && (
-                                    <span className="z-50 absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold px-3 py-1 rounded-none bg-accent-blue text-background whitespace-nowrap">
+                                    <span className="absolute -top-3 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-3 py-1 font-mono text-[11px] font-medium tracking-wider whitespace-nowrap text-paper uppercase">
                                         Most Popular
                                     </span>
                                 )}
 
                                 {pkg.hasPromo && (
-                                    <span className="absolute top-3 right-3 text-xs font-bold tracking-wider text-accent-blue border border-accent-blue/35 px-1.5 py-0.5 leading-tight">
+                                    <span className="absolute top-4 right-4 rounded-full bg-tangerine px-2.5 py-1 font-mono text-[11px] leading-tight font-medium tracking-wider text-white uppercase">
                                         50% OFF
                                     </span>
                                 )}
@@ -99,22 +80,18 @@ export function TokenPackages({
                                 <div className="flex items-center gap-3">
                                     <div
                                         className={cn(
-                                            'p-2 rounded-none',
-                                            pkg.highlight ? 'bg-accent-blue/20' : 'bg-muted'
+                                            'rounded-full p-2.5',
+                                            pkg.highlight ? 'bg-blue/12' : 'bg-ink/6'
                                         )}
                                     >
                                         <Icon
                                             className={cn(
                                                 'w-5 h-5',
-                                                pkg.highlight
-                                                    ? 'text-accent-blue'
-                                                    : 'text-muted-foreground'
+                                                pkg.highlight ? 'text-blue' : 'text-ink/55'
                                             )}
                                         />
                                     </div>
-                                    <span className="font-semibold text-foreground">
-                                        {pkg.label}
-                                    </span>
+                                    <span className="text-lg font-extrabold">{pkg.label}</span>
                                 </div>
 
                                 <div>
@@ -124,7 +101,7 @@ export function TokenPackages({
                                         </span>
                                     )}
                                     <div className="flex items-end gap-1.5">
-                                        <span className="text-3xl font-bold tracking-tight text-foreground tabular-nums">
+                                        <span className="display text-[40px] tabular-nums">
                                             {pkg.price}
                                         </span>
                                         {pkg.id !== 'free' && (

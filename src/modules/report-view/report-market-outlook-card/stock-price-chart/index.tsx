@@ -37,8 +37,8 @@ function PriceTooltip({ active, payload, label }: TooltipProps) {
     if (!active || !payload?.length || label == null) return null
     return (
         <div className="rounded border bg-card px-3 py-2 shadow text-xs">
-            <p className="text-muted-foreground">{fmtDate(label, 'short')}</p>
-            <p className="font-semibold text-primary">{fmtPrice(payload[0].value)}</p>
+            <p className="text-ink/60">{fmtDate(label, 'short')}</p>
+            <p className="font-semibold text-ink">{fmtPrice(payload[0].value)}</p>
         </div>
     )
 }
@@ -63,8 +63,8 @@ export function StockPriceChart({ data, low, high }: Props) {
 
     if (!data?.length) {
         return (
-            <div className="flex h-52 items-center justify-center rounded-none bg-muted/40">
-                <span className="text-xs text-muted-foreground">No price data available</span>
+            <div className="flex h-52 items-center justify-center rounded-[var(--radius-surface-inner)] bg-paper">
+                <span className="text-xs text-ink/60">No price data available</span>
             </div>
         )
     }
@@ -72,7 +72,7 @@ export function StockPriceChart({ data, low, high }: Props) {
     return (
         <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                <span className="text-xs font-medium text-ink/60 uppercase tracking-wide">
                     Where the stock has traded in the last year
                 </span>
                 <div className="flex gap-0.5">
@@ -84,8 +84,8 @@ export function StockPriceChart({ data, low, high }: Props) {
                             className={cn(
                                 'px-2 py-0.5 text-xs rounded transition-colors',
                                 r === range
-                                    ? 'bg-accent-blue text-primary-foreground font-medium'
-                                    : 'text-muted-foreground hover:text-primary'
+                                    ? 'bg-blue text-paper font-medium'
+                                    : 'text-ink/60 hover:text-ink'
                             )}
                         >
                             {r}
@@ -98,8 +98,8 @@ export function StockPriceChart({ data, low, high }: Props) {
                 <AreaChart data={filtered} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
                     <defs>
                         <linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--accent-blue)" stopOpacity={0.2} />
-                            <stop offset="95%" stopColor="var(--accent-blue)" stopOpacity={0} />
+                            <stop offset="5%" stopColor="var(--blue)" stopOpacity={0.2} />
+                            <stop offset="95%" stopColor="var(--blue)" stopOpacity={0} />
                         </linearGradient>
                     </defs>
 
@@ -129,7 +129,7 @@ export function StockPriceChart({ data, low, high }: Props) {
                     {high != null && (
                         <ReferenceLine
                             y={high}
-                            stroke="var(--accent-blue)"
+                            stroke="var(--blue)"
                             strokeDasharray="3 3"
                             strokeOpacity={0.5}
                         />
@@ -146,11 +146,11 @@ export function StockPriceChart({ data, low, high }: Props) {
                     <Area
                         type="monotone"
                         dataKey="close"
-                        stroke="var(--accent-blue)"
+                        stroke="var(--blue)"
                         strokeWidth={1.5}
                         fill="url(#priceGrad)"
                         dot={false}
-                        activeDot={{ r: 3, fill: 'var(--accent-blue)', strokeWidth: 0 }}
+                        activeDot={{ r: 3, fill: 'var(--blue)', strokeWidth: 0 }}
                     />
                 </AreaChart>
             </ResponsiveContainer>

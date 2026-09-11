@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { SectionHeader } from '@/modules/home/section-header'
+import { SectionHeader } from '@/components/ui/section-header'
 import type { TokenPackage } from '@/types/TokenPackage'
 
 const TokenPackages = dynamic(
@@ -15,10 +15,11 @@ type Props = {
 
 export function PricingCard({ packages }: Props) {
     return (
-        <section id="pricing" className="border-b border-border bg-card/50">
-            <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
+        <section id="pricing" data-tone="amber" className="bg-tone text-tone-ink">
+            <div className="section-shell section-pad">
                 <SectionHeader
-                    title="Simple, Pay-as-you-go Pricing"
+                    eyebrow="Pricing"
+                    title="Simple, pay-as-you-go pricing"
                     lede="No subscriptions. Buy credits once, use them whenever you need."
                 />
 

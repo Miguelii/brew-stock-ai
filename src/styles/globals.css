@@ -3,6 +3,7 @@
 @import 'shadcn/tailwind.css';
 @import './font.css';
 @import './theme.css';
+@import './tone.css';
 @import './theme-dark.css';
 
 @plugin "@tailwindcss/typography";
@@ -10,7 +11,13 @@
 @custom-variant dark (&:is(.dark *));
 
 html {
-    scroll-behavior: smooth !important;
+    scroll-behavior: smooth;
+}
+
+/* Lenis drives the scroll itself on public pages, native smoothing fights it. */
+html.lenis,
+html.lenis body {
+    scroll-behavior: auto !important;
 }
 
 .main-container {
@@ -18,7 +25,7 @@ html {
 }
 
 .main-container-lg {
-    @apply max-w-7xl mx-auto px-6 py-6 md:py-10 space-y-8 lg:pb-24;
+    @apply mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-[50px] py-6 md:py-10 space-y-8 lg:pb-24;
 }
 
 @layer base {
@@ -60,21 +67,106 @@ html {
 }
 
 @layer components {
+    /*
+     * Display face: always uppercase, tight leading, no negative tracking.
+     * The sizes are component classes rather than --text-* theme keys because
+     * tailwind-merge would treat a text-display-* key as a conflicting text utility
+     * and drop it whenever a text colour is applied to the same element.
+     */
+    .display {
+        font-family: var(--font-display);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0;
+        line-height: 0.95;
+    }
+
+    .display-hero {
+        font-size: clamp(46px, 7vw, 104px);
+    }
+
+    .display-section {
+        font-size: clamp(38px, 4.3vw, 62px);
+    }
+
+    .display-card {
+        font-size: clamp(28px, 3.3vw, 48px);
+    }
+
+    /*
+     * Base size for GiantWord. The component measures the rendered word and sets
+     * --giant-scale below 1 when it would overflow, so no font size is ever parsed
+     * back out of the computed style.
+     */
+    .display-giant {
+        --giant-size: clamp(64px, 13vw, 210px);
+        font-size: calc(var(--giant-size) * var(--giant-scale, 1));
+    }
+
+    /* Mono kicker above a heading. */
+    .eyebrow {
+        @apply font-mono text-[13px] font-medium uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    /* Full-bleed section content well. Wider than the old max-w-7xl on purpose. */
+    .section-shell {
+        @apply mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-[50px];
+    }
+
+    .section-pad {
+        @apply py-20 lg:py-30;
+    }
+
+    .section-pad-tight {
+        @apply py-16 lg:py-22;
+    }
+
+    /*
+     * Native <details> accordion with an animated open/close. interpolate-size is
+     * progressive: browsers without it simply snap open, which is the old behaviour.
+     */
+    /*
+     * One surface radius across every card, panel and framed element.
+     * Note: the shadcn Card base hardcodes rounded-none, and a utility always beats
+     * a components-layer class. On a <Card>, pass rounded-[var(--radius-surface)]
+     * instead so tailwind-merge resolves the conflict in your favour.
+     */
+    .surface {
+        border-radius: var(--radius-surface);
+    }
+
+    .faq-accordion {
+        interpolate-size: allow-keywords;
+    }
+
+    .faq-accordion::details-content {
+        block-size: 0;
+        overflow: hidden;
+        transition:
+            block-size 0.35s var(--ease-out-strong),
+            content-visibility 0.35s allow-discrete;
+    }
+
+    .faq-accordion[open]::details-content {
+        block-size: auto;
+    }
+
     .analysis-prose {
         @apply prose prose-sm max-w-none;
 
         /* Headings */
-        --tw-prose-headings: var(--color-primary);
+        --tw-prose-headings: var(--color-ink);
         h2 {
-            @apply text-xs font-semibold uppercase tracking-widest text-primary-muted mb-3;
+            @apply text-xs font-semibold uppercase tracking-widest text-ink/55 mb-3;
         }
         h3 {
-            @apply text-sm font-semibold text-primary mt-4 mb-2;
+            @apply text-sm font-semibold text-ink mt-4 mb-2;
         }
 
         /* Body */
         p {
-            @apply text-sm text-primary leading-relaxed mb-3;
+            @apply text-sm text-ink leading-relaxed mb-3;
         }
 
         /* Lists */
@@ -83,13 +175,13 @@ html {
             padding-left: 0;
         }
         li {
-            @apply text-sm text-primary leading-relaxed;
+            @apply text-sm text-ink leading-relaxed;
             position: relative;
             padding-left: 1.25rem;
         }
         li::before {
             content: '•';
-            @apply text-accent-blue font-bold;
+            @apply text-blue font-bold;
             position: absolute;
             left: 0;
             top: 0;
@@ -100,10 +192,66 @@ html {
 
         /* Emphasis */
         strong {
-            @apply text-accent-blue font-semibold;
+            @apply text-blue font-semibold;
         }
         em {
-            @apply text-primary-muted not-italic;
+            @apply text-ink/55 not-italic;
         }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /*
+     * Long scroll-driven sections collapse to plain stacked content. The components
+     * render one tree at every breakpoint and let these rules flatten it, so they
+     * never have to read the media query while rendering (which the server cannot
+     * do, and which would therefore break hydration).
+     */
+    [data-scroll-scene] {
+        height: auto !important;
+    }
+
+    [data-scroll-scene] [data-scroll-sticky] {
+        position: static !important;
+        height: auto !important;
+    }
+
+    /* The pinned track falls back to the swipeable row used on small screens. */
+    [data-scroll-track] {
+        width: auto !important;
+        overflow-x: auto !important;
+    }
+
+    /* The fanned deck falls back to a plain column. */
+    [data-stack-deck] {
+        display: flex !important;
+        height: auto !important;
+    }
+
+    [data-stack-card] {
+        position: static !important;
+    }
+
+    /*
+     * Every node motion writes an inline transform on. MotionProvider already lands
+     * animate and whileInView targets instantly, but it does not touch MotionValues
+     * bound straight to `style` (the scroll-scrubbed ones), and it cannot undo an
+     * `initial` offset on an element whose reveal has not fired yet. This
+     * declaration outranks the inline style either way, so nothing is left
+     * displaced.
+     */
+    [data-motion-transform],
+    [data-scroll-track],
+    [data-stack-card] {
+        transform: none !important;
     }
 }

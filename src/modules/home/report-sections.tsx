@@ -1,6 +1,3 @@
-import Link from 'next/link'
-import { ArrowUpRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { HorizontalTrack } from '@/modules/home/horizontal-track'
 import { REPORT_SECTIONS } from '@/modules/home/report-sections-content'
 
@@ -44,22 +41,6 @@ export function ReportSections() {
                             </article>
                         )
                     })}
-
-                    <div
-                        data-tone="amber"
-                        className="surface flex w-[min(330px,80vw)] shrink-0 snap-start flex-col bg-tone p-7 text-tone-ink"
-                    >
-                        <span className="eyebrow opacity-80">Ready when you are</span>
-                        <h3 className="display display-card mt-auto max-w-[10ch] pt-6">
-                            See it on a real ticker
-                        </h3>
-                        <Link href="/example-report" prefetch={false} className="mt-6">
-                            <Button variant="ink" size="xl" className="group w-full">
-                                Open a sample report
-                                <ArrowUpRight className="size-5 transition-transform duration-300 ease-out-strong group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
-                            </Button>
-                        </Link>
-                    </div>
                 </HorizontalTrack>
             </div>
         </section>

@@ -156,17 +156,17 @@ html.lenis body {
         @apply prose prose-sm max-w-none;
 
         /* Headings */
-        --tw-prose-headings: var(--color-primary);
+        --tw-prose-headings: var(--color-ink);
         h2 {
-            @apply text-xs font-semibold uppercase tracking-widest text-primary-muted mb-3;
+            @apply text-xs font-semibold uppercase tracking-widest text-ink/55 mb-3;
         }
         h3 {
-            @apply text-sm font-semibold text-primary mt-4 mb-2;
+            @apply text-sm font-semibold text-ink mt-4 mb-2;
         }
 
         /* Body */
         p {
-            @apply text-sm text-primary leading-relaxed mb-3;
+            @apply text-sm text-ink leading-relaxed mb-3;
         }
 
         /* Lists */
@@ -175,13 +175,13 @@ html.lenis body {
             padding-left: 0;
         }
         li {
-            @apply text-sm text-primary leading-relaxed;
+            @apply text-sm text-ink leading-relaxed;
             position: relative;
             padding-left: 1.25rem;
         }
         li::before {
             content: '•';
-            @apply text-accent-blue font-bold;
+            @apply text-blue font-bold;
             position: absolute;
             left: 0;
             top: 0;
@@ -192,10 +192,10 @@ html.lenis body {
 
         /* Emphasis */
         strong {
-            @apply text-accent-blue font-semibold;
+            @apply text-blue font-semibold;
         }
         em {
-            @apply text-primary-muted not-italic;
+            @apply text-ink/55 not-italic;
         }
     }
 }

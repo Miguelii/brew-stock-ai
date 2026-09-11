@@ -161,7 +161,7 @@ export function SentimentGauge({ score, isRiskAnalysis = false }: Props) {
                     : label.toUpperCase()}
             </p>
 
-            <p className="mt-1 w-full text-center text-xs leading-relaxed text-muted-foreground">
+            <p className="mt-1 w-full text-center text-xs leading-relaxed text-ink/60">
                 {isRiskAnalysis
                     ? 'This score reflects the risk level inferred from the Engine analysis only and does not constitute financial advice.'
                     : 'This score reflects the sentiment inferred from the Engine analysis only and does not constitute financial advice or an investment recommendation.'}

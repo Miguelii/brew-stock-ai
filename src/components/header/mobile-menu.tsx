@@ -54,7 +54,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
             </div>
 
             <Drawer open={open} onOpenChange={setOpen} direction="right">
-                <DrawerContent className="z-98 flex w-70 flex-col border-l border-border bg-card p-0">
+                <DrawerContent className="z-[101] flex w-70 flex-col border-l border-border bg-card p-0">
                     {/* Header */}
                     <div className="flex items-center justify-between h-16 px-5 border-b border-border shrink-0">
                         <Logo />

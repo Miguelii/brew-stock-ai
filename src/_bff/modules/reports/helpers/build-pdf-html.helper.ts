@@ -46,7 +46,7 @@ function buildScoreRows(scores: StockScores): string {
                 : ''
 
         const valueText = isNA
-            ? `<span style="color:#909097;">N/A</span>`
+            ? `<span style="color:#7b7a76;">N/A</span>`
             : `<span style="font-weight:600;">${fmtNum(company)}</span>`
 
         const sectorText = fmtNum(sector)
@@ -55,9 +55,9 @@ function buildScoreRows(scores: StockScores): string {
             <div style="margin-bottom:16px;">
                 <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;">
                     <span style="font-weight:600;">${label}</span>
-                    <span>${valueText}<span style="color:#909097;font-weight:400;"> vs ${sectorText}</span></span>
+                    <span>${valueText}<span style="color:#7b7a76;font-weight:400;"> vs ${sectorText}</span></span>
                 </div>
-                <div style="position:relative;height:10px;background:${isNA ? '#ffffff' : '#d4d4d4'};border-radius:4px;overflow:hidden;">
+                <div style="position:relative;height:10px;background:${isNA ? '#ffffff' : '#e5e7eb'};border-radius:4px;overflow:hidden;">
                     ${bar}${tick}
                 </div>
             </div>`
@@ -71,8 +71,8 @@ function tile(
     colored = false,
     raw?: number | null
 ): string {
-    const valueStyle = colored ? signStyle(raw) : 'color:#262626;'
-    const valueColor = value === 'N/A' ? 'color:#909097;' : valueStyle
+    const valueStyle = colored ? signStyle(raw) : 'color:#17181c;'
+    const valueColor = value === 'N/A' ? 'color:#7b7a76;' : valueStyle
     return `<div class="${cls}"><div class="fin-tile-label">${label}</div><div class="fin-tile-value" style="${valueColor}">${value}</div></div>`
 }
 
@@ -104,7 +104,7 @@ function buildRangeBar(
                <span><span style="display:inline-block;width:10px;height:2px;background:#0047CC;vertical-align:middle;margin-right:4px;"></span>${currentLabel ?? ''}</span>
                ${meanLabel ? `<span><span style="display:inline-block;width:10px;height:2px;background:rgba(38,38,38,0.35);vertical-align:middle;margin-right:4px;"></span>${meanLabel}</span>` : ''}
            </div>`
-        : `<div class="fin-range-meta"><span style="color:#909097;">Data N/A</span></div>`
+        : `<div class="fin-range-meta"><span style="color:#7b7a76;">Data N/A</span></div>`
 
     return `
     <div class="fin-range-wrap">
@@ -156,14 +156,14 @@ function buildAnalystOutlookFinancials(f: StockFinancials): string {
 // (text-positive / text-primary / text-warning / text-destructive and their tints).
 const QUALITY_HEX: Record<MetricQuality, string> = {
     good: '#16a34a',
-    neutral: '#262626',
+    neutral: '#17181c',
     caution: '#b45309',
     concern: '#ef4444',
 }
 const QUALITY_BG_HEX: Record<MetricQuality, string> = {
     good: '#e8f5ee',
     neutral: '#f5f5f7',
-    caution: '#fbf1e6',
+    caution: '#fdf6ec',
     concern: '#fdecec',
 }
 
@@ -176,7 +176,7 @@ function buildMetricRow(m: MetricTile): string {
     const help = m.context ? undefined : (m.helper ?? metricHelp(m.metricKey))
     const hasVerdict = evaluation != null && evaluation.verdict !== 'N/A'
 
-    const color = isNA ? '#909097' : evaluation ? QUALITY_HEX[evaluation.quality] : '#262626'
+    const color = isNA ? '#7b7a76' : evaluation ? QUALITY_HEX[evaluation.quality] : '#17181c'
 
     const helpHtml = help ? `<div class="fin-metric-help">${escapeHtml(help)}</div>` : ''
     const verdictHtml = hasVerdict
@@ -229,12 +229,12 @@ function buildInsiderBlock(insiders: StockFundamentals['insiders']): string {
         : insiders.netShares! > 0
           ? 'Net buying'
           : 'Net selling'
-    const color = isNeutral ? '#909097' : insiders.netShares! > 0 ? '#16a34a' : '#ef4444'
+    const color = isNeutral ? '#7b7a76' : insiders.netShares! > 0 ? '#16a34a' : '#ef4444'
     return `
     <div class="fin-block">
         <div class="fin-block-title">Insider activity</div>
         <div class="fin-block-row">
-            <span style="color:#909097;">${insiders.buyCount} buys / ${insiders.sellCount} sells</span>
+            <span style="color:#7b7a76;">${insiders.buyCount} buys / ${insiders.sellCount} sells</span>
             <span style="font-weight:600;color:${color};">${direction} (${fmtNum(insiders.netShares, 0)} shares)</span>
         </div>
     </div>`
@@ -285,7 +285,7 @@ function buildAnalystRatingsBlock(ratings: StockFundamentals['analystRatings']):
     return `
     <div class="fin-group-title">Analyst recommendations (${total})</div>
     <div style="display:flex;height:10px;width:100%;border-radius:4px;overflow:hidden;background:#e5e7eb;margin-bottom:6px;">${bar}</div>
-    <div style="font-size:11px;color:#262626;margin-bottom:4px;">${legend}</div>`
+    <div style="font-size:11px;color:#17181c;margin-bottom:4px;">${legend}</div>`
 }
 
 function buildEarningsHistoryBlock(history: StockFundamentals['earningsHistory']): string {
@@ -301,8 +301,8 @@ function buildEarningsHistoryBlock(history: StockFundamentals['earningsHistory']
                     : `<span style="font-weight:600;${beat ? 'color:#16a34a;' : 'color:#ef4444;'}">${beat ? 'Beat' : 'Miss'} ${fmtPct(q.surprisePercent)}</span>`
             return `
             <div class="fin-block-row fin-block-row-sep">
-                <span style="color:#909097;">${escapeHtml(q.quarter ?? q.period)}</span>
-                <span style="color:#262626;">Act ${fmtNum(q.epsActual)} / Est ${fmtNum(q.epsEstimate)} &nbsp; ${badge}</span>
+                <span style="color:#7b7a76;">${escapeHtml(q.quarter ?? q.period)}</span>
+                <span style="color:#17181c;">Act ${fmtNum(q.epsActual)} / Est ${fmtNum(q.epsEstimate)} &nbsp; ${badge}</span>
             </div>`
         })
         .join('')
@@ -359,7 +359,7 @@ const PDF_CSS = `
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #ffffff;
-            color: #262626;
+            color: #17181c;
             padding: 48px 56px;
             font-size: 14px;
             line-height: 1.6;
@@ -370,7 +370,7 @@ const PDF_CSS = `
             justify-content: space-between;
             align-items: flex-start;
             padding-bottom: 24px;
-            border-bottom: 1px solid #e8e8e8;
+            border-bottom: 1px solid #e3ddd1;
             margin-bottom: 32px;
         }
         .brand {
@@ -379,8 +379,8 @@ const PDF_CSS = `
             letter-spacing: -0.02em;
         }
         .brand span { color: #0047CC; font-family: monospace; }
-        .meta { text-align: right; font-size: 12px; color: #909097; }
-        .meta strong { display: block; font-size: 13px; color: #262626; margin-bottom: 2px; }
+        .meta { text-align: right; font-size: 12px; color: #7b7a76; }
+        .meta strong { display: block; font-size: 13px; color: #17181c; margin-bottom: 2px; }
 
         .title-section {
             display: flex;
@@ -398,7 +398,7 @@ const PDF_CSS = `
         }
         .report-type {
             font-size: 13px;
-            color: #909097;
+            color: #7b7a76;
             margin-top: 6px;
         }
         .sentiment-badge {
@@ -412,7 +412,7 @@ const PDF_CSS = `
             text-transform: uppercase;
             letter-spacing: 0.08em;
             font-weight: 600;
-            color: #909097;
+            color: #7b7a76;
         }
         .sentiment-value {
             font-size: 22px;
@@ -421,7 +421,7 @@ const PDF_CSS = `
 
         .divider {
             border: none;
-            border-top: 1px solid #e8e8e8;
+            border-top: 1px solid #e3ddd1;
             margin: 24px 0;
         }
 
@@ -430,7 +430,7 @@ const PDF_CSS = `
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #909097;
+            color: #7b7a76;
             margin-bottom: 10px;
             margin-top: 28px;
         }
@@ -438,13 +438,13 @@ const PDF_CSS = `
         .analysis h3 {
             font-size: 13px;
             font-weight: 600;
-            color: #262626;
+            color: #17181c;
             margin-top: 16px;
             margin-bottom: 6px;
         }
         .analysis p {
             font-size: 13px;
-            color: #262626;
+            color: #17181c;
             line-height: 1.7;
             margin-bottom: 10px;
         }
@@ -455,7 +455,7 @@ const PDF_CSS = `
         }
         .analysis li {
             font-size: 13px;
-            color: #262626;
+            color: #17181c;
             line-height: 1.6;
             position: relative;
             padding-left: 1.25rem;
@@ -471,71 +471,71 @@ const PDF_CSS = `
         }
         .analysis li > strong:first-child { display: block; }
         .analysis strong { color: #0047CC; font-weight: 600; }
-        .analysis em { color: #909097; font-style: normal; }
+        .analysis em { color: #7b7a76; font-style: normal; }
 
         .footer {
             margin-top: 48px;
             padding-top: 20px;
-            border-top: 1px solid #e8e8e8;
+            border-top: 1px solid #e3ddd1;
             display: flex;
             justify-content: space-between;
             font-size: 11px;
-            color: #909097;
+            color: #7b7a76;
         }
 
         .extra-section {
             margin-top: 32px;
             padding-top: 24px;
-            border-top: 1px solid #e8e8e8;
+            border-top: 1px solid #e3ddd1;
         }
         .extra-section-title {
             font-size: 15px;
             font-weight: 700;
             letter-spacing: -0.01em;
-            color: #262626;
+            color: #17181c;
         }
         .extra-section-subtitle {
             font-size: 12px;
             font-weight: 400;
             letter-spacing: 0;
-            color: #909097;
+            color: #7b7a76;
             margin-top: 3px;
             margin-bottom: 14px;
         }
         .sig-dev-headline {
             font-size: 13px;
             font-weight: 600;
-            color: #262626;
+            color: #17181c;
             line-height: 1.5;
             margin-bottom: 4px;
         }
-        .sig-dev-date { font-size: 11px; color: #909097; }
+        .sig-dev-date { font-size: 11px; color: #7b7a76; }
         .news-list { list-style: none; padding: 0; margin: 0; }
         .news-item {
             padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #efeae0;
         }
         .news-item:last-child { border-bottom: none; }
-        .news-headline { font-size: 12px; font-weight: 600; color: #262626; line-height: 1.5; margin-bottom: 3px; }
-        .news-text { font-size: 11px; color: #262626; }
-        .news-meta { font-size: 11px; color: #909097; }
-        .scores-desc { font-size: 12px; color: #909097; margin-bottom: 18px; }
-        .fin-group-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #909097; margin-bottom: 8px; margin-top: 4px; }
+        .news-headline { font-size: 12px; font-weight: 600; color: #17181c; line-height: 1.5; margin-bottom: 3px; }
+        .news-text { font-size: 11px; color: #17181c; }
+        .news-meta { font-size: 11px; color: #7b7a76; }
+        .scores-desc { font-size: 12px; color: #7b7a76; margin-bottom: 18px; }
+        .fin-group-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #7b7a76; margin-bottom: 8px; margin-top: 4px; }
         .fin-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-        .fin-tile { flex: 1 1 calc(25% - 6px); min-width: 90px; background: #f5f5f7; border-radius: 4px; padding: 8px 10px; }
-        .fin-tile-3 { flex: 1 1 calc(33.333% - 6px); min-width: 90px; background: #f5f5f7; border-radius: 4px; padding: 8px 10px; }
-        .fin-tile-label { font-size: 10px; color: #909097; margin-bottom: 3px; }
-        .fin-tile-value { font-size: 12px; font-weight: 600; color: #262626; }
+        .fin-tile { flex: 1 1 calc(25% - 6px); min-width: 90px; background: #fafafa; border-radius: 4px; padding: 8px 10px; }
+        .fin-tile-3 { flex: 1 1 calc(33.333% - 6px); min-width: 90px; background: #fafafa; border-radius: 4px; padding: 8px 10px; }
+        .fin-tile-label { font-size: 10px; color: #7b7a76; margin-bottom: 3px; }
+        .fin-tile-value { font-size: 12px; font-weight: 600; color: #17181c; }
         .fin-range-wrap { margin-bottom: 14px; }
         .fin-range-bar { position: relative; height: 10px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
-        .fin-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: #909097; }
-        .fin-range-meta { display: flex; gap: 14px; margin-top: 4px; font-size: 10px; color: #909097; }
+        .fin-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: #7b7a76; }
+        .fin-range-meta { display: flex; gap: 14px; margin-top: 4px; font-size: 10px; color: #7b7a76; }
 
         /* Graded category cards, mirroring the on-screen financials layout. */
         .fin-cat-grid { display: flex; gap: 8px; margin-bottom: 8px; }
         .fin-cat-grid .fin-cat-card { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
         .fin-cat-card {
-            border: 1px solid #e5e5e8;
+            border: 1px solid #e3ddd1;
             background: #fafafa;
             padding: 12px;
             margin-bottom: 8px;
@@ -545,13 +545,13 @@ const PDF_CSS = `
             justify-content: space-between;
             align-items: flex-start;
             gap: 10px;
-            border-bottom: 1px solid #e5e5e8;
+            border-bottom: 1px solid #e3ddd1;
             padding-bottom: 6px;
             margin-bottom: 4px;
         }
         .fin-cat-heading { display: flex; flex-direction: column; min-width: 0; }
-        .fin-cat-title { font-size: 13px; font-weight: 600; color: #262626; }
-        .fin-cat-question { font-size: 11px; color: #909097; }
+        .fin-cat-title { font-size: 13px; font-weight: 600; color: #17181c; }
+        .fin-cat-question { font-size: 11px; color: #7b7a76; }
         .fin-grade {
             display: flex;
             flex-direction: column;
@@ -569,20 +569,20 @@ const PDF_CSS = `
             align-items: flex-start;
             gap: 10px;
             padding: 5px 0;
-            border-top: 1px solid #ececef;
+            border-top: 1px solid #efeae0;
         }
         .fin-metric-row:first-child { border-top: none; }
         .fin-metric-main { min-width: 0; }
-        .fin-metric-label { font-size: 11px; color: #909097; line-height: 1.3; }
-        .fin-metric-help { font-size: 9px; color: #b0b0b6; line-height: 1.3; }
+        .fin-metric-label { font-size: 11px; color: #7b7a76; line-height: 1.3; }
+        .fin-metric-help { font-size: 9px; color: #a09c93; line-height: 1.3; }
         .fin-metric-side { text-align: right; flex-shrink: 0; }
         .fin-metric-value { font-size: 11px; font-weight: 600; line-height: 1.3; }
         .fin-metric-verdict { font-size: 9px; font-weight: 500; line-height: 1.2; }
 
-        .fin-block { border: 1px solid #e5e5e8; background: #fafafa; padding: 12px; margin-bottom: 8px; }
-        .fin-block-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #909097; margin-bottom: 4px; }
+        .fin-block { border: 1px solid #e3ddd1; background: #fafafa; padding: 12px; margin-bottom: 8px; }
+        .fin-block-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #7b7a76; margin-bottom: 4px; }
         .fin-block-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 5px 0; }
-        .fin-block-row-sep { border-top: 1px solid #ececef; }
+        .fin-block-row-sep { border-top: 1px solid #efeae0; }
         .fin-block-row-sep:first-of-type { border-top: none; }
     `
 

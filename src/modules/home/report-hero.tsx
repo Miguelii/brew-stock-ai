@@ -28,16 +28,20 @@ export function ReportHero() {
                         </p>
                         <div className="mt-8 flex flex-wrap gap-3">
                             <Link href="/analysis" prefetch={false} className="contents">
-                                <Button size="lg" className="gap-2 px-4 h-10 w-full sm:w-fit">
+                                <Button
+                                    size="xl"
+                                    variant="default"
+                                    className="gap-2 group w-full sm:w-fit"
+                                >
                                     Run your own analysis
                                     <ArrowRight className="size-4" />
                                 </Button>
                             </Link>
                             <Link href="/pricing" prefetch={false} className="contents">
                                 <Button
-                                    size="lg"
+                                    size="xl"
                                     variant="outline"
-                                    className="px-4 h-10 w-full sm:w-fit"
+                                    className="group w-full sm:w-fit"
                                 >
                                     See pricing
                                 </Button>

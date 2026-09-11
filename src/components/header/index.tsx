@@ -39,7 +39,7 @@ export async function Header({ userPromise }: Props) {
             {/* The bar itself has no surface: only the pills inside it are visible. */}
             <nav className="pointer-events-none fixed inset-x-0 top-6 z-99 section-shell">
                 <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4">
-                    <div className="pointer-events-auto flex h-10 items-center rounded-full bg-card px-5">
+                    <div className="pointer-events-auto flex h-10 items-center rounded-full bg-card px-5 border border-ink/10">
                         <Logo />
                     </div>
 

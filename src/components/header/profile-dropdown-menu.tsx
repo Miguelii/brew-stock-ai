@@ -21,7 +21,7 @@ export function ProfileDropdownMenu({ children }: Props) {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-card text-ink transition-[filter] duration-300 ease-out-strong hover:brightness-92 focus:outline-none">
+            <DropdownMenuTrigger className="flex size-10 border border-ink/10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-card text-ink transition-[filter] duration-300 ease-out-strong hover:brightness-92 focus:outline-none">
                 {children}
             </DropdownMenuTrigger>
 

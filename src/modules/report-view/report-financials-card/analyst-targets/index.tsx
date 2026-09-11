@@ -17,7 +17,7 @@ export function AnalystTargets({ financials }: Props) {
     return (
         <div className="flex flex-col gap-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                <span className="text-xs font-medium text-ink/60 uppercase tracking-wide">
                     What analysts think the stock is worth
                 </span>
                 {upside !== null && (
@@ -32,40 +32,34 @@ export function AnalystTargets({ financials }: Props) {
                 )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-none">
-                    <span className="text-xs leading-none text-muted-foreground">
-                        Lowest analyst target
-                    </span>
+                <div className="flex flex-col gap-1 p-3 bg-paper rounded-[var(--radius-surface-inner)]">
+                    <span className="text-xs leading-none text-ink/60">Lowest analyst target</span>
                     <span
                         className={cn(
                             'text-sm font-semibold leading-tight',
-                            f?.targetLowPrice == null ? 'text-muted-foreground' : 'text-primary'
+                            f?.targetLowPrice == null ? 'text-ink/60' : 'text-ink'
                         )}
                     >
                         {fmtPrice(f?.targetLowPrice)}
                     </span>
                 </div>
-                <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-none">
-                    <span className="text-xs leading-none text-muted-foreground">
-                        Average analyst target
-                    </span>
+                <div className="flex flex-col gap-1 p-3 bg-paper rounded-[var(--radius-surface-inner)]">
+                    <span className="text-xs leading-none text-ink/60">Average analyst target</span>
                     <span
                         className={cn(
                             'text-sm font-semibold leading-tight',
-                            f?.targetMeanPrice == null ? 'text-muted-foreground' : 'text-primary'
+                            f?.targetMeanPrice == null ? 'text-ink/60' : 'text-ink'
                         )}
                     >
                         {fmtPrice(f?.targetMeanPrice)}
                     </span>
                 </div>
-                <div className="flex flex-col gap-1 p-3 bg-muted/40 rounded-none">
-                    <span className="text-xs leading-none text-muted-foreground">
-                        Highest analyst target
-                    </span>
+                <div className="flex flex-col gap-1 p-3 bg-paper rounded-[var(--radius-surface-inner)]">
+                    <span className="text-xs leading-none text-ink/60">Highest analyst target</span>
                     <span
                         className={cn(
                             'text-sm font-semibold leading-tight',
-                            f?.targetHighPrice == null ? 'text-muted-foreground' : 'text-primary'
+                            f?.targetHighPrice == null ? 'text-ink/60' : 'text-ink'
                         )}
                     >
                         {fmtPrice(f?.targetHighPrice)}

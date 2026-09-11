@@ -16,18 +16,16 @@ export function MetricRow({ label, value, rawValue, metricKey, helper, context }
     const hasEvaluation = evaluation && evaluation.verdict !== 'N/A'
 
     const getColor = () => {
-        if (isNA) return 'text-muted-foreground'
-        if (!evaluation) return 'text-primary'
+        if (isNA) return 'text-ink/60'
+        if (!evaluation) return 'text-ink'
         return qualityToken(evaluation.quality)
     }
 
     return (
-        <div className="flex items-start justify-between gap-3 border-t border-border/60 py-2 first:border-t-0 first:pt-0">
+        <div className="flex items-start justify-between gap-3 border-t border-ink/10 py-2 first:border-t-0 first:pt-0">
             <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-md leading-tight text-muted-foreground">{label}</span>
-                {help && (
-                    <span className="text-xs leading-tight text-muted-foreground/70">{help}</span>
-                )}
+                <span className="text-md leading-tight text-ink/60">{label}</span>
+                {help && <span className="text-xs leading-tight text-ink/45">{help}</span>}
             </div>
             <div className="flex shrink-0 flex-col items-end text-right gap-1">
                 <span className={cn('text-md font-semibold leading-tight', getColor())}>

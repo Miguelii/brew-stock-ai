@@ -35,7 +35,9 @@ export function Parallax({ children, className, speed = 10 }: Props) {
 
     return (
         <div ref={ref} className={className}>
-            <motion.div style={{ y }}>{children}</motion.div>
+            <motion.div className="h-full" style={{ y }}>
+                {children}
+            </motion.div>
         </div>
     )
 }

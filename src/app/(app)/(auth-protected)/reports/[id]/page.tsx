@@ -1,11 +1,8 @@
 // oxlint-disable import/max-dependencies
 import type { Metadata } from 'next'
-import { ArrowLeftIcon } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { ReportAnalysisCard } from '@/modules/report-view/report-analysis-card'
 import { ReportSentimentCard } from '@/modules/report-view/report-sentiment-card'
-import { ReportExport } from '@/modules/report-view/report-export'
+import { ReportHero } from '@/modules/report-view/report-hero'
 import { notFound } from 'next/navigation'
 import { cache, Suspense } from 'react'
 import type { ReportDTO } from '@/types/ReportDTO'
@@ -113,87 +110,62 @@ export default async function ReportsIdPage(props: Props) {
                     { name: report.stock, url: META_URL },
                 ]}
             />
-            <main id="main" className="main-container-lg">
-                <div className="flex flex-col gap-6">
-                    <Link href="/reports" prefetch={false} className="w-fit">
-                        <Button variant="outline" size="sm" className="rounded-none">
-                            <ArrowLeftIcon />
-                            Back
-                        </Button>
-                    </Link>
-
-                    <div className="flex flex-col gap-6 md:gap-0 items-start md:flex-row w-full justify-between md:items-center">
-                        <div className="space-y-3">
-                            {reportTypeLabel && (
-                                <span
-                                    data-testid="report-type-badge"
-                                    className="inline-flex items-center rounded px-2 py-1 text-xs font-semibold bg-accent-blue-light text-accent-blue"
-                                >
-                                    {reportTypeLabel}
-                                </span>
-                            )}
-                            <h1
-                                data-testid="report-ticker-heading"
-                                className="text-2xl font-bold tracking-tight text-accent-blue font-mono"
-                            >
-                                {report.stock}
-                            </h1>
-                            <p className="text-sm text-muted-foreground">
-                                Fundamental Analysis &amp; Sentiment Report
-                            </p>
-                        </div>
-                        <ReportExport reportId={report.id} />
-                    </div>
-                </div>
+            {/* The hero is full-bleed under the fixed header, so it cancels its spacer. */}
+            <main id="main" className="-mt-20">
+                <ReportHero report={report} typeLabel={reportTypeLabel} />
 
                 <ReportSectionNav />
 
-                <section id="overview" data-testid="report-section-overview">
-                    <div className="flex flex-col md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
-                        <ReportTldrCard report={report} />
-                        <ReportSentimentCard report={report} />
+                <div data-tone="paper" className="bg-tone text-tone-ink">
+                    <div className="section-shell flex flex-col gap-6 pt-8 pb-20 lg:pb-30">
+                        <section id="overview" data-testid="report-section-overview">
+                            <div className="flex flex-col md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
+                                <ReportTldrCard report={report} />
+                                <ReportSentimentCard report={report} />
+                            </div>
+                        </section>
+
+                        <section id="market-outlook" data-testid="report-section-market-outlook">
+                            <ReportMarketOutlookCard
+                                financials={stockData?.financials ?? null}
+                                fundamentals={stockData?.fundamentals ?? null}
+                                ticker={stockTicker}
+                            />
+                        </section>
+
+                        <section id="key-metrics" data-testid="report-section-key-metrics">
+                            <ReportFinancialsCard
+                                financials={stockData?.financials ?? null}
+                                fundamentals={stockData?.fundamentals ?? null}
+                            />
+                        </section>
+
+                        <section id="analysis" data-testid="report-section-analysis">
+                            <ReportAnalysisCard report={report} />
+                        </section>
+
+                        <section id="sig-dev" data-testid="report-section-sig-dev">
+                            <ReportSigDev
+                                headline={stockData?.sig_dev?.headline}
+                                date={stockData?.sig_dev?.date}
+                            />
+                        </section>
+
+                        <section id="latest-news" data-testid="report-section-latest-news">
+                            <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
+                                <ReportLatestNewsServer ticker={stockTicker} />
+                            </Suspense>
+                        </section>
+
+                        <section id="media-mentions" data-testid="report-section-media-mentions">
+                            <ReportMediaMentions news={stockData?.reports ?? []} />
+                        </section>
+
+                        <section id="sector-scores" data-testid="report-section-sector-scores">
+                            <ReportSectorScores scores={stockData?.scores ?? null} />
+                        </section>
                     </div>
-                </section>
-
-                <section id="market-outlook" data-testid="report-section-market-outlook">
-                    <ReportMarketOutlookCard
-                        financials={stockData?.financials ?? null}
-                        fundamentals={stockData?.fundamentals ?? null}
-                        ticker={stockTicker}
-                    />
-                </section>
-
-                <section id="key-metrics" data-testid="report-section-key-metrics">
-                    <ReportFinancialsCard
-                        financials={stockData?.financials ?? null}
-                        fundamentals={stockData?.fundamentals ?? null}
-                    />
-                </section>
-
-                <section id="analysis" data-testid="report-section-analysis">
-                    <ReportAnalysisCard report={report} />
-                </section>
-
-                <section id="sig-dev" data-testid="report-section-sig-dev">
-                    <ReportSigDev
-                        headline={stockData?.sig_dev?.headline}
-                        date={stockData?.sig_dev?.date}
-                    />
-                </section>
-
-                <section id="latest-news" data-testid="report-section-latest-news">
-                    <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
-                        <ReportLatestNewsServer ticker={stockTicker} />
-                    </Suspense>
-                </section>
-
-                <section id="media-mentions" data-testid="report-section-media-mentions">
-                    <ReportMediaMentions news={stockData?.reports ?? []} />
-                </section>
-
-                <section id="sector-scores" data-testid="report-section-sector-scores">
-                    <ReportSectorScores scores={stockData?.scores ?? null} />
-                </section>
+                </div>
             </main>
         </>
     )

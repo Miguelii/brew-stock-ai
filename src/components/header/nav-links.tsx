@@ -15,7 +15,7 @@ export function NavLinks({ links }: Props) {
     const pathname = usePathname()
 
     return (
-        <ul className="flex h-10 items-center gap-1 rounded-full bg-card px-2.5">
+        <ul className="flex h-10 items-center gap-1 rounded-full bg-card px-2.5 border border-ink/10">
             {links.map((link) => {
                 const isActive = pathname.startsWith(link.href)
 

@@ -42,9 +42,9 @@ export function ReportSectorScores({ scores }: Props) {
 
     return (
         <Card className="h-fit">
-            <CardHeader className="border-b">
-                <CardTitle className="font-semibold">How It Compares</CardTitle>
-                <p className="text-xs text-muted-foreground">
+            <CardHeader className="border-b-2 border-ink/8 pb-4">
+                <CardTitle className="display text-2xl">How It Compares</CardTitle>
+                <p className="text-xs text-ink/60">
                     How this company stacks up against others in the same sector (scale 0 to 1,
                     higher is better)
                 </p>
@@ -69,29 +69,29 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
         <div className="flex flex-col gap-1.5">
             <div className="flex flex-col gap-0.5">
                 <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-primary">{score.label}</span>
+                    <span className="text-sm font-semibold text-ink">{score.label}</span>
                     <span className="text-sm shrink-0">
                         {isNA ? (
-                            <span className="text-muted-foreground">N/A</span>
+                            <span className="text-ink/60">N/A</span>
                         ) : (
-                            <span className="font-semibold text-primary">
+                            <span className="font-semibold text-ink">
                                 {fmtNum(score.companyScore)}
                             </span>
                         )}
-                        <span className="text-muted-foreground font-normal">
+                        <span className="text-ink/60 font-normal">
                             {' '}
                             vs {fmtNum(score.sectorAvg)}
                         </span>
                     </span>
                 </div>
-                <span className="text-xs text-muted-foreground">{score.description}</span>
+                <span className="text-xs text-ink/60">{score.description}</span>
             </div>
 
             {/* Track */}
             <div
                 className={cn(
                     'relative h-3 rounded-full overflow-hidden',
-                    isNA ? 'bg-muted' : 'bg-primary/20'
+                    isNA ? 'bg-ink/8' : 'bg-ink/15'
                 )}
             >
                 {isNA ? (
@@ -104,7 +104,7 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
                     />
                 ) : (
                     <div
-                        className="absolute inset-y-0 left-0 rounded-full transition-all duration-500 bg-accent-blue"
+                        className="absolute inset-y-0 left-0 rounded-full transition-all duration-500 bg-blue"
                         style={{ width: `${score.companyScore! * 100}%` }}
                     />
                 )}
@@ -112,7 +112,7 @@ function ScoreRowItem({ score }: { score: ScoreRow }) {
                 {/* Sector avg tick — only render when sectorAvg is known */}
                 {score.sectorAvg !== null && (
                     <div
-                        className="absolute inset-y-0 w-0.5 bg-primary/20 z-10"
+                        className="absolute inset-y-0 w-0.5 bg-ink/15 z-10"
                         style={{ left: `${score.sectorAvg * 100}%` }}
                     />
                 )}
@@ -125,18 +125,18 @@ function ScoreLegend() {
     return (
         <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-1.5">
-                <div className="size-2.5 rounded-full bg-accent-blue" />
-                <span className="text-xs text-muted-foreground">This company</span>
+                <div className="size-2.5 rounded-full bg-blue" />
+                <span className="text-xs text-ink/60">This company</span>
             </div>
 
-            <span className="text-xs text-muted-foreground">|</span>
+            <span className="text-xs text-ink/60">|</span>
 
             <div className="flex items-center gap-1.5">
-                <div className="size-2.5 rounded-full bg-primary/30" />
-                <span className="text-xs text-muted-foreground">Sector average</span>
+                <div className="size-2.5 rounded-full bg-ink/25" />
+                <span className="text-xs text-ink/60">Sector average</span>
             </div>
 
-            <span className="text-xs text-muted-foreground">|</span>
+            <span className="text-xs text-ink/60">|</span>
 
             <div className="flex items-center gap-1.5">
                 <div
@@ -146,7 +146,7 @@ function ScoreLegend() {
                             'repeating-linear-gradient(45deg, #d1d5db 0px, #d1d5db 3px, transparent 3px, transparent 8px)',
                     }}
                 />
-                <span className="text-xs text-muted-foreground">Data not available</span>
+                <span className="text-xs text-ink/60">Data not available</span>
             </div>
         </div>
     )

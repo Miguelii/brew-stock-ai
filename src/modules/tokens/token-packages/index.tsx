@@ -60,7 +60,7 @@ export function TokenPackages({
                             key={pkg.id}
                             data-testid={`token-package-${pkg.id}`}
                             className={cn(
-                                'rounded-[var(--radius-surface)] relative flex flex-col gap-0 overflow-visible border-0 bg-card pt-0 text-ink shadow-none',
+                                'relative flex flex-col gap-0 overflow-visible border-0 bg-card pt-0 text-ink',
                                 pkg.highlight && 'ring-[3px] ring-ink'
                             )}
                         >

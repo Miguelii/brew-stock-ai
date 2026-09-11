@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 
 function SkeletonRow({ isLast }: { isLast: boolean }) {
     return (
-        <div className={cn('flex flex-col gap-2 px-4 py-3', !isLast && 'border-b border-border')}>
+        <div className={cn('flex flex-col gap-2 px-4 py-3', !isLast && 'border-b border-ink/10')}>
             <div className="flex items-center gap-2">
                 <Skeleton className="h-2 w-12" />
                 <Skeleton className="h-2 w-16" />
@@ -19,7 +19,7 @@ function SkeletonRow({ isLast }: { isLast: boolean }) {
 export function ReportLatestNewsCardSkeleton() {
     return (
         <Card className="h-fit overflow-hidden">
-            <CardHeader className="border-b">
+            <CardHeader className="border-b-2 border-ink/8 pb-4">
                 <Skeleton className="h-4 w-24" />
             </CardHeader>
             <CardContent className="p-0">

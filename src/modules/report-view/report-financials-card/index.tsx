@@ -21,8 +21,8 @@ export function ReportFinancialsCard({ financials, fundamentals }: Props) {
 
     return (
         <Card className="h-fit">
-            <CardHeader className="border-b">
-                <CardTitle className="font-semibold">Key Financial Metrics</CardTitle>
+            <CardHeader className="border-b-2 border-ink/8 pb-4">
+                <CardTitle className="display text-2xl">Key Financial Metrics</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

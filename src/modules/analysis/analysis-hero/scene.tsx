@@ -13,14 +13,14 @@ export function AnalysisHeroScene() {
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
             <Parallax
                 speed={10}
-                className="absolute inset-x-0 bottom-[-6%] h-[clamp(150px,24vh,270px)]"
+                className="absolute inset-x-0 bottom-[-6%] h-[clamp(110px,15vh,180px)]"
             >
                 <Hills variant="back" fill="var(--navy-deep)" className="h-full" />
             </Parallax>
 
             <Parallax
                 speed={14}
-                className="absolute inset-x-0 bottom-[-8%] h-[clamp(110px,17vh,200px)]"
+                className="absolute inset-x-0 bottom-[-8%] h-[clamp(70px,9vh,115px)]"
             >
                 <Hills variant="front" fill="var(--blue)" className="h-full" />
             </Parallax>

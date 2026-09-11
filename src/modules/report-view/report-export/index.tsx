@@ -31,9 +31,9 @@ export function ReportExport({ reportId }: Props) {
     return (
         <Button
             data-testid="export-pdf-button"
-            variant="outline"
-            size="lg"
-            className="cursor-pointer bg-card rounded-none w-full md:w-fit md:min-w-31.25"
+            variant="white"
+            size="xl"
+            className="w-full shrink-0 md:w-fit md:min-w-45 h-12"
             onClick={() => exportMutation.mutate({ id: reportId })}
             disabled={exportMutation.isPending}
         >

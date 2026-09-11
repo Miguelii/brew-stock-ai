@@ -56,7 +56,7 @@ export function TableCard({ reports, isLoading }: Props) {
                 )}
                 {isEmpty && (
                     <Card className="pt-0">
-                        <CardContent className="h-32 flex items-center justify-center text-sm text-muted-foreground">
+                        <CardContent className="flex h-32 items-center justify-center text-sm text-ink/60">
                             No reports found.
                         </CardContent>
                     </Card>
@@ -68,10 +68,8 @@ export function TableCard({ reports, isLoading }: Props) {
                             <CardContent className="p-4 flex flex-col gap-3">
                                 <div className="flex items-start justify-between gap-2">
                                     <div className="flex flex-col gap-0.5">
-                                        <span className="font-semibold text-foreground uppercase tracking-wide">
-                                            {report.stock}
-                                        </span>
-                                        <span className="text-xs text-muted-foreground">
+                                        <span className="display text-xl">{report.stock}</span>
+                                        <span className="text-xs text-ink/60">
                                             {
                                                 PROMPT_OPTIONS.find((o) => o.type === report.type)
                                                     ?.label
@@ -81,7 +79,7 @@ export function TableCard({ reports, isLoading }: Props) {
                                     <StatusBadge status={report.status} />
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-xs text-muted-foreground">
+                                    <span className="text-xs text-ink/60">
                                         {parseReportDate(report.created_at)}
                                     </span>
                                     <ActionCell status={report.status} report={report} />
@@ -99,10 +97,7 @@ function ReportsLoading() {
         <>
             {Array.from({ length: 4 }).map((_, i) => (
                 <TableRow key={`reports-loading-${i}`}>
-                    <TableCell
-                        colSpan={5}
-                        className="w-full h-12 text-center text-muted-foreground"
-                    >
+                    <TableCell colSpan={5} className="h-12 w-full text-center text-ink/60">
                         <Skeleton className="w-full h-12" />
                     </TableCell>
                 </TableRow>
@@ -118,7 +113,7 @@ function ReportsList({ reports }: Pick<Props, 'reports'>) {
             {reports?.map((report) => (
                 <TableRow key={report.id}>
                     <TableCell className="pl-5 py-4 max-w-37.5">
-                        <span className="text-wrap">{report.stock}</span>
+                        <span className="display text-xl">{report.stock}</span>
                     </TableCell>
                     <TableCell className="py-4">
                         {PROMPT_OPTIONS.find((o) => o.type === report.type)?.label}
@@ -141,7 +136,7 @@ function ReportsList({ reports }: Pick<Props, 'reports'>) {
 function NoReportsState() {
     return (
         <TableRow>
-            <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+            <TableCell colSpan={5} className="h-32 text-center text-ink/60">
                 No reports found.
             </TableCell>
         </TableRow>
@@ -165,21 +160,27 @@ function ReportsTableHeader() {
 function StatusBadge({ status }: { status: ReportStatus }) {
     if (status === ReportStatus.COMPLETED) {
         return (
-            <Badge className="py-3 border border-accent-green/25 bg-accent-green-light text-accent-green font-bold hover:bg-accent-green/10 w-32.5 md:w-30">
+            <Badge
+                data-tone="green"
+                className="w-32.5 rounded-[min(var(--radius-md),12px)] border-ink/05 bg-tone-soft py-2.5 font-bold text-tone-deep hover:bg-tone-soft md:w-30"
+            >
                 Completed
             </Badge>
         )
     }
     if (status === ReportStatus.GENERATING) {
         return (
-            <Badge className="py-3 gap-1.5 border border-accent-blue/25 bg-accent-blue-light text-accent-blue font-bold hover:bg-accent-blue/10 w-32.5 md:w-30">
+            <Badge
+                data-tone="blue"
+                className="w-32.5 gap-1.5 rounded-[min(var(--radius-md),12px)] border-ink/05 bg-tone-soft py-2.5 font-bold text-tone-deep hover:bg-tone-soft md:w-30"
+            >
                 <Loader2 className="size-3 animate-spin" />
                 Generating...
             </Badge>
         )
     }
     return (
-        <Badge className="py-3 border border-destructive/25 bg-destructive/10 text-destructive font-bold hover:bg-destructive/10 w-32.5 md:w-30">
+        <Badge className="w-32.5 rounded-[min(var(--radius-md),12px)] border-ink/05 bg-destructive/10 py-2.5 font-bold text-destructive hover:bg-destructive/10 md:w-30">
             Failed
         </Badge>
     )
@@ -189,11 +190,7 @@ function ActionCell({ status, report }: { status: ReportStatus; report: ReportLi
     if (status === ReportStatus.COMPLETED) {
         return (
             <Link className="contents" href={`/reports/${report.id}`} prefetch={false}>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="cursor-pointer bg-card rounded-none w-32.5 md:w-fit"
-                >
+                <Button variant="ink" size="sm" className="h-9 w-32.5 px-4 md:w-fit">
                     View Report
                 </Button>
             </Link>

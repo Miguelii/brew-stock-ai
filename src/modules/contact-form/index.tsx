@@ -100,7 +100,9 @@ export function ContactForm({ name, email }: Props) {
                 <Button
                     type="submit"
                     disabled={mutation.isPending}
-                    className="w-full cursor-pointer"
+                    size="xl"
+                    variant="default"
+                    className="w-full cursor-pointer group h-12"
                 >
                     {mutation.isPending ? <Loader2Icon className="animate-spin w-3 h-3" /> : null}
                     Send message

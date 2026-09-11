@@ -38,7 +38,7 @@ export function PublicHeader() {
                         initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, ease: EASE }}
-                        className="pointer-events-auto flex h-10 items-center rounded-full bg-card px-5"
+                        className="pointer-events-auto flex h-10 items-center rounded-full bg-card px-5 border border-ink/10"
                     >
                         <Logo />
                     </m.div>
@@ -48,7 +48,7 @@ export function PublicHeader() {
                             initial={{ opacity: 0, y: -6 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.08, ease: EASE }}
-                            className="pointer-events-auto hidden h-10 items-center gap-1 rounded-full bg-card px-2.5 md:flex"
+                            className="pointer-events-auto hidden h-10 items-center gap-1 rounded-full bg-card px-2.5 md:flex border border-ink/10"
                         >
                             {NAV_LINKS.map(({ label, href }) => {
                                 const isActive = pathname.startsWith(href)
@@ -80,7 +80,7 @@ export function PublicHeader() {
                             <Link href="/analysis" prefetch={false} className="hidden md:block">
                                 <Button
                                     variant="tangerine"
-                                    className="h-14 px-7 text-base font-bold"
+                                    className="h-14 px-7 text-base font-bold border border-ink/10"
                                 >
                                     Start analysis
                                 </Button>
@@ -90,7 +90,7 @@ export function PublicHeader() {
                                 type="button"
                                 aria-expanded={menuOpen}
                                 onClick={() => setMenuOpen((v) => !v)}
-                                className="flex size-12 items-center justify-center rounded-full bg-card text-ink transition-[filter] duration-300 ease-out-strong hover:brightness-92 md:hidden"
+                                className="flex size-12 items-center justify-center rounded-full bg-card text-ink transition-[filter] duration-300 ease-out-strong hover:brightness-92 md:hidden border border-ink/10"
                                 aria-label="Toggle menu"
                             >
                                 <AnimatePresence mode="wait" initial={false}>

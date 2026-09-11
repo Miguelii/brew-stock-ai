@@ -114,56 +114,81 @@ export default async function ReportsIdPage(props: Props) {
             <main id="main" className="-mt-20">
                 <ReportHero report={report} typeLabel={reportTypeLabel} />
 
-                <ReportSectionNav />
-
                 <div data-tone="paper" className="bg-tone text-tone-ink">
-                    <div className="section-shell flex flex-col gap-6 pt-8 pb-20 lg:pb-30">
-                        <section id="overview" data-testid="report-section-overview">
-                            <div className="flex flex-col md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
-                                <ReportTldrCard report={report} />
-                                <ReportSentimentCard report={report} />
+                    {/*
+                     * Opaque strip pinned to the top of the viewport so scrolled
+                     * content never shows between the floating header pills. Below
+                     * xl the section nav bar already does this job.
+                     */}
+                    <div
+                        aria-hidden="true"
+                        className="sticky top-0 z-30 hidden h-[72px] bg-tone xl:block"
+                    />
+
+                    <div className="section-shell pb-20 lg:pb-30">
+                        <div className="flex flex-col gap-8 xl:grid xl:grid-cols-[200px_1fr] xl:gap-10">
+                            <ReportSectionNav />
+
+                            {/* min-w-0 keeps the chart and the metric tables from
+                                blowing the column past its grid fraction. */}
+                            <div className="flex min-w-0 flex-col gap-6">
+                                <section id="overview" data-testid="report-section-overview">
+                                    <div className="flex flex-col md:grid md:grid-cols-[1fr_250px] lg:grid-cols-[1fr_350px] gap-6">
+                                        <ReportTldrCard report={report} />
+                                        <ReportSentimentCard report={report} />
+                                    </div>
+                                </section>
+
+                                <section
+                                    id="market-outlook"
+                                    data-testid="report-section-market-outlook"
+                                >
+                                    <ReportMarketOutlookCard
+                                        financials={stockData?.financials ?? null}
+                                        fundamentals={stockData?.fundamentals ?? null}
+                                        ticker={stockTicker}
+                                    />
+                                </section>
+
+                                <section id="key-metrics" data-testid="report-section-key-metrics">
+                                    <ReportFinancialsCard
+                                        financials={stockData?.financials ?? null}
+                                        fundamentals={stockData?.fundamentals ?? null}
+                                    />
+                                </section>
+
+                                <section id="analysis" data-testid="report-section-analysis">
+                                    <ReportAnalysisCard report={report} />
+                                </section>
+
+                                <section id="sig-dev" data-testid="report-section-sig-dev">
+                                    <ReportSigDev
+                                        headline={stockData?.sig_dev?.headline}
+                                        date={stockData?.sig_dev?.date}
+                                    />
+                                </section>
+
+                                <section id="latest-news" data-testid="report-section-latest-news">
+                                    <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
+                                        <ReportLatestNewsServer ticker={stockTicker} />
+                                    </Suspense>
+                                </section>
+
+                                <section
+                                    id="media-mentions"
+                                    data-testid="report-section-media-mentions"
+                                >
+                                    <ReportMediaMentions news={stockData?.reports ?? []} />
+                                </section>
+
+                                <section
+                                    id="sector-scores"
+                                    data-testid="report-section-sector-scores"
+                                >
+                                    <ReportSectorScores scores={stockData?.scores ?? null} />
+                                </section>
                             </div>
-                        </section>
-
-                        <section id="market-outlook" data-testid="report-section-market-outlook">
-                            <ReportMarketOutlookCard
-                                financials={stockData?.financials ?? null}
-                                fundamentals={stockData?.fundamentals ?? null}
-                                ticker={stockTicker}
-                            />
-                        </section>
-
-                        <section id="key-metrics" data-testid="report-section-key-metrics">
-                            <ReportFinancialsCard
-                                financials={stockData?.financials ?? null}
-                                fundamentals={stockData?.fundamentals ?? null}
-                            />
-                        </section>
-
-                        <section id="analysis" data-testid="report-section-analysis">
-                            <ReportAnalysisCard report={report} />
-                        </section>
-
-                        <section id="sig-dev" data-testid="report-section-sig-dev">
-                            <ReportSigDev
-                                headline={stockData?.sig_dev?.headline}
-                                date={stockData?.sig_dev?.date}
-                            />
-                        </section>
-
-                        <section id="latest-news" data-testid="report-section-latest-news">
-                            <Suspense fallback={<ReportLatestNewsCardSkeleton />}>
-                                <ReportLatestNewsServer ticker={stockTicker} />
-                            </Suspense>
-                        </section>
-
-                        <section id="media-mentions" data-testid="report-section-media-mentions">
-                            <ReportMediaMentions news={stockData?.reports ?? []} />
-                        </section>
-
-                        <section id="sector-scores" data-testid="report-section-sector-scores">
-                            <ReportSectorScores scores={stockData?.scores ?? null} />
-                        </section>
+                        </div>
                     </div>
                 </div>
             </main>

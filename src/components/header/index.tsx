@@ -29,7 +29,7 @@ type Props = {
 export async function Header({ userPromise }: Props) {
     const user = await userPromise
 
-    const navLinks = user ? [...PUBLIC_NAV_LINKS, ...AUTH_NAV_LINKS] : PUBLIC_NAV_LINKS
+    const navLinks = user ? [...PUBLIC_NAV_LINKS, ...AUTH_NAV_LINKS] : []
 
     return (
         <>

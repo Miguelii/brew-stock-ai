@@ -26,7 +26,7 @@ export function Hero() {
 
                 <div className="mt-9 flex w-full flex-col items-stretch gap-3 sm:w-fit sm:flex-row sm:items-center">
                     <Link href="/analysis" prefetch={false} className="contents">
-                        <Button size="xl" variant="ink" className="group">
+                        <Button size="xl" variant="tangerine" className="group">
                             Start free analysis
                             <ArrowUpRight className="size-5 transition-transform duration-300 ease-out-strong group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
                         </Button>

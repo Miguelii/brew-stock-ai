@@ -14,6 +14,8 @@ type Props = {
 export function NavLinks({ links }: Props) {
     const pathname = usePathname()
 
+    if (links?.length === 0) return
+
     return (
         <ul className="flex h-10 items-center gap-1 rounded-full bg-card px-2.5 border border-ink/10">
             {links.map((link) => {
@@ -43,7 +45,10 @@ export function LoginLink() {
 
     return (
         <Link prefetch={false} href={`${AUTH_PAGE_PATH}?returnTo=${encodeURIComponent(pathname)}`}>
-            <Button variant="tangerine" className="h-14 px-7 text-base font-bold">
+            <Button
+                variant="tangerine"
+                className="h-14 px-7 text-base font-bold border border-ink/10"
+            >
                 Sign In
             </Button>
         </Link>

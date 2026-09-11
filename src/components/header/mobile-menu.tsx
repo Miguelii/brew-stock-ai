@@ -41,7 +41,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                             aria-label="Open menu"
                             onClick={() => setOpen(true)}
                             className={cn(
-                                'flex size-12 items-center justify-center rounded-full bg-card',
+                                'flex size-12 items-center justify-center rounded-full bg-card border border-ink/10',
                                 'text-ink transition-[filter] duration-300 ease-out-strong hover:brightness-92'
                             )}
                         >

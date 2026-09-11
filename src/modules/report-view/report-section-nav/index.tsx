@@ -43,41 +43,44 @@ export function ReportSectionNav({ className }: Props) {
 
     useUpdateSliding(activeId, SECTIONS, buttonRefs, setIndicator)
 
-    // The bar runs to the top of the viewport, not just to the header's lower edge,
-    // so scrolled content never shows between the floating header pills.
     return (
-        <div className={cn('sticky top-0 z-40 bg-paper pt-[72px] pb-3', className)}>
-            <div className="section-shell">
-                {/* Mobile: dropdown. Its testids stay distinct from the desktop row. */}
-                <div className="xl:hidden">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger className="group flex h-12 w-full items-center gap-2 rounded-full bg-card px-5 text-[15px] font-bold text-ink">
-                            <span>{activeLabel}</span>
-                            <ChevronDown className="ml-auto size-4 text-ink/45 transition-transform duration-200 group-data-popup-open:rotate-180" />
-                        </DropdownMenuTrigger>
+        <aside className={cn('sticky top-0 z-40 xl:top-[88px] xl:self-start', className)}>
+            {/*
+             * Mobile keeps the dropdown in a bar that reaches the top of the viewport,
+             * so content never shows between the floating header pills.
+             */}
+            <div className="-mx-5 bg-paper px-5 pt-[88px] pb-3 sm:-mx-8 sm:px-8 xl:hidden">
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="group flex h-12 w-full items-center gap-2 rounded-full bg-card px-5 text-[15px] font-bold text-ink border border-ink/10">
+                        <span>{activeLabel}</span>
+                        <ChevronDown className="ml-auto size-4 text-ink/45 transition-transform duration-200 group-data-popup-open:rotate-180" />
+                    </DropdownMenuTrigger>
 
-                        <DropdownMenuContent className="rounded-[var(--radius-surface-inner)] border-0 bg-card p-1.5">
-                            {SECTIONS.map(({ id, label }) => (
-                                <DropdownMenuItem
-                                    key={id}
-                                    data-testid={`nav-mobile-${id}`}
-                                    onClick={() => scrollTo(id)}
-                                    className={cn(
-                                        'w-full rounded-full px-4 py-2.5 text-left text-[15px] font-bold transition-colors',
-                                        activeId === id
-                                            ? 'bg-ink text-paper'
-                                            : 'text-ink hover:bg-ink/7'
-                                    )}
-                                >
-                                    {label}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+                    <DropdownMenuContent className="rounded-[var(--radius-surface-inner)] border border-ink/10 bg-card p-1.5">
+                        {SECTIONS.map(({ id, label }) => (
+                            <DropdownMenuItem
+                                key={id}
+                                data-testid={`nav-mobile-${id}`}
+                                onClick={() => scrollTo(id)}
+                                className={cn(
+                                    'w-full rounded-full px-4 py-2.5 text-left text-[15px] font-bold transition-colors',
+                                    activeId === id
+                                        ? 'bg-ink text-paper'
+                                        : 'text-ink hover:bg-ink/7'
+                                )}
+                            >
+                                {label}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
 
-                {/* Desktop: pill row with a sliding pill behind the active label. */}
-                <nav className="relative hidden w-fit rounded-full bg-card p-1.5 xl:flex xl:flex-wrap">
+            {/* Desktop: vertical list with a pill sliding between the items. */}
+            <div className="hidden xl:block">
+                <span className="eyebrow px-4 text-ink/45">On this page</span>
+
+                <nav className="relative mt-3 flex flex-col gap-0.5">
                     {SECTIONS.map(({ id, label }, i) => (
                         <button
                             type="button"
@@ -88,7 +91,7 @@ export function ReportSectionNav({ className }: Props) {
                             }}
                             onClick={() => scrollTo(id)}
                             className={cn(
-                                'relative z-10 flex h-10 shrink-0 items-center rounded-full px-4 text-sm font-bold transition-colors duration-250 ease-out-strong',
+                                'relative z-10 flex min-h-10 items-center rounded-[var(--radius-surface-inner)] px-4 py-2.5 text-left text-sm leading-snug font-bold transition-colors duration-250 ease-out-strong',
                                 activeId === id ? 'text-paper' : 'text-ink hover:text-blue'
                             )}
                         >
@@ -97,17 +100,12 @@ export function ReportSectionNav({ className }: Props) {
                     ))}
 
                     <span
-                        className="absolute rounded-full bg-ink transition-all duration-300 ease-out"
-                        style={{
-                            left: indicator.left,
-                            width: indicator.width,
-                            top: indicator.top,
-                            height: indicator.height,
-                        }}
+                        className="absolute inset-x-0 rounded-[var(--radius-surface-inner)] bg-ink transition-all duration-300 ease-out"
+                        style={{ top: indicator.top, height: indicator.height }}
                         aria-hidden
                     />
                 </nav>
             </div>
-        </div>
+        </aside>
     )
 }

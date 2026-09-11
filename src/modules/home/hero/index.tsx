@@ -19,7 +19,7 @@ export function Hero() {
             <div className="section-shell relative z-10">
                 <HeroHeadline lines={HERO_LINES} className="mt-7 text-amber-soft" />
 
-                <p className="mt-7 max-w-[52ch] text-lg leading-snug font-bold text-white">
+                <p className="mt-7 max-w-[52ch] text-lg leading-snug font-bold text-tone-ink">
                     Professional-level stock analysis covering the key numbers, market sentiment,
                     and price signals. All for less than a coffee ☕
                 </p>
@@ -43,7 +43,7 @@ export function Hero() {
                     {PRODUCT_STATS.map((stat) => (
                         <span
                             key={stat.label}
-                            className="eyebrow inline-flex items-center rounded-full bg-white/12 px-4 py-2 text-white"
+                            className="eyebrow inline-flex items-center rounded-full bg-tone-ink/12 px-4 py-2 text-tone-ink"
                         >
                             {stat.label}
                         </span>
@@ -59,7 +59,7 @@ export function Hero() {
                             <br />
                             preview
                         </h2>
-                        <span className="eyebrow shrink-0 rounded-full bg-white px-3 py-1.5 text-[11px] text-tangerine-deep">
+                        <span className="eyebrow shrink-0 rounded-full bg-card px-3 py-1.5 text-[11px] text-tangerine-deep">
                             Demo
                         </span>
                     </div>

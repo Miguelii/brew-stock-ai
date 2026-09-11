@@ -125,7 +125,7 @@ export function MobileMenu({ nav, isAuthenticated, avatar_url }: Props) {
                                 <Link
                                     href={AUTH_PAGE_PATH}
                                     prefetch={false}
-                                    className="flex w-full items-center justify-center rounded-full bg-tangerine px-4 py-3 text-base font-bold text-white transition-[filter] duration-300 ease-out-strong hover:brightness-92"
+                                    className="flex w-full items-center justify-center rounded-full bg-tangerine px-4 py-3 text-base font-bold text-on-brand transition-[filter] duration-300 ease-out-strong hover:brightness-92"
                                 >
                                     Login
                                 </Link>

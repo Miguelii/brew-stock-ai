@@ -29,6 +29,7 @@ type Props = {
 export async function Header({ userPromise }: Props) {
     const user = await userPromise
 
+    // If user its not logged in, we don't show any navigation on purpose
     const navLinks = user ? [...PUBLIC_NAV_LINKS, ...AUTH_NAV_LINKS] : []
 
     return (

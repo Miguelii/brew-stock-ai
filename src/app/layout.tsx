@@ -17,6 +17,7 @@ import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { GtmScript } from '@/components/scripts/gtm-script'
 import { TrpcContextProvider } from '@/_trpc/context/trpc-context.provider'
+import { MotionProvider } from '@/providers/motion-provider'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -135,13 +136,15 @@ export default function RootLayout({ children }: Props) {
             <GtmScript />
             <body className="min-h-screen flex flex-col">
                 <TrpcContextProvider>
-                    <WebSiteSchema />
-                    <WebApplicationSchema />
-                    <OrganizationSchema />
-                    <Toaster />
-                    <CookiePrompt />
-                    <div className="flex-1">{children}</div>
-                    <Footer />
+                    <MotionProvider>
+                        <WebSiteSchema />
+                        <WebApplicationSchema />
+                        <OrganizationSchema />
+                        <Toaster />
+                        <CookiePrompt />
+                        <div className="flex-1">{children}</div>
+                        <Footer />
+                    </MotionProvider>
                 </TrpcContextProvider>
                 <ServiceWorkerRegister />
             </body>

@@ -2,10 +2,7 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Reveal } from '@/components/motion/reveal'
-import { IconEngine, IconReport, IconTicker } from '@/components/scene/step-icons'
 import { STEPS } from '@/lib/analysis-content'
-
-const ICONS = [IconTicker, IconEngine, IconReport] as const
 
 export function HowItWorks() {
     return (
@@ -39,8 +36,8 @@ export function HowItWorks() {
                         </div>
 
                         <ol className="flex flex-col gap-8">
-                            {STEPS.map((step, i) => {
-                                const Icon = ICONS[i]
+                            {STEPS.map((step) => {
+                                const Icon = step.icon
 
                                 return (
                                     <li key={step.title} className="flex gap-5">

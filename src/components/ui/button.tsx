@@ -14,7 +14,7 @@ const buttonVariants = cva(
                 ink: 'bg-ink text-paper hover:brightness-92',
                 paper: 'bg-paper text-ink hover:brightness-92',
                 white: 'bg-card text-ink hover:brightness-92',
-                tangerine: 'bg-tangerine text-white hover:brightness-92',
+                tangerine: 'bg-tangerine text-on-brand hover:brightness-92',
                 tone: 'bg-tone text-tone-ink hover:brightness-92',
                 outline:
                     'border-border bg-card hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',

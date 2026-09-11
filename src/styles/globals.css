@@ -210,7 +210,12 @@ html.lenis body {
         scroll-behavior: auto !important;
     }
 
-    /* Long scroll-driven sections collapse to plain stacked content. */
+    /*
+     * Long scroll-driven sections collapse to plain stacked content. The components
+     * render one tree at every breakpoint and let these rules flatten it, so they
+     * never have to read the media query while rendering (which the server cannot
+     * do, and which would therefore break hydration).
+     */
     [data-scroll-scene] {
         height: auto !important;
     }
@@ -218,5 +223,35 @@ html.lenis body {
     [data-scroll-scene] [data-scroll-sticky] {
         position: static !important;
         height: auto !important;
+    }
+
+    /* The pinned track falls back to the swipeable row used on small screens. */
+    [data-scroll-track] {
+        width: auto !important;
+        overflow-x: auto !important;
+    }
+
+    /* The fanned deck falls back to a plain column. */
+    [data-stack-deck] {
+        display: flex !important;
+        height: auto !important;
+    }
+
+    [data-stack-card] {
+        position: static !important;
+    }
+
+    /*
+     * Every node motion writes an inline transform on. MotionProvider already lands
+     * animate and whileInView targets instantly, but it does not touch MotionValues
+     * bound straight to `style` (the scroll-scrubbed ones), and it cannot undo an
+     * `initial` offset on an element whose reveal has not fired yet. This
+     * declaration outranks the inline style either way, so nothing is left
+     * displaced.
+     */
+    [data-motion-transform],
+    [data-scroll-track],
+    [data-stack-card] {
+        transform: none !important;
     }
 }

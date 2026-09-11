@@ -5,7 +5,7 @@ import {
     EDUCATION_HUB_ARTICLES,
     EDUCATION_HUB_THEME_LABELS,
 } from '@/modules/education-hub/education-hub-articles'
-import { SectionHeader } from '@/components/section-header'
+import { SectionHeader } from '@/components/ui/section-header'
 
 const FEATURED_COUNT = 3
 

@@ -28,7 +28,7 @@ export function AnalysisHero({ children, companyName }: Props) {
                         </h1>
                     )}
 
-                    <div className="mt-5 max-w-[46ch] text-lg leading-snug font-bold text-white">
+                    <div className="mt-5 max-w-[46ch] text-lg leading-snug font-bold text-tone-ink">
                         <p>
                             Deep financial insights, market sentiment, and technical indicators. For
                             less than a coffee ☕
@@ -39,7 +39,7 @@ export function AnalysisHero({ children, companyName }: Props) {
                         {PRODUCT_STATS.map((stat) => (
                             <span
                                 key={stat.label}
-                                className="eyebrow inline-flex items-center rounded-full bg-white/12 px-4 py-2 text-white"
+                                className="eyebrow inline-flex items-center rounded-full bg-tone-ink/12 px-4 py-2 text-tone-ink"
                             >
                                 {stat.label}
                             </span>

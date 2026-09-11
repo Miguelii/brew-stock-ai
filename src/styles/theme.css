@@ -29,6 +29,13 @@
     --slate-soft: #e4e6ee;
     --slate-deep: #24283a;
 
+    /*
+     * Ink for anything sitting on a saturated brand surface (blue, navy, tangerine,
+     * green). Use this instead of a literal white so the contrast pair stays in one
+     * place: tone.css feeds it into --tone-ink for every dark tone.
+     */
+    --on-brand: #ffffff;
+
     /* Hairlines and muted text are always alpha over ink, never standalone greys. */
     --hairline: rgba(23, 24, 28, 0.1);
     --hairline-strong: rgba(23, 24, 28, 0.14);
@@ -87,6 +94,7 @@
 @theme inline {
     --color-paper: var(--paper);
     --color-ink: var(--ink);
+    --color-on-brand: var(--on-brand);
 
     --color-blue: var(--blue);
     --color-blue-soft: var(--blue-soft);
@@ -128,6 +136,14 @@
     --color-accent-green-light: var(--accent-green-light);
     --color-positive: var(--positive);
     --color-warning: var(--warning);
+
+    /*
+     * Deliberately no --font-heading here. It used to alias --font-sans, and the
+     * font-heading utility it generated sits in Tailwind's utilities layer, so it
+     * beat the .display class in the components layer. Re-adding the token would
+     * silently put every <CardTitle className="display"> back in Geist instead of
+     * Anton. Set the face with .display (or font-mono/font-sans) on the element.
+     */
 
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);

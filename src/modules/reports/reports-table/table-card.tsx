@@ -162,7 +162,7 @@ function StatusBadge({ status }: { status: ReportStatus }) {
         return (
             <Badge
                 data-tone="green"
-                className="w-32.5 rounded-[min(var(--radius-md),12px)] border-ink/05 bg-tone-soft py-2.5 font-bold text-tone-deep hover:bg-tone-soft md:w-30"
+                className="w-32.5 rounded-[min(var(--radius-md),12px)] border-ink/5 bg-tone-soft py-2.5 font-bold text-tone-deep hover:bg-tone-soft md:w-30"
             >
                 Completed
             </Badge>
@@ -172,7 +172,7 @@ function StatusBadge({ status }: { status: ReportStatus }) {
         return (
             <Badge
                 data-tone="blue"
-                className="w-32.5 gap-1.5 rounded-[min(var(--radius-md),12px)] border-ink/05 bg-tone-soft py-2.5 font-bold text-tone-deep hover:bg-tone-soft md:w-30"
+                className="w-32.5 gap-1.5 rounded-[min(var(--radius-md),12px)] border-ink/5 bg-tone-soft py-2.5 font-bold text-tone-deep hover:bg-tone-soft md:w-30"
             >
                 <Loader2 className="size-3 animate-spin" />
                 Generating...
@@ -180,7 +180,7 @@ function StatusBadge({ status }: { status: ReportStatus }) {
         )
     }
     return (
-        <Badge className="w-32.5 rounded-[min(var(--radius-md),12px)] border-ink/05 bg-destructive/10 py-2.5 font-bold text-destructive hover:bg-destructive/10 md:w-30">
+        <Badge className="w-32.5 rounded-[min(var(--radius-md),12px)] border-ink/5 bg-destructive/10 py-2.5 font-bold text-destructive hover:bg-destructive/10 md:w-30">
             Failed
         </Badge>
     )

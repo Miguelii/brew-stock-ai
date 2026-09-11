@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef, type ReactNode } from 'react'
 
 type Props = {
@@ -10,10 +10,14 @@ type Props = {
 /**
  * The hero card tips back and shrinks as the page scrolls past it, which hands the
  * next section the reader's attention instead of just scrolling away.
+ *
+ * The tilt is scrubbed by scroll rather than animated, so MotionProvider does not
+ * cover it: the transform is dropped by the [data-motion-transform] rule in
+ * globals.css instead. Branching on the preference here would render a different
+ * style attribute on the server than on the client.
  */
 export function HeroCard({ children }: Props) {
     const ref = useRef<HTMLDivElement>(null)
-    const reduced = useReducedMotion()
 
     const { scrollYProgress } = useScroll({
         target: ref,
@@ -27,7 +31,8 @@ export function HeroCard({ children }: Props) {
     return (
         <div ref={ref} className="w-full max-w-[440px] [perspective:1200px]">
             <motion.div
-                style={reduced ? undefined : { rotateX, scale, y, transformStyle: 'preserve-3d' }}
+                data-motion-transform
+                style={{ rotateX, scale, y, transformStyle: 'preserve-3d' }}
                 className="surface flex min-h-[300px] flex-col gap-6 bg-tangerine p-7"
             >
                 {children}

@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { SectionHeader } from '@/components/section-header'
+import { SectionHeader } from '@/components/ui/section-header'
 import type { TokenPackage } from '@/types/TokenPackage'
 
 const TokenPackages = dynamic(

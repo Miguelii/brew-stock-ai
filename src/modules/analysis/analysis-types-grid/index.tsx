@@ -1,6 +1,6 @@
 import { Reveal } from '@/components/motion/reveal'
 import { cn } from '@/lib/utils'
-import { SectionHeader } from '@/components/section-header'
+import { SectionHeader } from '@/components/ui/section-header'
 import { ANALYSIS_TYPES } from '@/lib/analysis-content'
 
 export function AnalysisTypesGrid() {

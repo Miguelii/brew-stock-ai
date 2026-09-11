@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 import { EASE } from '@/components/motion/constants'
 
@@ -17,14 +17,15 @@ type Props = {
  * Translate-only scroll reveal: the element is always visible and merely settles
  * into place. Deliberately has no opacity fade, which is what separates this from
  * the generic "fade up" every landing page ships with.
+ *
+ * Reduced motion is handled by MotionProvider, which makes the travel land instantly
+ * instead of tweening. Branching on the preference here would render a different
+ * element on the server than on the client.
  */
 export function Reveal({ children, className, delay = 0, distance = 40 }: Props) {
-    const reduced = useReducedMotion()
-
-    if (reduced) return <div className={className}>{children}</div>
-
     return (
         <motion.div
+            data-motion-transform
             className={className}
             initial={{ y: distance }}
             whileInView={{ y: 0 }}

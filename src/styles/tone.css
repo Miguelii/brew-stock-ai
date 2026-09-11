@@ -8,7 +8,7 @@
     --tone: var(--blue);
     --tone-soft: var(--blue-soft);
     --tone-deep: var(--blue-deep);
-    --tone-ink: #ffffff;
+    --tone-ink: var(--on-brand);
 }
 
 [data-tone='paper'] {
@@ -22,21 +22,21 @@
     --tone: var(--blue);
     --tone-soft: var(--blue-soft);
     --tone-deep: var(--blue-deep);
-    --tone-ink: #ffffff;
+    --tone-ink: var(--on-brand);
 }
 
 [data-tone='navy'] {
     --tone: var(--navy);
     --tone-soft: var(--navy-soft);
     --tone-deep: var(--navy-deep);
-    --tone-ink: #ffffff;
+    --tone-ink: var(--on-brand);
 }
 
 [data-tone='green'] {
     --tone: var(--green);
     --tone-soft: var(--green-soft);
     --tone-deep: var(--green-deep);
-    --tone-ink: #ffffff;
+    --tone-ink: var(--on-brand);
 }
 
 [data-tone='amber'] {
@@ -50,12 +50,12 @@
     --tone: var(--tangerine);
     --tone-soft: var(--tangerine-soft);
     --tone-deep: var(--tangerine-deep);
-    --tone-ink: #ffffff;
+    --tone-ink: var(--on-brand);
 }
 
 [data-tone='slate'] {
     --tone: var(--slate);
     --tone-soft: var(--slate-soft);
     --tone-deep: var(--slate-deep);
-    --tone-ink: #ffffff;
+    --tone-ink: var(--on-brand);
 }

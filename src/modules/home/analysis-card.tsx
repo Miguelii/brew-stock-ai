@@ -1,4 +1,4 @@
-import { SectionHeader } from '@/components/section-header'
+import { SectionHeader } from '@/components/ui/section-header'
 import { StackingCards } from '@/modules/home/stacking-cards'
 
 export function AnalysisCard() {

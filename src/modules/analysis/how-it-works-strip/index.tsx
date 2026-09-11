@@ -1,8 +1,5 @@
 import { Reveal } from '@/components/motion/reveal'
-import { IconEngine, IconReport, IconTicker } from '@/components/scene/step-icons'
 import { STEPS } from '@/lib/analysis-content'
-
-const ICONS = [IconTicker, IconEngine, IconReport] as const
 
 export function HowItWorksStrip() {
     return (
@@ -12,8 +9,8 @@ export function HowItWorksStrip() {
                     <span className="eyebrow text-blue">How it works</span>
 
                     <ol className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-10">
-                        {STEPS.map((step, i) => {
-                            const Icon = ICONS[i]
+                        {STEPS.map((step) => {
+                            const Icon = step.icon
 
                             return (
                                 <li key={step.title} className="flex flex-col gap-4">

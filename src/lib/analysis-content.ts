@@ -6,6 +6,7 @@
  * PROTECTED_PATHS and must stay free of icon components.
  */
 import { BarChart3, Castle, Landmark, TrendingUp, TriangleAlert } from 'lucide-react'
+import { IconEngine, IconReport, IconTicker } from '@/components/scene/step-icons'
 
 export const PRODUCT_STATS = [
     { label: '8 Report Sections' },
@@ -15,18 +16,21 @@ export const PRODUCT_STATS = [
 
 export const STEPS = [
     {
+        icon: IconTicker,
         title: 'Pick a stock',
         description:
             'Type any ticker, from Apple to the small company you just read about. Then choose what you want to know: full analysis, financials, moat, risk, or growth.',
         tint: 'var(--blue)',
     },
     {
+        icon: IconEngine,
         title: 'Our engine does the work',
         description:
             'The engine gathers earnings history, future estimates, analyst ratings, insider activity, price signals, and the latest news, then weighs all that evidence.',
         tint: 'var(--tangerine)',
     },
     {
+        icon: IconReport,
         title: 'Read a structured report',
         description:
             'In under two minutes you get a report you can act on. Every claim is grounded in data, and the numbers sit right next to the analysis.',

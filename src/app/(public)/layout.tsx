@@ -1,5 +1,5 @@
 import { PublicHeader } from '@/components/public-header'
-import { LenisProvider } from '@/components/motion/lenis-provider'
+import { LenisProvider } from '@/providers/lenis-provider'
 import type { PropsWithChildren } from 'react'
 
 type Props = PropsWithChildren

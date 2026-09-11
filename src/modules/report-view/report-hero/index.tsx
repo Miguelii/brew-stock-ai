@@ -46,10 +46,10 @@ export function ReportHero({ report, typeLabel }: Props) {
                             {report.stock}
                         </h1>
 
-                        <p className="mt-4 text-lg leading-snug font-bold text-white">
+                        <p className="mt-4 text-lg leading-snug font-bold text-tone-ink">
                             Fundamental Analysis &amp; Sentiment Report
                         </p>
-                        <p className="eyebrow mt-3 text-white/60">
+                        <p className="eyebrow mt-3 text-tone-ink/60">
                             Generated {fmtDate(report.created_at, 'short')}
                         </p>
                     </div>

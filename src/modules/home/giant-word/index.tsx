@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import { useCallback, useEffect, useRef } from 'react'
 import { EASE } from '@/components/motion/constants'
 import { cn } from '@/lib/utils'
@@ -14,11 +14,13 @@ type Props = {
  * A single oversized word, revealed character by character. It renders at the
  * .display-giant clamp and is only scaled down when it would overflow, so short
  * words stay at a sane size instead of ballooning to fill the line.
+ *
+ * Reduced motion is handled by MotionProvider, which drops each character into place
+ * instantly instead of rolling it up.
  */
 export function GiantWord({ word, className }: Props) {
     const containerRef = useRef<HTMLDivElement>(null)
     const wordRef = useRef<HTMLSpanElement>(null)
-    const reduced = useReducedMotion()
 
     const fit = useCallback(() => {
         const container = containerRef.current
@@ -67,8 +69,9 @@ export function GiantWord({ word, className }: Props) {
                     {characters.map((character, i) => (
                         <motion.span
                             key={`${character}-${i}`}
+                            data-motion-transform
                             className="inline-block"
-                            initial={reduced ? false : { y: '100%', rotate: i % 2 ? 8 : -8 }}
+                            initial={{ y: '100%', rotate: i % 2 ? 8 : -8 }}
                             whileInView={{ y: '0%', rotate: 0 }}
                             viewport={{ once: true, margin: '0px 0px -12% 0px' }}
                             transition={{ duration: 0.8, ease: EASE, delay: i * 0.04 }}

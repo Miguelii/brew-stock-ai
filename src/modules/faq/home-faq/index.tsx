@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ArrowRightIcon, ChevronDownIcon } from 'lucide-react'
 import { Reveal } from '@/components/motion/reveal'
 import { FAQ_GROUPS, type FaqItem } from '@/modules/faq/faq-content'
-import { SectionHeader } from '@/components/section-header'
+import { SectionHeader } from '@/components/ui/section-header'
 
 const FEATURED_QUESTIONS = [
     'What is BrewStockAI?',

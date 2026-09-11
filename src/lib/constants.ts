@@ -1,7 +1,7 @@
 import type { GTMWithoutPrefix } from '@/types/GTM'
 
 // #### GENERAL ####
-export const IS_APP_MAINTENANCE = false
+export const IS_APP_MAINTENANCE = true
 //############
 
 // #### PATHS ####

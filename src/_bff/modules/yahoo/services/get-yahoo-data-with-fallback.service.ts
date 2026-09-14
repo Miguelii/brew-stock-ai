@@ -17,7 +17,7 @@ import {
  */
 export const getYahooDataWithFallbackService: (
     ticker: string,
-    supabaseClient?: SupabaseClient
+    supabaseClient: SupabaseClient
 ) => Effect.Effect<YahooDataWithFallbackResult> = Effect.fn('getYahooDataWithFallbackService')(
     function* (ticker, supabaseClient) {
         // Always try to get Yahoo fresh data

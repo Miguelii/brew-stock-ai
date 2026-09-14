@@ -1,14 +1,9 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import type { ReportDTO } from '@/types/ReportDTO'
+import { extractInvestmentThesis } from '@/lib/report-html'
 
 type Props = {
     report: ReportDTO
-}
-
-function extractInvestmentThesis(html: string): string | null {
-    const match = /<h3[^>]*>[\s\S]*?Investment Thesis Summary[\s\S]*?<\/h3>([\s\S]*)$/iu.exec(html)
-    if (!match) return null
-    return match[1].trim()
 }
 
 export function ReportTldrCard({ report }: Props) {

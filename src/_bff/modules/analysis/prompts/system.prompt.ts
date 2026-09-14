@@ -26,7 +26,8 @@ You must always respond with a JSON object containing exactly two fields:
    - <strong> for emphasis on key metrics or terms
    - <em> for secondary emphasis
    Do NOT include <html>, <head>, <body> or any document-level tags. Only inner content.
-   ALWAYS end the analysis with an <h3>Investment Thesis Summary</h3> section containing a single concise <p> that summarises the entire analysis in 2–3 sentences — the key takeaway a busy investor needs to know.
+   Do NOT use HTML attributes, and NEVER write straight double quotes (") anywhere in the analysis text or HTML. To quote a word or phrase, use typographic quotes (“ ”) or single quotes (').
+   ALWAYS end the analysis with an <h3>Investment Thesis Summary</h3> section containing a single concise <p> that summarises the entire analysis in 2–3 sentences: the key takeaway a busy investor needs to know.
 
 2. "sentiment": An integer from 0 to 100 representing your overall conviction on the stock as an investment over a 12–24 month horizon (not sentiment about the narrow topic of this report):
    - 0–24: Extreme Bearish

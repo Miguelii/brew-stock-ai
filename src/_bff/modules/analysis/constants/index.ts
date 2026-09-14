@@ -61,17 +61,16 @@ export const stockAnalysisSchema = z.object({
 
 export const FREE_MODEL = 'claude-haiku-4-5'
 
-export const PROD_MODEL = 'claude-sonnet-4-5-20250929'
+export const PROD_MODEL = 'claude-sonnet-5'
 
 // Token budgets for the analysis generation.
 //
-// INVARIANT: with extended thinking, the thinking tokens count toward `max_tokens`,
-// so `maxOutputTokens` MUST be comfortably larger than `THINKING_BUDGET_TOKENS` —
-// otherwise the model spends its whole budget reasoning and emits no final JSON,
-// which surfaces as `AI_NoOutputGeneratedError` when reading `result.output`.
-export const THINKING_BUDGET_TOKENS = 6000
+// INVARIANT: with adaptive thinking, the thinking tokens count toward `max_tokens`,
+// so `maxOutputTokens` MUST leave comfortable room for the final answer after the
+// model reasons. Otherwise it spends the whole budget thinking and emits no final
+// JSON, which surfaces as `AI_NoOutputGeneratedError` when reading `result.output`.
 
-// Prod (Sonnet + thinking): room for the thinking budget plus the full HTML answer.
+// Prod (Sonnet + adaptive thinking): room for the reasoning plus the full HTML answer.
 export const MAX_OUTPUT_TOKENS_PROD = 16000
 
 // Free (Haiku, no thinking): the whole budget is available for the answer.

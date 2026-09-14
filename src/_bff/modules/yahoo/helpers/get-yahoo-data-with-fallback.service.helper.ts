@@ -55,10 +55,8 @@ export function hasAllStockData(data: GetYahooDataResult): boolean {
 
 export const selectDbRow = Effect.fn('selectDbRow')(function* (
     ticker: string,
-    supabaseClient?: SupabaseClient
+    supabaseClient: SupabaseClient
 ) {
-    if (!supabaseClient) return null
-
     return yield* selectStockData(supabaseClient, ticker).pipe(
         Effect.map((res) => (res.data ?? null) as StockDataRow | null),
         Effect.orElse(() => Effect.succeed(null))

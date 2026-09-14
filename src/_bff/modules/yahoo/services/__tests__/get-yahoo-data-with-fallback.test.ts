@@ -46,8 +46,10 @@ describe('getYahooDataWithFallbackService', () => {
         getYahooDataMock.mockReset().mockReturnValue(Effect.succeed(FULL_DATA))
     })
 
-    it('fetches fresh data when no Supabase client is provided', async () => {
-        const result = await Effect.runPromise(getYahooDataWithFallbackService('AAPL'))
+    it('returns fresh data when Yahoo has every field', async () => {
+        const { supabase } = makeSupabase(() => Promise.resolve({ data: null }))
+
+        const result = await Effect.runPromise(getYahooDataWithFallbackService('AAPL', supabase))
         expect(result).toEqual({
             ticker: 'AAPL',
             data: FULL_DATA,
@@ -145,13 +147,6 @@ describe('getYahooDataWithFallbackService', () => {
         const { supabase } = makeSupabase(() => Promise.reject(new Error('db down')))
 
         const result = await Effect.runPromise(getYahooDataWithFallbackService('AAPL', supabase))
-        expect(result).toBeNull()
-    })
-
-    it('resolves to null when Yahoo fails and no Supabase client is provided', async () => {
-        getYahooDataMock.mockReturnValue(Effect.fail(new Error('yahoo down')))
-
-        const result = await Effect.runPromise(getYahooDataWithFallbackService('AAPL'))
         expect(result).toBeNull()
     })
 })

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateTokenCost } from '../calculate-token-cost.helper'
+import { calculateTokenCost } from '@/_bff/modules/analysis/helpers/calculate-token-cost.helper'
 
 describe('calculateTokenCost', () => {
     describe('unknown or invalid model', () => {
@@ -41,48 +41,46 @@ describe('calculateTokenCost', () => {
     })
 
     describe('correct calculation for claude-haiku-4-5', () => {
-        // inputPerMTok: 0.8 | outputPerMTok: 4
+        // inputPerMTok: 1 | outputPerMTok: 5
         it('calculates cost with 1 million input and output tokens', () => {
-            // (1_000_000 / 1_000_000) * 0.8 + (1_000_000 / 1_000_000) * 4 = 4.8
-            expect(calculateTokenCost('claude-haiku-4-5', 1_000_000, 1_000_000)).toBe(4.8)
+            // (1_000_000 / 1_000_000) * 1 + (1_000_000 / 1_000_000) * 5 = 6
+            expect(calculateTokenCost('claude-haiku-4-5', 1_000_000, 1_000_000)).toBe(6)
         })
 
         it('calculates cost with typical usage values', () => {
-            // (500 / 1_000_000) * 0.8 + (200 / 1_000_000) * 4
-            // = 0.0004 + 0.0008 = 0.0012
-            expect(calculateTokenCost('claude-haiku-4-5', 500, 200)).toBeCloseTo(0.0012, 10)
+            // (500 / 1_000_000) * 1 + (200 / 1_000_000) * 5
+            // = 0.0005 + 0.001 = 0.0015
+            expect(calculateTokenCost('claude-haiku-4-5', 500, 200)).toBeCloseTo(0.0015, 10)
         })
 
         it('calculates cost with large input tokens and minimal output', () => {
-            // (2_000_000 / 1_000_000) * 0.8 + (1 / 1_000_000) * 4
-            // = 1.6 + 0.000004 = 1.600004
-            expect(calculateTokenCost('claude-haiku-4-5', 2_000_000, 1)).toBeCloseTo(1.600004, 6)
+            // (2_000_000 / 1_000_000) * 1 + (1 / 1_000_000) * 5
+            // = 2 + 0.000005 = 2.000005
+            expect(calculateTokenCost('claude-haiku-4-5', 2_000_000, 1)).toBeCloseTo(2.000005, 6)
         })
     })
 
-    describe('correct calculation for claude-sonnet-4-5-20250929', () => {
-        // inputPerMTok: 3 | outputPerMTok: 15
+    describe('correct calculation for claude-sonnet-5', () => {
+        // inputPerMTok: 2 | outputPerMTok: 10
         it('calculates cost with 1 million input and output tokens', () => {
-            // (1_000_000 / 1_000_000) * 3 + (1_000_000 / 1_000_000) * 15 = 18
-            expect(calculateTokenCost('claude-sonnet-4-5-20250929', 1_000_000, 1_000_000)).toBe(18)
+            // (1_000_000 / 1_000_000) * 2 + (1_000_000 / 1_000_000) * 10 = 12
+            expect(calculateTokenCost('claude-sonnet-5', 1_000_000, 1_000_000)).toBe(12)
         })
 
         it('calculates cost with typical usage values', () => {
-            // (1000 / 1_000_000) * 3 + (500 / 1_000_000) * 15
-            // = 0.003 + 0.0075 = 0.0105
-            expect(calculateTokenCost('claude-sonnet-4-5-20250929', 1000, 500)).toBeCloseTo(
-                0.0105,
-                10
-            )
+            // (1000 / 1_000_000) * 2 + (500 / 1_000_000) * 10
+            // = 0.002 + 0.005 = 0.007
+            expect(calculateTokenCost('claude-sonnet-5', 1000, 500)).toBeCloseTo(0.007, 10)
         })
 
         it('calculates correctly when output dominates the cost', () => {
-            // (100 / 1_000_000) * 3 + (900 / 1_000_000) * 15
-            // = 0.0003 + 0.0135 = 0.0138
-            expect(calculateTokenCost('claude-sonnet-4-5-20250929', 100, 900)).toBeCloseTo(
-                0.0138,
-                10
-            )
+            // (100 / 1_000_000) * 2 + (900 / 1_000_000) * 10
+            // = 0.0002 + 0.009 = 0.0092
+            expect(calculateTokenCost('claude-sonnet-5', 100, 900)).toBeCloseTo(0.0092, 10)
+        })
+
+        it('returns N/A for the retired claude-sonnet-4-5-20250929 id', () => {
+            expect(calculateTokenCost('claude-sonnet-4-5-20250929', 1000, 500)).toBe('N/A')
         })
     })
 
@@ -93,7 +91,7 @@ describe('calculateTokenCost', () => {
         })
 
         it('result is of type number for sonnet with valid tokens', () => {
-            const result = calculateTokenCost('claude-sonnet-4-5-20250929', 1000, 1000)
+            const result = calculateTokenCost('claude-sonnet-5', 1000, 1000)
             expect(typeof result).toBe('number')
         })
 

@@ -282,14 +282,16 @@ describe('markReportFailed', () => {
 })
 
 describe('updateReportWithAnalysis', () => {
+    // .update().eq('id').eq('status'): the second eq resolves the query
     const makeUpdateChain = (result: { error: unknown }) => {
-        const eq = vi.fn().mockResolvedValue(result)
+        const statusEq = vi.fn().mockResolvedValue(result)
+        const eq = vi.fn(() => ({ eq: statusEq }))
         const update = vi.fn(() => ({ eq }))
-        return { update, eq, supabase: asClient({ update }) }
+        return { update, eq, statusEq, supabase: asClient({ update }) }
     }
 
     it('marks the report COMPLETED with the analysis payload', async () => {
-        const { update, eq, supabase } = makeUpdateChain({ error: null })
+        const { update, eq, statusEq, supabase } = makeUpdateChain({ error: null })
 
         await Effect.runPromise(
             updateReportWithAnalysis(supabase, 'r-1', {
@@ -308,6 +310,7 @@ describe('updateReportWithAnalysis', () => {
             cost: 0.42,
         })
         expect(eq).toHaveBeenCalledWith('id', 'r-1')
+        expect(statusEq).toHaveBeenCalledWith('status', ReportStatus.GENERATING)
     })
 
     it('falls back to null markers when sentiment and ticker are missing', async () => {

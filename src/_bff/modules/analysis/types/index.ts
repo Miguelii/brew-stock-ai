@@ -14,6 +14,6 @@ export type AnalyzeReportInput = {
     promptTemplate: string
     reportId: ReportDTO['id']
     marketData: MarketData
-    supabaseClient?: SupabaseClient
+    supabaseClient: SupabaseClient
     useBaseModel?: boolean
 }

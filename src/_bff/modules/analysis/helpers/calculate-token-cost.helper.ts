@@ -1,6 +1,6 @@
 const MODEL_PRICING: Record<string, { inputPerMTok: number; outputPerMTok: number }> = {
-    'claude-haiku-4-5': { inputPerMTok: 0.8, outputPerMTok: 4 },
-    'claude-sonnet-4-5-20250929': { inputPerMTok: 3, outputPerMTok: 15 },
+    'claude-haiku-4-5': { inputPerMTok: 1, outputPerMTok: 5 },
+    'claude-sonnet-5': { inputPerMTok: 2, outputPerMTok: 10 },
 }
 
 export function calculateTokenCost(

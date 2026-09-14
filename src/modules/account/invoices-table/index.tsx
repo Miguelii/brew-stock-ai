@@ -15,7 +15,7 @@ export function AccountInvoicesTable() {
         return (
             <>
                 {/* Desktop skeleton */}
-                <div className="hidden md:block divide-y divide-border rounded-none border border-border overflow-hidden">
+                <div className="hidden md:block divide-y divide-border rounded-sm border border-border overflow-hidden">
                     <div className="grid grid-cols-[1fr_12rem_12rem_8rem] px-4 py-2.5 bg-muted text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                         <span>Description</span>
                         <span className="text-right">Method</span>
@@ -57,7 +57,7 @@ export function AccountInvoicesTable() {
     return (
         <>
             {/* Desktop: grid table */}
-            <div className="hidden md:block divide-y divide-border rounded-none border border-border overflow-hidden">
+            <div className="hidden md:block divide-y divide-border rounded-sm border border-border overflow-hidden">
                 <div className="grid grid-cols-[1fr_12rem_12rem_8rem] px-4 py-2.5 bg-muted text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                     <span>Description</span>
                     <span className="text-right">Method</span>

@@ -64,7 +64,7 @@ export function TokenPackages({
                                 pkg.highlight && 'ring-[3px] ring-ink'
                             )}
                         >
-                            <CardContent className="flex flex-col gap-4 p-6">
+                            <CardContent className="flex flex-col gap-4 p-6 h-full">
                                 {pkg.highlight && (
                                     <span className="absolute -top-3 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-3 py-1 font-mono text-[11px] font-medium tracking-wider whitespace-nowrap text-paper uppercase">
                                         Most Popular

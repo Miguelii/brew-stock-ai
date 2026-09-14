@@ -63,7 +63,7 @@ export default async function AccountPage() {
                             Profile
                         </h2>
                     </div>
-                    <div className="rounded-none border border-border px-4 py-3 flex items-center gap-3">
+                    <div className="rounded-sm border border-border px-4 py-3 flex items-center gap-3">
                         <div className="size-9 rounded-full bg-accent-blue/10 flex items-center justify-center shrink-0">
                             {user?.user_metadata?.avatar_url ? (
                                 <Image
@@ -94,7 +94,7 @@ export default async function AccountPage() {
                             Support
                         </h2>
                     </div>
-                    <div className="rounded-none border border-border px-4 py-4 space-y-3">
+                    <div className="rounded-sm border border-border px-4 py-4 space-y-3">
                         <p className="text-sm text-muted-foreground">
                             Need help? Reach out and we&lsquo;ll get back to you as soon as
                             possible.

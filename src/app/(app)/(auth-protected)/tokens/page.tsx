@@ -67,7 +67,7 @@ export default async function TokensPage({ searchParams }: Props) {
                 {params.canceled && (
                     <div
                         data-testid="payment-canceled-banner"
-                        className="flex items-center gap-3 rounded-none border border-yellow-400 bg-yellow-400/10 px-4 py-3 text-sm text-muted-foreground"
+                        className="flex items-center gap-3 rounded-sm border border-yellow-400 bg-yellow-400/10 px-4 py-3 text-sm text-muted-foreground"
                     >
                         Checkout was canceled. No charges were made.
                     </div>

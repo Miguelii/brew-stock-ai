@@ -1,7 +1,6 @@
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getYahooData } from '@/_bff/modules/yahoo/processors/get-yahoo-data.processor'
-import { getYahooTicker } from '@/_bff/modules/yahoo/processors/get-yahoo-ticker.processor'
 import type { GetYahooDataResult, YahooDataWithFallbackResult } from '@/_bff/modules/yahoo/types'
 import {
     hasAllStockData,
@@ -11,17 +10,17 @@ import {
     selectDbRow,
 } from '@/_bff/modules/yahoo/helpers/get-yahoo-data-with-fallback.service.helper'
 
+/**
+ * Fetch Yahoo data for an already resolved ticker, falling back to the stored
+ * row when Yahoo fails fully or partially. Ticker resolution is the caller's
+ * job, so it can run other ticker-dependent fetches in parallel with this one.
+ */
 export const getYahooDataWithFallbackService: (
-    stockSymbol: string,
+    ticker: string,
     supabaseClient?: SupabaseClient
 ) => Effect.Effect<YahooDataWithFallbackResult> = Effect.fn('getYahooDataWithFallbackService')(
-    function* (stockSymbol, supabaseClient) {
-        const ticker = yield* getYahooTicker(stockSymbol).pipe(
-            Effect.orElse(() => Effect.succeed(null))
-        )
-        if (!ticker) return null
-
-        // Always try to get Yahoo frest data
+    function* (ticker, supabaseClient) {
+        // Always try to get Yahoo fresh data
         const freshData = (yield* getYahooData(ticker).pipe(
             Effect.orElse(() => Effect.succeed(null))
         )) as GetYahooDataResult | null

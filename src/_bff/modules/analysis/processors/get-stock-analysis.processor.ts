@@ -7,6 +7,7 @@ import { getYahooDataWithFallbackService } from '@/_bff/modules/yahoo/services/g
 import { getLatestNewsService } from '@/_bff/modules/finnhub/services/get-latest-news.service'
 import { computeTechnicalIndicators } from '@/_bff/modules/yahoo/helpers/compute-technical-indicators.helper'
 import { buildYahooContext } from '@/_bff/modules/yahoo/helpers/build-yahoo-context.helper'
+import type { GetYahooDataResult, YahooDataWithFallbackResult } from '@/_bff/modules/yahoo/types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { logger } from '@trigger.dev/sdk'
 import {
@@ -20,100 +21,119 @@ import {
 } from '@/_bff/modules/analysis/constants'
 import { SystemPrompt } from '@/_bff/modules/analysis/prompts/system.prompt'
 import { calculateTokenCost } from '@/_bff/modules/analysis/helpers/calculate-token-cost.helper'
+import { getYahooTicker } from '@/_bff/modules/yahoo/processors/get-yahoo-ticker.processor'
 import { saveYahooData } from '@/_bff/modules/yahoo/processors/save-yahoo-data.processor'
 import { saveAnalysisToReport } from '@/_bff/modules/reports/processors/save-analysis-to-report.processor'
 import { getPriceHistoryService } from '@/_bff/modules/yahoo/services/get-price-history.service'
+import type { AnalyzeReportInput, MarketData } from '../types'
 
-export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
-    stockSymbol: string,
-    promptType: string,
-    reportId: ReportDTO['id'],
-    supabaseClient?: SupabaseClient,
-    useBaseModel?: boolean
-) {
-    const basePrompt = PROMPTS_MAP[promptType]
+const EMPTY_YAHOO_DATA: GetYahooDataResult = {
+    scores: null,
+    reports: [],
+    sigDev: null,
+    financials: null,
+    fundamentals: null,
+}
 
-    if (!basePrompt) {
+/**
+ * Pipeable: log the failure and replace it with a fallback value, for steps
+ * whose failure must never abort the analysis.
+ */
+const logAndRecover =
+    <B>(label: string, ticker: string, fallback: B) =>
+    <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A | B, never, R> =>
+        effect.pipe(
+            Effect.tapError((error) => Effect.sync(() => logger.error(label, { ticker, error }))),
+            Effect.orElse(() => Effect.succeed(fallback))
+        )
+
+const resolvePromptTemplate = Effect.fn('resolvePromptTemplate')(function* (promptType: string) {
+    const promptTemplate = PROMPTS_MAP[promptType]
+
+    if (!promptTemplate) {
         return yield* new InvalidPromptTypeError({
             promptType,
             error_hash: ErrorCode.ANALYSIS_INVALID_PROMPT,
         })
     }
 
-    const yahooPreFetch = yield* getYahooDataWithFallbackService(stockSymbol, supabaseClient)
+    return promptTemplate
+})
 
-    const tickerForData = yahooPreFetch?.ticker ?? stockSymbol
+/**
+ * Resolve the Yahoo ticker, then fetch Yahoo data, price history and news in
+ * parallel. Every source is optional: a failure yields `null` instead of
+ * aborting the analysis.
+ */
+const fetchMarketData = Effect.fn('fetchMarketData')(function* (
+    stockSymbol: string,
+    supabaseClient?: SupabaseClient
+) {
+    const ticker = yield* getYahooTicker(stockSymbol).pipe(
+        logAndRecover('getYahooTicker failed', stockSymbol, null)
+    )
 
-    const finalTicker = yahooPreFetch?.ticker ?? null
+    const tickerForData = ticker ?? stockSymbol
 
-    // Persist fresh Yahoo data immediately (in parallel with the rest of the pipeline)
-    const saveYahooFiber = yahooPreFetch?.isFresh
-        ? yield* Effect.fork(
-              saveYahooData(finalTicker, yahooPreFetch.data, supabaseClient).pipe(
-                  Effect.tapError((error) =>
-                      Effect.sync(() =>
-                          logger.error('saveYahooData failed', {
-                              ticker: finalTicker,
-                              error,
-                          })
-                      )
-                  ),
-                  Effect.orElse(() => Effect.void)
-              )
-          )
-        : null
-
-    // Adicional context - a failure here must never abort the const
-    const [priceHistory, news] = yield* Effect.all(
+    const [yahoo, priceHistory, news] = yield* Effect.all(
         [
+            ticker ? getYahooDataWithFallbackService(ticker, supabaseClient) : Effect.succeed(null),
             getPriceHistoryService(tickerForData).pipe(
-                Effect.tapError((error) =>
-                    Effect.sync(() =>
-                        logger.error('getPriceHistory failed', {
-                            ticker: tickerForData,
-                            error,
-                        })
-                    )
-                ),
-                Effect.orElse(() => Effect.succeed(null))
+                logAndRecover('getPriceHistory failed', tickerForData, null)
             ),
             getLatestNewsService(tickerForData).pipe(
-                Effect.tapError((error) =>
-                    Effect.sync(() =>
-                        logger.error('getLatestNewsService failed', {
-                            ticker: tickerForData,
-                            error,
-                        })
-                    )
-                ),
-                Effect.orElse(() => Effect.succeed(null))
+                logAndRecover('getLatestNewsService failed', tickerForData, null)
             ),
         ],
         { concurrency: 'unbounded' }
     )
 
+    return { yahoo, priceHistory, news } satisfies MarketData
+})
+
+/** Persist Yahoo data only when it came fresh from Yahoo. Never fails. */
+const saveFreshYahooData = Effect.fn('saveFreshYahooData')(function* (
+    yahoo: YahooDataWithFallbackResult,
+    supabaseClient?: SupabaseClient
+) {
+    if (!yahoo?.isFresh) return
+
+    yield* saveYahooData(yahoo.ticker, yahoo.data, supabaseClient).pipe(
+        logAndRecover('saveYahooData failed', yahoo.ticker, null)
+    )
+})
+
+/** Fill the prompt template with the ticker and append the market context, when there is any. */
+const buildPrompt = (promptTemplate: string, stockSymbol: string, marketData: MarketData) => {
+    const { yahoo, priceHistory, news } = marketData
+
     const technicals =
         priceHistory && priceHistory.length > 0 ? computeTechnicalIndicators(priceHistory) : null
 
-    const hasContext = Boolean(yahooPreFetch?.data || technicals || news?.length)
+    const hasContext = Boolean(yahoo?.data || technicals || news?.length)
 
     const context = hasContext
-        ? `\n\n${buildYahooContext(
-              yahooPreFetch?.data ?? {
-                  scores: null,
-                  reports: [],
-                  sigDev: null,
-                  financials: null,
-                  fundamentals: null,
-              },
-              technicals,
-              news
-          )}`
+        ? `\n\n${buildYahooContext(yahoo?.data ?? EMPTY_YAHOO_DATA, technicals, news)}`
         : ''
 
-    const resolvedPrompt = basePrompt.replaceAll('##TICKER##', stockSymbol) + context
+    return promptTemplate.replaceAll('##TICKER##', stockSymbol) + context
+}
 
+const generateAnalysis = Effect.fn('generateAnalysis')(function* (
+    prompt: string,
+    stockSymbol: string,
+    useBaseModel?: boolean
+) {
     const model = useBaseModel ? FREE_MODEL : PROD_MODEL
+
+    // Extended thinking is only enabled for the production model
+    const providerOptions = useBaseModel
+        ? undefined
+        : {
+              anthropic: {
+                  thinking: { type: 'enabled', budgetTokens: THINKING_BUDGET_TOKENS },
+              },
+          }
 
     const { output, usage, finishReason } = yield* Effect.tryPromise({
         try: async () => {
@@ -121,32 +141,17 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
                 import('ai'),
                 import('@ai-sdk/anthropic'),
             ])
-            const anthropicClient = createAnthropic({
-                apiKey: ServerEnv.NEXT_ANTHROPIC_AI_KEY,
-            })
+
+            const anthropicClient = createAnthropic({ apiKey: ServerEnv.NEXT_ANTHROPIC_AI_KEY })
+
             return generateText({
                 model: anthropicClient(model),
-                ...(useBaseModel
-                    ? {}
-                    : {
-                          providerOptions: {
-                              anthropic: {
-                                  thinking: {
-                                      type: 'enabled',
-                                      budgetTokens: THINKING_BUDGET_TOKENS,
-                                  },
-                              },
-                          },
-                      }),
+                providerOptions,
                 output: Output.object({ schema: stockAnalysisSchema }),
                 system: SystemPrompt,
-                prompt: resolvedPrompt,
+                prompt,
                 maxOutputTokens: useBaseModel ? MAX_OUTPUT_TOKENS_FREE : MAX_OUTPUT_TOKENS_PROD,
-            }).then((result) => ({
-                output: result.output,
-                usage: result.usage,
-                finishReason: result.finishReason,
-            }))
+            })
         },
         catch: (cause) => {
             logger.error('getStockAnalysis error', { error: cause })
@@ -158,18 +163,37 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         },
     })
 
+    return { model, output, usage, finishReason }
+})
+
+const analyzeAndSaveReport = Effect.fn('analyzeAndSaveReport')(function* ({
+    stockSymbol,
+    promptTemplate,
+    reportId,
+    marketData,
+    supabaseClient,
+    useBaseModel,
+}: AnalyzeReportInput) {
+    const prompt = buildPrompt(promptTemplate, stockSymbol, marketData)
+
+    const { model, output, usage, finishReason } = yield* generateAnalysis(
+        prompt,
+        stockSymbol,
+        useBaseModel
+    )
+
     const { analysis, sentiment } = output
 
     const tokenUsdCost = calculateTokenCost(model, usage.inputTokens, usage.outputTokens)
 
     logger.log('Analysis completed', {
-        reportId: reportId,
-        tokenUsdCost: tokenUsdCost,
-        finishReason: finishReason,
+        reportId,
+        tokenUsdCost,
+        finishReason,
         outputTokens: usage.outputTokens,
-        hasPriceHistory: (priceHistory?.length ?? 0) > 0,
-        hasNews: (news?.length ?? 0) > 0,
-        hasYahooFreshData: yahooPreFetch?.isFresh ?? false,
+        hasPriceHistory: (marketData.priceHistory?.length ?? 0) > 0,
+        hasNews: (marketData.news?.length ?? 0) > 0,
+        hasYahooFreshData: marketData.yahoo?.isFresh ?? false,
     })
 
     if (!analysis) {
@@ -180,21 +204,39 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         })
     }
 
-    yield* Effect.all(
-        [
-            saveAnalysisToReport(
-                reportId,
-                analysis,
-                finalTicker,
-                tokenUsdCost,
-                sentiment,
-                supabaseClient
-            ),
-
-            saveYahooFiber ? Fiber.join(saveYahooFiber) : Effect.void,
-        ],
-        { concurrency: 'unbounded' }
+    yield* saveAnalysisToReport(
+        reportId,
+        analysis,
+        marketData.yahoo?.ticker ?? null,
+        tokenUsdCost,
+        sentiment,
+        supabaseClient
     )
 
     return { analysis, sentiment }
+})
+
+export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
+    stockSymbol: string,
+    promptType: string,
+    reportId: ReportDTO['id'],
+    supabaseClient?: SupabaseClient,
+    useBaseModel?: boolean
+) {
+    const promptTemplate = yield* resolvePromptTemplate(promptType)
+
+    const marketData = yield* fetchMarketData(stockSymbol, supabaseClient)
+
+    // Persist fresh Yahoo data in the background while the model generates
+    const saveYahooFiber = yield* Effect.fork(saveFreshYahooData(marketData.yahoo, supabaseClient))
+
+    // Join the save even when the analysis fails, so the child fiber is never interrupted mid-write
+    return yield* analyzeAndSaveReport({
+        stockSymbol,
+        promptTemplate,
+        reportId,
+        marketData,
+        supabaseClient,
+        useBaseModel,
+    }).pipe(Effect.ensuring(Fiber.join(saveYahooFiber)))
 })

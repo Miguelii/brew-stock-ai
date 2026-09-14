@@ -169,7 +169,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         outputTokens: usage.outputTokens,
         hasPriceHistory: (priceHistory?.length ?? 0) > 0,
         hasNews: (news?.length ?? 0) > 0,
-        hasYahooPreFetch: yahooPreFetch?.data != null,
+        hasYahooFreshData: yahooPreFetch?.isFresh ?? false,
     })
 
     if (!analysis) {

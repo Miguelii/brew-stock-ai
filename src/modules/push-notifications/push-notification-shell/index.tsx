@@ -1,8 +1,8 @@
-import type { User } from '@supabase/supabase-js'
+import type { SessionClaims } from '@/_bff/modules/auth/services/get-cached-claims.service'
 import { PushNotificationCard } from '@/modules/push-notifications/push-notification-card'
 
 type Props = {
-    userPromise: Promise<User | null>
+    userPromise: Promise<SessionClaims | null>
 }
 
 export async function PushNotificationShell({ userPromise }: Props) {

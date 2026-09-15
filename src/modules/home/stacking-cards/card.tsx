@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useMotionTemplate, useTransform, type MotionValue } from 'motion/react'
+import { m, useMotionTemplate, useTransform, type MotionValue } from 'motion/react'
 import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties } from 'react'
 
@@ -49,7 +49,7 @@ export function StackCard({
     const transform = useMotionTemplate`translateY(${y}) rotate(${rotate}deg) scale(${scale})`
 
     return (
-        <motion.article
+        <m.article
             data-tone={tone}
             data-stack-card
             style={
@@ -66,6 +66,6 @@ export function StackCard({
             <h3 className="display display-card max-w-[14ch]">{title}</h3>
             <p className="max-w-[46ch] leading-snug opacity-85">{description}</p>
             <Icon className="mt-2 size-14 lg:mt-auto lg:size-16" strokeWidth={1.5} />
-        </motion.article>
+        </m.article>
     )
 }

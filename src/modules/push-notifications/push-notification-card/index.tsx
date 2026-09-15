@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
 import { ClientEnv } from '@/env/client'
 import { trpcClient } from '@/_trpc/client'
-import { SW_PATH } from '@/lib/constants'
 import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY } from '@/modules/push-notifications/constants'
 import { PromptCard } from '@/components/ui/prompt-card'
 import { urlBase64ToUint8Array } from './push-notification-card.helpers'
@@ -31,8 +30,8 @@ export function PushNotificationCard() {
             if (days < PUSH_DISMISS_TTL_DAYS) return
         }
 
-        navigator.serviceWorker
-            .register(SW_PATH, { scope: '/', updateViaCache: 'none' })
+        // ServiceWorkerRegister (root layout) owns the registration; wait for it instead of registering again
+        navigator.serviceWorker.ready
             .then((registration) => registration.pushManager.getSubscription())
             .then((sub) => {
                 if (!sub) setOpen(true)

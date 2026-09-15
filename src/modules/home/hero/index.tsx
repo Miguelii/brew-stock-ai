@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowUpRight, FileText } from 'lucide-react'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { Button } from '@/components/ui/button'
 import { EASE } from '@/components/motion/constants'
 import { HeroCard } from '@/modules/home/hero/hero-card'
@@ -21,7 +21,7 @@ export function Hero() {
             <div className="section-shell relative z-10">
                 <HeroHeadline lines={HERO_LINES} className="mt-7 text-amber-soft" />
 
-                <motion.p
+                <m.p
                     data-motion-transform
                     className="mt-7 max-w-[52ch] text-lg leading-snug font-bold text-tone-ink"
                     initial={{ opacity: 0, y: HERO_ENTRANCE.copy.y }}
@@ -34,9 +34,9 @@ export function Hero() {
                 >
                     Professional-level stock analysis covering the key numbers, market sentiment,
                     and price signals. All for less than a coffee ☕
-                </motion.p>
+                </m.p>
 
-                <motion.div
+                <m.div
                     data-motion-transform
                     className="mt-9 flex w-full flex-col items-stretch gap-3 sm:w-fit sm:flex-row sm:items-center"
                     initial={{ opacity: 0, y: HERO_ENTRANCE.actions.y }}
@@ -59,11 +59,11 @@ export function Hero() {
                             See a sample report
                         </Button>
                     </Link>
-                </motion.div>
+                </m.div>
 
                 <div className="mt-9 flex flex-wrap gap-2.5">
                     {PRODUCT_STATS.map((stat, i) => (
-                        <motion.span
+                        <m.span
                             key={stat.label}
                             data-motion-transform
                             className="eyebrow inline-flex items-center rounded-full bg-tone-ink/12 px-4 py-2 text-tone-ink"
@@ -77,12 +77,12 @@ export function Hero() {
                             }}
                         >
                             {stat.label}
-                        </motion.span>
+                        </m.span>
                     ))}
                 </div>
             </div>
 
-            <motion.div
+            <m.div
                 data-motion-transform
                 className="section-shell relative z-10 mt-14 flex justify-center lg:mt-20"
                 initial={{ opacity: 0, y: HERO_ENTRANCE.card.y }}
@@ -109,7 +109,7 @@ export function Hero() {
                         <TickerDemo />
                     </div>
                 </HeroCard>
-            </motion.div>
+            </m.div>
         </section>
     )
 }

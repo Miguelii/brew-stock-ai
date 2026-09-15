@@ -131,9 +131,6 @@ export default function RootLayout({ children }: Props) {
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <meta name="apple-mobile-web-app-title" content="BrewStockAI" />
             </head>
-            <VercelAnalytics />
-            <VercelSpeedInsights />
-            <GtmScript />
             <body className="min-h-screen flex flex-col">
                 <TrpcContextProvider>
                     <MotionProvider>
@@ -147,6 +144,10 @@ export default function RootLayout({ children }: Props) {
                     </MotionProvider>
                 </TrpcContextProvider>
                 <ServiceWorkerRegister />
+                {/* Third-party scripts last, inside <body>: only <head> and <body> are valid children of <html> */}
+                <VercelAnalytics />
+                <VercelSpeedInsights />
+                <GtmScript />
             </body>
         </html>
     )

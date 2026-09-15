@@ -51,7 +51,7 @@ export default async function TickerPage({ params }: Props) {
     const page = resolveTickerPage(ticker)
     if (!page) notFound()
 
-    const { user, isMaintenance } = await getAnalysisPageData()
+    const { isAuthenticated, isMaintenance } = await getAnalysisPageData()
 
     const { content } = page
 
@@ -97,7 +97,7 @@ export default async function TickerPage({ params }: Props) {
             <main id="main" className="-mt-20 w-full overflow-x-clip">
                 <AnalysisHero companyName={`${page.name} (${page.ticker})`}>
                     <AnalysisFormCard
-                        isAuthenticated={!!user}
+                        isAuthenticated={isAuthenticated}
                         defaultTicker={page.ticker}
                         isMaintenance={isMaintenance}
                     />

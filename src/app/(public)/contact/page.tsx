@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
-import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
+import { getCachedClaims } from '@/_bff/modules/auth/services/get-cached-claims.service'
 import { ContactForm } from '@/modules/contact-form'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ContactPage() {
-    const user = await getCachedSession()
+    const claims = await getCachedClaims()
 
     return (
         <>
@@ -67,8 +67,8 @@ export default async function ContactPage() {
                     </div>
 
                     <ContactForm
-                        email={user?.email}
-                        name={user?.user_metadata?.full_name as string | undefined}
+                        email={claims?.email ?? undefined}
+                        name={claims?.fullName ?? undefined}
                     />
                 </div>
             </main>

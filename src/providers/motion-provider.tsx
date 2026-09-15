@@ -1,13 +1,20 @@
 'use client'
 
-import { MotionConfig } from 'motion/react'
+import { LazyMotion, MotionConfig, domAnimation } from 'motion/react'
 import type { PropsWithChildren } from 'react'
 
 type Props = PropsWithChildren
 
 /**
- * Teaches motion to honour the user's Reduced Motion setting on its own.
+ * App-wide motion setup.
  *
+ * LazyMotion ships only the `domAnimation` feature set (animations, variants, exit,
+ * hover/tap/focus and in-view) instead of the full bundle. Every animated element
+ * must use `m.*` (from `motion/react`, or `motion/react-m` in Server Components):
+ * `strict` makes a stray `motion.*` throw, so the full bundle can't sneak back in.
+ * Switch to `domMax` if a component ever needs `layout` animations or `drag`.
+ *
+ * MotionConfig teaches motion to honour the user's Reduced Motion setting on its own.
  * This is the hydration-safe way to do it: motion resolves the preference when a
  * visual element mounts, never while rendering, so the tree is identical on the
  * server and the client. Reading the media query in a component instead (via
@@ -20,5 +27,9 @@ type Props = PropsWithChildren
  * reduced-motion block in globals.css drops the transform.
  */
 export function MotionProvider({ children }: Props) {
-    return <MotionConfig reducedMotion="user">{children}</MotionConfig>
+    return (
+        <LazyMotion features={domAnimation} strict>
+            <MotionConfig reducedMotion="user">{children}</MotionConfig>
+        </LazyMotion>
+    )
 }

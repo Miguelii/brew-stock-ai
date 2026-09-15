@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRightIcon } from 'lucide-react'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { CHANGELOG_ENTRIES_BY_DATE } from '@/modules/changelog/changelog'
 import { ChangelogMeta } from '@/modules/changelog/changelog-meta'
 
@@ -8,7 +8,7 @@ export function ChangelogList() {
     return (
         <div className="flex flex-col divide-y divide-border">
             {CHANGELOG_ENTRIES_BY_DATE.map((entry, i) => (
-                <motion.article
+                <m.article
                     key={entry.slug}
                     initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -40,7 +40,7 @@ export function ChangelogList() {
                             <ArrowRightIcon className="size-4" />
                         </div>
                     </Link>
-                </motion.article>
+                </m.article>
             ))}
         </div>
     )

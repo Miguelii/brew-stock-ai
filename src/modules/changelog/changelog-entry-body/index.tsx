@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { CheckIcon } from 'lucide-react'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import type { ChangelogEntry } from '@/types/ChangelogEntry'
 
 type Props = {
@@ -11,11 +11,11 @@ export function ChangelogEntryBody({ entry }: Props) {
     return (
         <article className="max-w-none">
             {entry.highlights.length > 0 && (
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="mb-10 rounded-none border border-border bg-card p-6"
+                    className="mb-10 rounded-sm border border-border bg-card p-6"
                 >
                     <p className="text-xs font-semibold tracking-widest uppercase text-accent-blue mb-4">
                         What is new
@@ -32,12 +32,12 @@ export function ChangelogEntryBody({ entry }: Props) {
                             </li>
                         ))}
                     </ul>
-                </motion.div>
+                </m.div>
             )}
 
             {entry.sections.map((section, i) => (
                 <Fragment key={`changelog-section-${section.heading || i}`}>
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
@@ -71,7 +71,7 @@ export function ChangelogEntryBody({ entry }: Props) {
                                 ))}
                             </ul>
                         )}
-                    </motion.div>
+                    </m.div>
                 </Fragment>
             ))}
         </article>

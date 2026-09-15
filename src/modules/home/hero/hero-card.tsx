@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'motion/react'
+import { m, useScroll, useTransform } from 'motion/react'
 import { useRef, type ReactNode } from 'react'
 
 type Props = {
@@ -30,13 +30,13 @@ export function HeroCard({ children }: Props) {
 
     return (
         <div ref={ref} className="w-full max-w-[440px] [perspective:1200px]">
-            <motion.div
+            <m.div
                 data-motion-transform
                 style={{ rotateX, scale, y, transformStyle: 'preserve-3d' }}
                 className="surface flex min-h-[300px] flex-col gap-6 bg-tangerine p-7"
             >
                 {children}
-            </motion.div>
+            </m.div>
         </div>
     )
 }

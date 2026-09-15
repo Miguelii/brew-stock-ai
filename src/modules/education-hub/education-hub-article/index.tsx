@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
 import { ArrowRightIcon } from 'lucide-react'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import type { EducationHubArticle } from '@/types/EducationHubArticle'
 import { EDUCATION_HUB_ARTICLES } from '@/modules/education-hub/education-hub-articles'
 import { SectionBlocks } from './section-blocks'
@@ -25,7 +25,7 @@ export function EducationHubArticle({ article }: Props) {
     return (
         <>
             {takeaways.length > 0 && (
-                <motion.aside
+                <m.aside
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -47,13 +47,13 @@ export function EducationHubArticle({ article }: Props) {
                             </li>
                         ))}
                     </ul>
-                </motion.aside>
+                </m.aside>
             )}
 
             <article className="prose-sm max-w-none">
                 {article.sections.map((section, i) => (
                     <Fragment key={`article-section-${section.heading || i}`}>
-                        <motion.div
+                        <m.div
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{
@@ -72,7 +72,7 @@ export function EducationHubArticle({ article }: Props) {
                                 {section.body}
                             </p>
                             <SectionBlocks section={section} />
-                        </motion.div>
+                        </m.div>
                     </Fragment>
                 ))}
             </article>

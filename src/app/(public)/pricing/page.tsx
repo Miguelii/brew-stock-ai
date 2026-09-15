@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { TokenPackages } from '@/modules/tokens/token-packages'
 import { Separator } from '@/components/ui/separator'
 import { ClientEnv } from '@/env/client'
@@ -43,7 +43,7 @@ export default function PricingPage() {
             />
 
             <main id="main" className="flex-1 main-container">
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-8%' }}
@@ -58,18 +58,18 @@ export default function PricingPage() {
                             No subscriptions. Buy credits once, use them whenever you need.
                         </p>
                     </div>
-                </motion.div>
+                </m.div>
 
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, x: 24 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: '-8%' }}
                     transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 >
                     <Separator />
-                </motion.div>
+                </m.div>
 
-                <motion.section
+                <m.section
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-8%' }}
@@ -81,18 +81,18 @@ export default function PricingPage() {
                         className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                         packages={PACKAGES}
                     />
-                </motion.section>
+                </m.section>
 
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, x: 24 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: '-8%' }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 >
                     <Separator />
-                </motion.div>
+                </m.div>
 
-                <motion.section
+                <m.section
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-8%' }}
@@ -110,7 +110,7 @@ export default function PricingPage() {
                             </div>
                         ))}
                     </div>
-                </motion.section>
+                </m.section>
             </main>
         </>
     )

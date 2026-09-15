@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
-import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
+import { getCachedClaims } from '@/_bff/modules/auth/services/get-cached-claims.service'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Account'
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
 }
 
 export default async function AccountPage() {
-    const user = await getCachedSession()
+    const claims = await getCachedClaims()
 
-    if (!user) return notFound()
+    if (!claims) return notFound()
 
     return (
         <>
@@ -65,9 +65,9 @@ export default async function AccountPage() {
                     </div>
                     <div className="rounded-sm border border-border px-4 py-3 flex items-center gap-3">
                         <div className="size-9 rounded-full bg-accent-blue/10 flex items-center justify-center shrink-0">
-                            {user?.user_metadata?.avatar_url ? (
+                            {claims.avatarUrl ? (
                                 <Image
-                                    src={user.user_metadata.avatar_url}
+                                    src={claims.avatarUrl}
                                     alt="Profile"
                                     className="h-full w-full object-cover bg-background rounded-full"
                                     referrerPolicy="no-referrer"
@@ -76,11 +76,11 @@ export default async function AccountPage() {
                                 />
                             ) : (
                                 <span className="text-sm font-bold text-accent-blue uppercase">
-                                    {user.email?.[0] ?? '?'}
+                                    {claims.email?.[0] ?? '?'}
                                 </span>
                             )}
                         </div>
-                        <p className="text-sm font-medium">{user.email}</p>
+                        <p className="text-sm font-medium">{claims.email}</p>
                     </div>
                 </section>
 

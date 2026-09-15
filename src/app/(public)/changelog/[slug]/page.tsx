@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { CHANGELOG_ENTRIES, CHANGELOG_ENTRY_MAP } from '@/modules/changelog/changelog'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { ChangelogEntryBody } from '@/modules/changelog/changelog-entry-body'
 import { ChangelogMeta } from '@/modules/changelog/changelog-meta'
 
@@ -62,7 +62,7 @@ export default async function ChangelogEntryPage({ params }: PageProps<'/changel
 
             <main id="main" className="flex-1">
                 <div className="main-container">
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -93,7 +93,7 @@ export default async function ChangelogEntryPage({ params }: PageProps<'/changel
                         </header>
 
                         <ChangelogEntryBody entry={entry} />
-                    </motion.div>
+                    </m.div>
                 </div>
             </main>
         </>

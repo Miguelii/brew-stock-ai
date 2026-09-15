@@ -1,11 +1,11 @@
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { FAQ_GROUPS } from '@/modules/faq/faq-content'
 
 export function FaqList() {
     return (
         <div className="space-y-14">
             {FAQ_GROUPS.map((group) => (
-                <motion.section
+                <m.section
                     key={group.heading}
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -21,7 +21,7 @@ export function FaqList() {
                             </div>
                         ))}
                     </div>
-                </motion.section>
+                </m.section>
             ))}
         </div>
     )

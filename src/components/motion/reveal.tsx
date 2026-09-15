@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import type { ReactNode } from 'react'
 import { EASE } from '@/components/motion/constants'
 
@@ -24,7 +24,7 @@ type Props = {
  */
 export function Reveal({ children, className, delay = 0, distance = 40 }: Props) {
     return (
-        <motion.div
+        <m.div
             data-motion-transform
             className={className}
             initial={{ y: distance }}
@@ -33,6 +33,6 @@ export function Reveal({ children, className, delay = 0, distance = 40 }: Props)
             transition={{ duration: 0.9, ease: EASE, delay }}
         >
             {children}
-        </motion.div>
+        </m.div>
     )
 }

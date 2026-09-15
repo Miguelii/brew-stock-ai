@@ -3,6 +3,7 @@ import { logger } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
 import { CreateSbClientError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
+import { ReportStatus } from '@/types/ReportDTO'
 import { getStockAnalysis } from '@/_bff/modules/analysis/processors/get-stock-analysis.processor'
 import { sendPushNotificationToUser } from '@/_bff/modules/core/processors/send-push-notification-to-user.processor'
 import { selectReportForProcessing } from '@/_bff/modules/reports/repositories/reports.repository'
@@ -19,6 +20,15 @@ export const processReport = Effect.fn('processReport')(function* (
 
     const report = yield* selectReportForProcessing(supabase, reportId)
 
+    // Duplicate or late runs must not pay for a second generation
+    if (report.status !== ReportStatus.GENERATING) {
+        logger.log('Skipping report not in GENERATING', {
+            reportId: report.id,
+            status: report.status,
+        })
+        return { reportId: report.id }
+    }
+
     logger.log('Processing report', {
         reportId: report.id,
         stock: report.stock,
@@ -32,7 +42,7 @@ export const processReport = Effect.fn('processReport')(function* (
 
     logger.log('Report completed', { reportId: report.id })
 
-    // Non-fatal — a failed push notification must never cause the task to retry
+    // Non-fatal: a failed push notification must never cause the task to retry
     yield* sendPushNotificationToUser(
         report.user_id,
         `${report.stock} analysis ready`,

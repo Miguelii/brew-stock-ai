@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { SystemPrompt } from '../system.prompt'
+import { SystemPrompt } from '@/_bff/modules/analysis/prompts/system.prompt'
 
 describe('SystemPrompt', () => {
     it('instructs JSON response with analysis and sentiment', () => {
@@ -17,6 +17,10 @@ describe('SystemPrompt', () => {
 
     it('requires Investment Thesis Summary', () => {
         expect(SystemPrompt).toContain('Investment Thesis Summary')
+    })
+
+    it('forbids straight double quotes inside the analysis HTML', () => {
+        expect(SystemPrompt).toContain('NEVER write straight double quotes')
     })
 
     it('instructs to use real numbers for sentiment justification', () => {

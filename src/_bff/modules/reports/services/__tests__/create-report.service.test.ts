@@ -5,19 +5,28 @@ import { createReport } from '@/_bff/modules/reports/services/create-report.serv
 import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/_bff/modules/analysis/constants'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbServerClientMock, deductCreditMock, insertReportMock, enqueueMock } = vi.hoisted(
-    () => ({
-        createSbServerClientMock: vi.fn(),
-        deductCreditMock: vi.fn(),
-        insertReportMock: vi.fn(),
-        enqueueMock: vi.fn(),
-    })
-)
+const {
+    createSbServerClientMock,
+    deductCreditMock,
+    refundCreditsMock,
+    insertReportMock,
+    enqueueMock,
+} = vi.hoisted(() => ({
+    createSbServerClientMock: vi.fn(),
+    deductCreditMock: vi.fn(),
+    refundCreditsMock: vi.fn(),
+    insertReportMock: vi.fn(),
+    enqueueMock: vi.fn(),
+}))
 
 vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
 vi.mock('@/_bff/modules/credits/services/deduct-credit.service', () => ({
     deductCredit: deductCreditMock,
 }))
+vi.mock('@/_bff/modules/credits/services/refund-credits.service', () => ({
+    refundCredits: refundCreditsMock,
+}))
+vi.mock('@/_bff/lib/server-logger', () => ({ Logger: vi.fn() }))
 vi.mock('@/_bff/modules/reports/repositories/reports.repository', () => ({
     insertReport: insertReportMock,
 }))
@@ -35,6 +44,7 @@ describe('createReport', () => {
         deductCreditMock.mockReset().mockReturnValue(Effect.succeed(4))
         insertReportMock.mockReset().mockReturnValue(Effect.succeed('r-1'))
         enqueueMock.mockReset().mockReturnValue(Effect.void)
+        refundCreditsMock.mockReset().mockReturnValue(Effect.void)
     })
 
     it('deducts credits, inserts the report and enqueues background processing', async () => {
@@ -52,6 +62,30 @@ describe('createReport', () => {
             type: PROMPT_TYPE,
         })
         expect(enqueueMock).toHaveBeenCalledWith('r-1')
+        expect(refundCreditsMock).not.toHaveBeenCalled()
+    })
+
+    it('refunds the deducted credits and propagates the error when the insert fails', async () => {
+        insertReportMock.mockReturnValue(Effect.fail({ _tag: 'CreateReportError' }))
+
+        const exit = await Effect.runPromiseExit(createReport(USER, 'AAPL', PROMPT_TYPE))
+
+        expect(failureTag(exit)).toBe('CreateReportError')
+        expect(refundCreditsMock).toHaveBeenCalledWith(
+            'user-1',
+            PROMPT_COSTS_MAP[PROMPT_TYPE] ?? 1,
+            SUPABASE
+        )
+        expect(enqueueMock).not.toHaveBeenCalled()
+    })
+
+    it('still propagates the insert error when the refund also fails', async () => {
+        insertReportMock.mockReturnValue(Effect.fail({ _tag: 'CreateReportError' }))
+        refundCreditsMock.mockReturnValue(Effect.fail({ _tag: 'RefundCreditsError' }))
+
+        const exit = await Effect.runPromiseExit(createReport(USER, 'AAPL', PROMPT_TYPE))
+
+        expect(failureTag(exit)).toBe('CreateReportError')
     })
 
     it('fails with InvalidPromptTypeError before touching credits or the database', async () => {

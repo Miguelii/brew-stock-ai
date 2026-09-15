@@ -1,3 +1,4 @@
+// oxlint-disable import/max-dependencies
 import { Effect, Fiber } from 'effect'
 import { ServerEnv } from '@/env/server'
 import { AiGenerationError, InvalidPromptTypeError } from '@/_bff/lib/errors'
@@ -17,15 +18,17 @@ import {
     PROD_MODEL,
     PROMPTS_MAP,
     stockAnalysisSchema,
-    THINKING_BUDGET_TOKENS,
 } from '@/_bff/modules/analysis/constants'
 import { SystemPrompt } from '@/_bff/modules/analysis/prompts/system.prompt'
 import { calculateTokenCost } from '@/_bff/modules/analysis/helpers/calculate-token-cost.helper'
+import { normalizeSentiment } from '@/_bff/modules/analysis/helpers/normalize-sentiment.helper'
+import { isAnalysisComplete } from '@/_bff/modules/analysis/helpers/is-analysis-complete.helper'
+import { hasAnyStockData } from '@/_bff/modules/yahoo/helpers/get-yahoo-data-with-fallback.service.helper'
 import { getYahooTicker } from '@/_bff/modules/yahoo/processors/get-yahoo-ticker.processor'
 import { saveYahooData } from '@/_bff/modules/yahoo/processors/save-yahoo-data.processor'
 import { saveAnalysisToReport } from '@/_bff/modules/reports/processors/save-analysis-to-report.processor'
 import { getPriceHistoryService } from '@/_bff/modules/yahoo/services/get-price-history.service'
-import type { AnalyzeReportInput, MarketData } from '../types'
+import type { AnalyzeReportInput, MarketData } from '@/_bff/modules/analysis/types'
 
 const EMPTY_YAHOO_DATA: GetYahooDataResult = {
     scores: null,
@@ -67,7 +70,7 @@ const resolvePromptTemplate = Effect.fn('resolvePromptTemplate')(function* (prom
  */
 const fetchMarketData = Effect.fn('fetchMarketData')(function* (
     stockSymbol: string,
-    supabaseClient?: SupabaseClient
+    supabaseClient: SupabaseClient
 ) {
     const ticker = yield* getYahooTicker(stockSymbol).pipe(
         logAndRecover('getYahooTicker failed', stockSymbol, null)
@@ -94,7 +97,7 @@ const fetchMarketData = Effect.fn('fetchMarketData')(function* (
 /** Persist Yahoo data only when it came fresh from Yahoo. Never fails. */
 const saveFreshYahooData = Effect.fn('saveFreshYahooData')(function* (
     yahoo: YahooDataWithFallbackResult,
-    supabaseClient?: SupabaseClient
+    supabaseClient: SupabaseClient
 ) {
     if (!yahoo?.isFresh) return
 
@@ -110,7 +113,7 @@ const buildPrompt = (promptTemplate: string, stockSymbol: string, marketData: Ma
     const technicals =
         priceHistory && priceHistory.length > 0 ? computeTechnicalIndicators(priceHistory) : null
 
-    const hasContext = Boolean(yahoo?.data || technicals || news?.length)
+    const hasContext = Boolean((yahoo && hasAnyStockData(yahoo.data)) || technicals || news?.length)
 
     const context = hasContext
         ? `\n\n${buildYahooContext(yahoo?.data ?? EMPTY_YAHOO_DATA, technicals, news)}`
@@ -126,14 +129,10 @@ const generateAnalysis = Effect.fn('generateAnalysis')(function* (
 ) {
     const model = useBaseModel ? FREE_MODEL : PROD_MODEL
 
-    // Extended thinking is only enabled for the production model
+    // Adaptive thinking is only enabled for the production model
     const providerOptions = useBaseModel
         ? undefined
-        : {
-              anthropic: {
-                  thinking: { type: 'enabled', budgetTokens: THINKING_BUDGET_TOKENS },
-              },
-          }
+        : { anthropic: { thinking: { type: 'adaptive' } } }
 
     const { output, usage, finishReason } = yield* Effect.tryPromise({
         try: async () => {
@@ -182,7 +181,9 @@ const analyzeAndSaveReport = Effect.fn('analyzeAndSaveReport')(function* ({
         useBaseModel
     )
 
-    const { analysis, sentiment } = output
+    const analysis = output.analysis
+
+    const sentiment = normalizeSentiment(output.sentiment)
 
     const tokenUsdCost = calculateTokenCost(model, usage.inputTokens, usage.outputTokens)
 
@@ -196,11 +197,22 @@ const analyzeAndSaveReport = Effect.fn('analyzeAndSaveReport')(function* ({
         hasYahooFreshData: marketData.yahoo?.isFresh ?? false,
     })
 
-    if (!analysis) {
+    // Never save a truncated analysis: failing lets the job mark the report FAILED and refund.
+    // Skipped for the base model, which only runs in dev, where any output is good enough.
+    const shouldRejectIncomplete = !useBaseModel && !isAnalysisComplete(analysis, finishReason)
+
+    if (shouldRejectIncomplete) {
+        logger.error('Incomplete analysis', {
+            reportId,
+            finishReason,
+            outputTokens: usage.outputTokens,
+            analysisLength: analysis.length,
+        })
+
         return yield* new AiGenerationError({
             symbol: `|${stockSymbol}|`,
-            cause: 'Model returned incomplete output',
-            error_hash: ErrorCode.ANALYSIS_AI_NO_OUTPUT,
+            cause: 'Model returned incomplete analysis',
+            error_hash: ErrorCode.ANALYSIS_AI_INCOMPLETE,
         })
     }
 
@@ -220,7 +232,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     stockSymbol: string,
     promptType: string,
     reportId: ReportDTO['id'],
-    supabaseClient?: SupabaseClient,
+    supabaseClient: SupabaseClient,
     useBaseModel?: boolean
 ) {
     const promptTemplate = yield* resolvePromptTemplate(promptType)

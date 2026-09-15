@@ -18,7 +18,13 @@ vi.mock('@/_bff/modules/core/processors/send-push-notification-to-user.processor
     sendPushNotificationToUser: sendPushMock,
 }))
 
-const REPORT = { id: 'report-1', stock: 'AAPL', type: 'fundamental', user_id: 'user-1' }
+const REPORT = {
+    id: 'report-1',
+    stock: 'AAPL',
+    type: 'fundamental',
+    user_id: 'user-1',
+    status: 'GENERATING',
+}
 
 // Minimal client implementing .from('reports').select().eq().single() and .update().eq().
 const makeSupabase = (fetchResult: { data: unknown; error: unknown }) => {
@@ -60,6 +66,16 @@ describe('processReport', () => {
             'AAPL analysis ready',
             expect.any(String)
         )
+    })
+
+    it('skips the analysis when the report is no longer GENERATING', async () => {
+        const { client } = makeSupabase({ data: { ...REPORT, status: 'COMPLETED' }, error: null })
+        createSbAdminClientMock.mockReturnValue(client)
+
+        const result = await Effect.runPromise(processReport('report-1'))
+        expect(result).toEqual({ reportId: 'report-1' })
+        expect(getStockAnalysisMock).not.toHaveBeenCalled()
+        expect(sendPushMock).not.toHaveBeenCalled()
     })
 
     it('fails with FetchReportForTaskError when the report does not exist', async () => {

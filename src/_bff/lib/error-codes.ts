@@ -2,7 +2,7 @@ export enum ErrorCode {
     // Analysis - Stock Analysis
     ANALYSIS_INVALID_PROMPT = 'x7kf2m9p',
     ANALYSIS_AI_GENERATION = 'q3vn8w4j',
-    ANALYSIS_AI_NO_OUTPUT = 'r6ht5c1b',
+    ANALYSIS_AI_INCOMPLETE = 'r6ht5c1b',
 
     // Analysis - Latest News
     LATEST_NEWS_FETCH = 'c3nh8w2q',
@@ -18,10 +18,8 @@ export enum ErrorCode {
     YAHOO_PRICE_HISTORY = 'h8kt3x5p',
 
     // Analysis - Save
-    SAVE_ANALYSIS_SB_CLIENT = 'v9tj3f8c',
     SAVE_ANALYSIS_UPDATE = 'h6wn2k5q',
     SAVE_ANALYSIS_UPDATE_ERR = 'b4xr8g1m',
-    SAVE_STOCK_DATA_SB_CLIENT = 'p7cj5v9t',
     SAVE_STOCK_DATA_INSERT = 'k2mf6h4w',
     SAVE_STOCK_DATA_ERR = 'g9nb3x7d',
 

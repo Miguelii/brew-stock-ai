@@ -136,7 +136,11 @@ export const selectReportForProcessing = Effect.fn('selectReportForProcessing')(
     // Only the columns the processing job needs — `*` would drag the large ai_response JSON along.
     const { data: report, error } = yield* Effect.tryPromise({
         try: () =>
-            supabase.from('reports').select('id, stock, type, user_id').eq('id', reportId).single(),
+            supabase
+                .from('reports')
+                .select('id, stock, type, user_id, status')
+                .eq('id', reportId)
+                .single(),
         catch: (cause) =>
             new FetchReportForTaskError({ cause, error_hash: ErrorCode.PROCESS_REPORT_FETCH }),
     })
@@ -148,7 +152,7 @@ export const selectReportForProcessing = Effect.fn('selectReportForProcessing')(
         })
     }
 
-    return report as Pick<ReportDTO, 'id' | 'stock' | 'type' | 'user_id'>
+    return report as Pick<ReportDTO, 'id' | 'stock' | 'type' | 'user_id' | 'status'>
 })
 
 // Marks the report as FAILED exactly once: the `neq` guard means only the first caller
@@ -260,7 +264,9 @@ export const updateReportWithAnalysis = Effect.fn('updateReportWithAnalysis')(fu
                     ticker: params.ticker ?? null,
                     cost: params.tokenUsdCost ?? 'N/A',
                 })
-                .eq('id', reportId),
+                .eq('id', reportId)
+                // Never overwrite a report that already FAILED (and was refunded)
+                .eq('status', ReportStatus.GENERATING),
         catch: (cause) =>
             new SaveAnalysisError({ cause, error_hash: ErrorCode.SAVE_ANALYSIS_UPDATE }),
     })

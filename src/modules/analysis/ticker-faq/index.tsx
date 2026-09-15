@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from 'lucide-react'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 
 type Props = {
     companyName: string
@@ -11,7 +11,7 @@ type Props = {
 
 export function TickerFaq({ companyName, questions }: Props) {
     return (
-        <motion.section
+        <m.section
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-8%' }}
@@ -36,6 +36,6 @@ export function TickerFaq({ companyName, questions }: Props) {
                 ))}
                 <div className="border-t border-border" />
             </div>
-        </motion.section>
+        </m.section>
     )
 }

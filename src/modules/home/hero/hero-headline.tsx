@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { EASE } from '@/components/motion/constants'
 import { cn } from '@/lib/utils'
 
@@ -21,7 +21,7 @@ export function HeroHeadline({ lines, className }: Props) {
         <h1 className={cn('display display-hero', className)}>
             {lines.map((line, i) => (
                 <span key={line} className="block overflow-hidden pb-[0.08em] -mb-[0.08em]">
-                    <motion.span
+                    <m.span
                         data-motion-transform
                         className="block"
                         initial={{ y: '110%' }}
@@ -29,7 +29,7 @@ export function HeroHeadline({ lines, className }: Props) {
                         transition={{ duration: 1.1, ease: EASE, delay: 0.25 + i * 0.12 }}
                     >
                         {line}
-                    </motion.span>
+                    </m.span>
                 </span>
             ))}
         </h1>

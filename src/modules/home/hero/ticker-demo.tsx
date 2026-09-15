@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { CheckIcon, SearchIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { TICKERS, TYPE_INTERVAL_MS, GENERATING_MS, READY_MS } from '@/modules/home/hero/constants'
@@ -80,7 +80,7 @@ export function TickerDemo() {
                 </div>
                 <div className="h-1 w-full overflow-hidden bg-ink/8">
                     {phase === 'generating' && (
-                        <motion.div
+                        <m.div
                             initial={{ scaleX: 0 }}
                             animate={{ scaleX: 1 }}
                             transition={{ duration: GENERATING_MS / 1000, ease: 'linear' }}

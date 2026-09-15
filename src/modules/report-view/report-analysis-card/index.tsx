@@ -1,6 +1,6 @@
 import type { ReportDTO } from '@/types/ReportDTO'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { PROMPT_OPTIONS } from '@/_bff/modules/analysis/constants'
+import { PROMPT_OPTIONS } from '@/lib/constants'
 
 type Props = {
     report: ReportDTO

@@ -2,12 +2,11 @@ import 'server-only'
 
 import { cache } from 'react'
 import { Effect } from 'effect'
-import type { User } from '@supabase/supabase-js'
-import { getCachedSession } from '@/_bff/modules/auth/services/get-cached-session.service'
+import { getCachedClaims } from '@/_bff/modules/auth/services/get-cached-claims.service'
 import { isAppMaintenanceFlag } from '@/flags'
 
 type AnalysisPageData = {
-    user: User | null
+    isAuthenticated: boolean
     isMaintenance: boolean
 }
 
@@ -21,8 +20,9 @@ export const getAnalysisPageData = cache(
         Effect.runPromise(
             Effect.all(
                 {
-                    user: Effect.tryPromise(() => getCachedSession()).pipe(
-                        Effect.catchAll(() => Effect.succeed(null))
+                    isAuthenticated: Effect.tryPromise(() => getCachedClaims()).pipe(
+                        Effect.map((claims) => claims !== null),
+                        Effect.catchAll(() => Effect.succeed(false))
                     ),
                     isMaintenance: Effect.tryPromise(() => isAppMaintenanceFlag()).pipe(
                         Effect.catchAll(() => Effect.succeed(false))

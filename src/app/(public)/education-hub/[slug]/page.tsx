@@ -8,7 +8,7 @@ import {
 } from '@/modules/education-hub/education-hub-articles'
 import { ArticleSchema, BreadcrumbSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
 import { SITE_AUTHOR_NAME } from '@/lib/constants'
 import { fmtDate } from '@/lib/formatters'
@@ -76,7 +76,7 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
             />
 
             <main id="main" className="main-container">
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -124,7 +124,7 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
                     </header>
 
                     <EducationHubArticle article={article} />
-                </motion.div>
+                </m.div>
             </main>
         </>
     )

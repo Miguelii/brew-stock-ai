@@ -1,4 +1,4 @@
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import type { TickerPage } from '@/types/TickerPage'
 import type { PropsWithChildren } from 'react'
 
@@ -14,7 +14,7 @@ type Props = {
 
 function Section({ title, index, children }: SectionProps) {
     return (
-        <motion.section
+        <m.section
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-8%' }}
@@ -22,7 +22,7 @@ function Section({ title, index, children }: SectionProps) {
         >
             <h2 className="text-2xl font-bold tracking-tight mb-4">{title}</h2>
             {children}
-        </motion.section>
+        </m.section>
     )
 }
 

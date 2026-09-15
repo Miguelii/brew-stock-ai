@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'motion/react'
+import { m, useScroll, useTransform } from 'motion/react'
 import { useRef, type ReactNode } from 'react'
 
 type Props = {
@@ -31,9 +31,9 @@ export function Parallax({ children, className, speed = 10 }: Props) {
 
     return (
         <div ref={ref} className={className}>
-            <motion.div data-motion-transform className="h-full" style={{ y }}>
+            <m.div data-motion-transform className="h-full" style={{ y }}>
                 {children}
-            </motion.div>
+            </m.div>
         </div>
     )
 }

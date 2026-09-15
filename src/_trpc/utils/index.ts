@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server'
 import { Cause, Effect, Exit, Option } from 'effect'
 import { Logger } from '@/_bff/lib/server-logger'
-import { getCachedUserId } from '@/_bff/modules/auth/services/get-cached-user-id.service'
+import { getCachedClaims } from '@/_bff/modules/auth/services/get-cached-claims.service'
 
 export async function runEffect<A, E extends { _tag: string; error_hash: string }>(
     effect: Effect.Effect<A, E>,
@@ -12,7 +12,7 @@ export async function runEffect<A, E extends { _tag: string; error_hash: string 
 
     if (Exit.isSuccess(exit)) return exit.value
 
-    const userId = await getCachedUserId()
+    const userId = (await getCachedClaims())?.userId
 
     const maybeError = Cause.failureOption(exit.cause)
 

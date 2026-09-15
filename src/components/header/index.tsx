@@ -6,7 +6,7 @@ import type { NavLink } from '@/types/NavLink'
 import Logo from '@/components/logo'
 import Image from 'next/image'
 import { UserRound } from 'lucide-react'
-import type { User } from '@supabase/supabase-js'
+import type { SessionClaims } from '@/_bff/modules/auth/services/get-cached-claims.service'
 
 const PUBLIC_NAV_LINKS: NavLink[] = [
     {
@@ -23,7 +23,7 @@ const AUTH_NAV_LINKS: NavLink[] = [
 ]
 
 type Props = {
-    userPromise: Promise<User | null>
+    userPromise: Promise<SessionClaims | null>
 }
 
 export async function Header({ userPromise }: Props) {
@@ -48,7 +48,7 @@ export async function Header({ userPromise }: Props) {
                         <MobileMenu
                             isAuthenticated={!!user}
                             nav={navLinks}
-                            avatar_url={user?.user_metadata?.avatar_url}
+                            avatar_url={user?.avatarUrl ?? undefined}
                         />
 
                         <div className="hidden items-center gap-2.5 md:flex">
@@ -58,9 +58,9 @@ export async function Header({ userPromise }: Props) {
                                 <>
                                     <CreditsDisplay />
                                     <ProfileDropdownMenu>
-                                        {user?.user_metadata?.avatar_url ? (
+                                        {user.avatarUrl ? (
                                             <Image
-                                                src={user.user_metadata.avatar_url}
+                                                src={user.avatarUrl}
                                                 alt="Profile"
                                                 className="h-full w-full object-cover"
                                                 referrerPolicy="no-referrer"

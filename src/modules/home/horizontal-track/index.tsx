@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useMotionTemplate, useScroll, useTransform } from 'motion/react'
+import { m, useMotionTemplate, useScroll, useTransform } from 'motion/react'
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
 type Props = {
@@ -44,12 +44,9 @@ export function HorizontalTrack({ children }: Props) {
 
         // Web fonts change card widths, so re-measure once they land.
         void document.fonts?.ready.then(measure)
-        window.addEventListener('resize', measure)
 
-        return () => {
-            observer.disconnect()
-            window.removeEventListener('resize', measure)
-        }
+        // Both observed elements resize with the viewport, so no window listener is needed
+        return () => observer.disconnect()
     }, [])
 
     return (
@@ -65,14 +62,14 @@ export function HorizontalTrack({ children }: Props) {
                 data-scroll-sticky
                 className="lg:sticky lg:top-0 lg:flex lg:h-svh lg:items-center lg:overflow-hidden"
             >
-                <motion.div
+                <m.div
                     ref={trackRef}
                     data-scroll-track
                     style={{ '--track-x': trackX } as CSSProperties}
                     className="-mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-5 px-5 pb-4 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:h-[min(44vh,380px)] lg:w-max lg:snap-none lg:overflow-x-visible lg:px-0 lg:pb-0 lg:[transform:var(--track-x)]"
                 >
                     {children}
-                </motion.div>
+                </m.div>
             </div>
         </div>
     )

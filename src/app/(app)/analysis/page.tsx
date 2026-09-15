@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AnalysisPage() {
-    const { user, isMaintenance } = await getAnalysisPageData()
+    const { isAuthenticated, isMaintenance } = await getAnalysisPageData()
     return (
         <>
             <BreadcrumbSchema
@@ -43,7 +43,10 @@ export default async function AnalysisPage() {
             {/* The hero is full-bleed under the fixed header, so it cancels its spacer. */}
             <main id="main" className="-mt-20 flex-1 overflow-x-clip">
                 <AnalysisHero>
-                    <AnalysisFormCard isAuthenticated={!!user} isMaintenance={isMaintenance} />
+                    <AnalysisFormCard
+                        isAuthenticated={isAuthenticated}
+                        isMaintenance={isMaintenance}
+                    />
                 </AnalysisHero>
 
                 <AnalysisTypesGrid />

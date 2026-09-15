@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { ClientEnv } from '@/env/client'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { BreadcrumbSchema } from '@/components/structured-data'
 import { ChangelogList } from '@/modules/changelog/changelog-list'
 
@@ -41,7 +41,7 @@ export default function ChangelogPage() {
             />
 
             <main id="main" className="main-container">
-                <motion.header
+                <m.header
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -56,7 +56,7 @@ export default function ChangelogPage() {
                     <p className="text-primary-muted text-lg leading-relaxed">
                         Product updates and improvements to our AI stock analysis.
                     </p>
-                </motion.header>
+                </m.header>
 
                 <ChangelogList />
             </main>

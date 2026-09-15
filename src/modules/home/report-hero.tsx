@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -14,7 +14,7 @@ export function ReportHero() {
         <section className="main-container-lg border-b border-border">
             <div className="pb-24 lg:pb-32">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, y: 28 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -47,16 +47,16 @@ export function ReportHero() {
                                 </Button>
                             </Link>
                         </div>
-                    </motion.div>
+                    </m.div>
 
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, x: 24 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                         className="flex flex-col gap-5"
                     >
                         {stats.map((stat, i) => (
-                            <motion.div
+                            <m.div
                                 key={stat.label}
                                 initial={{ opacity: 0, x: 16 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -73,9 +73,9 @@ export function ReportHero() {
                                 <span className="text-muted-foreground text-base">
                                     {stat.label}
                                 </span>
-                            </motion.div>
+                            </m.div>
                         ))}
-                    </motion.div>
+                    </m.div>
                 </div>
             </div>
         </section>

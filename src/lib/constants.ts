@@ -1,4 +1,5 @@
 import type { GTMWithoutPrefix } from '@/types/GTM'
+import { PropmptsEnum } from '@/types/PropmptsEnum'
 
 // #### PATHS ####
 export const SW_PATH = '/sw.js'
@@ -44,4 +45,37 @@ export const SITE_AUTHOR_URL = 'https://brewstockai.com'
 export const PRIVACY_PAGE_LAST_UPDATE_AT = '2026-07-17'
 
 export const DISCLAIMER_PAGE_LAST_UPDATE_AT = '2026-07-17'
+//############
+
+// #### ANALYSIS PROMPTS ####
+// Labels and credit costs, shared by the UI and the backend (prompt bodies stay in _bff)
+export const PROMPT_TYPES = {
+    [PropmptsEnum.STOCK_ANALYSIS]: {
+        type: PropmptsEnum.STOCK_ANALYSIS,
+        label: 'Full Wall Street Style Stock Analysis',
+        cost: 2,
+    },
+    [PropmptsEnum.DEEP_FINANCIAL_BREAKDOWN]: {
+        type: PropmptsEnum.DEEP_FINANCIAL_BREAKDOWN,
+        label: 'Deep Financial Breakdown',
+        cost: 2,
+    },
+    [PropmptsEnum.MOAT_ANALYSIS]: {
+        type: PropmptsEnum.MOAT_ANALYSIS,
+        label: 'Competitive Advantage (Moat) Analysis',
+        cost: 1,
+    },
+    [PropmptsEnum.RISK_ANALYSIS]: {
+        type: PropmptsEnum.RISK_ANALYSIS,
+        label: 'Risk Analysis',
+        cost: 1,
+    },
+    [PropmptsEnum.GROWTH_POTENTIAL_ANALYSIS]: {
+        type: PropmptsEnum.GROWTH_POTENTIAL_ANALYSIS,
+        label: 'Growth Potential Analysis',
+        cost: 1,
+    },
+} as const
+
+export const PROMPT_OPTIONS = Object.values(PROMPT_TYPES)
 //############

@@ -412,22 +412,6 @@ When placing light text on a dark surface, always use `text-primary-foreground` 
 
 ---
 
-### Motion — ALWAYS use `motion/react-client` in pages and Server Components
-
-**Never** import from `motion/react` directly in `page.tsx`, `layout.tsx`, or any Server Component. **Always** use the RSC-safe client entry point:
-
-```tsx
-// ❌ Wrong — breaks Server Components / page.tsx
-import { motion } from 'motion/react'
-
-// ✅ Correct — RSC-safe import for pages and Server Components
-import * as motion from 'motion/react-client'
-```
-
-The `motion/react-client` entry is the correct import for Next.js App Router pages and Server Components. Use `motion/react` only inside files already marked with `'use client'` that are **not** page or layout files.
-
----
-
 ### Component props — ALWAYS use a named `type Props`
 
 **Never** inline the type directly in the function signature. **Always** declare a named `type Props` above the component:

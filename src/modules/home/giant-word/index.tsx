@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { useCallback, useEffect, useRef } from 'react'
 import { EASE } from '@/components/motion/constants'
 import { cn } from '@/lib/utils'
@@ -46,14 +46,11 @@ export function GiantWord({ word, className }: Props) {
         // Web fonts land after first paint and change the natural width.
         void document.fonts?.ready.then(fit)
 
+        // Observing the container also covers viewport resizes, so no window listener is needed
         const observer = new ResizeObserver(fit)
         if (containerRef.current) observer.observe(containerRef.current)
-        window.addEventListener('resize', fit)
 
-        return () => {
-            observer.disconnect()
-            window.removeEventListener('resize', fit)
-        }
+        return () => observer.disconnect()
     }, [fit])
 
     const characters = Array.from(word)
@@ -67,7 +64,7 @@ export function GiantWord({ word, className }: Props) {
                     className="display display-giant inline-block whitespace-nowrap"
                 >
                     {characters.map((character, i) => (
-                        <motion.span
+                        <m.span
                             key={`${character}-${i}`}
                             data-motion-transform
                             className="inline-block"
@@ -77,7 +74,7 @@ export function GiantWord({ word, className }: Props) {
                             transition={{ duration: 0.8, ease: EASE, delay: i * 0.04 }}
                         >
                             {character}
-                        </motion.span>
+                        </m.span>
                     ))}
                 </span>
             </span>

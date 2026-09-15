@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema, FAQSchema } from '@/components/structured-data'
 import { FAQ_GROUPS } from '@/modules/faq/faq-content'
@@ -47,7 +47,7 @@ export default function FaqPage() {
             <FAQSchema questions={ALL_QUESTIONS} />
 
             <main id="main" className="main-container">
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-8%' }}
@@ -68,7 +68,7 @@ export default function FaqPage() {
                         </Link>
                         .
                     </p>
-                </motion.div>
+                </m.div>
 
                 <FaqList />
             </main>

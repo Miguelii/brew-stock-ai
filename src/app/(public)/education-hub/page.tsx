@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { ClientEnv } from '@/env/client'
-import * as motion from 'motion/react-client'
+import * as m from 'motion/react-m'
 import { EducationHubList } from '@/modules/education-hub/education-hub-list'
 import { BreadcrumbSchema } from '@/components/structured-data'
 
@@ -42,7 +42,7 @@ export default function EducationHubPage() {
             <main id="main" className="flex-1 main-container ">
                 <section className="border-b border-border">
                     <div className="pb-12 lg:pb-12">
-                        <motion.div
+                        <m.div
                             initial={{ opacity: 0, y: 24 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -55,7 +55,7 @@ export default function EducationHubPage() {
                                 reading financial reports to understanding competitive moats and
                                 risk.
                             </p>
-                        </motion.div>
+                        </m.div>
                     </div>
                 </section>
 

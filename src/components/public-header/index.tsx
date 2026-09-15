@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Logo from '@/components/logo'
-import { AnimatePresence, LazyMotion, domAnimation, m } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -19,7 +19,7 @@ export function PublicHeader() {
     useHotkeys('Escape', () => setMenuOpen(false), { enabled: menuOpen })
 
     return (
-        <LazyMotion features={domAnimation} strict>
+        <>
             {/* Reserves room under the fixed bar for pages that are not full-bleed. */}
             <div className="h-20" aria-hidden="true" />
 
@@ -156,6 +156,6 @@ export function PublicHeader() {
                     )}
                 </AnimatePresence>
             </div>
-        </LazyMotion>
+        </>
     )
 }

@@ -132,6 +132,10 @@ export default function RootLayout({ children }: Props) {
                 <meta name="apple-mobile-web-app-title" content="BrewStockAI" />
             </head>
             <body className="min-h-screen flex flex-col">
+                <ServiceWorkerRegister />
+                <VercelAnalytics />
+                <VercelSpeedInsights />
+                <GtmScript />
                 <TrpcContextProvider>
                     <MotionProvider>
                         <WebSiteSchema />
@@ -143,11 +147,6 @@ export default function RootLayout({ children }: Props) {
                         <Footer />
                     </MotionProvider>
                 </TrpcContextProvider>
-                <ServiceWorkerRegister />
-                {/* Third-party scripts last, inside <body>: only <head> and <body> are valid children of <html> */}
-                <VercelAnalytics />
-                <VercelSpeedInsights />
-                <GtmScript />
             </body>
         </html>
     )

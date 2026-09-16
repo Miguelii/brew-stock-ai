@@ -8,7 +8,7 @@ import { ClientEnv } from '@/env/client'
 import { getAnalysisPageData } from '@/lib/get-analysis-page-data.helper'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
-const META_TITLE = 'AI Stock Analysis'
+const META_TITLE = 'Stock Analysis'
 const META_DESCRIPTION =
     'Get a free AI-powered stock analysis in under 2 minutes. Enter any stock ticker for financial health, risk assessment, and growth potential. No credit card needed.'
 const META_URL = `${SITE_URL}/analysis`

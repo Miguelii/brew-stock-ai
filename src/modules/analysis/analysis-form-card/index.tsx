@@ -27,7 +27,9 @@ import {
 } from '@/components/ui/select'
 import { useAnalysisForm } from '@/modules/analysis/analysis-form-card/use-analysis-form'
 import { Input } from '@/components/ui/input'
-import { AUTH_PAGE_PATH, MAX_STOCK_INPUT_LENGHT, PROMPT_OPTIONS } from '@/lib/constants'
+import { AUTH_PAGE_PATH } from '@/lib/constants'
+import { MAX_STOCK_INPUT_LENGTH } from '@/_bff/core/constants/stock-input.constants'
+import { PROMPT_OPTIONS } from '@/_bff/core/constants/prompt-types.constants'
 import { useAnalysisCardHandlers } from '@/modules/analysis/analysis-form-card/use-analysis-card-handlers'
 import { useGetCredits } from '@/hooks/use-get-credits'
 import { cn, pluralizeCredits } from '@/lib/utils'
@@ -120,7 +122,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker, isMaintenance
                                                 onChange={(e) =>
                                                     field.onChange(e.target.value.toUpperCase())
                                                 }
-                                                maxLength={MAX_STOCK_INPUT_LENGHT}
+                                                maxLength={MAX_STOCK_INPUT_LENGTH}
                                                 disabled={defaultTicker != null}
                                             />
                                         </div>

@@ -3,16 +3,18 @@ import { Effect } from 'effect'
 import { sbSendOtp } from '@/_bff/modules/auth/services/sb-send-otp.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbServerClientMock } = vi.hoisted(() => ({ createSbServerClientMock: vi.fn() }))
+const { createDBServerClientMock } = vi.hoisted(() => ({ createDBServerClientMock: vi.fn() }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 
 const signInWithOtp = vi.fn()
 
 describe('sbSendOtp', () => {
     beforeEach(() => {
         signInWithOtp.mockReset().mockResolvedValue({ error: null })
-        createSbServerClientMock.mockReset().mockResolvedValue({ auth: { signInWithOtp } })
+        createDBServerClientMock.mockReset().mockResolvedValue({ auth: { signInWithOtp } })
     })
 
     it('sends the OTP allowing new users to be created', async () => {

@@ -1,6 +1,7 @@
 'use client'
 
-import { formatAmount, formatDate } from '@/lib/formatters'
+import { formatAmount } from '@/lib/formatters'
+import { formatDate } from '@/_bff/core/utils/formatters.utils'
 import { ReceiptIcon } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'

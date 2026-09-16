@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { Effect, Exit } from 'effect'
-import { createSbServerClient, safeRedirectUrl } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
+import { safeRedirectUrl } from '@/lib/utils.server'
 import { ClientEnv } from '@/env/client'
 import { CreateSbClientError, OAuthCallbackError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
@@ -12,7 +13,7 @@ const errorUrl = new URL(`${AUTH_PAGE_PATH}?error=oauth`, siteUrl)
 
 const handleOAuthCallback = Effect.fn('handleOAuthCallback')(function* (code: string) {
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.OAUTH_CALLBACK_SB_CLIENT }),
     })

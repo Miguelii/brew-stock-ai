@@ -1,12 +1,12 @@
 import { cn } from '@/lib/utils'
-import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
+import type { MetricTile } from '@/types/MetricTile'
 import { MetricRow } from '@/modules/report-view/report-financials-card/metric-row'
 import {
     gradeCategory,
     gradeWord,
     qualityBgToken,
     qualityToken,
-} from '@/modules/report-view/report-financials-card/metric-quality'
+} from '@/_bff/core/helpers/metric-quality.helper'
 
 type Props = {
     title: string

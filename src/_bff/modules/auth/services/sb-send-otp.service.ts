@@ -1,13 +1,13 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { CreateSbClientError, SendOtpError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 
 export const sbSendOtp = Effect.fn('sbSendOtp')(function* (email: string) {
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.AUTH_OTP_SEND_SB_CLIENT }),
     })

@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { cache } from 'react'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 
 export type SessionClaims = {
     userId: string
@@ -22,7 +22,7 @@ export type SessionClaims = {
  */
 export const getCachedClaims = cache(async (): Promise<SessionClaims | null> => {
     try {
-        const supabase = await createSbServerClient()
+        const supabase = await createDBServerClient()
         const { data } = await supabase.auth.getClaims()
         const claims = data?.claims
 

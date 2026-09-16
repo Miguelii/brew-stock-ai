@@ -1,5 +1,8 @@
 import { Match } from 'effect'
-import { MAX_STOCK_INPUT_LENGHT, STOCK_INPUT_PATTERN } from '@/lib/constants'
+import {
+    MAX_STOCK_INPUT_LENGTH,
+    STOCK_INPUT_PATTERN,
+} from '@/_bff/core/constants/stock-input.constants'
 import { protectedProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
@@ -12,7 +15,7 @@ export const CREATE_REPORT_PROTECTED_CONTROLLER = protectedProcedure
                 .string()
                 .trim()
                 .min(1)
-                .max(MAX_STOCK_INPUT_LENGHT)
+                .max(MAX_STOCK_INPUT_LENGTH)
                 .regex(STOCK_INPUT_PATTERN),
             promptType: z.string().min(1),
         })

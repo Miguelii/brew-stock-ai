@@ -3,15 +3,17 @@ import { Effect } from 'effect'
 import { getAdminUsers } from '@/_bff/modules/admin/services/get-admin-users.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbAdminClientMock, isAdminMock, listUsersMock, selectAllUserCreditsMock } =
+const { createDBAdminClientMock, isAdminMock, listUsersMock, selectAllUserCreditsMock } =
     vi.hoisted(() => ({
-        createSbAdminClientMock: vi.fn(),
+        createDBAdminClientMock: vi.fn(),
         isAdminMock: vi.fn(),
         listUsersMock: vi.fn(),
         selectAllUserCreditsMock: vi.fn(),
     }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBAdminClient: createDBAdminClientMock,
+}))
 vi.mock('@/_bff/modules/admin/services/is-admin.service', () => ({
     isAdmin: isAdminMock,
 }))
@@ -22,7 +24,7 @@ vi.mock('@/_bff/modules/admin/repositories/admin.repository', () => ({
 
 describe('getAdminUsers', () => {
     beforeEach(() => {
-        createSbAdminClientMock.mockReset().mockReturnValue({ from: vi.fn() })
+        createDBAdminClientMock.mockReset().mockReturnValue({ from: vi.fn() })
         isAdminMock.mockReset().mockReturnValue(Effect.succeed(true))
         listUsersMock.mockReset().mockReturnValue(Effect.succeed([]))
         selectAllUserCreditsMock.mockReset().mockReturnValue(Effect.succeed([]))

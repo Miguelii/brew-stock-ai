@@ -1,25 +1,22 @@
 import { cn } from '@/lib/utils'
-import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
+import type { MetricTile } from '@/types/MetricTile'
 import {
-    evaluateMetric,
-    metricHelp,
+    getMetricRowState,
     qualityToken,
-} from '@/modules/report-view/report-financials-card/metric-quality'
+    type MetricTone,
+} from '@/_bff/core/helpers/metric-quality.helper'
 
 type Props = MetricTile
 
-export function MetricRow({ label, value, rawValue, metricKey, helper, context }: Props) {
-    const isNA = value === 'N/A'
-    const evaluation = context || isNA ? null : evaluateMetric(metricKey, rawValue ?? null)
-    const help = context ? undefined : (helper ?? metricHelp(metricKey))
+const toneClass = (tone: MetricTone): string => {
+    if (tone === 'na') return 'text-ink/60'
+    if (tone === 'plain') return 'text-ink'
+    return qualityToken(tone)
+}
 
-    const hasEvaluation = evaluation && evaluation.verdict !== 'N/A'
-
-    const getColor = () => {
-        if (isNA) return 'text-ink/60'
-        if (!evaluation) return 'text-ink'
-        return qualityToken(evaluation.quality)
-    }
+export function MetricRow(metric: Props) {
+    const { label, value } = metric
+    const { help, verdict, tone } = getMetricRowState(metric)
 
     return (
         <div className="flex items-start justify-between gap-3 border-t border-ink/10 py-2 first:border-t-0 first:pt-0">
@@ -28,12 +25,12 @@ export function MetricRow({ label, value, rawValue, metricKey, helper, context }
                 {help && <span className="text-xs leading-tight text-ink/45">{help}</span>}
             </div>
             <div className="flex shrink-0 flex-col items-end text-right gap-1">
-                <span className={cn('text-md font-semibold leading-tight', getColor())}>
+                <span className={cn('text-md font-semibold leading-tight', toneClass(tone))}>
                     {value}
                 </span>
-                {hasEvaluation && (
-                    <span className={cn('text-xs font-medium leading-none', getColor())}>
-                        {evaluation.verdict}
+                {verdict != null && (
+                    <span className={cn('text-xs font-medium leading-none', toneClass(tone))}>
+                        {verdict}
                     </span>
                 )}
             </div>

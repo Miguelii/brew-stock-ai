@@ -1,7 +1,7 @@
 import { ServerEnv } from '@/env/server'
 import type { NewsItem } from '@/types/news'
 import { unstable_cache } from 'next/cache'
-import { toIso } from '@/lib/formatters'
+import { toIso } from '@/_bff/core/utils/formatters.utils'
 import { LATEST_NEWS_CACHE_KEY, LATEST_NEWS_TTL } from '@/_bff/modules/finnhub/constants'
 
 const FETCH_TIMEOUT_MS = 30_000

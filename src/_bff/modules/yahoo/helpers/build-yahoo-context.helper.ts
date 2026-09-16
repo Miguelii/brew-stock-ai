@@ -1,7 +1,7 @@
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
 import type { StockFinancials, StockFundamentals, StockTechnicals } from '@/types/ReportDTO'
 import type { NewsItem } from '@/types/news'
-import { fmtNum, fmtPct, fmtLarge, fmtPrice, formatDate } from '@/lib/formatters'
+import { fmtNum, fmtPct, fmtLarge, fmtPrice, formatDate } from '@/_bff/core/utils/formatters.utils'
 import { NEWS_SUMMARY_MAX_CHARS, pct1 } from './utils.helper'
 
 /**

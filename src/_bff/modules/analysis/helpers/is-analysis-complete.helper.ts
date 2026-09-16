@@ -1,4 +1,4 @@
-import { extractInvestmentThesis } from '@/lib/report-html'
+import { extractInvestmentThesis } from '@/_bff/core/helpers/report-html.helper'
 
 const CLOSING_BLOCK_TAG = /<\/(p|ul|ol)>$/iu
 

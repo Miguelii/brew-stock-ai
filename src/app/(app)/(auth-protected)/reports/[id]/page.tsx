@@ -18,8 +18,8 @@ import { ClientEnv } from '@/env/client'
 import { ReportLatestNewsServer } from '@/modules/report-view/report-latest-news-card/report-latest-news-server'
 import { ReportLatestNewsCardSkeleton } from '@/modules/report-view/report-latest-news-card/report-latest-news-card-skeleton'
 import { createCaller } from '@/_trpc/server/caller'
-import { sanitizeReportHtml } from '@/_bff/modules/reports/helpers/sanitize-report-html.helper'
-import { PROMPT_OPTIONS } from '@/lib/constants'
+import { sanitizeReportHtml } from '@/_bff/core/helpers/sanitize-report-html.helper'
+import { PROMPT_OPTIONS } from '@/_bff/core/constants/prompt-types.constants'
 
 type Props = PageProps<'/reports/[id]'>
 

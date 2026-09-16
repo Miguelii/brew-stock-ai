@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { CreateSbClientError, GetPushSubscriptionError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { User } from '@supabase/supabase-js'
@@ -21,7 +21,7 @@ export const sendPushNotification = Effect.fn('sendPushNotification')(function* 
     setupVapid()
 
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.PUSH_SEND_SB_CLIENT }),
     })

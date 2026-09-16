@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema, FAQSchema } from '@/components/structured-data'
 import { PRICING_FAQ } from '@/modules/faq/faq-content'
-import { PACKAGES } from '@/_bff/modules/credits/constants'
+import { PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
 import { BrandText } from '@/components/brand-name'
 
 export const dynamic = 'force-static'

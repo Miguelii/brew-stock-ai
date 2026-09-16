@@ -3,7 +3,7 @@ import 'server-only'
 import { Effect } from 'effect'
 import { CreateSbClientError, InvalidPromptTypeError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import type { User } from '@supabase/supabase-js'
 import { enqueueReportProcessing } from '@/_bff/modules/reports/jobs/process-report.job'
 import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/_bff/modules/analysis/constants'
@@ -25,7 +25,7 @@ export const createReport = Effect.fn('createReport')(function* (
     }
 
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.REPORT_CREATE_SB_CLIENT }),
     })

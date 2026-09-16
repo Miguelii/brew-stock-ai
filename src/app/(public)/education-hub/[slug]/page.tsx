@@ -11,7 +11,7 @@ import { ClientEnv } from '@/env/client'
 import * as m from 'motion/react-m'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
 import { SITE_AUTHOR_NAME } from '@/lib/constants'
-import { fmtDate } from '@/lib/formatters'
+import { fmtDate } from '@/_bff/core/utils/formatters.utils'
 import { BrandText } from '@/components/brand-name'
 
 export const dynamic = 'force-static'

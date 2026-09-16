@@ -1,4 +1,4 @@
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
 import { logger } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
 import { CreateSbClientError } from '@/_bff/lib/errors'
@@ -13,7 +13,7 @@ export const processReport = Effect.fn('processReport')(function* (
     useBaseModel?: boolean
 ) {
     const supabase = yield* Effect.try({
-        try: () => createSbAdminClient(),
+        try: () => createDBAdminClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.PROCESS_REPORT_SB_CLIENT }),
     })

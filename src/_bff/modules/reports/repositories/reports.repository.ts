@@ -16,7 +16,7 @@ import {
     type StockData,
 } from '@/types/ReportDTO'
 import type { SupabaseClient, User } from '@supabase/supabase-js'
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
 import { STOCK_DATA_CACHE_KEY, STOCK_DATA_CACHE_TTL } from '@/_bff/modules/reports/constants'
 import { unstable_cache } from 'next/cache'
 import { Logger } from '@/_bff/lib/server-logger'
@@ -190,7 +190,7 @@ export const markReportFailed = Effect.fn('markReportFailed')(function* (
 // Uses the admin client: unstable_cache runs outside the request scope, so cookie-based
 // clients are unavailable there; stock_data is not user-scoped, so this is safe.
 const selectStockDataByTickerRaw = async (ticker: string): Promise<StockData | null> => {
-    const supabase = createSbAdminClient()
+    const supabase = createDBAdminClient()
 
     const { data, error } = await supabase
         .from('stock_data')

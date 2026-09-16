@@ -3,7 +3,7 @@
 import { describe, it, expect } from 'vitest'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import type { StockData, StockFinancials, StockFundamentals } from '@/types/ReportDTO'
-import { buildPdfHtml } from '../build-pdf-html.helper'
+import { buildPdfHtml } from '@/_bff/modules/reports/pdf'
 
 const baseParams = {
     stock: 'AAPL',
@@ -288,7 +288,7 @@ describe('buildFinancialsSection', () => {
             }),
         })
         expect(html).toContain('What analysts think the stock is worth')
-        // 3 N/A tiles from targets + any nulls already present — at least 3
+        // 3 N/A tiles from targets + any nulls already present, so at least 3
         const matches = html.match(/N\/A/gu) ?? []
         expect(matches.length).toBeGreaterThanOrEqual(3)
     })
@@ -346,7 +346,7 @@ describe('buildFinancialsSection', () => {
                 dividendYield: null,
             }),
         })
-        // each null field produces an N/A tile — at least three present
+        // each null field produces an N/A tile, so at least three are present
         const matches = html.match(/N\/A/gu) ?? []
         expect(matches.length).toBeGreaterThanOrEqual(3)
     })

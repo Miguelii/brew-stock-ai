@@ -24,13 +24,13 @@ All services must use Effect-TS. Follow this pattern (supabase only as example):
 
 ```typescript
 import { Effect } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { CreateSbClientError, SomeError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 
 export const myService = Effect.fn('myService')(function* (param: string) {
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) => new CreateSbClientError({ cause, error_hash: ErrorCode.SOME_UNIQUE_CODE }),
     })
 
@@ -66,7 +66,7 @@ queries** — only the zod input schema, the `runEffect` call, and the error→T
 ```typescript
 // 1) src/_bff/modules/credits/services/get-credits.service.ts — exported business logic
 import { Effect } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { CreateSbClientError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { selectCredits } from '@/_bff/modules/credits/repositories/credits.repository'
@@ -74,7 +74,7 @@ import type { User } from '@supabase/supabase-js'
 
 export const getCredits = Effect.fn('getCredits')(function* (user: User) {
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.TOKENS_GET_SB_CLIENT }),
     })
@@ -189,9 +189,12 @@ All backend code lives under `src/_bff/modules/<module>/`, split by responsibili
 - `processors/<name>.processor.ts` — multi-step pipeline steps reused by services and Trigger.dev jobs (exported).
 - `jobs/<name>.job.ts` — Trigger.dev tasks owned by this module (each `jobs/` dir must be listed in `trigger.config.ts` `dirs`).
 - `helpers/<name>.helper.ts` — pure helpers (fetchers, builders, mappers).
+- `<feature>/` (e.g. `analysis/prompts/`, `reports/pdf/`): a sub-feature that outgrew a single file gets its own folder. `reports/pdf/` is the reference: `index.ts` is the entry point and only composes, `templates/<name>.template.ts` hold HTML only (they interpolate values, never compute them), `helpers/<name>.helper.ts` hold the pure logic, plus the folder's own `constants.ts`, `types.ts` and `styles.ts`. Logic shared with the report page lives in `src/_bff/core/helpers/` (e.g. `financial-signals.helper.ts`, `metric-quality.helper.ts`).
 - `constants/index.ts`, `types/index.ts` — module constants and types.
 
 **Dependency direction**: controller → service → (repository | processor | helper); jobs → services/processors of their own module. Cross-module imports only via `services/` or `processors/` — never another module's controller or repository.
+
+Code shared with the frontend lives in `src/_bff/core/`: `constants/<theme>.constants.ts`, `helpers/<theme>.helper.ts` and `utils/<theme>.utils.ts` (see "Formatters & constants" below). Everything there is importable from client components, except the files that import `server-only` (`constants/credit-packages.constants.ts` and `db/index.ts`). `_bff` never imports from `src/lib`, `src/modules`, `src/components`, `src/hooks` or `src/app`. Not to be confused with `src/_bff/modules/core/`, the tRPC module for feedback, consent cookies and push notifications.
 
 Shared error classes live in `src/_bff/lib/errors.ts`; their `ErrorCode` values in `src/_bff/lib/error-codes.ts`. tRPC infra lives in `src/_trpc/`: `server` (procedures, router, auth middleware), `utils` (`runEffect`), `context`, `api` (`appRouter`), and `server/caller` (`createCaller`).
 
@@ -219,20 +222,34 @@ This applies to all files — services, components, modules, helpers, types, etc
 
 Placement rule for value-formatting helpers (numbers, percentages, currency, dates, labels, etc.) and constants:
 
-- **Used by 2+ modules (or shared between frontend and `_bff`)** → define once in `src/lib/formatters.ts` / `src/lib/constants.ts` and import from there.
+- **Constants shared between the frontend and `_bff`** → `src/_bff/core/constants/<theme>.constants.ts`, one file per theme (e.g. `contact-form.constants.ts` holds every contact form limit, `prompt-types.constants.ts` holds `PROMPT_TYPES` and `PROMPT_OPTIONS`). These files must stay importable from client components, so no `import 'server-only'` (the one exception is `credit-packages.constants.ts`, whose consumers are all server-side).
+- **Helpers (pure logic) shared between the frontend and `_bff`** → `src/_bff/core/helpers/<theme>.helper.ts` (e.g. `financial-signals.helper.ts`, used by the report page and the PDF). Their own formatters go in `src/_bff/core/utils/<theme>.utils.ts`, and their shared types in `src/types/` (e.g. `MetricTile.d.ts`). `_bff` must never import from `src/lib`, `src/modules`, `src/components`, `src/hooks` or `src/app`: if it needs something from there, move it to `src/_bff/core/`.
+- **Utils used by `_bff` (alone or shared with the frontend)** → `src/_bff/core/utils/<theme>.utils.ts`: `formatters.utils.ts` (`fmtNum`, `fmtPct`, `fmtPrice`, `fmtLarge`, `signedPct1`, `toIso`, `fmtDate`, `formatDate`), `metric-formatters.utils.ts`, `env.utils.ts` (`getIsDev`). The Supabase clients (`createDBServerClient`, `createDBAdminClient`) live in `src/_bff/core/db/index.ts`.
+- **Constants used by 2+ frontend modules** → `src/lib/constants.ts`, which holds frontend-only constants.
+- **Formatters used by 2+ frontend modules** → `src/lib/formatters.ts`, which holds frontend-only formatters (`formatAmount`, `parseReportDate`, `latestIsoDay`). The same goes for `src/lib/utils.server.ts` (`sbProxy`, `safeRedirectUrl`).
 - **Used by a single module** → colocate it in that module: a `utils.ts` (formatters) or `constants.ts` (constants) next to the deepest common consumer (e.g. `src/modules/account/invoices-table/utils.ts`). In `_bff`, a helper used by a single file may be a private (non-exported) function in that file.
 
 ```ts
-// ✅ Shared by report-view AND _bff → lives in src/lib/formatters.ts
-import { fmtPct, fmtNum } from '@/lib/formatters'
+// ✅ Used by report-view AND _bff → lives in src/_bff/core/utils
+import { fmtPct, fmtNum } from '@/_bff/core/utils/formatters.utils'
 
-// ✅ Only used inside report-financials-card → colocated utils.ts
-import { fmtEstimatePeriod } from '@/modules/report-view/report-financials-card/utils'
+// ✅ Used only by frontend modules → lives in src/lib/formatters.ts
+import { parseReportDate } from '@/lib/formatters'
+
+// ✅ Constant used by the contact form AND the submit-feedback controller → src/_bff/core/constants
+import { CONTACT_FORM_MAX_NAME_LENGTH } from '@/_bff/core/constants/contact-form.constants'
+
+// ✅ Helper used by the report page AND the PDF → src/_bff/core/helpers
+import { getTargetUpsidePct } from '@/_bff/core/helpers/financial-signals.helper'
+
+// ✅ Only used inside invoices-table → colocated utils.ts
+import { formatPaymentMethod } from '@/modules/account/invoices-table/utils'
 ```
 
 Rules:
-- **Never** duplicate a formatter: before adding one, reuse what exists in `src/lib/formatters.ts` (`fmtNum`, `fmtPct`, `fmtPrice`, `fmtLarge`, `toIso`, `fmtDate`, `formatDate`, …) or in the module's own `utils.ts`.
-- When a colocated formatter gains a second consumer module, **promote it** to `src/lib/formatters.ts` (and vice-versa: a lib formatter that drops to one consumer may be demoted to that module).
+- **Never** duplicate a formatter: before adding one, reuse what exists in `src/_bff/core/utils/formatters.utils.ts` (`fmtNum`, `fmtPct`, `fmtPrice`, `fmtLarge`, `toIso`, `fmtDate`, `formatDate`, …), `src/lib/formatters.ts` or the module's own `utils.ts`.
+- When a colocated formatter gains a second consumer module, **promote it**: to `src/_bff/core/utils/formatters.utils.ts` if `_bff` uses it, otherwise to `src/lib/formatters.ts` (and vice-versa: a shared formatter that drops to one consumer may be demoted to that module).
+- When a constant or helper gains a consumer on the other side (frontend ↔ `_bff`), **move it** to the matching theme file in `src/_bff/core/constants/`, `src/_bff/core/helpers/` or `src/_bff/core/utils/` (creating the file if the theme is new). When it loses that consumer, move it back next to its remaining users.
 - Keep formatters pure (input → string), null/undefined-safe (return `'N/A'` or `null`), and documented with a one-line comment when the behaviour is non-obvious.
 - Watch intra-file dependencies before demoting a constant: a constant that another export in the same file uses must stay with that consumer (e.g. `CHROMIUM_PACK_PATH` lives in `src/_bff/modules/reports/constants/index.ts` — its only consumer is the reports module).
 

@@ -4,15 +4,17 @@ import type { User } from '@supabase/supabase-js'
 import { getInvoices } from '@/_bff/modules/credits/services/get-invoices.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbServerClientMock, selectStripeCustomerIdMock, sessionsListMock } = vi.hoisted(
+const { createDBServerClientMock, selectStripeCustomerIdMock, sessionsListMock } = vi.hoisted(
     () => ({
-        createSbServerClientMock: vi.fn(),
+        createDBServerClientMock: vi.fn(),
         selectStripeCustomerIdMock: vi.fn(),
         sessionsListMock: vi.fn(),
     })
 )
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/env/server', () => ({ ServerEnv: { STRIPE_SECRET_KEY: 'sk_test' } }))
 vi.mock('@/_bff/modules/credits/repositories/credits.repository', () => ({
     selectStripeCustomerId: selectStripeCustomerIdMock,
@@ -42,7 +44,7 @@ const listResolving = (sessions: unknown[]) =>
 
 describe('getInvoices', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue({ from: vi.fn() })
+        createDBServerClientMock.mockReset().mockResolvedValue({ from: vi.fn() })
         selectStripeCustomerIdMock.mockReset().mockReturnValue(Effect.succeed(null))
         sessionsListMock.mockReset()
         listResolving([])

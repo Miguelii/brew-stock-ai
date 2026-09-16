@@ -3,7 +3,7 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ReportExport } from '@/modules/report-view/report-export'
 import { ReportHeroScene } from '@/modules/report-view/report-hero/scene'
-import { fmtDate } from '@/lib/formatters'
+import { fmtDate } from '@/_bff/core/utils/formatters.utils'
 import type { ReportDTO } from '@/types/ReportDTO'
 
 type Props = {

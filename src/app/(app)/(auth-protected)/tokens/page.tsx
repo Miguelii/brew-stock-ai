@@ -6,7 +6,7 @@ import { TokenBalanceCard } from '@/modules/tokens/token-balance-card'
 import { PendingPaymentBanner } from '@/modules/tokens/pending-payment-banner'
 import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema } from '@/components/structured-data'
-import { PACKAGES } from '@/_bff/modules/credits/constants'
+import { PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Buy Credits'

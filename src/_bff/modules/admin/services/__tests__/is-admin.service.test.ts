@@ -3,12 +3,14 @@ import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { isAdmin } from '@/_bff/modules/admin/services/is-admin.service'
 
-const { createSbServerClientMock, checkIsAdminMock } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+const { createDBServerClientMock, checkIsAdminMock } = vi.hoisted(() => ({
+    createDBServerClientMock: vi.fn(),
     checkIsAdminMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/admin/repositories/admin.repository', () => ({
     checkIsAdmin: checkIsAdminMock,
 }))
@@ -17,7 +19,7 @@ const SUPABASE = { rpc: vi.fn() } as unknown as SupabaseClient
 
 describe('isAdmin', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         checkIsAdminMock.mockReset().mockReturnValue(Effect.succeed(true))
     })
 
@@ -25,7 +27,7 @@ describe('isAdmin', () => {
         const result = await Effect.runPromise(isAdmin())
 
         expect(result).toBe(true)
-        expect(createSbServerClientMock).toHaveBeenCalledTimes(1)
+        expect(createDBServerClientMock).toHaveBeenCalledTimes(1)
         expect(checkIsAdminMock).toHaveBeenCalledWith(SUPABASE)
     })
 
@@ -36,7 +38,7 @@ describe('isAdmin', () => {
         const result = await Effect.runPromise(isAdmin(existing))
 
         expect(result).toBe(false)
-        expect(createSbServerClientMock).not.toHaveBeenCalled()
+        expect(createDBServerClientMock).not.toHaveBeenCalled()
         expect(checkIsAdminMock).toHaveBeenCalledWith(existing)
     })
 })

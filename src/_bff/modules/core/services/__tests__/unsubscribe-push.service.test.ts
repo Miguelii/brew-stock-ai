@@ -3,12 +3,14 @@ import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { unsubscribePush } from '@/_bff/modules/core/services/unsubscribe-push.service'
 
-const { createSbServerClientMock, deleteMock } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+const { createDBServerClientMock, deleteMock } = vi.hoisted(() => ({
+    createDBServerClientMock: vi.fn(),
     deleteMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/core/repositories/push-subscriptions.repository', () => ({
     deletePushSubscription: deleteMock,
 }))
@@ -18,7 +20,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('unsubscribePush', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         deleteMock.mockReset().mockReturnValue(Effect.void)
     })
 

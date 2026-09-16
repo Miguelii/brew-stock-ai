@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
 import { UnauthenticatedError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { isAdmin } from '@/_bff/modules/admin/services/is-admin.service'
@@ -21,7 +21,7 @@ export const getAdminUsers = Effect.fn('getAdminUsers')(function* () {
         return yield* new UnauthenticatedError({ error_hash: ErrorCode.ADMIN_UNAUTH })
     }
 
-    const supabase = createSbAdminClient()
+    const supabase = createDBAdminClient()
 
     const [users, userCredits] = yield* Effect.all(
         [listUsers(supabase), selectAllUserCredits(supabase)],

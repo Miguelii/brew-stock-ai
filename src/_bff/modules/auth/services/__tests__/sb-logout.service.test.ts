@@ -3,12 +3,14 @@ import { Effect } from 'effect'
 import { sbLogout } from '@/_bff/modules/auth/services/sb-logout.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbServerClientMock, revalidatePathMock } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+const { createDBServerClientMock, revalidatePathMock } = vi.hoisted(() => ({
+    createDBServerClientMock: vi.fn(),
     revalidatePathMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }))
 
 const signOut = vi.fn()
@@ -16,7 +18,7 @@ const signOut = vi.fn()
 describe('sbLogout', () => {
     beforeEach(() => {
         signOut.mockReset().mockResolvedValue({ error: null })
-        createSbServerClientMock.mockReset().mockResolvedValue({ auth: { signOut } })
+        createDBServerClientMock.mockReset().mockResolvedValue({ auth: { signOut } })
         revalidatePathMock.mockReset()
     })
 

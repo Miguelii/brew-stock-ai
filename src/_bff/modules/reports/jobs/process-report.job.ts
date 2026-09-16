@@ -1,6 +1,6 @@
 import { task, logger, tasks } from '@trigger.dev/sdk'
 import { Effect } from 'effect'
-import { getIsDev } from '@/lib/utils.server'
+import { getIsDev } from '@/_bff/core/utils/env.utils'
 import { Logger } from '@/_bff/lib/server-logger'
 import { processReport } from '@/_bff/modules/reports/processors/process-report.processor'
 import { markReportFailedAndRefund } from '@/_bff/modules/reports/services/mark-report-failed-and-refund.service'

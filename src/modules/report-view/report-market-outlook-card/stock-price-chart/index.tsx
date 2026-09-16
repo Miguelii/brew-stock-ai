@@ -11,7 +11,7 @@ import {
     YAxis,
 } from 'recharts'
 import { cn } from '@/lib/utils'
-import { fmtDate, fmtPrice } from '@/lib/formatters'
+import { fmtDate, fmtPrice } from '@/_bff/core/utils/formatters.utils'
 import { formatXAxis } from '@/modules/report-view/report-market-outlook-card/stock-price-chart/utils'
 import {
     RANGE_DAYS,

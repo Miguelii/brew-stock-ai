@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { fmtNum } from '@/lib/formatters'
+import { fmtNum } from '@/_bff/core/utils/formatters.utils'
+import { SECTOR_SCORE_ROWS } from '@/_bff/core/constants/sector-scores.constants'
 import type { StockScores } from '@/types/ReportDTO'
 
 type ScoreRow = {
@@ -15,26 +16,12 @@ type Props = {
 }
 
 function toRows(scores: StockScores | null): ScoreRow[] {
-    return [
-        {
-            label: 'Innovation',
-            description: 'How actively the company is developing new products and ideas',
-            companyScore: scores?.company?.innovativeness ?? null,
-            sectorAvg: scores?.sector.innovativeness ?? null,
-        },
-        {
-            label: 'Workforce Growth',
-            description: 'How much the company is hiring and expanding its team',
-            companyScore: scores?.company?.hiring ?? null,
-            sectorAvg: scores?.sector?.hiring ?? null,
-        },
-        {
-            label: 'Sustainability',
-            description: 'How focused the company is on environmental and social responsibility',
-            companyScore: scores?.company?.sustainability ?? null,
-            sectorAvg: scores?.sector?.sustainability ?? null,
-        },
-    ]
+    return SECTOR_SCORE_ROWS.map(({ key, label, description }) => ({
+        label,
+        description,
+        companyScore: scores?.company?.[key] ?? null,
+        sectorAvg: scores?.sector?.[key] ?? null,
+    }))
 }
 
 export function ReportSectorScores({ scores }: Props) {

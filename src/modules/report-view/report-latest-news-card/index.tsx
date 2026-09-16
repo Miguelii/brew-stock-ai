@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import type { NewsItem } from '@/types/news'
-import { formatDate } from '@/lib/formatters'
+import { formatDate } from '@/_bff/core/utils/formatters.utils'
 
 type Props = {
     news: NewsItem[]

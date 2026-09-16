@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { TOKEN_PACKAGES } from '..'
+import { TOKEN_PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
 
 describe('TOKEN_PACKAGES', () => {
     it('contains exactly 3 packages', () => {

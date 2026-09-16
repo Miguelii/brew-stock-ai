@@ -1,4 +1,4 @@
-import { fmtDate } from '@/lib/formatters'
+import { fmtDate } from '@/_bff/core/utils/formatters.utils'
 import { ChangelogTagChip } from '@/modules/changelog/changelog-tag'
 import type { ChangelogTag } from '@/types/ChangelogEntry'
 

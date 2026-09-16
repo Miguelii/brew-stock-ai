@@ -6,7 +6,7 @@ import {
     RiskAnalysisPrompt,
     GrowthPotentialAnalysisPrompt,
 } from '@/_bff/modules/analysis/prompts/analysis.prompt'
-import { PROMPT_TYPES } from '@/lib/constants'
+import { PROMPT_TYPES } from '@/_bff/core/constants/prompt-types.constants'
 
 export const PROMPTS_MAP: Record<string, string> = {
     [PROMPT_TYPES.STOCK_ANALYSIS.type]: WallStreetStyleStockAnalysisPrompt,

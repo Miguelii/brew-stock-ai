@@ -2,24 +2,26 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { createCheckoutSession } from '@/_bff/modules/credits/services/create-checkout-session.service'
-import { TOKEN_PACKAGES } from '@/_bff/modules/credits/constants'
+import { TOKEN_PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
 import { failureTag } from '@/_bff/__tests__/utils'
 
 const {
-    createSbServerClientMock,
+    createDBServerClientMock,
     cookiesMock,
     loggerMock,
     customersCreateMock,
     sessionsCreateMock,
 } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+    createDBServerClientMock: vi.fn(),
     cookiesMock: vi.fn(),
     loggerMock: vi.fn(),
     customersCreateMock: vi.fn(),
     sessionsCreateMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/env/server', () => ({
     ServerEnv: { STRIPE_SECRET_KEY: 'sk_test', STRIPE_WEBHOOK_SECRET: 'whsec_test' },
 }))
@@ -47,7 +49,7 @@ const makeSupabase = (selectResult: { data: unknown; error: unknown }) => {
 
 describe('createCheckoutSession', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset()
+        createDBServerClientMock.mockReset()
         // oxlint-disable-next-line unicorn/no-useless-undefined
         cookiesMock.mockReset().mockResolvedValue({ get: () => undefined })
         loggerMock.mockReset()
@@ -61,7 +63,7 @@ describe('createCheckoutSession', () => {
         )
 
         expect(failureTag(exit)).toBe('CreateCheckoutSessionError')
-        expect(createSbServerClientMock).not.toHaveBeenCalled()
+        expect(createDBServerClientMock).not.toHaveBeenCalled()
     })
 
     it('reuses the stored Stripe customer without creating a new one', async () => {
@@ -69,7 +71,7 @@ describe('createCheckoutSession', () => {
             data: { stripe_customer_id: 'cus_existing' },
             error: null,
         })
-        createSbServerClientMock.mockResolvedValue(supabase)
+        createDBServerClientMock.mockResolvedValue(supabase)
 
         const url = await Effect.runPromise(createCheckoutSession(USER, PKG.id))
 
@@ -89,7 +91,7 @@ describe('createCheckoutSession', () => {
 
     it('creates and stores a Stripe customer for first-time buyers', async () => {
         const { update, supabase } = makeSupabase({ data: null, error: null })
-        createSbServerClientMock.mockResolvedValue(supabase)
+        createDBServerClientMock.mockResolvedValue(supabase)
 
         await Effect.runPromise(createCheckoutSession(USER, PKG.id))
 
@@ -105,7 +107,7 @@ describe('createCheckoutSession', () => {
             data: { stripe_customer_id: 'cus_existing' },
             error: null,
         })
-        createSbServerClientMock.mockResolvedValue(supabase)
+        createDBServerClientMock.mockResolvedValue(supabase)
         cookiesMock.mockRejectedValue(new Error('no request scope'))
 
         await expect(Effect.runPromise(createCheckoutSession(USER, PKG.id))).resolves.toBe(

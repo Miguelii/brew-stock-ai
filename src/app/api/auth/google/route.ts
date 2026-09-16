@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { Effect, Exit } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { ClientEnv } from '@/env/client'
 import { CreateSbClientError, OAuthInitError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
@@ -12,7 +12,7 @@ const errorUrl = new URL(`${AUTH_PAGE_PATH}?error=oauth`, siteUrl)
 
 const initiateGoogleOAuth = Effect.fn('initiateGoogleOAuth')(function* (returnTo?: string) {
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.OAUTH_GOOGLE_SB_CLIENT }),
     })

@@ -3,13 +3,15 @@ import { Effect } from 'effect'
 import { markReportFailedAndRefund } from '@/_bff/modules/reports/services/mark-report-failed-and-refund.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbAdminClientMock, markReportFailedMock, refundCreditsMock } = vi.hoisted(() => ({
-    createSbAdminClientMock: vi.fn(),
+const { createDBAdminClientMock, markReportFailedMock, refundCreditsMock } = vi.hoisted(() => ({
+    createDBAdminClientMock: vi.fn(),
     markReportFailedMock: vi.fn(),
     refundCreditsMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBAdminClient: createDBAdminClientMock,
+}))
 vi.mock('@/_bff/modules/reports/repositories/reports.repository', () => ({
     markReportFailed: markReportFailedMock,
 }))
@@ -24,7 +26,7 @@ const CLIENT = { tag: 'admin-client' }
 
 describe('markReportFailedAndRefund', () => {
     beforeEach(() => {
-        createSbAdminClientMock.mockReset().mockReturnValue(CLIENT)
+        createDBAdminClientMock.mockReset().mockReturnValue(CLIENT)
         markReportFailedMock.mockReset()
         refundCreditsMock.mockReset().mockReturnValue(Effect.succeed(3))
     })

@@ -1,6 +1,6 @@
 import { ClientEnv } from '@/env/client'
 import { SITE_AUTHOR_NAME } from '@/lib/constants'
-import { PACKAGES, TOKEN_PACKAGES } from '@/_bff/modules/credits/constants'
+import { PACKAGES, TOKEN_PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
 
 const WEBSITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 

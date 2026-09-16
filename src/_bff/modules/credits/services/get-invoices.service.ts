@@ -5,7 +5,7 @@ import StripeClient, { type Stripe } from 'stripe'
 import { ServerEnv } from '@/env/server'
 import { CreateSbClientError, GetInvoicesError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import type { User } from '@supabase/supabase-js'
 import type { Invoice } from '@/types/Invoice'
 import { selectStripeCustomerId } from '@/_bff/modules/credits/repositories/credits.repository'
@@ -41,7 +41,7 @@ export const getInvoices = Effect.fn('getInvoices')(function* (user: User) {
     }
 
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.INVOICES_SB_CLIENT }),
     })

@@ -1,7 +1,8 @@
 import 'server-only'
 
 import { after } from 'next/server'
-import { createSbAdminClient, getIsDev } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
+import { getIsDev } from '@/_bff/core/utils/env.utils'
 
 type LogLevel = 'log' | 'warn' | 'error' | 'info'
 
@@ -77,7 +78,7 @@ export function Logger(props: Props): void {
 }
 
 async function persistLog(props: Props): Promise<void> {
-    const supabase = createSbAdminClient()
+    const supabase = createDBAdminClient()
 
     const combinedMetadata: Record<string, unknown> = { ...props.metadata }
 

@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import type { ReportDTO } from '@/types/ReportDTO'
-import { extractInvestmentThesis } from '@/lib/report-html'
+import { extractInvestmentThesis } from '@/_bff/core/helpers/report-html.helper'
 
 type Props = {
     report: ReportDTO

@@ -1,13 +1,13 @@
 'use client'
 
+import { getSentimentInfo } from '@/_bff/core/helpers/sentiment.helper'
 import {
     BEARISH_COLOR,
     BULLISH_COLOR,
     EXTREME_BEARISH_COLOR,
     EXTREME_BULLISH_COLOR,
-    getSentimentInfo,
     NEUTRAL_COLOR,
-} from '@/modules/report-view/sentiment'
+} from '@/_bff/core/constants/sentiment.constants'
 
 const CX = 100
 const CY = 100

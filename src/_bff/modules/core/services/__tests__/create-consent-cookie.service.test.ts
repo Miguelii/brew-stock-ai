@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { createConsentCookie } from '@/_bff/modules/core/services/create-consent-cookie.service'
-import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/lib/constants'
+import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/_bff/core/constants/analytics.constants'
 import { failureTag } from '@/_bff/__tests__/utils'
 
 const { cookiesMock } = vi.hoisted(() => ({ cookiesMock: vi.fn() }))

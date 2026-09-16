@@ -1,4 +1,12 @@
-interface SentimentInfo {
+import {
+    BEARISH_COLOR,
+    BULLISH_COLOR,
+    EXTREME_BEARISH_COLOR,
+    EXTREME_BULLISH_COLOR,
+    NEUTRAL_COLOR,
+} from '@/_bff/core/constants/sentiment.constants'
+
+type SentimentInfo = {
     label: string
     color: string // hex, usable in SVG / PDF / Tailwind inline styles
 }
@@ -25,13 +33,3 @@ export function getRiskLevelInfo(score: number): SentimentInfo {
     if (score <= 75) return { label: 'Low Risk', color: BULLISH_COLOR }
     return { label: 'Very Low Risk', color: EXTREME_BULLISH_COLOR }
 }
-
-export const EXTREME_BEARISH_COLOR = '#ef4444'
-
-export const BEARISH_COLOR = '#f97316'
-
-export const NEUTRAL_COLOR = '#f59e0b'
-
-export const BULLISH_COLOR = '#84cc16'
-
-export const EXTREME_BULLISH_COLOR = '#22c55e'

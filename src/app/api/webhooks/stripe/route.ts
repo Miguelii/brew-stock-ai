@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import StripeClient, { type Stripe } from 'stripe'
 import { ServerEnv } from '@/env/server'
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
 import { Logger } from '@/_bff/lib/server-logger'
 
 export async function POST(request: Request) {
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid metadata' }, { status: 400 })
         }
 
-        const supabase = createSbAdminClient()
+        const supabase = createDBAdminClient()
 
         // Claim the event id before crediting so a retried delivery can never credit twice.
         const claim = await supabase.from('stripe_processed_events').insert({ event_id: event.id })

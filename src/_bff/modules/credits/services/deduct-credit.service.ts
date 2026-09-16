@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { CreateSbClientError, DeductCreditError, InsufficientCreditsError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -12,7 +12,7 @@ export const deductCredit = Effect.fn('deductCredit')(function* (
     const supabase =
         client ??
         (yield* Effect.tryPromise({
-            try: () => createSbServerClient(),
+            try: () => createDBServerClient(),
             catch: (cause) =>
                 new CreateSbClientError({ cause, error_hash: ErrorCode.TOKENS_DEDUCT_SB_CLIENT }),
         }))

@@ -8,7 +8,7 @@ import {
     getHealth,
     getProfitability,
     getValuation,
-} from '@/modules/report-view/report-financials-card/metric-builders'
+} from '@/_bff/core/helpers/metric-builders.helper'
 
 type Props = {
     financials: StockFinancials | null

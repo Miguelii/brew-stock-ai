@@ -1,12 +1,12 @@
 import { Match } from 'effect'
-import { MAX_STOCK_INPUT_LENGHT } from '@/lib/constants'
+import { MAX_STOCK_INPUT_LENGTH } from '@/_bff/core/constants/stock-input.constants'
 import { protectedProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'
 import { getCachedPriceHistoryService } from '@/_bff/modules/yahoo/services/get-cached-price-history.service'
 
 export const GET_PRICE_HISTORY_PROTECTED_CONTROLLER = protectedProcedure
-    .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGHT) }))
+    .input(z.object({ ticker: z.string().min(1).max(MAX_STOCK_INPUT_LENGTH) }))
     .query(({ input }) =>
         runEffect(getCachedPriceHistoryService(input.ticker), 'getCachedPriceHistory', (error) =>
             Match.value(error).pipe(

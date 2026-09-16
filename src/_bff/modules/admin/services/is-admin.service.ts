@@ -2,7 +2,7 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { CreateSbClientError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { checkIsAdmin } from '@/_bff/modules/admin/repositories/admin.repository'
@@ -13,7 +13,7 @@ export const isAdmin = Effect.fn('isAdmin')(function* (client?: SupabaseClient) 
     const supabase =
         client ??
         (yield* Effect.tryPromise({
-            try: () => createSbServerClient(),
+            try: () => createDBServerClient(),
             catch: (cause) =>
                 new CreateSbClientError({ cause, error_hash: ErrorCode.ADMIN_IS_ADMIN_SB_CLIENT }),
         }))

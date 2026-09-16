@@ -3,13 +3,15 @@ import { Effect } from 'effect'
 import { getAdminFeedback } from '@/_bff/modules/admin/services/get-admin-feedback.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbAdminClientMock, isAdminMock, selectAdminFeedbackMock } = vi.hoisted(() => ({
-    createSbAdminClientMock: vi.fn(),
+const { createDBAdminClientMock, isAdminMock, selectAdminFeedbackMock } = vi.hoisted(() => ({
+    createDBAdminClientMock: vi.fn(),
     isAdminMock: vi.fn(),
     selectAdminFeedbackMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBAdminClient: createDBAdminClientMock,
+}))
 vi.mock('@/_bff/modules/admin/services/is-admin.service', () => ({
     isAdmin: isAdminMock,
 }))
@@ -21,7 +23,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('getAdminFeedback', () => {
     beforeEach(() => {
-        createSbAdminClientMock.mockReset().mockReturnValue(SUPABASE)
+        createDBAdminClientMock.mockReset().mockReturnValue(SUPABASE)
         isAdminMock.mockReset().mockReturnValue(Effect.succeed(true))
         selectAdminFeedbackMock.mockReset().mockReturnValue(Effect.succeed([{ id: 'f-1' }]))
     })

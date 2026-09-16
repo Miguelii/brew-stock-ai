@@ -4,9 +4,9 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { deductCredit } from '@/_bff/modules/credits/services/deduct-credit.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-// The processor only reaches createSbServerClient when no client is passed;
+// The processor only reaches createDBServerClient when no client is passed;
 // every test passes one, so the env-validating module is mocked away.
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: vi.fn() }))
+vi.mock('@/_bff/core/db', () => ({ createDBServerClient: vi.fn() }))
 
 const makeClient = (rpc: ReturnType<typeof vi.fn>): SupabaseClient =>
     ({ rpc }) as unknown as SupabaseClient

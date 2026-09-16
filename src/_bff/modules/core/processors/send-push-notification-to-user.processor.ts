@@ -4,7 +4,7 @@ import {
     CreateSbClientError,
     GetPushSubscriptionError,
 } from '@/_bff/lib/errors'
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
 import { Effect } from 'effect'
 import { setupVapid } from '@/_bff/modules/core/helpers/setup-valid.helper'
 import { sendToSubscriptions } from '@/_bff/modules/core/processors/send-to-subscriptions.processor'
@@ -26,7 +26,7 @@ export const sendPushNotificationToUser = Effect.fn('sendPushNotificationToUser'
     })
 
     const supabase = yield* Effect.try({
-        try: () => createSbAdminClient(),
+        try: () => createDBAdminClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.PUSH_SEND_TO_USER_SB_CLIENT }),
     })

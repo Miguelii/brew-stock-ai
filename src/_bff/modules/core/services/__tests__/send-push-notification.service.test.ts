@@ -4,15 +4,17 @@ import type { User } from '@supabase/supabase-js'
 import { sendPushNotification } from '@/_bff/modules/core/services/send-push-notification.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbServerClientMock, setupVapidMock, selectSubscriptionsMock, sendToSubsMock } =
+const { createDBServerClientMock, setupVapidMock, selectSubscriptionsMock, sendToSubsMock } =
     vi.hoisted(() => ({
-        createSbServerClientMock: vi.fn(),
+        createDBServerClientMock: vi.fn(),
         setupVapidMock: vi.fn(),
         selectSubscriptionsMock: vi.fn(),
         sendToSubsMock: vi.fn(),
     }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/core/helpers/setup-valid.helper', () => ({
     setupVapid: setupVapidMock,
 }))
@@ -29,7 +31,7 @@ const ROWS = [{ subscription: { endpoint: 'https://push.example' } }]
 
 describe('sendPushNotification', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         setupVapidMock.mockReset()
         selectSubscriptionsMock
             .mockReset()

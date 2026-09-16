@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sanitizeReportHtml } from '@/_bff/modules/reports/helpers/sanitize-report-html.helper'
+import { sanitizeReportHtml } from '@/_bff/core/helpers/sanitize-report-html.helper'
 
 describe('sanitizeReportHtml', () => {
     it('returns empty string for nullish input', () => {

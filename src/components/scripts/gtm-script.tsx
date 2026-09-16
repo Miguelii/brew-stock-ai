@@ -1,4 +1,4 @@
-import { GTM_ID } from '@/lib/constants'
+import { GTM_ID } from '@/_bff/core/constants/analytics.constants'
 import Script from 'next/script'
 
 export function GtmScript() {

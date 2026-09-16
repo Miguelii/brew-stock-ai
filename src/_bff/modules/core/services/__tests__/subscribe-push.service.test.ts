@@ -3,12 +3,14 @@ import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { subscribePush } from '@/_bff/modules/core/services/subscribe-push.service'
 
-const { createSbServerClientMock, upsertMock } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+const { createDBServerClientMock, upsertMock } = vi.hoisted(() => ({
+    createDBServerClientMock: vi.fn(),
     upsertMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/core/repositories/push-subscriptions.repository', () => ({
     upsertPushSubscription: upsertMock,
 }))
@@ -19,7 +21,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('subscribePush', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         upsertMock.mockReset().mockReturnValue(Effect.void)
     })
 
@@ -27,7 +29,7 @@ describe('subscribePush', () => {
         const result = await Effect.runPromise(subscribePush(USER, SUBSCRIPTION))
 
         expect(result).toEqual({ success: true })
-        expect(createSbServerClientMock).toHaveBeenCalledWith(true)
+        expect(createDBServerClientMock).toHaveBeenCalledWith(true)
         expect(upsertMock).toHaveBeenCalledWith(SUPABASE, 'user-1', SUBSCRIPTION)
     })
 })

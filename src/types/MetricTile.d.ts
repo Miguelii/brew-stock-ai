@@ -1,4 +1,4 @@
-import type { MetricKey } from '@/modules/report-view/report-financials-card/metric-quality'
+import type { MetricKey } from '@/_bff/core/helpers/metric-quality.helper'
 
 export type MetricTile = {
     label: string

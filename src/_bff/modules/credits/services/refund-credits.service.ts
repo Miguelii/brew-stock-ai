@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
 import { CreateSbClientError, RefundCreditsError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -14,7 +14,7 @@ export const refundCredits = Effect.fn('refundCredits')(function* (
     const supabase =
         client ??
         (yield* Effect.try({
-            try: () => createSbAdminClient(),
+            try: () => createDBAdminClient(),
             catch: (cause) =>
                 new CreateSbClientError({ cause, error_hash: ErrorCode.TOKENS_REFUND_RPC_ERR }),
         }))

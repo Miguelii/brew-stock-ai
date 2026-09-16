@@ -8,7 +8,7 @@ import type {
     RevenueTrendPoint,
     StockFundamentals,
 } from '@/types/ReportDTO'
-import { toIso } from '@/lib/formatters'
+import { toIso } from '@/_bff/core/utils/formatters.utils'
 
 // Forward-looking earningsTrend periods we surface (current/next quarter & year).
 const FORWARD_PERIODS = new Set(['0q', '+1q', '0y', '+1y'])

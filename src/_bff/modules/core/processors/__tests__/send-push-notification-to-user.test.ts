@@ -3,15 +3,17 @@ import { Effect } from 'effect'
 import { sendPushNotificationToUser } from '@/_bff/modules/core/processors/send-push-notification-to-user.processor'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbAdminClientMock, setupVapidMock, selectSubscriptionsMock, sendToSubsMock } =
+const { createDBAdminClientMock, setupVapidMock, selectSubscriptionsMock, sendToSubsMock } =
     vi.hoisted(() => ({
-        createSbAdminClientMock: vi.fn(),
+        createDBAdminClientMock: vi.fn(),
         setupVapidMock: vi.fn(),
         selectSubscriptionsMock: vi.fn(),
         sendToSubsMock: vi.fn(),
     }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBAdminClient: createDBAdminClientMock,
+}))
 vi.mock('@/_bff/modules/core/helpers/setup-valid.helper', () => ({
     setupVapid: setupVapidMock,
 }))
@@ -27,7 +29,7 @@ const ROWS = [{ subscription: { endpoint: 'https://push.example' } }]
 
 describe('sendPushNotificationToUser', () => {
     beforeEach(() => {
-        createSbAdminClientMock.mockReset().mockReturnValue(SUPABASE)
+        createDBAdminClientMock.mockReset().mockReturnValue(SUPABASE)
         setupVapidMock.mockReset()
         selectSubscriptionsMock
             .mockReset()

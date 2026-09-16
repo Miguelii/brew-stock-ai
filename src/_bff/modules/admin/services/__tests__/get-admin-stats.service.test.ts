@@ -4,16 +4,18 @@ import { getAdminStats } from '@/_bff/modules/admin/services/get-admin-stats.ser
 import { ReportStatus } from '@/types/ReportDTO'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbAdminClientMock, isAdminMock, countReportsMock, countUsersMock } = vi.hoisted(
+const { createDBAdminClientMock, isAdminMock, countReportsMock, countUsersMock } = vi.hoisted(
     () => ({
-        createSbAdminClientMock: vi.fn(),
+        createDBAdminClientMock: vi.fn(),
         isAdminMock: vi.fn(),
         countReportsMock: vi.fn(),
         countUsersMock: vi.fn(),
     })
 )
 
-vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBAdminClient: createDBAdminClientMock,
+}))
 vi.mock('@/_bff/modules/admin/services/is-admin.service', () => ({
     isAdmin: isAdminMock,
 }))
@@ -26,7 +28,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('getAdminStats', () => {
     beforeEach(() => {
-        createSbAdminClientMock.mockReset().mockReturnValue(SUPABASE)
+        createDBAdminClientMock.mockReset().mockReturnValue(SUPABASE)
         isAdminMock.mockReset().mockReturnValue(Effect.succeed(true))
         countReportsMock
             .mockReset()
@@ -58,7 +60,7 @@ describe('getAdminStats', () => {
         const exit = await Effect.runPromiseExit(getAdminStats())
 
         expect(failureTag(exit)).toBe('UnauthenticatedError')
-        expect(createSbAdminClientMock).not.toHaveBeenCalled()
+        expect(createDBAdminClientMock).not.toHaveBeenCalled()
         expect(countReportsMock).not.toHaveBeenCalled()
     })
 })

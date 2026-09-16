@@ -134,8 +134,8 @@ HTML rules the output must follow:
 Selected by `promptType`. The five prompt strings live in
 `src/_bff/modules/analysis/prompts/analysis.prompt.ts`. `PROMPTS_MAP` (prompt by type) and
 `PROMPT_COSTS_MAP` (credit cost by type) live in `src/_bff/modules/analysis/constants/index.ts`,
-both derived from `PROMPT_TYPES` (type, label, cost), which lives in `src/lib/constants.ts` because
-the frontend also uses it. Each prompt contains `##TICKER##`, replaced with the symbol at runtime.
+both derived from `PROMPT_TYPES` (type, label, cost), which lives in
+`src/_bff/core/constants/prompt-types.constants.ts` because the frontend also uses it. Each prompt contains `##TICKER##`, replaced with the symbol at runtime.
 
 | Prompt constant                      | Focus                                                                                 |
 | ------------------------------------ | ------------------------------------------------------------------------------------- |
@@ -330,7 +330,7 @@ hasPriceHistory, hasNews, hasYahooFreshData })` records cost, truncation and con
    requires all of:
     - `finishReason === 'stop'`
     - a non-empty "Investment Thesis Summary" section, read with `extractInvestmentThesis`
-      (`src/lib/report-html.ts`, shared with the report TL;DR card)
+      (`src/_bff/core/helpers/report-html.helper.ts`, shared with the report TL;DR card)
     - the HTML ending on a closed block (`</p>`, `</ul>` or `</ol>`)
 
     This catches text cut mid-sentence even when the JSON itself is valid. On failure it logs
@@ -454,8 +454,8 @@ src/_bff/modules/reports/
 │   └── save-analysis-to-report.processor.ts # persist analysis HTML + sentiment + cost
 └── repositories/reports.repository.ts      # reports table access
 
-src/lib/constants.ts                        # PROMPT_TYPES (type, label, cost)
-src/lib/report-html.ts                      # extractInvestmentThesis
+src/_bff/core/constants/prompt-types.constants.ts  # PROMPT_TYPES (type, label, cost), shared with the frontend
+src/_bff/core/helpers/report-html.helper.ts # extractInvestmentThesis, shared with the TL;DR card
 src/types/ReportDTO.ts                      # StockFinancials, StockFundamentals, StockTechnicals, ...
 src/types/news.ts                           # NewsItem
 ```

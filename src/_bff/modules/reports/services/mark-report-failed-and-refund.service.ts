@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { createSbAdminClient } from '@/lib/utils.server'
+import { createDBAdminClient } from '@/_bff/core/db'
 import { CreateSbClientError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { markReportFailed } from '@/_bff/modules/reports/repositories/reports.repository'
@@ -22,7 +22,7 @@ export const markReportFailedAndRefund = Effect.fn('markReportFailedAndRefund')(
     reportId: ReportDTO['id']
 ) {
     const supabase = yield* Effect.try({
-        try: () => createSbAdminClient(),
+        try: () => createDBAdminClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.PROCESS_REPORT_SB_CLIENT }),
     })

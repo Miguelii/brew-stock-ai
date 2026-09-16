@@ -4,12 +4,14 @@ import type { User } from '@supabase/supabase-js'
 import { getReports } from '@/_bff/modules/reports/services/get-reports.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbServerClientMock, selectUserReportsMock } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+const { createDBServerClientMock, selectUserReportsMock } = vi.hoisted(() => ({
+    createDBServerClientMock: vi.fn(),
     selectUserReportsMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/reports/repositories/reports.repository', () => ({
     selectUserReports: selectUserReportsMock,
 }))
@@ -19,7 +21,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('getReports', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         selectUserReportsMock.mockReset().mockReturnValue(Effect.succeed([{ id: 'r-1' }]))
     })
 
@@ -29,7 +31,7 @@ describe('getReports', () => {
     })
 
     it('fails with CreateSbClientError when the Supabase client cannot be created', async () => {
-        createSbServerClientMock.mockRejectedValue(new Error('no env'))
+        createDBServerClientMock.mockRejectedValue(new Error('no env'))
 
         const exit = await Effect.runPromiseExit(getReports(USER))
         expect(failureTag(exit)).toBe('CreateSbClientError')

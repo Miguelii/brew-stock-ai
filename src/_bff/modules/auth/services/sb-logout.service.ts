@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { Effect } from 'effect'
 import { CreateSbClientError, LogoutError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
@@ -8,7 +8,7 @@ import { revalidatePath } from 'next/cache'
 
 export const sbLogout = Effect.fn('sbLogout')(function* () {
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.AUTH_LOGOUT_SB_CLIENT }),
     })

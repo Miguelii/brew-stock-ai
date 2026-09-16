@@ -1,13 +1,14 @@
 import 'server-only'
 
 import { Effect } from 'effect'
-import { createSbServerClient, getIsDev } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
+import { getIsDev } from '@/_bff/core/utils/env.utils'
 import { CreateSbClientError, ExportReportError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
 import type { User } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
-import { buildPdfHtml } from '@/_bff/modules/reports/helpers/build-pdf-html.helper'
+import { buildPdfHtml } from '@/_bff/modules/reports/pdf'
 import {
     selectReportForExport,
     selectStockDataByTickerCached,
@@ -53,7 +54,7 @@ async function getOrLaunchBrowser(puppeteer: any, launchOptions: any): Promise<a
 
 export const exportReport = Effect.fn('exportReport')(function* (user: User, id: ReportDTO['id']) {
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(),
+        try: () => createDBServerClient(),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.EXPORT_REPORT_SB_CLIENT }),
     })

@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
-import { fmtNum, fmtPct } from '@/lib/formatters'
+import { fmtNum, fmtPct } from '@/_bff/core/utils/formatters.utils'
 import type { EarningsQuarter } from '@/types/ReportDTO'
+import { getEarningsBeat } from '@/_bff/core/helpers/financial-signals.helper'
 
 type Props = {
     history: EarningsQuarter[]
@@ -17,10 +18,7 @@ export function EarningsHistory({ history }: Props) {
 
             <div className="flex flex-col divide-y divide-ink/10 verflow-hidden">
                 {history.map((q) => {
-                    const beat =
-                        q.epsActual != null && q.epsEstimate != null
-                            ? q.epsActual >= q.epsEstimate
-                            : null
+                    const beat = getEarningsBeat(q)
 
                     return (
                         <div

@@ -1,20 +1,24 @@
 import { cn } from '@/lib/utils'
+import { ANALYST_RATING_SEGMENTS } from '@/_bff/core/constants/analyst-ratings.constants'
 import type { AnalystRatings } from '@/types/ReportDTO'
+import { getAnalystRatingsTotal } from '@/_bff/core/helpers/financial-signals.helper'
 
 type Props = {
     ratings: AnalystRatings
 }
 
-const SEGMENTS = [
-    { key: 'strongBuy', label: 'Strong Buy', color: 'bg-positive' },
-    { key: 'buy', label: 'Buy', color: 'bg-positive/60' },
-    { key: 'hold', label: 'Hold', color: 'bg-ink/30' },
-    { key: 'sell', label: 'Sell', color: 'bg-destructive/60' },
-    { key: 'strongSell', label: 'Strong Sell', color: 'bg-destructive' },
-] as const
+type RatingKey = (typeof ANALYST_RATING_SEGMENTS)[number]['key']
+
+const SEGMENT_COLOR: Record<RatingKey, string> = {
+    strongBuy: 'bg-positive',
+    buy: 'bg-positive/60',
+    hold: 'bg-ink/30',
+    sell: 'bg-destructive/60',
+    strongSell: 'bg-destructive',
+}
 
 export function AnalystRatingsBar({ ratings }: Props) {
-    const total = ratings.strongBuy + ratings.buy + ratings.hold + ratings.sell + ratings.strongSell
+    const total = getAnalystRatingsTotal(ratings)
 
     if (total === 0) return null
 
@@ -25,13 +29,13 @@ export function AnalystRatingsBar({ ratings }: Props) {
             </span>
 
             <div className="flex h-2.5 w-full overflow-hidden rounded bg-ink/8">
-                {SEGMENTS.map((s) => {
+                {ANALYST_RATING_SEGMENTS.map((s) => {
                     const count = ratings[s.key]
                     if (count === 0) return null
                     return (
                         <div
                             key={s.key}
-                            className={cn(s.color)}
+                            className={cn(SEGMENT_COLOR[s.key])}
                             style={{ width: `${(count / total) * 100}%` }}
                         />
                     )
@@ -39,9 +43,11 @@ export function AnalystRatingsBar({ ratings }: Props) {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                {SEGMENTS.map((s) => (
+                {ANALYST_RATING_SEGMENTS.map((s) => (
                     <div key={s.key} className="flex items-center gap-1.5">
-                        <span className={cn('size-2 rounded-full shrink-0', s.color)} />
+                        <span
+                            className={cn('size-2 rounded-full shrink-0', SEGMENT_COLOR[s.key])}
+                        />
                         <span className="text-xs text-ink/60">{s.label}</span>
                         <span className="text-xs font-semibold text-ink">{ratings[s.key]}</span>
                     </div>

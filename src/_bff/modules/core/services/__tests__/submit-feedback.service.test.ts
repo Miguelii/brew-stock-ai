@@ -2,13 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { submitFeedback } from '@/_bff/modules/core/services/submit-feedback.service'
 
-const { createSbServerClientMock, getSessionMock, insertFeedbackMock } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+const { createDBServerClientMock, getSessionMock, insertFeedbackMock } = vi.hoisted(() => ({
+    createDBServerClientMock: vi.fn(),
     getSessionMock: vi.fn(),
     insertFeedbackMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/auth/services/get-session.service', () => ({
     getSession: getSessionMock,
 }))
@@ -20,7 +22,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('submitFeedback', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         getSessionMock.mockReset().mockReturnValue(Effect.succeed({ id: 'user-1' }))
         insertFeedbackMock.mockReset().mockReturnValue(Effect.void)
     })

@@ -3,15 +3,17 @@ import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { getReportById } from '@/_bff/modules/reports/services/get-report-by-id.service'
 
-const { createSbServerClientMock, isAdminMock, selectReportByIdMock, selectStockDataMock } =
+const { createDBServerClientMock, isAdminMock, selectReportByIdMock, selectStockDataMock } =
     vi.hoisted(() => ({
-        createSbServerClientMock: vi.fn(),
+        createDBServerClientMock: vi.fn(),
         isAdminMock: vi.fn(),
         selectReportByIdMock: vi.fn(),
         selectStockDataMock: vi.fn(),
     }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/admin/services/is-admin.service', () => ({
     isAdmin: isAdminMock,
 }))
@@ -27,7 +29,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('getReportById', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         isAdminMock.mockReset().mockReturnValue(Effect.succeed(false))
         selectReportByIdMock.mockReset().mockReturnValue(Effect.succeed(REPORT))
         selectStockDataMock.mockReset().mockReturnValue(Effect.succeed(STOCK_DATA))

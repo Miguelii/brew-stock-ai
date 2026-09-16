@@ -6,7 +6,12 @@
  * advice — and are intentionally easy to tune in one place.
  */
 
+import type { MetricTile } from '@/types/MetricTile'
+
 export type MetricQuality = 'good' | 'neutral' | 'caution' | 'concern'
+
+/** How a metric row's value is colored: its quality, muted for N/A, or plain when ungraded. */
+export type MetricTone = MetricQuality | 'na' | 'plain'
 
 export type MetricKey =
     | 'revenueGrowth'
@@ -28,6 +33,12 @@ export type MetricKey =
     | 'revenueGrowthFwd'
 
 type MetricEval = { quality: MetricQuality; verdict: string }
+
+type MetricRowState = {
+    help: string | undefined
+    verdict: string | null
+    tone: MetricTone
+}
 
 type MetricRule = {
     evaluate: (value: number) => MetricEval
@@ -163,6 +174,23 @@ export function evaluateMetric(
 /** Plain-language hint for a metric, when one is defined. */
 export function metricHelp(key: MetricKey | undefined): string | undefined {
     return key == null ? undefined : METRIC_RULES[key].help
+}
+
+/**
+ * Everything a metric row renders besides its label and value: the help text, the verdict
+ * word and the tone of the value. Context rows and N/A values are never graded.
+ * Shared by the report page and the exported PDF.
+ */
+export function getMetricRowState(metric: MetricTile): MetricRowState {
+    const isNA = metric.value === 'N/A'
+    const isGraded = !metric.context && !isNA
+    const evaluation = isGraded ? evaluateMetric(metric.metricKey, metric.rawValue ?? null) : null
+    const help = metric.context ? undefined : (metric.helper ?? metricHelp(metric.metricKey))
+    const verdict = evaluation && evaluation.verdict !== 'N/A' ? evaluation.verdict : null
+
+    if (isNA) return { help, verdict, tone: 'na' }
+
+    return { help, verdict, tone: evaluation ? evaluation.quality : 'plain' }
 }
 
 const QUALITY_TEXT: Record<MetricQuality, string> = {

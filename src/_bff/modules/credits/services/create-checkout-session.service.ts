@@ -5,11 +5,11 @@ import StripeClient from 'stripe'
 import { ServerEnv } from '@/env/server'
 import { CreateCheckoutSessionError, CreateSbClientError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import type { User } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
 import { Logger } from '@/_bff/lib/server-logger'
-import { TOKEN_PACKAGES } from '@/_bff/modules/credits/constants'
+import { TOKEN_PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
 
 export type TokenPackageId = (typeof TOKEN_PACKAGES)[number]['id']
 
@@ -41,7 +41,7 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
     }
 
     const supabase = yield* Effect.tryPromise({
-        try: () => createSbServerClient(true),
+        try: () => createDBServerClient(true),
         catch: (cause) =>
             new CreateSbClientError({ cause, error_hash: ErrorCode.CHECKOUT_SB_CLIENT }),
     })

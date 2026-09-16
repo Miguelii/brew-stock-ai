@@ -6,7 +6,7 @@ import { trpcClient } from '@/_trpc/client'
 import { toastError } from '@/lib/toast-error'
 import Link from 'next/link'
 import { PromptCard } from '@/components/ui/prompt-card'
-import { CONSENT_COOKIE } from '@/lib/constants'
+import { CONSENT_COOKIE } from '@/_bff/core/constants/analytics.constants'
 
 // The consent cookie has no change event; the snapshot is read once on
 // hydration and the prompt is hidden via local `dismissed` state afterwards.

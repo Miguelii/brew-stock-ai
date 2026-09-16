@@ -3,13 +3,15 @@ import { Effect } from 'effect'
 import { processReport } from '@/_bff/modules/reports/processors/process-report.processor'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbAdminClientMock, getStockAnalysisMock, sendPushMock } = vi.hoisted(() => ({
-    createSbAdminClientMock: vi.fn(),
+const { createDBAdminClientMock, getStockAnalysisMock, sendPushMock } = vi.hoisted(() => ({
+    createDBAdminClientMock: vi.fn(),
     getStockAnalysisMock: vi.fn(),
     sendPushMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBAdminClient: createDBAdminClientMock,
+}))
 vi.mock('@trigger.dev/sdk', () => ({ logger: { log: vi.fn(), error: vi.fn() } }))
 vi.mock('@/_bff/modules/analysis/processors/get-stock-analysis.processor', () => ({
     getStockAnalysis: getStockAnalysisMock,
@@ -45,12 +47,12 @@ describe('processReport', () => {
     beforeEach(() => {
         getStockAnalysisMock.mockReset().mockReturnValue(Effect.void)
         sendPushMock.mockReset().mockReturnValue(Effect.void)
-        createSbAdminClientMock.mockReset()
+        createDBAdminClientMock.mockReset()
     })
 
     it('runs the analysis and notifies the user on the happy path', async () => {
         const { client } = makeSupabase({ data: REPORT, error: null })
-        createSbAdminClientMock.mockReturnValue(client)
+        createDBAdminClientMock.mockReturnValue(client)
 
         const result = await Effect.runPromise(processReport('report-1'))
         expect(result).toEqual({ reportId: 'report-1' })
@@ -70,7 +72,7 @@ describe('processReport', () => {
 
     it('skips the analysis when the report is no longer GENERATING', async () => {
         const { client } = makeSupabase({ data: { ...REPORT, status: 'COMPLETED' }, error: null })
-        createSbAdminClientMock.mockReturnValue(client)
+        createDBAdminClientMock.mockReturnValue(client)
 
         const result = await Effect.runPromise(processReport('report-1'))
         expect(result).toEqual({ reportId: 'report-1' })
@@ -80,7 +82,7 @@ describe('processReport', () => {
 
     it('fails with FetchReportForTaskError when the report does not exist', async () => {
         const { client } = makeSupabase({ data: null, error: { message: 'not found' } })
-        createSbAdminClientMock.mockReturnValue(client)
+        createDBAdminClientMock.mockReturnValue(client)
 
         const exit = await Effect.runPromiseExit(processReport('missing-report'))
         expect(failureTag(exit)).toBe('FetchReportForTaskError')
@@ -89,7 +91,7 @@ describe('processReport', () => {
 
     it('propagates the analysis error without touching the report status', async () => {
         const { client, update } = makeSupabase({ data: REPORT, error: null })
-        createSbAdminClientMock.mockReturnValue(client)
+        createDBAdminClientMock.mockReturnValue(client)
         getStockAnalysisMock.mockReturnValue(Effect.fail({ _tag: 'StockAnalysisError' }))
 
         const exit = await Effect.runPromiseExit(processReport('report-1'))
@@ -101,7 +103,7 @@ describe('processReport', () => {
 
     it('still succeeds when the push notification fails', async () => {
         const { client } = makeSupabase({ data: REPORT, error: null })
-        createSbAdminClientMock.mockReturnValue(client)
+        createDBAdminClientMock.mockReturnValue(client)
         sendPushMock.mockReturnValue(Effect.die(new Error('push service down')))
 
         await expect(Effect.runPromise(processReport('report-1'))).resolves.toEqual({

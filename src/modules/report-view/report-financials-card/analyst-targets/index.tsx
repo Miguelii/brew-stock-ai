@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
-import { fmtPrice, signedPct1 } from '@/lib/formatters'
+import { fmtPrice, signedPct1 } from '@/_bff/core/utils/formatters.utils'
 import type { StockFinancials } from '@/types/ReportDTO'
+import { getTargetUpsidePct } from '@/_bff/core/helpers/financial-signals.helper'
 
 type Props = {
     financials: StockFinancials | null
@@ -9,10 +10,7 @@ type Props = {
 export function AnalystTargets({ financials }: Props) {
     const f = financials
 
-    const upside =
-        f?.targetMeanPrice != null && f?.currentPrice != null && f.currentPrice > 0
-            ? ((f.targetMeanPrice - f.currentPrice) / f.currentPrice) * 100
-            : null
+    const upside = getTargetUpsidePct(f)
 
     return (
         <div className="flex flex-col gap-2">

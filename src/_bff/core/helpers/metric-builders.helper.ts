@@ -1,11 +1,7 @@
-import { fmtLarge, fmtPct, fmtNum } from '@/lib/formatters'
-import {
-    fmtX,
-    fmtDebtEquity,
-    fmtEstimatePeriod,
-} from '@/modules/report-view/report-financials-card/utils'
+import { fmtLarge, fmtPct, fmtNum } from '@/_bff/core/utils/formatters.utils'
+import { fmtX, fmtDebtEquity, fmtEstimatePeriod } from '@/_bff/core/utils/metric-formatters.utils'
 import type { StockFinancials, StockFundamentals } from '@/types/ReportDTO'
-import type { MetricTile } from '@/modules/report-view/report-financials-card/types'
+import type { MetricTile } from '@/types/MetricTile'
 
 // Forward analyst estimates (next quarter / year) — EPS and revenue with growth.
 function getForwardRows(fundamentals: StockFundamentals | null): MetricTile[] {

@@ -3,12 +3,14 @@ import { Effect } from 'effect'
 import { sbVerifyOtp } from '@/_bff/modules/auth/services/sb-verify-otp.service'
 import { failureTag } from '@/_bff/__tests__/utils'
 
-const { createSbServerClientMock, loggerMock } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+const { createDBServerClientMock, loggerMock } = vi.hoisted(() => ({
+    createDBServerClientMock: vi.fn(),
     loggerMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/lib/server-logger', () => ({ Logger: loggerMock }))
 
 const verifyOtp = vi.fn()
@@ -16,7 +18,7 @@ const verifyOtp = vi.fn()
 describe('sbVerifyOtp', () => {
     beforeEach(() => {
         verifyOtp.mockReset().mockResolvedValue({ error: null })
-        createSbServerClientMock.mockReset().mockResolvedValue({ auth: { verifyOtp } })
+        createDBServerClientMock.mockReset().mockResolvedValue({ auth: { verifyOtp } })
         loggerMock.mockReset()
     })
 

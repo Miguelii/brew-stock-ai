@@ -1,6 +1,6 @@
 import { Match } from 'effect'
 import { z } from 'zod'
-import { SB_OTP_TOKEN_LENGTH } from '@/lib/constants'
+import { SB_OTP_TOKEN_LENGTH } from '@/_bff/core/constants/auth-otp.constants'
 import { publicProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'
 import { sbVerifyOtp } from '@/_bff/modules/auth/services/sb-verify-otp.service'

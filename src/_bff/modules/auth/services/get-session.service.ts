@@ -2,7 +2,7 @@ import 'server-only'
 
 import { cache } from 'react'
 import { Effect } from 'effect'
-import { createSbServerClient } from '@/lib/utils.server'
+import { createDBServerClient } from '@/_bff/core/db'
 import { CreateSbClientError, GetUserError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { SupabaseClient, User } from '@supabase/supabase-js'
@@ -28,7 +28,7 @@ const resolveUser = cache(async (): Promise<SessionResult> => {
     let supabase: SupabaseClient
 
     try {
-        supabase = await createSbServerClient()
+        supabase = await createDBServerClient()
     } catch (cause) {
         return { ok: false, kind: 'sb-client', cause }
     }

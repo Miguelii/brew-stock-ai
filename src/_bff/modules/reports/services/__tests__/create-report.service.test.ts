@@ -6,20 +6,22 @@ import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/_bff/modules/analysis/constants
 import { failureTag } from '@/_bff/__tests__/utils'
 
 const {
-    createSbServerClientMock,
+    createDBServerClientMock,
     deductCreditMock,
     refundCreditsMock,
     insertReportMock,
     enqueueMock,
 } = vi.hoisted(() => ({
-    createSbServerClientMock: vi.fn(),
+    createDBServerClientMock: vi.fn(),
     deductCreditMock: vi.fn(),
     refundCreditsMock: vi.fn(),
     insertReportMock: vi.fn(),
     enqueueMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbServerClient: createSbServerClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBServerClient: createDBServerClientMock,
+}))
 vi.mock('@/_bff/modules/credits/services/deduct-credit.service', () => ({
     deductCredit: deductCreditMock,
 }))
@@ -40,7 +42,7 @@ const SUPABASE = { from: vi.fn() }
 
 describe('createReport', () => {
     beforeEach(() => {
-        createSbServerClientMock.mockReset().mockResolvedValue(SUPABASE)
+        createDBServerClientMock.mockReset().mockResolvedValue(SUPABASE)
         deductCreditMock.mockReset().mockReturnValue(Effect.succeed(4))
         insertReportMock.mockReset().mockReturnValue(Effect.succeed('r-1'))
         enqueueMock.mockReset().mockReturnValue(Effect.void)
@@ -92,7 +94,7 @@ describe('createReport', () => {
         const exit = await Effect.runPromiseExit(createReport(USER, 'AAPL', 'not-a-prompt'))
 
         expect(failureTag(exit)).toBe('InvalidPromptTypeError')
-        expect(createSbServerClientMock).not.toHaveBeenCalled()
+        expect(createDBServerClientMock).not.toHaveBeenCalled()
         expect(deductCreditMock).not.toHaveBeenCalled()
         expect(insertReportMock).not.toHaveBeenCalled()
     })
@@ -108,7 +110,7 @@ describe('createReport', () => {
     })
 
     it('fails with CreateSbClientError when the Supabase client cannot be created', async () => {
-        createSbServerClientMock.mockRejectedValue(new Error('no env'))
+        createDBServerClientMock.mockRejectedValue(new Error('no env'))
 
         const exit = await Effect.runPromiseExit(createReport(USER, 'AAPL', PROMPT_TYPE))
         expect(failureTag(exit)).toBe('CreateSbClientError')

@@ -1,17 +1,22 @@
 import { cn } from '@/lib/utils'
-import { fmtNum } from '@/lib/formatters'
+import { fmtNum } from '@/_bff/core/utils/formatters.utils'
 import type { InsiderActivity } from '@/types/ReportDTO'
+import { getInsiderSignal, type SignalTone } from '@/_bff/core/helpers/financial-signals.helper'
 
 type Props = {
     insiders: InsiderActivity
 }
 
+const TONE_CLASS: Record<SignalTone, string> = {
+    positive: 'text-positive',
+    negative: 'text-destructive',
+    neutral: 'text-ink/60',
+}
+
 export function InsiderActivitySummary({ insiders }: Props) {
     const { buyCount, sellCount, netShares } = insiders
 
-    const isNeutral = netShares == null || netShares === 0
-    const direction = isNeutral ? 'Roughly neutral' : netShares > 0 ? 'Net buying' : 'Net selling'
-    const tone = isNeutral ? 'text-ink/60' : netShares > 0 ? 'text-positive' : 'text-destructive'
+    const signal = getInsiderSignal(netShares)
 
     return (
         <div className="flex flex-col rounded-[var(--radius-surface-inner)] border border-ink/10 bg-paper p-4 gap-1.5">
@@ -23,8 +28,13 @@ export function InsiderActivitySummary({ insiders }: Props) {
                 <span className="text-xs text-ink/60">
                     {buyCount} buys / {sellCount} sells
                 </span>
-                <span className={cn('text-xs font-semibold whitespace-nowrap', tone)}>
-                    {direction} ({fmtNum(netShares, 0)} shares)
+                <span
+                    className={cn(
+                        'text-xs font-semibold whitespace-nowrap',
+                        TONE_CLASS[signal.tone]
+                    )}
+                >
+                    {signal.label} ({fmtNum(netShares, 0)} shares)
                 </span>
             </div>
         </div>

@@ -18,7 +18,7 @@ import { useEmailForm, type EmailFormValues } from '@/modules/auth/auth-card/use
 import { useLastUsed } from '@/modules/auth/auth-card/use-last-used'
 import { toastError } from '@/lib/toast-error'
 import { AuthErrorHandler } from '@/modules/auth/auth-card/auth-error-handler'
-import { SB_OTP_TOKEN_LENGTH } from '@/lib/constants'
+import { SB_OTP_TOKEN_LENGTH } from '@/_bff/core/constants/auth-otp.constants'
 import { ENABLE_OTP_LOGIN, SIGN_IN_GOOGLE_API_PATH } from '@/modules/auth/auth-card/constants'
 import { cn } from '@/lib/utils'
 import { Loader2Icon } from 'lucide-react'

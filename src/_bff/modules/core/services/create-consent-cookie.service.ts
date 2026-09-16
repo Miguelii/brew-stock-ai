@@ -2,7 +2,7 @@ import 'server-only'
 
 import { Effect } from 'effect'
 import { cookies } from 'next/headers'
-import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/lib/constants'
+import { CONSENT_COOKIE, GTM_ID_WITHOUT_G } from '@/_bff/core/constants/analytics.constants'
 import { CreateConsentCookieError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 

@@ -3,7 +3,7 @@ import {
     CONTACT_FORM_MAX_NAME_LENGTH,
     CONTACT_FORM_MIN_MESSAGE_LENGTH,
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
-} from '@/lib/constants'
+} from '@/_bff/core/constants/contact-form.constants'
 import { publicProcedure } from '@/_trpc/server'
 import { runEffect } from '@/_trpc/utils'
 import { z } from 'zod'

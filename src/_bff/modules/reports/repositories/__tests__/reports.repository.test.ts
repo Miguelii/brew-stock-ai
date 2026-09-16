@@ -13,12 +13,14 @@ import {
     updateReportWithAnalysis,
 } from '@/_bff/modules/reports/repositories/reports.repository'
 
-const { createSbAdminClientMock, loggerMock } = vi.hoisted(() => ({
-    createSbAdminClientMock: vi.fn(),
+const { createDBAdminClientMock, loggerMock } = vi.hoisted(() => ({
+    createDBAdminClientMock: vi.fn(),
     loggerMock: vi.fn(),
 }))
 
-vi.mock('@/lib/utils.server', () => ({ createSbAdminClient: createSbAdminClientMock }))
+vi.mock('@/_bff/core/db', () => ({
+    createDBAdminClient: createDBAdminClientMock,
+}))
 vi.mock('@/_bff/lib/server-logger', () => ({ Logger: loggerMock }))
 // unstable_cache needs the Next.js incremental cache runtime, absent in vitest — pass through
 vi.mock('next/cache', () => ({
@@ -187,12 +189,12 @@ describe('selectStockDataByTickerCached', () => {
         asClient({ select: () => ({ eq: () => ({ maybeSingle }) }) })
 
     beforeEach(() => {
-        createSbAdminClientMock.mockReset()
+        createDBAdminClientMock.mockReset()
         loggerMock.mockReset()
     })
 
     it('returns the stock data row when present', async () => {
-        createSbAdminClientMock.mockReturnValue(
+        createDBAdminClientMock.mockReturnValue(
             makeStockChain(() => Promise.resolve({ data: { id: 'AAPL' }, error: null }))
         )
 
@@ -204,7 +206,7 @@ describe('selectStockDataByTickerCached', () => {
     })
 
     it('resolves to null when there is no row', async () => {
-        createSbAdminClientMock.mockReturnValue(
+        createDBAdminClientMock.mockReturnValue(
             makeStockChain(() => Promise.resolve({ data: null, error: null }))
         )
 
@@ -217,11 +219,11 @@ describe('selectStockDataByTickerCached', () => {
         await expect(
             Effect.runPromise(selectStockDataByTickerCached(null, 'user_id'))
         ).resolves.toBe(null)
-        expect(createSbAdminClientMock).not.toHaveBeenCalled()
+        expect(createDBAdminClientMock).not.toHaveBeenCalled()
     })
 
     it('resolves to null instead of failing when the query returns an error', async () => {
-        createSbAdminClientMock.mockReturnValue(
+        createDBAdminClientMock.mockReturnValue(
             makeStockChain(() => Promise.resolve({ data: null, error: { message: 'boom' } }))
         )
 
@@ -232,7 +234,7 @@ describe('selectStockDataByTickerCached', () => {
     })
 
     it('resolves to null instead of failing when the query rejects', async () => {
-        createSbAdminClientMock.mockReturnValue(
+        createDBAdminClientMock.mockReturnValue(
             makeStockChain(() => Promise.reject(new Error('network down')))
         )
 

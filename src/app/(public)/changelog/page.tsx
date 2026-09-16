@@ -54,7 +54,7 @@ export default function ChangelogPage() {
                         What&apos;s new
                     </h1>
                     <p className="text-primary-muted text-lg leading-relaxed">
-                        Product updates and improvements to our AI stock analysis.
+                        Product updates and improvements to our Stock Analysis Engine.
                     </p>
                 </m.header>
 

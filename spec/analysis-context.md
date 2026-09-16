@@ -1,9 +1,9 @@
-# Analysis Context — What the AI Sees
+# Analysis Context: What the AI Sees
 
 This document is the single source of truth for **everything fed to the model** when generating a
-stock analysis: every data block, where it comes from, the exact fields, and how the final prompt
-is assembled. Blocks are tagged **[EXISTING]** (present before the context-enrichment work) or
-**[NEW]** (added during it) so the delta is explicit.
+stock analysis: every data block, where it comes from, the exact fields, how the final prompt is
+assembled, and what happens to the output. Blocks are tagged **[EXISTING]** (present before the
+context-enrichment work) or **[NEW]** (added during it) so the delta is explicit.
 
 The architecture is deliberately simple: **one** model call per report, with **structured output**
 (no multi-agent orchestration). Quality comes from the breadth and quality of the injected context,
@@ -15,15 +15,15 @@ not from chaining calls.
 
 1. [Pipeline](#pipeline)
 2. [The assembled prompt](#the-assembled-prompt)
-3. [Context blocks — master table](#context-blocks--master-table)
+3. [Context blocks: master table](#context-blocks-master-table)
 4. [Block details](#block-details)
-    - [Key Financial Indicators — EXISTING](#key-financial-indicators--existing)
-    - [Fundamentals — NEW](#fundamentals--new)
-    - [Technical Snapshot — NEW](#technical-snapshot--new)
-    - [Recent Significant Development — EXISTING](#recent-significant-development--existing)
-    - [Analyst Coverage — EXISTING](#analyst-coverage--existing)
-    - [Company vs Sector Scores — EXISTING](#company-vs-sector-scores--existing)
-    - [Recent News — NEW](#recent-news--new)
+    - [Key Financial Indicators (EXISTING)](#key-financial-indicators-existing)
+    - [Fundamentals (NEW)](#fundamentals-new)
+    - [Technical Snapshot (NEW)](#technical-snapshot-new)
+    - [Recent Significant Development (EXISTING)](#recent-significant-development-existing)
+    - [Analyst Coverage (EXISTING)](#analyst-coverage-existing)
+    - [Company vs Sector Scores (EXISTING)](#company-vs-sector-scores-existing)
+    - [Recent News (NEW)](#recent-news-new)
 5. [Model & output](#model--output)
 6. [Caching & resilience](#caching--resilience)
 7. [File map](#file-map)
@@ -41,44 +41,68 @@ The backend is organised NestJS-style under `src/_bff/modules/<module>/`
 and **no user session**.
 
 ```
-getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient?, useBaseModel?)
+getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient, useBaseModel?)
   │
-  ├─ basePrompt        = PROMPTS_MAP[promptType]            // per-type prompt
+  ├─ promptTemplate = resolvePromptTemplate(promptType)     // PROMPTS_MAP[promptType],
+  │                                                         //   else InvalidPromptTypeError
   │
-  ├─ yahooPreFetch     = getYahooDataWithFallbackService(stockSymbol) // ticker + financials + fundamentals
-  │                                                            //   + sigDev + reports + scores
-  │                                                            //   (fresh-first, stock_data as fallback)
-  ├─ tickerForData     = yahooPreFetch?.ticker ?? stockSymbol
+  ├─ marketData = fetchMarketData(stockSymbol, supabaseClient)
+  │    ├─ ticker        = getYahooTicker(stockSymbol)        // NON-FATAL → null
+  │    ├─ tickerForData = ticker ?? stockSymbol
+  │    └─ Effect.all (parallel, concurrency: 'unbounded')
+  │         ├─ yahoo        = ticker ? getYahooDataWithFallbackService(ticker, supabaseClient)
+  │         │                        : null                 // fresh-first, stock_data as fallback
+  │         ├─ priceHistory = getPriceHistoryService(tickerForData)  // RAW 1y daily closes, NON-FATAL
+  │         └─ news         = getLatestNewsService(tickerForData)    // RAW Finnhub news, NON-FATAL
+  │       → MarketData { yahoo, priceHistory, news }
   │
-  ├─ Effect.all (parallel, both NON-FATAL → null on failure)
-  │    ├─ priceHistory = getPriceHistoryService(tickerForData)        // RAW 1y daily closes (yahoo/processors)
-  │    └─ news         = getLatestNewsService(tickerForData)   // RAW Finnhub company-news (finnhub/services)
+  ├─ fork saveFreshYahooData(yahoo)                         // upsert stock_data only when isFresh,
+  │                                                         //   in the background, NON-FATAL
   │
-  ├─ technicals        = priceHistory?.length ? computeTechnicalIndicators(priceHistory) : null
-  │
-  ├─ context           = "\n\n" + buildYahooContext(yahooData, technicals, news)   // see below
-  ├─ resolvedPrompt    = basePrompt.replaceAll("##TICKER##", stockSymbol) + context
-  │
-  └─ generateText({ model, thinking?, output: stockAnalysisSchema, system: SystemPrompt,
-                    prompt: resolvedPrompt, maxOutputTokens })
-       → { analysis (HTML), sentiment (0–100) }
+  └─ analyzeAndSaveReport(...)  .pipe(Effect.ensuring(join save fiber))
+       ├─ prompt       = buildPrompt(promptTemplate, stockSymbol, marketData)   // see below
+       ├─ generateText({ model, providerOptions, output: stockAnalysisSchema,
+       │                 system: SystemPrompt, prompt, maxOutputTokens })
+       │    → { analysis (HTML), sentiment }
+       ├─ sentiment    = normalizeSentiment(output.sentiment)
+       ├─ tokenUsdCost = calculateTokenCost(model, inputTokens, outputTokens)
+       ├─ logger.log('Analysis completed', ...)
+       ├─ prod only: isAnalysisComplete(analysis, finishReason) or fail (ANALYSIS_AI_INCOMPLETE)
+       └─ saveAnalysisToReport(reportId, analysis, ticker, tokenUsdCost, sentiment, supabaseClient)
+
+buildPrompt:
+  technicals = priceHistory?.length ? computeTechnicalIndicators(priceHistory) : null
+  hasContext = (yahoo && hasAnyStockData(yahoo.data)) || technicals || news?.length
+  context    = hasContext ? "\n\n" + buildYahooContext(yahoo?.data ?? EMPTY_YAHOO_DATA, technicals, news)
+                          : ""
+  prompt     = promptTemplate.replaceAll("##TICKER##", stockSymbol) + context
 ```
 
 Key properties:
 
-- **Price history and news are non-fatal.** A failure in either resolves to `null` and the analysis
-  proceeds without that block. Yahoo data itself (`getYahooDataWithFallback`) also resolves to `null`
-  on failure — the analysis still runs on whatever context survives.
-- **Raw (uncached, session-less) fetchers** are used here — `getPriceHistory`
-  (`yahoo/processors/get-price-history.processor.ts`) and `getLatestNewsService`
-  (`finnhub/services/get-latest-news.service.ts`). The user-facing tRPC endpoints use separate
-  cached + session-gated wrappers — `getPriceHistory` (`yahoo/services/get-price-history.service.ts`,
-  exposed by `yahoo/controllers/get-price-history.controller.ts`) and `getLatestNews`
-  (`finnhub/services/get-latest-news-cached.service.ts`, exposed by
-  `finnhub/controllers/get-latest-news.controller.ts`); see `spec/e2e.md` and the source for the
-  split rationale.
-- **Same `ticker`** (resolved once by `getYahooDataWithFallback`) is reused for news and price history so all
-  blocks refer to the same symbol.
+- **Every data source is non-fatal.** Ticker resolution, price history and news are wrapped in
+  `logAndRecover` (logs the error, resolves to `null`); `getYahooDataWithFallbackService` never
+  fails (it resolves to `null` when Yahoo and `stock_data` both have nothing). The analysis still
+  runs on whatever context survives, and with no context at all the prompt is sent bare.
+- **Ticker first, then everything in parallel.** `getYahooTicker` resolves the canonical symbol
+  once; Yahoo data, price history and news are then fetched concurrently with that same symbol, so
+  all blocks refer to the same ticker. When resolution fails, Yahoo data is skipped and price
+  history and news fall back to the raw `stockSymbol`.
+- **The Yahoo upsert does not block the model call.** `saveFreshYahooData` runs in a forked fiber
+  while the model generates. `Effect.ensuring` joins it even when the analysis fails, so the write
+  is never interrupted halfway.
+- **Raw (uncached, session-less) fetchers** are used here, because the Trigger.dev runtime has no
+  user session and no Next.js data cache:
+    - `getPriceHistoryService` (`yahoo/services/get-price-history.service.ts`, built on
+      `fetchHistoryRaw` in `yahoo/processors/fetch-history.processor.ts`)
+    - `getLatestNewsService` (`finnhub/services/get-latest-news.service.ts`, built on
+      `fetchLatestNewsRaw` in `finnhub/processors/fetch-latest-news.processor.ts`)
+
+    The user-facing tRPC endpoints use separate cached wrappers: `getCachedPriceHistoryService`
+    (`yahoo/services/get-cached-price-history.service.ts`, exposed by
+    `yahoo/controllers/get-price-history.controller.ts`) and `getLatestNews`
+    (`finnhub/services/get-latest-news-cached.service.ts`, exposed by
+    `finnhub/controllers/get-latest-news.controller.ts`).
 
 ---
 
@@ -86,22 +110,32 @@ Key properties:
 
 The model receives three things:
 
-### 1. System prompt — `SystemPrompt` (`src/_bff/modules/analysis/prompts/system.prompt.ts`)
+### 1. System prompt: `SystemPrompt` (`src/_bff/modules/analysis/prompts/system.prompt.ts`)
 
 Defines the persona (senior equity research analyst), the writing rules (interpret don't describe,
 anchor every claim in numbers, never fabricate, stay balanced), the **required JSON output shape**,
-and — critically — the **hierarchy of signals**:
+and, critically, the **hierarchy of signals**:
 
 > Business quality, durable cash generation, and valuation drive the thesis. Earnings/estimates and
 > analyst ratings are primary fundamentals; **technicals are a secondary timing signal**; **news and
-> soft scores are confirmatory only** — never the core of the case.
+> soft scores are confirmatory only**, never the core of the case.
 
-### 2. Per-type prompt — one of five (`PROMPTS_MAP`)
+HTML rules the output must follow:
+
+- Inner content only (no `<html>`, `<head>`, `<body>`).
+- **No HTML attributes and no straight double quotes (`"`)** anywhere in the analysis. Quotes must
+  be typographic (`“ ”`) or single (`'`).
+- **Always end with `<h3>Investment Thesis Summary</h3>` followed by one concise `<p>`.** The
+  incomplete-output guard (see [Post-processing](#post-processing)) and the report TL;DR card both
+  depend on this section.
+
+### 2. Per-type prompt: one of five (`PROMPTS_MAP`)
 
 Selected by `promptType`. The five prompt strings live in
-`src/_bff/modules/analysis/prompts/analysis.prompt.ts`; `PROMPTS_MAP` (which keys them by type)
-lives in `src/_bff/modules/analysis/constants/index.ts`. Each contains `##TICKER##`, replaced with
-the symbol at runtime.
+`src/_bff/modules/analysis/prompts/analysis.prompt.ts`. `PROMPTS_MAP` (prompt by type) and
+`PROMPT_COSTS_MAP` (credit cost by type) live in `src/_bff/modules/analysis/constants/index.ts`,
+both derived from `PROMPT_TYPES` (type, label, cost), which lives in `src/lib/constants.ts` because
+the frontend also uses it. Each prompt contains `##TICKER##`, replaced with the symbol at runtime.
 
 | Prompt constant                      | Focus                                                                                 |
 | ------------------------------------ | ------------------------------------------------------------------------------------- |
@@ -111,17 +145,19 @@ the symbol at runtime.
 | `RiskAnalysisPrompt`                 | Risk ranking + "kill scenario"                                                        |
 | `GrowthPotentialAnalysisPrompt`      | TAM, growth runway, 3–5y scenarios                                                    |
 
-### 3. Injected context — the `## Current Market Context` block
+### 3. Injected context: the `## Current Market Context` block
 
 Built by `buildYahooContext(data, technicals?, news?)`
 (`src/_bff/modules/yahoo/helpers/build-yahoo-context.helper.ts`) and appended to the per-type
-prompt. The processor only assembles this block when at least one source survived (`hasContext`);
-otherwise the prompt is sent with no context appended. Each section renders **only when its data is
-present**, in this exact order:
+prompt. The processor only appends this block when `hasContext` is true (at least one Yahoo field
+has data per `hasAnyStockData`, or there are technicals, or there is news); otherwise the prompt is
+sent with no context. When Yahoo data is missing but technicals or news exist, `EMPTY_YAHOO_DATA`
+is passed so only those blocks render. Each section renders **only when its data is present**, in
+this exact order:
 
 ```
 ## Current Market Context
-Live data from Yahoo Finance — incorporate these insights into your analysis where relevant.
+(one-line intro: live data from Yahoo Finance, to be incorporated where relevant)
 
 **Key Financial Indicators:**            [EXISTING]   (data.financials)
 **Earnings History ...**                 [NEW]        (data.fundamentals.earningsHistory)
@@ -138,11 +174,13 @@ Live data from Yahoo Finance — incorporate these insights into your analysis w
 
 ---
 
-## Context blocks — master table
+## Context blocks: master table
 
-All file paths below are relative to `src/_bff/modules/`.
+All file paths below are relative to `src/_bff/modules/`. The "Cache" column describes what the
+**analysis pipeline** sees: price history and news are always fetched live there (the
+`unstable_cache` TTLs only apply to the tRPC endpoints, see [Caching & resilience](#caching--resilience)).
 
-| Block                          | Status   | Source                         | Service / file                                                                                                  | Cache (TTL)             |
+| Block                          | Status   | Source                         | Service / file                                                                                                  | Cache (pipeline)        |
 | ------------------------------ | -------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ----------------------- |
 | Key Financial Indicators       | EXISTING | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` (`financialData`, `summaryDetail`, `defaultKeyStatistics`)       | `stock_data` (fallback) |
 | Earnings History               | NEW      | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` + `yahoo/helpers/map-fundamentals.helper.ts` (`earningsHistory`) | `stock_data` (fallback) |
@@ -150,19 +188,21 @@ All file paths below are relative to `src/_bff/modules/`.
 | Revenue & Net Income Trend     | NEW      | Yahoo `fundamentalsTimeSeries` | `yahoo/helpers/map-fundamentals.helper.ts` (`financials`, annual)                                               | `stock_data` (fallback) |
 | Analyst Rating Distribution    | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`recommendationTrend`)                                              | `stock_data` (fallback) |
 | Insider Activity               | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`insiderTransactions`)                                              | `stock_data` (fallback) |
-| Technical Snapshot             | NEW      | Yahoo `chart` (1y daily)       | `yahoo/processors/get-price-history.processor.ts` → `yahoo/helpers/compute-technical-indicators.helper.ts`      | price-history (12 h)    |
+| Technical Snapshot             | NEW      | Yahoo `chart` (1y daily)       | `yahoo/services/get-price-history.service.ts` → `yahoo/helpers/compute-technical-indicators.helper.ts`          | none (live)             |
 | Recent Significant Development | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`sigDevs[0]`)                                                   | `stock_data` (fallback) |
 | Analyst Coverage               | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`reports`, 3)                                                   | `stock_data` (fallback) |
 | Company vs Sector Scores       | EXISTING | Yahoo `insights`               | `yahoo/processors/get-yahoo-data.processor.ts` (`companySnapshot`)                                              | `stock_data` (fallback) |
-| Recent News                    | NEW      | Finnhub `company-news`         | `finnhub/services/get-latest-news.service.ts` (top 3)                                                           | latest-news (1 day)     |
+| Recent News                    | NEW      | Finnhub `company-news`         | `finnhub/services/get-latest-news.service.ts` (`fetchLatestNewsRaw`, top 3)                                     | none (live)             |
 
-All field shapes live in `src/types/ReportDTO.ts`.
+Stock field shapes live in `src/types/ReportDTO.ts`; `NewsItem` lives in `src/types/news.ts`;
+`PricePoint`, `GetYahooDataResult` and `YahooDataWithFallbackResult` live in
+`src/_bff/modules/yahoo/types/index.ts`.
 
 ---
 
 ## Block details
 
-### Key Financial Indicators — EXISTING
+### Key Financial Indicators (EXISTING)
 
 Type `StockFinancials`. A current snapshot from `quoteSummary`
 (`financialData` + `summaryDetail` + `defaultKeyStatistics`). Rendered as a single bullet list.
@@ -177,32 +217,32 @@ Type `StockFinancials`. A current snapshot from `quoteSummary`
 The system prompt instructs the model to compute derived ratios from these (implied PEG, EV/EBITDA,
 FCF yield, forward-vs-trailing P/E, price-vs-target range).
 
-### Fundamentals — NEW
+### Fundamentals (NEW)
 
 Type `StockFundamentals`. Fetched independently of `financials` so a failure here never compromises
 the snapshot above. Mapped in `src/_bff/modules/yahoo/helpers/map-fundamentals.helper.ts`.
 
-- **`earningsHistory: EarningsQuarter[]`** (last 4 quarters, from `earningsHistory`) —
+- **`earningsHistory: EarningsQuarter[]`** (last 4 quarters, from `earningsHistory`):
   `period`, `quarter`, `epsActual`, `epsEstimate`, `surprisePercent`. Rendered with a beat/miss
   verdict per quarter.
-- **`forwardEstimates: ForwardEstimate[]`** (from `earningsTrend`, periods `0q/+1q/0y/+1y`) —
+- **`forwardEstimates: ForwardEstimate[]`** (from `earningsTrend`, periods `0q/+1q/0y/+1y`):
   `epsAvg`, `epsGrowth`, `revenueAvg`, `revenueGrowth`.
-- **`revenueTrend: RevenueTrendPoint[]`** (up to 4 years, newest first) — `endDate`, `totalRevenue`,
+- **`revenueTrend: RevenueTrendPoint[]`** (up to 4 years, newest first): `endDate`, `totalRevenue`,
   `netIncome`. **Sourced from `fundamentalsTimeSeries` (`module: 'financials'`, `type: 'annual'`),
-  NOT the `incomeStatementHistory` quoteSummary module** — Yahoo has emptied that module for most
+  NOT the `incomeStatementHistory` quoteSummary module.** Yahoo has emptied that module for most
   tickers since late 2024, so the time-series endpoint is the reliable source.
-- **`analystRatings: AnalystRatings | null`** (latest period, from `recommendationTrend`) —
+- **`analystRatings: AnalystRatings | null`** (latest period, from `recommendationTrend`):
   `strongBuy`, `buy`, `hold`, `sell`, `strongSell`. The prompt uses the **distribution** as a
   consensus-strength signal, not just the price target.
-- **`insiders: InsiderActivity | null`** (from `insiderTransactions`) — `buyCount`, `sellCount`,
+- **`insiders: InsiderActivity | null`** (from `insiderTransactions`): `buyCount`, `sellCount`,
   `netShares` (buys positive, sells negative; classified from each transaction's text). Weighted
   lightly by the prompt.
 
-### Technical Snapshot — NEW
+### Technical Snapshot (NEW)
 
 Type `StockTechnicals`. Computed by `compute-technical-indicators.helper.ts` (pure function) from the
-1-year daily close series returned by `getPriceHistory`. A **compact summary is injected — never the ~252
-raw points.** Framed in the prompt as a secondary timing/momentum signal.
+1-year daily close series returned by `getPriceHistoryService`. A **compact summary is injected,
+never the ~252 raw points.** Framed in the prompt as a secondary timing/momentum signal.
 
 - **Moving averages / regime:** `sma50`, `sma200`, `priceVsSma50Pct`, `priceVsSma200Pct`,
   `trend` (`golden-cross` | `death-cross` | `neutral`).
@@ -210,82 +250,143 @@ raw points.** Framed in the prompt as a secondary timing/momentum signal.
   `return1m`, `return3m`, `return6m`, `return12m`.
 - **Risk:** `annualizedVolatilityPct`.
 
-Every metric is guarded for short history (e.g. `sma200` is `null` with under 200 points).
+Every metric is guarded for short history (e.g. `sma200` is `null` with under 200 points). An empty
+price series skips the block entirely.
 
-### Recent Significant Development — EXISTING
+### Recent Significant Development (EXISTING)
 
-Type `StockSigDev` (Yahoo `insights.sigDevs[0]`) — `headline` + `date`. The single most notable
+Type `StockSigDev` (Yahoo `insights.sigDevs[0]`): `headline` + `date`. The single most notable
 recent event. Confirmatory weight only.
 
-### Analyst Coverage — EXISTING
+### Analyst Coverage (EXISTING)
 
-Type `StockReports[]` (Yahoo `insights.reports`, up to 3) — `title`/`reportTitle`, `provider`,
+Type `StockReports[]` (Yahoo `insights.reports`, up to 3): `title`/`reportTitle`, `provider`,
 `reportDate`. Surfaced as titles; the prompt treats these as secondary, confirmatory signals.
 
-### Company vs Sector Scores — EXISTING
+### Company vs Sector Scores (EXISTING)
 
-Type `StockScores` (Yahoo `insights.companySnapshot`) — company vs sector on a 0.0–1.0 scale for
+Type `StockScores` (Yahoo `insights.companySnapshot`): company vs sector on a 0.0–1.0 scale for
 `innovativeness`, `hiring`, `sustainability`. Soft signals, confirmatory only.
 
-### Recent News — NEW
+### Recent News (NEW)
 
 `NewsItem[]` from Finnhub `company-news` (top 3). Each item: `headline`, `source`, `datetime`
-(unix seconds), `summary` (truncated to 200 chars in the prompt), plus `category`/`image`/`url`.
-Framed as a confirmatory signal — used to confirm or challenge the thesis, never to drive it.
+(unix seconds), `summary` (truncated to `NEWS_SUMMARY_MAX_CHARS` = 200 chars in the prompt), plus
+`category`/`image`/`url`. Framed as a confirmatory signal: used to confirm or challenge the thesis,
+never to drive it. Missing `NEXT_FINNHUB_API_KEY` fails the fetch (`LATEST_NEWS_API_KEY_MISSING`),
+which the pipeline recovers as "no news".
 
 > Note: the fundamentals, technicals and news data are also surfaced in the report UI (the
-> "Key Financial Metrics" card and the exported PDF), not just the prompt.
+> "Key Financial Metrics" card, the "Market & Analyst Outlook" card and the exported PDF), not just
+> the prompt.
 
 ---
 
 ## Model & output
 
-Selected in `get-stock-analysis.processor.ts`, constants in
-`src/_bff/modules/analysis/constants/index.ts`.
+Selected in `generateAnalysis` (`get-stock-analysis.processor.ts`), constants in
+`src/_bff/modules/analysis/constants/index.ts`. `useBaseModel` is `getIsDev()` at enqueue time, so
+the free tier only runs in development.
 
-| Tier | Model (`useBaseModel`)                      | Thinking                                 | `maxOutputTokens`                |
-| ---- | ------------------------------------------- | ---------------------------------------- | -------------------------------- |
-| Free | `FREE_MODEL` = `claude-haiku-4-5`           | disabled                                 | `MAX_OUTPUT_TOKENS_FREE` = 8000  |
-| Paid | `PROD_MODEL` = `claude-sonnet-4-5-20250929` | enabled, `THINKING_BUDGET_TOKENS` = 6000 | `MAX_OUTPUT_TOKENS_PROD` = 16000 |
+| Tier | Model (`useBaseModel`)            | Thinking                                                                   | `maxOutputTokens`                |
+| ---- | --------------------------------- | -------------------------------------------------------------------------- | -------------------------------- |
+| Free | `FREE_MODEL` = `claude-haiku-4-5` | disabled (`providerOptions` undefined)                                     | `MAX_OUTPUT_TOKENS_FREE` = 8000  |
+| Paid | `PROD_MODEL` = `claude-sonnet-5`  | **adaptive** (`providerOptions.anthropic.thinking = { type: 'adaptive' }`) | `MAX_OUTPUT_TOKENS_PROD` = 16000 |
 
-> **Token invariant:** with extended thinking, thinking tokens count toward `max_tokens`, so
-> `maxOutputTokens` MUST be comfortably larger than `THINKING_BUDGET_TOKENS` — otherwise the model
-> spends its whole budget reasoning and emits no JSON (surfaces as `AI_NoOutputGeneratedError`).
-> `16000 > 6000` leaves ~10k for the answer.
+> **Token invariant:** with adaptive thinking there is no fixed thinking budget, but the thinking
+> tokens still count toward `max_tokens`. `MAX_OUTPUT_TOKENS_PROD` must leave comfortable room for
+> the full HTML answer after the model reasons; otherwise it spends the whole budget thinking and
+> emits no JSON (surfaces as `AI_NoOutputGeneratedError`, or as a truncated analysis caught by the
+> guard below).
 
-**Structured output** — `stockAnalysisSchema` (Vercel AI SDK `Output.object`, native Anthropic
+**Structured output**: `stockAnalysisSchema` (Vercel AI SDK `Output.object`, native Anthropic
 `json_schema`):
 
 ```ts
 {
     analysis: string // full analysis as inner HTML (no <html>/<body>)
-    sentiment: number // integer 0–100 (0–24 extreme bearish … 76–100 extreme bullish)
+    sentiment: number // asked as an integer 0–100 (0–24 extreme bearish … 76–100 extreme bullish)
 }
 ```
 
-`logger.log('Analysis completed', { reportId, tokenUsdCost, finishReason, outputTokens })` records
-cost and truncation diagnostics. Per-call cost is computed by `calculateTokenCost` (Haiku
-$0.80/$4.00, Sonnet $3.00/$15.00 per 1M input/output tokens).
+The `ai` and `@ai-sdk/anthropic` packages are imported dynamically inside the call. Any SDK error is
+logged and mapped to `AiGenerationError` (`ANALYSIS_AI_GENERATION`).
+
+### Post-processing
+
+Applied in `analyzeAndSaveReport`, in this order:
+
+1. **`normalizeSentiment`** (`analysis/helpers/normalize-sentiment.helper.ts`): the schema can't
+   enforce the integer range, so the value is rounded and clamped to 0–100. A non-finite value
+   falls back to 50 (neutral).
+2. **`calculateTokenCost`** (`analysis/helpers/calculate-token-cost.helper.ts`): USD cost per call.
+   Pricing per 1M input/output tokens: `claude-haiku-4-5` $1/$5, `claude-sonnet-5` $2/$10. Returns
+   `'N/A'` for an unknown model or missing token counts.
+3. **Log**: `logger.log('Analysis completed', { reportId, tokenUsdCost, finishReason, outputTokens,
+hasPriceHistory, hasNews, hasYahooFreshData })` records cost, truncation and context-coverage
+   diagnostics.
+4. **Incomplete-output guard** (prod only, skipped when `useBaseModel`):
+   `isAnalysisComplete(analysis, finishReason)` (`analysis/helpers/is-analysis-complete.helper.ts`)
+   requires all of:
+    - `finishReason === 'stop'`
+    - a non-empty "Investment Thesis Summary" section, read with `extractInvestmentThesis`
+      (`src/lib/report-html.ts`, shared with the report TL;DR card)
+    - the HTML ending on a closed block (`</p>`, `</ul>` or `</ol>`)
+
+    This catches text cut mid-sentence even when the JSON itself is valid. On failure it logs
+    `Incomplete analysis` and fails with `AiGenerationError` (`ANALYSIS_AI_INCOMPLETE`), so a
+    truncated analysis is **never saved**: the job marks the report FAILED and refunds (see below).
+
+5. **`saveAnalysisToReport`** (`reports/processors/save-analysis-to-report.processor.ts`): persists
+   the analysis HTML, resolved ticker, cost and sentiment.
 
 ---
 
 ## Caching & resilience
 
-| Store                          | Scope                                               | TTL      | Source constant         |
-| ------------------------------ | --------------------------------------------------- | -------- | ----------------------- |
-| `stock_data` table             | Yahoo financials + fundamentals + insights snapshot | fallback | (none, fresh-first)     |
-| `unstable_cache` price-history | 1y daily closes (per ticker)                        | 12 h     | `GET_PRICE_HISTORY_TTL` |
-| `unstable_cache` latest-news   | Finnhub company-news (per ticker)                   | 1 day    | `LATEST_NEWS_TTL`       |
+| Store                          | Scope                                               | TTL      | Used by                           | Source constant         |
+| ------------------------------ | --------------------------------------------------- | -------- | --------------------------------- | ----------------------- |
+| `stock_data` table             | Yahoo financials + fundamentals + insights snapshot | fallback | analysis pipeline                 | (none, fresh-first)     |
+| `unstable_cache` price-history | 1y daily closes (per ticker)                        | 12 h     | tRPC `yahoo.getPriceHistory` only | `GET_PRICE_HISTORY_TTL` |
+| `unstable_cache` latest-news   | Finnhub company-news (per ticker)                   | 1 day    | tRPC `finnhub.getLatestNews` only | `LATEST_NEWS_TTL`       |
 
-- Yahoo data is **fresh-first**: every analysis fetches live from Yahoo (the package has no rate
-  limit) and upserts the result into `stock_data`. The stored row is used only as a fallback — per
-  field when some Yahoo sub-calls fail, or wholesale when the whole fetch fails.
+- Yahoo data is **fresh-first** (`getYahooDataWithFallbackService`): every analysis fetches live
+  from Yahoo (the package has no rate limit).
+    - All five fields present (`hasAllStockData`): used as is, `isFresh: true`.
+    - Total Yahoo failure: the stored row is used wholesale (`rowToYahooData`), `isFresh: false`,
+      or `null` when there is no row.
+    - Partial failure: missing fields are filled from the row (`mergeWithDbFallback`); `isFresh` is
+      true when Yahoo returned at least one field (`hasAnyStockData`).
+- Only fresh data is upserted back into `stock_data` (`saveFreshYahooData` → `saveYahooData`), in a
+  background fiber. A failed upsert is logged and ignored.
 - The `stock_data` row carries financials **and** fundamentals (column `fundamentals jsonb`).
-  Missing columns read back as `null` — handled gracefully by the null-checks in
+  Missing columns read back as `null`, handled gracefully by the null-checks in
   `buildYahooContext`.
-- Every supplementary source (price history, news, and Yahoo itself) is **non-fatal**: missing data
-  removes its block but never aborts the analysis. The model is told to reason around missing metrics
-  rather than invent them.
+- Every supplementary source (ticker, price history, news, and Yahoo itself) is **non-fatal**:
+  missing data removes its block but never aborts the analysis. The model is told to reason around
+  missing metrics rather than invent them.
+
+### Failure, refund & idempotency
+
+A report deducts credits when it is created, so every failure path must end in FAILED + refund,
+exactly once.
+
+- **`createReport`** (`reports/services/create-report.service.ts`): validates the prompt type,
+  deducts `PROMPT_COSTS_MAP[type]` credits, inserts the report (refunds if the insert fails), then
+  calls `enqueueReportProcessing`.
+- **`enqueueReportProcessing`** (`reports/jobs/process-report.job.ts`): triggers the task with
+  `idempotencyKey: reportId`, so a duplicate trigger never pays for a second generation. It never
+  fails: when queueing fails it marks the report FAILED and refunds, so the report never stays
+  GENERATING forever.
+- **`process-report` task**: `maxDuration: 300`, `retry.maxAttempts: 1`. Its `onFailure` calls
+  `markReportFailedAndRefund` (`reports/services/mark-report-failed-and-refund.service.ts`), the
+  single owner of the GENERATING → FAILED transition. `markReportFailed` only updates rows not yet
+  FAILED, so the refund happens once.
+- **`processReport`**: skips any report that is not in `GENERATING` (duplicate or late runs). A
+  failed push notification after completion is swallowed so it never fails the task.
+- **`updateReportWithAnalysis`** (`reports/repositories/reports.repository.ts`): only writes when
+  `status = GENERATING`, so a late analysis never overwrites a report that already FAILED and was
+  refunded.
 
 ---
 
@@ -297,35 +398,40 @@ All backend code lives under `src/_bff/modules/<module>/`, split NestJS-style
 ```
 src/_bff/modules/analysis/
 ├── processors/
-│   └── get-stock-analysis.processor.ts     # orchestration: assemble context → generateText → save
-├── constants/index.ts                      # models, token budgets, stockAnalysisSchema, PROMPTS_MAP
+│   └── get-stock-analysis.processor.ts     # orchestration: fetch → prompt → generateText → guard → save
+├── constants/index.ts                      # models, token budgets, stockAnalysisSchema, PROMPTS_MAP, PROMPT_COSTS_MAP
+├── types/index.ts                          # MarketData, AnalyzeReportInput
 ├── prompts/
-│   ├── system.prompt.ts                    # SystemPrompt (persona, rules, signal hierarchy)
+│   ├── system.prompt.ts                    # SystemPrompt (persona, rules, HTML rules, signal hierarchy)
 │   └── analysis.prompt.ts                  # the 5 per-type prompt strings
 └── helpers/
-    └── calculate-token-cost.helper.ts      # per-call USD cost
+    ├── calculate-token-cost.helper.ts      # per-call USD cost
+    ├── normalize-sentiment.helper.ts       # round + clamp sentiment to 0–100
+    └── is-analysis-complete.helper.ts      # incomplete-output guard
 
 src/_bff/modules/yahoo/
 ├── yahoo.router.ts                         # YAHOO_ROUTER (price-history controller)
 ├── controllers/
 │   └── get-price-history.controller.ts     # tRPC binding → cached price-history service
 ├── services/
-│   └── get-price-history.service.ts        # cached, session-gated price history (tRPC)
+│   ├── get-yahoo-data-with-fallback.service.ts # fresh-first fetch, stock_data as fallback
+│   ├── get-price-history.service.ts        # RAW 1y daily closes (analysis pipeline)
+│   └── get-cached-price-history.service.ts # cached price history (tRPC)
 ├── processors/
-│   ├── get-yahoo-data-with-fallback.processor.ts # fresh-first fetch, stock_data as fallback (accepts a client)
 │   ├── get-yahoo-data.processor.ts         # quoteSummary + fundamentalsTimeSeries + insights
 │   ├── get-yahoo-ticker.processor.ts       # symbol → canonical ticker
-│   ├── get-price-history.processor.ts      # RAW 1y daily closes (analysis pipeline)
 │   ├── fetch-history.processor.ts          # fetchHistoryRaw / fetchHistoryCached
 │   └── save-yahoo-data.processor.ts        # persist financials + fundamentals
 ├── repositories/
 │   └── stock-data.repository.ts            # stock_data table access
 ├── constants/index.ts                      # GET_PRICE_HISTORY_TTL, cache key
-├── types/index.ts
+├── types/index.ts                          # PricePoint, GetYahooDataResult, YahooDataWithFallbackResult
 └── helpers/
     ├── build-yahoo-context.helper.ts       # assembles the "## Current Market Context" block
     ├── map-fundamentals.helper.ts          # quoteSummary/time-series → StockFundamentals
-    └── compute-technical-indicators.helper.ts  # price series → StockTechnicals
+    ├── compute-technical-indicators.helper.ts  # price series → StockTechnicals
+    ├── get-yahoo-data-with-fallback.service.helper.ts # hasAnyStockData, hasAllStockData, mergeWithDbFallback, rowToYahooData, selectDbRow
+    └── utils.helper.ts                     # hasStockData, NEWS_SUMMARY_MAX_CHARS
 
 src/_bff/modules/finnhub/
 ├── finnhub.router.ts                       # FINNHUB_ROUTER (latest-news controller)
@@ -333,17 +439,23 @@ src/_bff/modules/finnhub/
 │   └── get-latest-news.controller.ts       # tRPC binding → cached news service
 ├── services/
 │   ├── get-latest-news.service.ts          # RAW Finnhub news (analysis pipeline)
-│   └── get-latest-news-cached.service.ts   # cached, session-gated news (tRPC)
+│   └── get-latest-news-cached.service.ts   # cached news (tRPC)
 ├── processors/
 │   └── fetch-latest-news.processor.ts      # fetchLatestNewsRaw / fetchLatestNewsCached
 └── constants/index.ts                      # LATEST_NEWS_TTL, cache key
 
 src/_bff/modules/reports/
-├── jobs/process-report.job.ts              # Trigger.dev task — entry into the pipeline
+├── jobs/process-report.job.ts              # Trigger.dev task + enqueueReportProcessing
+├── services/
+│   ├── create-report.service.ts            # validate → deduct credits → insert → enqueue
+│   └── mark-report-failed-and-refund.service.ts # GENERATING → FAILED + credit refund
 ├── processors/
 │   ├── process-report.processor.ts         # loads report → getStockAnalysis → notify
 │   └── save-analysis-to-report.processor.ts # persist analysis HTML + sentiment + cost
 └── repositories/reports.repository.ts      # reports table access
 
+src/lib/constants.ts                        # PROMPT_TYPES (type, label, cost)
+src/lib/report-html.ts                      # extractInvestmentThesis
 src/types/ReportDTO.ts                      # StockFinancials, StockFundamentals, StockTechnicals, ...
+src/types/news.ts                           # NewsItem
 ```

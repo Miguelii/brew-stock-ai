@@ -3,9 +3,10 @@ import { ArrowRightIcon, ChevronDownIcon } from 'lucide-react'
 import { Reveal } from '@/components/motion/reveal'
 import { FAQ_GROUPS, type FaqItem } from '@/modules/faq/faq-content'
 import { SectionHeader } from '@/components/ui/section-header'
+import { BrandText } from '@/components/brand-name'
 
 const FEATURED_QUESTIONS = [
-    'What is BrewStockAI?',
+    'What is BrewStock?',
     'What data does the engine use?',
     'How accurate is it? What are the limitations?',
     'How much does one analysis cost?',
@@ -49,12 +50,12 @@ export function HomeFaq() {
                             >
                                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-6 [&::-webkit-details-marker]:hidden">
                                     <h3 className="text-lg leading-tight font-extrabold transition-colors duration-200 group-hover:text-blue">
-                                        {item.question}
+                                        <BrandText text={item.question} />
                                     </h3>
                                     <ChevronDownIcon className="size-5 shrink-0 text-ink/45 transition-transform duration-300 ease-out-strong group-open:rotate-180" />
                                 </summary>
                                 <p className="max-w-[62ch] pb-7 leading-snug opacity-70">
-                                    {item.answer}
+                                    <BrandText text={item.answer} />
                                 </p>
                             </details>
                         ))}

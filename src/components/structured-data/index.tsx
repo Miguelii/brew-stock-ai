@@ -1,11 +1,43 @@
 import { ClientEnv } from '@/env/client'
-import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
+import { SITE_AUTHOR_NAME } from '@/lib/constants'
+import { PACKAGES, TOKEN_PACKAGES } from '@/_bff/modules/credits/constants'
 
 const WEBSITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
-const AUTHOR_PAGE_URL = `${WEBSITE_URL}/about`
+// The site is published anonymously: the brand itself is the author of every article
+const ORGANIZATION_SCHEMA_ID = `${WEBSITE_URL}/#organization`
 
-const AUTHOR_SCHEMA_ID = AUTHOR_PAGE_URL
+const LOGO_URL = `${WEBSITE_URL}/web-app-manifest-192x192.png`
+
+const PRICING_URL = `${WEBSITE_URL}/pricing`
+
+const OFFER_CURRENCY = 'EUR'
+
+const TRIAL_CREDITS = PACKAGES.find((pkg) => pkg.id === 'free')?.credits
+
+// One Offer per real price point, derived from the checkout packages so promos stay in sync
+const APP_OFFERS = [
+    ...(TRIAL_CREDITS
+        ? [
+              {
+                  '@type': 'Offer',
+                  name: 'Trial',
+                  price: '0',
+                  priceCurrency: OFFER_CURRENCY,
+                  description: `${TRIAL_CREDITS} free analysis credits for new accounts.`,
+                  url: PRICING_URL,
+              },
+          ]
+        : []),
+    ...TOKEN_PACKAGES.map((pkg) => ({
+        '@type': 'Offer',
+        name: `${pkg.label} (${pkg.credits} credits)`,
+        // Package amounts are stored in cents
+        price: (pkg.amount / 100).toFixed(2),
+        priceCurrency: OFFER_CURRENCY,
+        url: PRICING_URL,
+    })),
+]
 
 // JSON.stringify does not HTML-escape; a `</script>` or `<` in the data would
 // break out of the script tag, so escape the three dangerous characters.
@@ -22,17 +54,12 @@ export function OrganizationSchema() {
     const organizationSchema = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'BrewStockAI',
+        '@id': ORGANIZATION_SCHEMA_ID,
+        name: SITE_AUTHOR_NAME,
         url: WEBSITE_URL,
-        logo: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
+        logo: LOGO_URL,
         description:
             'Institutional-grade stock analysis for any equity. Financial metrics, market sentiment, and technical indicators.',
-        founder: {
-            '@type': 'Person',
-            name: SITE_AUTHOR_NAME,
-            url: SITE_AUTHOR_URL,
-        },
-        sameAs: [SITE_AUTHOR_URL],
     }
 
     return (
@@ -48,7 +75,7 @@ export function WebSiteSchema() {
     const websiteSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'BrewStockAI',
+        name: 'BrewStock',
         url: WEBSITE_URL,
         description:
             'Institutional-grade stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.',
@@ -68,18 +95,13 @@ export function WebApplicationSchema() {
     const appSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
-        name: 'BrewStockAI',
+        name: 'BrewStock',
         url: WEBSITE_URL,
         description:
             'AI-powered stock analysis tool that delivers institutional-grade financial insights, market sentiment, and technical indicators for any equity.',
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Web',
-        offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'USD',
-            description: 'AI stock analysis for less than the price of a coffee.',
-        },
+        offers: APP_OFFERS,
         featureList: [
             'AI-powered fundamental analysis',
             'Market sentiment scoring',
@@ -127,21 +149,22 @@ export function ArticleSchema({
         datePublished,
         dateModified: dateModified ?? datePublished,
         inLanguage: 'en-US',
-        // Points at the on-site author entity emitted by `PersonSchema`, so
-        // every article resolves to one described author rather than a bare name.
+        // Author and publisher both point at the `OrganizationSchema` entity (rendered in
+        // the root layout), so every article resolves to the same described brand.
         author: {
-            '@type': 'Person',
-            '@id': AUTHOR_SCHEMA_ID,
+            '@type': 'Organization',
+            '@id': ORGANIZATION_SCHEMA_ID,
             name: SITE_AUTHOR_NAME,
-            url: AUTHOR_PAGE_URL,
+            url: WEBSITE_URL,
         },
         publisher: {
             '@type': 'Organization',
-            name: 'BrewStockAI',
+            '@id': ORGANIZATION_SCHEMA_ID,
+            name: SITE_AUTHOR_NAME,
             url: WEBSITE_URL,
             logo: {
                 '@type': 'ImageObject',
-                url: `${WEBSITE_URL}/web-app-manifest-192x192.png`,
+                url: LOGO_URL,
             },
         },
     }
@@ -151,38 +174,6 @@ export function ArticleSchema({
             id="article-schema"
             type="application/ld+json"
             dangerouslySetInnerHTML={jsonLdHtml(articleSchema)}
-        />
-    )
-}
-
-/**
- * The site's author entity. Rendered once, on the About page, and referenced by
- * `@id` from every `ArticleSchema` so the author is a described person rather
- * than a repeated string.
- */
-export function PersonSchema() {
-    const personSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'Person',
-        '@id': AUTHOR_SCHEMA_ID,
-        name: SITE_AUTHOR_NAME,
-        url: AUTHOR_PAGE_URL,
-        sameAs: [SITE_AUTHOR_URL],
-        jobTitle: 'Founder and editor, BrewStockAI',
-        description:
-            'Software engineer and private investor. Writes and reviews the educational material published on BrewStockAI, and designed the analysis methodology behind its reports.',
-        worksFor: {
-            '@type': 'Organization',
-            name: 'BrewStockAI',
-            url: WEBSITE_URL,
-        },
-    }
-
-    return (
-        <script
-            id="person-schema"
-            type="application/ld+json"
-            dangerouslySetInnerHTML={jsonLdHtml(personSchema)}
         />
     )
 }
@@ -226,7 +217,7 @@ export function FinancialProductSchema({
         url,
         provider: {
             '@type': 'Organization',
-            name: 'BrewStockAI',
+            name: 'BrewStock',
             url: WEBSITE_URL,
         },
         category: 'Stock Analysis',

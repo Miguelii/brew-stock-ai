@@ -2,15 +2,16 @@ import type { Metadata } from 'next'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import { ClientEnv } from '@/env/client'
-import { BreadcrumbSchema, PersonSchema } from '@/components/structured-data'
+import { BreadcrumbSchema } from '@/components/structured-data'
 import { Section } from '@/components/ui/section'
+import { BrandName } from '@/components/brand-name'
 
 export const dynamic = 'force-static'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
-const META_TITLE = 'About BrewStockAI'
+const META_TITLE = 'About BrewStock'
 const META_DESCRIPTION =
-    'BrewStockAI brings institutional-grade stock research to retail investors through AI, to make educational financial analysis affordable and accessible. Learn who we are and how the product works.'
+    'BrewStock brings institutional-grade stock research to retail investors through AI, to make educational financial analysis affordable and accessible. Learn who we are and how the product works.'
 const META_URL = `${SITE_URL}/about`
 
 export const metadata: Metadata = {
@@ -39,11 +40,12 @@ export default function AboutPage() {
                     { name: 'About', url: META_URL },
                 ]}
             />
-            <PersonSchema />
 
             <main id="main" className="main-container">
                 <div className="space-y-2">
-                    <h1 className="text-2xl font-bold tracking-tight">About BrewStockAI</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">
+                        About <BrandName />
+                    </h1>
                     <p className="text-sm text-muted-foreground">
                         Institutional-grade stock research, made accessible.
                     </p>
@@ -60,7 +62,7 @@ export default function AboutPage() {
                             single name.
                         </p>
                         <p>
-                            BrewStockAI exists to close that gap. We use a powerful engine to turn
+                            <BrandName /> exists to close that gap. We use a powerful engine to turn
                             hours of research into a few minutes and a few cents. Anyone curious
                             about a company can read a clear, structured breakdown of its
                             financials, risks, and competitive position before deciding what to do.
@@ -82,7 +84,7 @@ export default function AboutPage() {
 
                     <Section title="How the product works">
                         <p>
-                            When you request an analysis, BrewStockAI pulls the latest public
+                            When you request an analysis, <BrandName /> pulls the latest public
                             financial data for the ticker, structures it, and runs it through a
                             large language model with prompts engineered to mimic the way an equity
                             analyst would frame the question. The output is a structured report, not

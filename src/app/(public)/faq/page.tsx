@@ -11,7 +11,7 @@ export const dynamic = 'force-static'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Frequently Asked Questions'
 const META_DESCRIPTION =
-    'Everything you need to know about BrewStockAI: how the AI analysis works, where the data comes from, what reports include, pricing, and data privacy.'
+    'Everything you need to know about BrewStock: how the AI analysis works, where the data comes from, what reports include, pricing, and data privacy.'
 const META_URL = `${SITE_URL}/faq`
 
 export const metadata: Metadata = {

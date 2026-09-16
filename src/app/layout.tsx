@@ -47,7 +47,7 @@ export const viewport: Viewport = {
     height: 'device-height',
 }
 
-const META_TITLE = 'BrewStockAI | Professional Stock Analysis'
+const META_TITLE = 'BrewStock | Professional Stock Analysis'
 const META_DESCRIPTION =
     'Get institutional-grade AI stock analysis for any equity. Financial metrics, market sentiment, and technical indicators. For less than a coffee.'
 
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
         default: META_TITLE,
-        template: '%s | BrewStockAI',
+        template: '%s | BrewStock',
     },
     description: META_DESCRIPTION,
     keywords: [
@@ -76,16 +76,16 @@ export const metadata: Metadata = {
             url: SITE_AUTHOR_URL,
         },
     ],
-    publisher: 'BrewStockAI',
-    creator: 'BrewStockAI',
+    publisher: 'BrewStock',
+    creator: 'BrewStock',
     openGraph: {
         type: 'website',
         locale: 'en_US',
         url: siteUrl,
-        siteName: 'BrewStockAI',
+        siteName: 'BrewStock',
         title: {
             default: META_TITLE,
-            template: '%s | BrewStockAI',
+            template: '%s | BrewStock',
         },
         description: META_DESCRIPTION,
     },
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: {
             default: META_TITLE,
-            template: '%s | BrewStockAI',
+            template: '%s | BrewStock',
         },
         description: META_DESCRIPTION,
     },
@@ -129,7 +129,7 @@ export default function RootLayout({ children }: Props) {
         >
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-                <meta name="apple-mobile-web-app-title" content="BrewStockAI" />
+                <meta name="apple-mobile-web-app-title" content="BrewStock" />
             </head>
             <body className="min-h-screen flex flex-col">
                 <ServiceWorkerRegister />

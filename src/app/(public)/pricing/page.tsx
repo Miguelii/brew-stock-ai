@@ -6,6 +6,7 @@ import { ClientEnv } from '@/env/client'
 import { BreadcrumbSchema, FAQSchema } from '@/components/structured-data'
 import { PRICING_FAQ } from '@/modules/faq/faq-content'
 import { PACKAGES } from '@/_bff/modules/credits/constants'
+import { BrandText } from '@/components/brand-name'
 
 export const dynamic = 'force-static'
 
@@ -105,8 +106,12 @@ export default function PricingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         {PRICING_FAQ.map((item) => (
                             <div key={item.question}>
-                                <h3 className="text-lg font-semibold mb-2">{item.question}</h3>
-                                <p className="text-primary-muted leading-relaxed">{item.answer}</p>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    <BrandText text={item.question} />
+                                </h3>
+                                <p className="text-primary-muted leading-relaxed">
+                                    <BrandText text={item.answer} />
+                                </p>
                             </div>
                         ))}
                     </div>

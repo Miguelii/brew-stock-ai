@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Reveal } from '@/components/motion/reveal'
 import { STEPS } from '@/lib/analysis-content'
+import { BrandName } from '@/components/brand-name'
 
 export function HowItWorks() {
     return (
@@ -13,7 +14,7 @@ export function HowItWorks() {
                         <div className="flex flex-col">
                             <span className="eyebrow text-blue">How it works</span>
                             <h2 className="mt-5 max-w-[16ch] text-[clamp(28px,3.4vw,40px)] leading-[1.1] font-extrabold">
-                                What BrewStockAI actually does
+                                What <BrandName /> actually does
                             </h2>
                             <p className="mt-5 max-w-[46ch] leading-snug opacity-70">
                                 It reads earnings reports, balance sheets, and market data the same

@@ -12,6 +12,7 @@ import * as m from 'motion/react-m'
 import { EducationHubArticle } from '@/modules/education-hub/education-hub-article'
 import { SITE_AUTHOR_NAME } from '@/lib/constants'
 import { fmtDate } from '@/lib/formatters'
+import { BrandText } from '@/components/brand-name'
 
 export const dynamic = 'force-static'
 
@@ -101,7 +102,9 @@ export default async function LearnArticlePage({ params }: PageProps<'/education
                             {article.description}
                         </p>
                         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                            <span>By {SITE_AUTHOR_NAME}</span>
+                            <span>
+                                By <BrandText text={SITE_AUTHOR_NAME} />
+                            </span>
                             <span aria-hidden>·</span>
                             <time dateTime={article.publishedAt}>
                                 {fmtDate(article.publishedAt)}

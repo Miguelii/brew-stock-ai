@@ -1,5 +1,6 @@
 import * as m from 'motion/react-m'
 import { FAQ_GROUPS } from '@/modules/faq/faq-content'
+import { BrandText } from '@/components/brand-name'
 
 export function FaqList() {
     return (
@@ -16,8 +17,12 @@ export function FaqList() {
                     <div className="space-y-8">
                         {group.items.map((item) => (
                             <div key={item.question}>
-                                <h3 className="text-lg font-semibold mb-2">{item.question}</h3>
-                                <p className="text-primary-muted leading-relaxed">{item.answer}</p>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    <BrandText text={item.question} />
+                                </h3>
+                                <p className="text-primary-muted leading-relaxed">
+                                    <BrandText text={item.answer} />
+                                </p>
                             </div>
                         ))}
                     </div>

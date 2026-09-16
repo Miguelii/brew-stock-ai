@@ -36,8 +36,8 @@ export const FAQ_GROUPS = [
         heading: 'The Product',
         items: [
             {
-                question: 'What is BrewStockAI?',
-                answer: 'BrewStockAI is a professional stock research tool. You enter a ticker, choose the type of analysis you want, and within about two minutes you receive a structured research report covering the investment thesis, key financial metrics, analyst outlook, recent developments, and sector positioning.',
+                question: 'What is BrewStock?',
+                answer: 'BrewStock is a professional stock research tool. You enter a ticker, choose the type of analysis you want, and within about two minutes you receive a structured research report covering the investment thesis, key financial metrics, analyst outlook, recent developments, and sector positioning.',
             },
             {
                 question: 'What types of analysis can I run?',
@@ -45,7 +45,7 @@ export const FAQ_GROUPS = [
             },
             {
                 question: 'Which stocks are supported?',
-                answer: 'You can analyze publicly traded companies by their stock ticker, including major US-listed stocks across technology, finance, healthcare, consumer, energy, and other sectors. If a ticker has the underlying financial data available, BrewStockAI can analyze it.',
+                answer: 'You can analyze publicly traded companies by their stock ticker, including major US-listed stocks across technology, finance, healthcare, consumer, energy, and other sectors. If a ticker has the underlying financial data available, BrewStock can analyze it.',
             },
         ],
     },
@@ -66,7 +66,7 @@ export const FAQ_GROUPS = [
             },
             {
                 question: 'Is this financial advice?',
-                answer: 'No. BrewStockAI is an educational and informational research tool. It does not provide personalized investment advice, and nothing in a report is a recommendation to buy or sell any security. Read our full disclaimer for details.',
+                answer: 'No. BrewStock is an educational and informational research tool. It does not provide personalized investment advice, and nothing in a report is a recommendation to buy or sell any security. Read our full disclaimer for details.',
             },
         ],
     },

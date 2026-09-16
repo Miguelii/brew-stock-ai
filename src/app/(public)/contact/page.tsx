@@ -8,7 +8,7 @@ import { ContactForm } from '@/modules/contact-form'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Contact'
 const META_DESCRIPTION =
-    "Have a question about BrewStockAI? Reach out to our team for help with your account, reports, or feedback. We'll get back to you as soon as possible."
+    "Have a question about BrewStock? Reach out to our team for help with your account, reports, or feedback. We'll get back to you as soon as possible."
 const META_URL = `${SITE_URL}/contact`
 
 export const metadata: Metadata = {

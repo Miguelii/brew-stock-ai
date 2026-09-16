@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Logo from '@/components/logo'
 import { FOOTER_LINKS } from './constants'
+import { BrandName } from '@/components/brand-name'
 
 export function Footer() {
     return (
@@ -43,7 +44,7 @@ export function Footer() {
                 </div>
 
                 <p className="eyebrow mt-8 text-center text-ink/50">
-                    © {new Date().getFullYear()} BrewStockAI
+                    © {new Date().getFullYear()} <BrandName />
                 </p>
             </div>
         </footer>

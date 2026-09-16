@@ -11,7 +11,7 @@ import { PACKAGES } from '@/_bff/modules/credits/constants'
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 const META_TITLE = 'Buy Credits'
 const META_DESCRIPTION =
-    'Buy BrewStockAI credits to unlock AI-powered stock analysis reports. Pay as you go: credits never expire and each analysis costs just 1 or 2 credits.'
+    'Buy BrewStock credits to unlock AI-powered stock analysis reports. Pay as you go: credits never expire and each analysis costs just 1 or 2 credits.'
 const META_URL = `${SITE_URL}/tokens`
 
 export const metadata: Metadata = {

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { BrandName } from '@/components/brand-name'
 
 type Props = {
     linkToHome?: boolean
@@ -14,7 +15,7 @@ export default function Logo({ linkToHome = true, className }: Props) {
             href={linkToHome ? '/' : '/analysis'}
             prefetch={false}
         >
-            BrewStock<span className="text-blue">AI</span>
+            <BrandName />
         </Link>
     )
 }

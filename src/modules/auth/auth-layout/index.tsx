@@ -1,5 +1,6 @@
 import Logo from '@/components/logo'
 import type { PropsWithChildren } from 'react'
+import { BrandName } from '@/components/brand-name'
 
 type Props = PropsWithChildren
 
@@ -17,8 +18,8 @@ export function AuthLayout({ children }: Props) {
                         &ldquo;
                     </span>
                     <blockquote className="text-2xl font-medium text-background leading-snug">
-                        I used to spend hours reading earnings calls and analyst reports.
-                        BrewStockAI gives me the same depth in minutes — for less than my morning
+                        I used to spend hours reading earnings calls and analyst reports.{' '}
+                        <BrandName /> gives me the same depth in minutes, for less than my morning
                         coffee.
                     </blockquote>
                     <div className="mt-8 flex items-center gap-3">

@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
             'vaul',
             'input-otp',
             'lenis',
+            'cn',
         ],
     },
     images: {

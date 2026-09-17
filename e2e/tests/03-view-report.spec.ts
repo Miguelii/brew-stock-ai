@@ -145,6 +145,11 @@ test.describe('View report page', () => {
         await expect(section).toContainText(
             'Apple reports record Q1 2024 earnings, beating analyst expectations by 8%'
         )
+
+        // The mocked event falls on 2024-02-01 (UTC)
+        await expect(report.sigDevCalendar).toContainText('Feb')
+        await expect(report.sigDevCalendar).toContainText('01')
+        await expect(report.sigDevCalendar).toContainText('2024')
     })
 
     test('"What Experts Are Saying" section is visible', async ({ page }) => {

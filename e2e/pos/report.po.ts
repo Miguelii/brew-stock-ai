@@ -53,6 +53,10 @@ export class ReportPage {
         return this.page.getByTestId('latest-news-item-headline')
     }
 
+    get sigDevCalendar(): Locator {
+        return this.page.getByTestId('sig-dev-calendar')
+    }
+
     get expertReportItems(): Locator {
         return this.page.getByTestId('expert-report-item')
     }

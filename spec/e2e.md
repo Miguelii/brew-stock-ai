@@ -212,7 +212,7 @@ Rules for locating elements in specs:
 - When a component renders **responsive variants** (e.g. the section nav's desktop row + mobile dropdown), give each variant a distinct testid (`nav-<id>` vs `nav-mobile-<id>`) so a single `getByTestId` never matches two elements (Playwright strict mode).
 - **Testids reused across specs (or repeated) are encapsulated in Page Objects under `e2e/pos/*.po.ts`; specs never hardcode testid strings.** Each Page Object receives `page: Page` and exposes locators (via `getByTestId`) plus small navigation/action helpers; assertions stay in the specs.
 
-Existing test ids: `email-input`, `sign-in-button`, `otp-input`, `auth-title`, `confirm-otp-button`, `use-different-email-button` (auth); `ticker-input`, `analysis-type-select`, `analysis-type-option`, `generate-report-button`, `report-created-toast` (analysis form); `report-ticker-heading`, `report-type-badge`, `report-section-<id>`, `nav-<id>` / `nav-mobile-<id>`, `sentiment-score`, `export-pdf-button`, `latest-news-card`, `latest-news-lead`, `latest-news-lead-headline`, `latest-news-lead-image`, `latest-news-lead-cover`, `latest-news-item`, `latest-news-item-headline`, `latest-news-empty`, `expert-report-item`, `expert-report-title`, `expert-report-summary`, `expert-reports-empty` (report view); `token-package-<id>`, `buy-now-button`, `token-balance`, `payment-success-banner`, `payment-canceled-banner`, `pending-payment-banner`, `pending-payment-amount`, `pending-payment-description` (tokens).
+Existing test ids: `email-input`, `sign-in-button`, `otp-input`, `auth-title`, `confirm-otp-button`, `use-different-email-button` (auth); `ticker-input`, `analysis-type-select`, `analysis-type-option`, `generate-report-button`, `report-created-toast` (analysis form); `report-ticker-heading`, `report-type-badge`, `report-section-<id>`, `nav-<id>` / `nav-mobile-<id>`, `sentiment-score`, `export-pdf-button`, `sig-dev-headline`, `sig-dev-calendar`, `sig-dev-empty`, `latest-news-card`, `latest-news-lead`, `latest-news-lead-headline`, `latest-news-lead-image`, `latest-news-lead-cover`, `latest-news-item`, `latest-news-item-headline`, `latest-news-empty`, `expert-report-item`, `expert-report-title`, `expert-report-summary`, `expert-reports-empty` (report view); `token-package-<id>`, `buy-now-button`, `token-balance`, `payment-success-banner`, `payment-canceled-banner`, `pending-payment-banner`, `pending-payment-amount`, `pending-payment-description` (tokens).
 
 ---
 
@@ -253,7 +253,7 @@ Tests cover:
 - Key Financial Metrics: metric groups (Growth, Profitability, Valuation, Financial Health)
 - Key Financial Metrics: fundamentals blocks (Next Quarter EPS, earnings vs estimates with beat/miss, revenue by year, insider activity)
 - AI Sentiment Score gauge
-- "What's Happening Now" (significant development)
+- "What's Happening Now" (significant development): headline and the calendar tile for the event date
 - "What Experts Are Saying" (analyst reports): one expandable row per report
 - "How It Compares" (sector scores)
 - Section nav scroll: clicking a label scrolls the corresponding section into view

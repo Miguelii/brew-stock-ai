@@ -1,42 +1,55 @@
 import { cn } from '@/lib/utils'
-import { fmtNum } from '@/_bff/core/utils/formatters.utils'
 import type { InsiderActivity } from '@/types/ReportDTO'
 import { getInsiderSignal, type SignalTone } from '@/_bff/core/helpers/financial-signals.helper'
+import { fmtSignedCount } from '@/modules/report-view/report-financials-card/utils'
 
 type Props = {
     insiders: InsiderActivity
 }
 
-const TONE_CLASS: Record<SignalTone, string> = {
+const TONE_TEXT: Record<SignalTone, string> = {
     positive: 'text-positive',
     negative: 'text-destructive',
-    neutral: 'text-ink/60',
+    neutral: 'text-ink',
+}
+
+const TONE_PILL: Record<SignalTone, string> = {
+    positive: 'bg-positive/10 text-positive',
+    negative: 'bg-destructive/10 text-destructive',
+    neutral: 'bg-ink/8 text-ink/70',
 }
 
 export function InsiderActivitySummary({ insiders }: Props) {
-    const { buyCount, sellCount, netShares } = insiders
-
+    const { netShares } = insiders
     const signal = getInsiderSignal(netShares)
 
     return (
-        <div className="flex flex-col rounded-[var(--radius-surface-inner)] border border-ink/10 bg-paper p-4 gap-1.5">
-            <span className="text-xs font-medium text-ink/60 uppercase tracking-wide">
-                Insider activity
-            </span>
+        <section data-testid="insider-activity" className="flex flex-col gap-4">
+            <div className="border-b border-ink/10 pb-3">
+                <h3 className="display text-xl">Insider activity</h3>
+            </div>
 
-            <div className="flex items-center justify-between gap-2 px-3 py-2">
-                <span className="text-xs text-ink/60">
-                    {buyCount} buys / {sellCount} sells
+            <div className="flex flex-1 flex-col gap-4 rounded-[var(--radius-surface-inner)] border border-ink/10 bg-paper p-4">
+                <span className="flex flex-col gap-1">
+                    <span className="eyebrow text-[11px] text-ink/60">Net shares traded</span>
+                    <span className={cn('display text-4xl tabular-nums', TONE_TEXT[signal.tone])}>
+                        {fmtSignedCount(netShares)}
+                    </span>
                 </span>
+
                 <span
                     className={cn(
-                        'text-xs font-semibold whitespace-nowrap',
-                        TONE_CLASS[signal.tone]
+                        'w-fit rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                        TONE_PILL[signal.tone]
                     )}
                 >
-                    {signal.label} ({fmtNum(netShares, 0)} shares)
+                    {signal.label}
                 </span>
+
+                <p className="mt-auto flex flex-col gap-1 border-t border-ink/10 pt-3 text-xs leading-relaxed text-ink/60">
+                    <span>Shares bought minus shares sold.</span>
+                </p>
             </div>
-        </div>
+        </section>
     )
 }

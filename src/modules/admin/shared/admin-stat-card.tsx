@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { fmtCount } from '@/modules/admin/shared/utils'
+import { fmtCount } from '@/lib/formatters'
 import { type LucideIcon } from 'lucide-react'
 
 type Props = {

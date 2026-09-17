@@ -101,6 +101,7 @@ test.describe('View report page', () => {
         const section = report.section('key-metrics')
 
         await expect(section).toContainText('Key Financial Metrics')
+        await expect(report.keyMetricsScores).toHaveCount(4)
         // Metrics are grouped into graded category scorecards
         await expect(section).toContainText('Growth')
         await expect(section).toContainText('Profitability')
@@ -123,6 +124,7 @@ test.describe('View report page', () => {
 
         // Multi-year revenue trend folds into the Growth card — endDate 2025-09-30 yields a "Revenue 2025" row
         await expect(section).toContainText('Revenue 2025')
+        await expect(report.revenueTrendChart).toBeVisible()
 
         // Insider activity — negative net shares reads as net selling
         await expect(section).toContainText('Insider activity')
@@ -173,6 +175,11 @@ test.describe('View report page', () => {
         await expect(section).toContainText('Workforce Growth')
         await expect(section).toContainText('This company')
         await expect(section).toContainText('Sector average')
+
+        // MOCK_SCORES innovation: 0.85 for the company vs 0.70 for the sector
+        await expect(report.sectorScoreCards).toHaveCount(3)
+        await expect(report.sectorScoreValues.first()).toHaveText('85')
+        await expect(report.sectorScoreVerdicts.first()).toHaveText('Above sector')
     })
 
     test('clicking a nav label scrolls to the corresponding section', async ({ page }) => {

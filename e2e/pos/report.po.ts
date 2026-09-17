@@ -53,6 +53,26 @@ export class ReportPage {
         return this.page.getByTestId('latest-news-item-headline')
     }
 
+    get keyMetricsScores(): Locator {
+        return this.page.getByTestId('key-metrics-score')
+    }
+
+    get revenueTrendChart(): Locator {
+        return this.page.getByTestId('revenue-trend-chart')
+    }
+
+    get sectorScoreCards(): Locator {
+        return this.page.getByTestId('sector-score-card')
+    }
+
+    get sectorScoreValues(): Locator {
+        return this.page.getByTestId('sector-score-value')
+    }
+
+    get sectorScoreVerdicts(): Locator {
+        return this.page.getByTestId('sector-score-verdict')
+    }
+
     get sigDevCalendar(): Locator {
         return this.page.getByTestId('sig-dev-calendar')
     }

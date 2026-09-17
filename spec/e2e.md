@@ -212,7 +212,7 @@ Rules for locating elements in specs:
 - When a component renders **responsive variants** (e.g. the section nav's desktop row + mobile dropdown), give each variant a distinct testid (`nav-<id>` vs `nav-mobile-<id>`) so a single `getByTestId` never matches two elements (Playwright strict mode).
 - **Testids reused across specs (or repeated) are encapsulated in Page Objects under `e2e/pos/*.po.ts`; specs never hardcode testid strings.** Each Page Object receives `page: Page` and exposes locators (via `getByTestId`) plus small navigation/action helpers; assertions stay in the specs.
 
-Existing test ids: `email-input`, `sign-in-button`, `otp-input`, `auth-title`, `confirm-otp-button`, `use-different-email-button` (auth); `ticker-input`, `analysis-type-select`, `analysis-type-option`, `generate-report-button`, `report-created-toast` (analysis form); `report-ticker-heading`, `report-type-badge`, `report-section-<id>`, `nav-<id>` / `nav-mobile-<id>`, `sentiment-score`, `export-pdf-button`, `sig-dev-headline`, `sig-dev-calendar`, `sig-dev-empty`, `latest-news-card`, `latest-news-lead`, `latest-news-lead-headline`, `latest-news-lead-image`, `latest-news-lead-cover`, `latest-news-item`, `latest-news-item-headline`, `latest-news-empty`, `expert-report-item`, `expert-report-title`, `expert-report-summary`, `expert-reports-empty` (report view); `token-package-<id>`, `buy-now-button`, `token-balance`, `payment-success-banner`, `payment-canceled-banner`, `pending-payment-banner`, `pending-payment-amount`, `pending-payment-description` (tokens).
+Existing test ids: `email-input`, `sign-in-button`, `otp-input`, `auth-title`, `confirm-otp-button`, `use-different-email-button` (auth); `ticker-input`, `analysis-type-select`, `analysis-type-option`, `generate-report-button`, `report-created-toast` (analysis form); `report-ticker-heading`, `report-type-badge`, `report-section-<id>`, `nav-<id>` / `nav-mobile-<id>`, `sentiment-score`, `export-pdf-button`, `key-metrics-scoreboard`, `key-metrics-score`, `metric-tile`, `revenue-trend-chart`, `earnings-history`, `insider-activity`, `sig-dev-headline`, `sig-dev-calendar`, `sig-dev-empty`, `sector-score-card`, `sector-score-value`, `sector-score-verdict`, `latest-news-card`, `latest-news-lead`, `latest-news-lead-headline`, `latest-news-lead-image`, `latest-news-lead-cover`, `latest-news-item`, `latest-news-item-headline`, `latest-news-empty`, `expert-report-item`, `expert-report-title`, `expert-report-summary`, `expert-reports-empty` (report view); `token-package-<id>`, `buy-now-button`, `token-balance`, `payment-success-banner`, `payment-canceled-banner`, `pending-payment-banner`, `pending-payment-amount`, `pending-payment-description` (tokens).
 
 ---
 
@@ -250,12 +250,12 @@ Tests cover:
 - Section nav labels, by id: `overview` (Summary), `market-outlook` (Market & Analyst Outlook), `key-metrics` (Key Financial Metrics), `analysis` (Full Report), `sig-dev` (Happening Now), `media-mentions` (Expert Coverage), `sector-scores` (Sector Scores)
 - Summary section content
 - Market & Analyst Outlook: price chart copy and the analyst recommendations bar (counts in `MOCK_FUNDAMENTALS` sum to 35). Copy only; chart data is live (see [Known exception](#known-exception-live-yahoo-price-chart))
-- Key Financial Metrics: metric groups (Growth, Profitability, Valuation, Financial Health)
-- Key Financial Metrics: fundamentals blocks (Next Quarter EPS, earnings vs estimates with beat/miss, revenue by year, insider activity)
+- Key Financial Metrics: the four-grade scoreboard and the metric groups (Growth, Profitability, Valuation, Financial Health)
+- Key Financial Metrics: fundamentals blocks (Next Quarter EPS, earnings vs estimates with beat/miss, the revenue by year chart, insider activity)
 - AI Sentiment Score gauge
 - "What's Happening Now" (significant development): headline and the calendar tile for the event date
 - "What Experts Are Saying" (analyst reports): one expandable row per report
-- "How It Compares" (sector scores)
+- "How It Compares" (sector scores): one gauge card per score, with the 0 to 100 value and the verdict against the sector average
 - Section nav scroll: clicking a label scrolls the corresponding section into view
 
 ### `04-export-report.spec.ts`: PDF export

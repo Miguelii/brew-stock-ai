@@ -1,52 +1,43 @@
-import { gaugePoint } from '@/modules/report-view/report-sector-scores/utils'
+import { cn } from '@/lib/utils'
+import { getScoreGaugeView } from '@/_bff/core/helpers/sector-scores.helper'
 
 type Props = {
     value: number | null
     sector: number | null
 }
 
-const CX = 60
-const CY = 58
-const RADIUS = 48
-const STROKE = 10
-const ARC = `M ${CX - RADIUS} ${CY} A ${RADIUS} ${RADIUS} 0 0 1 ${CX + RADIUS} ${CY}`
-
 export function ScoreGauge({ value, sector }: Props) {
-    const tickInner = sector !== null ? gaugePoint(sector, RADIUS - STROKE, CX, CY) : null
-    const tickOuter = sector !== null ? gaugePoint(sector, RADIUS + STROKE, CX, CY) : null
+    const { viewBox, arc, strokeWidth, valueDash, tick } = getScoreGaugeView(value, sector)
 
     return (
-        <svg viewBox="0 0 120 70" aria-hidden="true" className="w-full max-w-56">
+        <svg viewBox={viewBox} aria-hidden="true" className="w-full max-w-56">
             <path
-                d={ARC}
+                d={arc}
                 pathLength={100}
                 fill="none"
                 stroke="currentColor"
-                strokeWidth={STROKE}
+                strokeWidth={strokeWidth}
                 strokeLinecap="round"
                 strokeDasharray={value === null ? '1.5 4' : undefined}
-                className={value === null ? 'text-ink/25' : 'text-ink/8'}
+                className={cn(value === null ? 'text-ink/25' : 'text-ink/8')}
             />
 
-            {value !== null && value > 0 && (
+            {valueDash && (
                 <path
-                    d={ARC}
+                    d={arc}
                     pathLength={100}
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth={STROKE}
+                    strokeWidth={strokeWidth}
                     strokeLinecap="round"
-                    strokeDasharray={`${value} 100`}
+                    strokeDasharray={valueDash}
                     className="text-blue"
                 />
             )}
 
-            {tickInner && tickOuter && (
+            {tick && (
                 <line
-                    x1={tickInner.x}
-                    y1={tickInner.y}
-                    x2={tickOuter.x}
-                    y2={tickOuter.y}
+                    {...tick}
                     stroke="currentColor"
                     strokeWidth={2.5}
                     strokeLinecap="round"

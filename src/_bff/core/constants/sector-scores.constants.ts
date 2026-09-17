@@ -21,3 +21,7 @@ export const SECTOR_SCORE_ROWS = [
     label: string
     description: string
 }[]
+
+// Point gaps (on the 0 to 100 scale) that separate "in line" from "above" and "well above"
+export const SECTOR_SCORE_CLEAR_GAP = 8
+export const SECTOR_SCORE_WIDE_GAP = 25

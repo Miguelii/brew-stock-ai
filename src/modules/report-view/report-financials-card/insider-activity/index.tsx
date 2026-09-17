@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import type { InsiderActivity } from '@/types/ReportDTO'
 import { getInsiderSignal, type SignalTone } from '@/_bff/core/helpers/financial-signals.helper'
-import { fmtSignedCount } from '@/modules/report-view/report-financials-card/utils'
+import { fmtSignedCount } from '@/_bff/core/utils/formatters.utils'
 
 type Props = {
     insiders: InsiderActivity

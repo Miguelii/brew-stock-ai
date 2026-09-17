@@ -5,7 +5,12 @@ import {
     getAnalystRatingsTotal,
     getTargetUpsidePct,
 } from '@/_bff/core/helpers/financial-signals.helper'
-import { PDF_COLORS, RATING_HEX, SIGNAL_HEX } from '@/_bff/modules/reports/pdf/constants'
+import {
+    PDF_COLORS,
+    RATING_HEX,
+    SIGNAL_BG_HEX,
+    SIGNAL_HEX,
+} from '@/_bff/modules/reports/pdf/constants'
 import { getRangeBarView } from '@/_bff/modules/reports/pdf/helpers/range-bar.helper'
 import { sectionTemplate } from '@/_bff/modules/reports/pdf/templates/section.template'
 
@@ -19,48 +24,49 @@ function priceRangeTemplate(f: StockFinancials): string {
 
     if (!view.hasData) {
         return `
-    <div class="fin-range-wrap">
-        <div class="fin-range-bar"><div style="position:absolute;inset:0;background:${PDF_COLORS.track};border-radius:4px;"></div></div>
-        <div class="fin-range-meta"><span style="color:${PDF_COLORS.muted};">Data N/A</span></div>
-    </div>`
+    <div class="range-bar"></div>
+    <div class="range-legend"><span>Data N/A</span></div>`
     }
 
     const position = `${view.currentPct.toFixed(1)}%`
 
     return `
-    <div class="fin-range-wrap">
-        <div class="fin-range-bar">
-            <div style="position:absolute;top:0;bottom:0;left:0;width:${position};background:${PDF_COLORS.blue};border-radius:4px;"></div>
-            <div style="position:absolute;top:0;bottom:0;left:${position};width:2px;background:${PDF_COLORS.blue};z-index:1;"></div>
-        </div>
-        <div class="fin-range-legend"><span>${fmtPrice(f.fiftyTwoWeekLow)}</span><span>${fmtPrice(f.fiftyTwoWeekHigh)}</span></div>
-        <div class="fin-range-meta">
-            <span><span style="display:inline-block;width:10px;height:2px;background:${PDF_COLORS.blue};vertical-align:middle;margin-right:4px;"></span>Current ${fmtPrice(f.currentPrice)}</span>
-        </div>
+    <div class="range-bar">
+        <div style="position:absolute;top:0;bottom:0;left:0;width:${position};background:${PDF_COLORS.blue};border-radius:999px;"></div>
+    </div>
+    <div class="range-legend">
+        <span>${fmtPrice(f.fiftyTwoWeekLow)}</span>
+        <span style="color:${PDF_COLORS.ink};font-weight:700;">Current ${fmtPrice(f.currentPrice)}</span>
+        <span>${fmtPrice(f.fiftyTwoWeekHigh)}</span>
     </div>`
 }
 
 function targetTileTemplate(label: string, value: string): string {
-    const color = value === 'N/A' ? PDF_COLORS.muted : PDF_COLORS.ink
+    const color = value === 'N/A' ? PDF_COLORS.faint : PDF_COLORS.ink
 
-    return `<div class="fin-tile-3"><div class="fin-tile-label">${label}</div><div class="fin-tile-value" style="color:${color};">${value}</div></div>`
+    return `
+        <div class="tile">
+            <span class="eyebrow tile-label">${label}</span>
+            <span class="display tile-value" style="color:${color};">${value}</span>
+        </div>`
 }
 
 /** Analyst price targets, with how far the average target is from the current price. */
 function analystTargetsTemplate(f: StockFinancials): string {
     const upside = getTargetUpsidePct(f)
+    const tone = upside != null && upside >= 0 ? 'positive' : 'negative'
 
     const upsideBadge =
         upside == null
             ? ''
-            : `<span style="font-size:10px;font-weight:600;color:${SIGNAL_HEX[upside >= 0 ? 'positive' : 'negative']};">${signedPct1(upside)} to consensus</span>`
+            : `<span class="pill" style="background:${SIGNAL_BG_HEX[tone]};color:${SIGNAL_HEX[tone]};">${signedPct1(upside)} to consensus</span>`
 
     return `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <div class="fin-group-title" style="margin:0;">What analysts think the stock is worth</div>
+    <div class="row-between" style="margin:16px 0 8px;">
+        <span class="eyebrow">What analysts think the stock is worth</span>
         ${upsideBadge}
     </div>
-    <div class="fin-grid">
+    <div class="grid-3">
         ${targetTileTemplate('Lowest analyst target', fmtPrice(f.targetLowPrice))}
         ${targetTileTemplate('Average analyst target', fmtPrice(f.targetMeanPrice))}
         ${targetTileTemplate('Highest analyst target', fmtPrice(f.targetHighPrice))}
@@ -84,13 +90,13 @@ function analystRatingsTemplate(ratings: StockFundamentals['analystRatings']): s
 
     const legend = ANALYST_RATING_SEGMENTS.map(
         ({ key, label }) =>
-            `<span style="margin-right:12px;white-space:nowrap;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${RATING_HEX[key]};vertical-align:middle;margin-right:4px;"></span>${label} <strong>${ratings[key]}</strong></span>`
+            `<span style="white-space:nowrap;"><span class="legend-mark" style="width:8px;height:8px;border-radius:50%;background:${RATING_HEX[key]};"></span>${label} <strong>${ratings[key]}</strong></span>`
     ).join('')
 
     return `
-    <div class="fin-group-title">Analyst recommendations (${total})</div>
-    <div style="display:flex;height:10px;width:100%;border-radius:4px;overflow:hidden;background:${PDF_COLORS.track};margin-bottom:6px;">${bar}</div>
-    <div style="font-size:11px;color:${PDF_COLORS.ink};margin-bottom:4px;">${legend}</div>`
+    <div class="eyebrow" style="margin:16px 0 8px;">Analyst recommendations (${total})</div>
+    <div style="display:flex;height:10px;width:100%;border-radius:999px;overflow:hidden;background:${PDF_COLORS.track};margin-bottom:8px;">${bar}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px 16px;font-size:10.5px;">${legend}</div>`
 }
 
 /** "Market & Analyst Outlook": price range, analyst targets and ratings. Empty without data. */
@@ -100,9 +106,9 @@ export function marketOutlookTemplate(
 ): string {
     const priceAndTargets = financials
         ? `
-    <div class="fin-group-title">Where the stock has traded in the last year</div>
+    <div class="eyebrow">Where the stock has traded in the last year</div>
     ${priceRangeTemplate(financials)}
-${analystTargetsTemplate(financials)}`
+    ${analystTargetsTemplate(financials)}`
         : ''
 
     const ratings = fundamentals ? analystRatingsTemplate(fundamentals.analystRatings) : ''

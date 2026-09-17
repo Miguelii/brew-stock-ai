@@ -3,21 +3,23 @@ import { escapeHtml } from '@/_bff/modules/reports/pdf/helpers/escape-html.helpe
 import type { ReportHeaderView } from '@/_bff/modules/reports/pdf/types'
 
 export const headerTemplate = (stock: string, header: ReportHeaderView): string => `
-    <div class="header">
+    <div class="topbar">
         <div class="brand">${BRAND_WORDMARK_HTML}</div>
-        <div class="meta">
+        <div class="topbar-meta">
             <strong>${header.date}</strong>
             Fundamental Analysis &amp; Sentiment Report
         </div>
     </div>
 
-    <div class="title-section">
+    <div class="hero">
         <div>
-            <div class="stock-ticker">${escapeHtml(stock)}</div>
-            <div class="report-type">${escapeHtml(header.reportLabel)}</div>
+            <div class="eyebrow">${escapeHtml(header.reportLabel)}</div>
+            <div class="display hero-ticker">${escapeHtml(stock)}</div>
+            <div class="hero-subtitle">Fundamental Analysis &amp; Sentiment Report</div>
+            <div class="eyebrow" style="margin-top:6px;">Generated ${header.date}</div>
         </div>
-        <div class="sentiment-badge">
-            <span class="sentiment-label">${header.sentimentTitle}</span>
-            <span class="sentiment-value" style="color: ${header.sentimentColor}">${header.sentimentLabel}</span>
+        <div class="hero-sentiment">
+            <span class="eyebrow">${header.sentimentTitle}</span>
+            <span class="display hero-sentiment-value" style="color:${header.sentimentColor};">${header.sentimentLabel}</span>
         </div>
     </div>`

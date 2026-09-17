@@ -1,5 +1,7 @@
 import { PDF_COLORS } from '@/_bff/modules/reports/pdf/constants'
 
+// Mirrors the report page: tiles on paper, bold uppercase "display" type standing in for Anton
+// (the PDF cannot load web fonts), and a print-friendly light palette.
 export const PDF_CSS = `
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -7,226 +9,209 @@ export const PDF_CSS = `
             font-family: Arial, Helvetica, sans-serif;
             background: ${PDF_COLORS.background};
             color: ${PDF_COLORS.ink};
-            padding: 48px 56px;
-            font-size: 14px;
-            line-height: 1.6;
+            padding: 8px 44px 0;
+            font-size: 12px;
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding-bottom: 24px;
-            border-bottom: 1px solid ${PDF_COLORS.border};
-            margin-bottom: 32px;
-        }
-        .brand {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-        .brand-accent { color: ${PDF_COLORS.blue}; }
-        .meta { text-align: right; font-size: 12px; color: ${PDF_COLORS.muted}; }
-        .meta strong { display: block; font-size: 13px; color: ${PDF_COLORS.ink}; margin-bottom: 2px; }
-
-        .title-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 32px;
-        }
-        .stock-ticker {
-            font-size: 40px;
+        .display {
             font-weight: 800;
-            color: ${PDF_COLORS.blue};
-            font-family: monospace;
-            letter-spacing: -0.02em;
-            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
+            line-height: 0.95;
         }
-        .report-type {
-            font-size: 13px;
-            color: ${PDF_COLORS.muted};
-            margin-top: 6px;
-        }
-        .sentiment-badge {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-        }
-        .sentiment-label {
-            font-size: 11px;
+        .eyebrow {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9.5px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            font-weight: 600;
             color: ${PDF_COLORS.muted};
         }
-        .sentiment-value {
-            font-size: 22px;
-            font-weight: 700;
-        }
+        .muted { color: ${PDF_COLORS.muted}; }
+        .small { font-size: 10.5px; }
+        .accent { color: ${PDF_COLORS.blue}; }
 
-        .divider {
-            border: none;
-            border-top: 1px solid ${PDF_COLORS.border};
-            margin: 24px 0;
+        .tile {
+            background: ${PDF_COLORS.paper};
+            border: 1px solid ${PDF_COLORS.border};
+            border-radius: 12px;
+            padding: 12px 14px;
+            break-inside: avoid;
         }
-
-        .analysis h2 {
+        .pill {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 2px 9px;
             font-size: 10px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: ${PDF_COLORS.muted};
-            margin-bottom: 10px;
-            margin-top: 28px;
+            white-space: nowrap;
         }
-        .analysis h2:first-child { margin-top: 0; }
-        .analysis h3 {
-            font-size: 13px;
-            font-weight: 600;
-            color: ${PDF_COLORS.ink};
-            margin-top: 16px;
-            margin-bottom: 6px;
-        }
-        .analysis p {
-            font-size: 13px;
-            color: ${PDF_COLORS.ink};
-            line-height: 1.7;
-            margin-bottom: 10px;
-        }
-        .analysis ul {
-            list-style: none;
-            padding: 0;
-            margin: 8px 0 12px;
-        }
-        .analysis li {
-            font-size: 13px;
-            color: ${PDF_COLORS.ink};
-            line-height: 1.6;
-            position: relative;
-            padding-left: 1.25rem;
-            margin-bottom: 6px;
-        }
-        .analysis li::before {
-            content: '•';
-            color: ${PDF_COLORS.blue};
-            font-weight: 700;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-        .analysis li > strong:first-child { display: block; }
-        .analysis strong { color: ${PDF_COLORS.blue}; font-weight: 600; }
-        .analysis em { color: ${PDF_COLORS.muted}; font-style: normal; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+        .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; }
+        .bar-track { height: 5px; border-radius: 999px; background: ${PDF_COLORS.headingRule}; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 999px; }
 
-        .footer {
-            margin-top: 48px;
-            padding-top: 20px;
-            border-top: 1px solid ${PDF_COLORS.border};
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: ${PDF_COLORS.muted};
-        }
-
-        .extra-section {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid ${PDF_COLORS.border};
-        }
-        .extra-section-title {
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: ${PDF_COLORS.ink};
-        }
-        .extra-section-subtitle {
-            font-size: 12px;
-            font-weight: 400;
-            letter-spacing: 0;
-            color: ${PDF_COLORS.muted};
-            margin-top: 3px;
-            margin-bottom: 14px;
-        }
-        .sig-dev-headline {
-            font-size: 13px;
-            font-weight: 600;
-            color: ${PDF_COLORS.ink};
-            line-height: 1.5;
-            margin-bottom: 4px;
-        }
-        .sig-dev-date { font-size: 11px; color: ${PDF_COLORS.muted}; }
-        .news-list { list-style: none; padding: 0; margin: 0; }
-        .news-item {
-            padding: 10px 0;
-            border-bottom: 1px solid ${PDF_COLORS.rowDivider};
-        }
-        .news-item:last-child { border-bottom: none; }
-        .news-headline { font-size: 12px; font-weight: 600; color: ${PDF_COLORS.ink}; line-height: 1.5; margin-bottom: 3px; }
-        .news-text { font-size: 11px; color: ${PDF_COLORS.ink}; }
-        .news-meta { font-size: 11px; color: ${PDF_COLORS.muted}; }
-        .fin-group-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: ${PDF_COLORS.muted}; margin-bottom: 8px; margin-top: 4px; }
-        .fin-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-        .fin-tile-3 { flex: 1 1 calc(33.333% - 6px); min-width: 90px; background: ${PDF_COLORS.surface}; border-radius: 4px; padding: 8px 10px; }
-        .fin-tile-label { font-size: 10px; color: ${PDF_COLORS.muted}; margin-bottom: 3px; }
-        .fin-tile-value { font-size: 12px; font-weight: 600; color: ${PDF_COLORS.ink}; }
-        .fin-range-wrap { margin-bottom: 14px; }
-        .fin-range-bar { position: relative; height: 10px; background: ${PDF_COLORS.track}; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
-        .fin-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: ${PDF_COLORS.muted}; }
-        .fin-range-meta { display: flex; gap: 14px; margin-top: 4px; font-size: 10px; color: ${PDF_COLORS.muted}; }
-
-        /* Graded category cards, mirroring the on-screen financials layout. */
-        .fin-cat-grid { display: flex; gap: 8px; margin-bottom: 8px; }
-        .fin-cat-grid .fin-cat-card { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
-        .fin-cat-card {
-            border: 1px solid ${PDF_COLORS.border};
-            background: ${PDF_COLORS.surface};
-            padding: 12px;
-            margin-bottom: 8px;
-        }
-        .fin-cat-head {
+        /* Header */
+        .topbar {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 10px;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid ${PDF_COLORS.border};
+        }
+        .brand { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+        .brand-accent { color: ${PDF_COLORS.blue}; }
+        .topbar-meta { text-align: right; font-size: 11px; color: ${PDF_COLORS.muted}; }
+        .topbar-meta strong { display: block; font-size: 12px; color: ${PDF_COLORS.ink}; }
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            background: ${PDF_COLORS.paper};
+            border: 1px solid ${PDF_COLORS.border};
+            border-radius: 16px;
+            padding: 20px 24px;
+        }
+        .hero-ticker { font-size: 60px; color: ${PDF_COLORS.blue}; margin-top: 8px; }
+        .hero-subtitle { font-size: 14px; font-weight: 700; margin-top: 8px; }
+        .hero-sentiment { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+        .hero-sentiment-value { font-size: 22px; }
+
+        /* Sections: white cards with the page's thick heading rule */
+        .section {
+            margin-top: 18px;
+            border: 1px solid ${PDF_COLORS.border};
+            border-radius: 16px;
+            padding: 16px 18px;
+        }
+        .section-paper { background: ${PDF_COLORS.paper}; }
+        .section-head {
+            border-bottom: 2px solid ${PDF_COLORS.headingRule};
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            break-after: avoid;
+        }
+        .section-title { font-size: 20px; }
+        .section-subtitle { font-size: 10.5px; color: ${PDF_COLORS.muted}; margin-top: 4px; }
+
+        .subsection { margin-top: 18px; }
+        .subhead {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 12px;
             border-bottom: 1px solid ${PDF_COLORS.border};
             padding-bottom: 6px;
-            margin-bottom: 4px;
+            margin-bottom: 10px;
+            break-after: avoid;
         }
-        .fin-cat-heading { display: flex; flex-direction: column; min-width: 0; }
-        .fin-cat-title { font-size: 13px; font-weight: 600; color: ${PDF_COLORS.ink}; }
-        .fin-cat-question { font-size: 11px; color: ${PDF_COLORS.muted}; }
-        .fin-grade {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 44px;
-            padding: 3px 10px;
+        .subhead-title { font-size: 15px; }
+
+        /* Overview */
+        .overview { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; margin-top: 18px; }
+        .overview-single { grid-template-columns: minmax(0, 1fr); }
+        .overview .section { margin-top: 0; }
+        .summary-badge {
+            display: inline-block;
+            background: #dbe6ff;
+            color: ${PDF_COLORS.blue};
+            border-radius: 999px;
+            padding: 4px 12px;
+        }
+        .sentiment-card { text-align: center; break-inside: avoid; }
+        .sentiment-gauge { width: 100%; max-width: 220px; margin: 0 auto; display: block; }
+        .sentiment-active { font-size: 12px; font-weight: 800; letter-spacing: 0.04em; margin-top: 4px; }
+        .sentiment-disclaimer { font-size: 9.5px; color: ${PDF_COLORS.muted}; margin-top: 6px; line-height: 1.5; }
+
+        /* Metric tiles */
+        .tile-label { display: block; }
+        .tile-help { display: block; font-size: 9.5px; color: ${PDF_COLORS.faint}; margin-top: 2px; line-height: 1.35; }
+        .tile-value { display: block; font-size: 26px; margin-top: 10px; }
+        .tile-detail { display: block; font-size: 10px; color: ${PDF_COLORS.muted}; margin-top: 3px; }
+        .tile .pill { margin-top: 8px; }
+        .score-letter { font-size: 34px; }
+        .score-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+        .score-row .bar-track { flex: 1; }
+        .context-strip { display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 11px; margin-top: 8px; }
+        .context-strip strong { margin-left: 6px; }
+
+        /* Revenue chart */
+        .rev-chart { display: flex; gap: 14px; margin-top: 6px; break-inside: avoid; }
+        .rev-col { flex: 1; min-width: 0; text-align: center; }
+        .rev-plot { position: relative; height: 110px; }
+        .rev-value { position: absolute; left: 0; right: 0; font-size: 11px; font-weight: 700; }
+        .rev-bar { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 10px 10px 0 0; }
+
+        .track-record { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; margin-top: 18px; break-inside: avoid; }
+        .track-record-single { grid-template-columns: minmax(0, 1fr); }
+        .track-record .subsection { margin-top: 0; }
+
+        /* Market outlook */
+        .range-bar { position: relative; height: 10px; background: ${PDF_COLORS.track}; border-radius: 999px; overflow: hidden; margin: 8px 0 4px; }
+        .range-legend { display: flex; justify-content: space-between; font-size: 10px; color: ${PDF_COLORS.muted}; }
+        .row-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+
+        /* Analysis prose */
+        .analysis h2 { font-size: 15px; font-weight: 800; text-transform: uppercase; margin: 22px 0 8px; }
+        .analysis h2:first-child { margin-top: 0; }
+        .analysis h3 { font-size: 13px; font-weight: 700; margin: 14px 0 6px; }
+        .analysis p { font-size: 12px; line-height: 1.7; margin-bottom: 9px; }
+        .analysis ul { list-style: none; margin: 6px 0 12px; }
+        .analysis li { font-size: 12px; line-height: 1.6; position: relative; padding-left: 16px; margin-bottom: 5px; }
+        .analysis li::before { content: '•'; color: ${PDF_COLORS.blue}; font-weight: 700; position: absolute; left: 0; top: 0; }
+        .analysis li > strong:first-child { display: block; }
+        .analysis strong { color: ${PDF_COLORS.blue}; font-weight: 700; }
+        .analysis em { color: ${PDF_COLORS.muted}; font-style: normal; }
+        .analysis table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 11px; }
+        .analysis th, .analysis td { border-bottom: 1px solid ${PDF_COLORS.rowDivider}; padding: 5px 6px; text-align: left; }
+
+        /* Significant development */
+        .sigdev { display: flex; align-items: center; gap: 20px; break-inside: avoid; }
+        .calendar {
             flex-shrink: 0;
+            width: 88px;
+            text-align: center;
+            background: ${PDF_COLORS.amberSoft};
+            color: ${PDF_COLORS.amberDeep};
+            border-radius: 12px;
+            padding: 8px 6px;
         }
-        .fin-grade-letter { font-size: 18px; font-weight: 700; line-height: 1; }
-        .fin-grade-word { font-size: 9px; line-height: 1.3; }
-        .fin-cat-rows { display: flex; flex-direction: column; }
-        .fin-metric-row {
+        .calendar-day { font-size: 46px; color: ${PDF_COLORS.navy}; }
+        .calendar-year { font-size: 10px; font-weight: 700; }
+        .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${PDF_COLORS.amber}; margin-right: 6px; vertical-align: middle; }
+        .sigdev-headline { font-size: 20px; font-weight: 800; line-height: 1.2; margin-top: 8px; }
+
+        /* Expert coverage */
+        .expert-list { list-style: none; }
+        .expert-item { padding: 12px 0; border-bottom: 1px solid ${PDF_COLORS.rowDivider}; break-inside: avoid; }
+        .expert-item:first-child { padding-top: 0; }
+        .expert-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .expert-title { font-size: 13px; font-weight: 700; margin-top: 4px; }
+        .expert-summary { font-size: 11px; color: #4a4b4f; line-height: 1.6; margin-top: 5px; }
+
+        /* Sector scores */
+        .score-card { text-align: center; }
+        .score-description { font-size: 9.5px; color: ${PDF_COLORS.muted}; margin-top: 3px; line-height: 1.4; }
+        .score-gauge-wrap { position: relative; margin: 10px auto 0; max-width: 170px; }
+        .score-gauge { width: 100%; display: block; }
+        .score-value { position: absolute; left: 0; right: 0; bottom: 0; font-size: 34px; }
+        .score-delta { font-size: 10px; color: ${PDF_COLORS.muted}; margin-top: 5px; }
+        .legend { display: flex; justify-content: center; gap: 22px; font-size: 10px; color: ${PDF_COLORS.muted}; margin-top: 12px; }
+        .legend-mark { display: inline-block; vertical-align: middle; margin-right: 5px; }
+
+        .footer {
+            margin-top: 28px;
+            padding-top: 14px;
+            border-top: 1px solid ${PDF_COLORS.border};
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 5px 0;
-            border-top: 1px solid ${PDF_COLORS.rowDivider};
+            font-size: 10px;
+            color: ${PDF_COLORS.muted};
         }
-        .fin-metric-row:first-child { border-top: none; }
-        .fin-metric-main { min-width: 0; }
-        .fin-metric-label { font-size: 11px; color: ${PDF_COLORS.muted}; line-height: 1.3; }
-        .fin-metric-help { font-size: 9px; color: ${PDF_COLORS.faint}; line-height: 1.3; }
-        .fin-metric-side { text-align: right; flex-shrink: 0; }
-        .fin-metric-value { font-size: 11px; font-weight: 600; line-height: 1.3; }
-        .fin-metric-verdict { font-size: 9px; font-weight: 500; line-height: 1.2; }
-
-        .fin-block { border: 1px solid ${PDF_COLORS.border}; background: ${PDF_COLORS.surface}; padding: 12px; margin-bottom: 8px; }
-        .fin-block-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: ${PDF_COLORS.muted}; margin-bottom: 4px; }
-        .fin-block-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 5px 0; }
-        .fin-block-row-sep { border-top: 1px solid ${PDF_COLORS.rowDivider}; }
-        .fin-block-row-sep:first-of-type { border-top: none; }
     `

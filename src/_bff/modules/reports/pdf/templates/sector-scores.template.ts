@@ -1,59 +1,73 @@
-import { fmtNum } from '@/_bff/core/utils/formatters.utils'
-import { SECTOR_SCORE_ROWS } from '@/_bff/core/constants/sector-scores.constants'
+import { fmtDelta } from '@/_bff/core/utils/formatters.utils'
+import { getScoreGaugeView, getSectorScores } from '@/_bff/core/helpers/sector-scores.helper'
 import type { StockScores } from '@/types/ReportDTO'
-import { PDF_COLORS } from '@/_bff/modules/reports/pdf/constants'
+import type { SectorScore } from '@/types/SectorScore'
+import { PDF_COLORS, SIGNAL_BG_HEX, SIGNAL_HEX } from '@/_bff/modules/reports/pdf/constants'
+import { escapeHtml } from '@/_bff/modules/reports/pdf/helpers/escape-html.helper'
 import { sectionTemplate } from '@/_bff/modules/reports/pdf/templates/section.template'
 
-// Yahoo's snapshot types allow undefined as well as null, so both mean "no score"
-type ScoreRowInput = {
-    label: string
-    company: number | null | undefined
-    sector: number | null | undefined
+function scoreGaugeTemplate(company: number | null, sector: number | null): string {
+    const { viewBox, arc, strokeWidth, valueDash, tick } = getScoreGaugeView(company, sector)
+
+    const track =
+        company === null
+            ? `<path d="${arc}" pathLength="100" fill="none" stroke="${PDF_COLORS.faint}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-dasharray="1.5 4" />`
+            : `<path d="${arc}" pathLength="100" fill="none" stroke="${PDF_COLORS.track}" stroke-width="${strokeWidth}" stroke-linecap="round" />`
+
+    const value = valueDash
+        ? `<path d="${arc}" pathLength="100" fill="none" stroke="${PDF_COLORS.blue}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-dasharray="${valueDash}" />`
+        : ''
+
+    const tickLine = tick
+        ? `<line x1="${tick.x1.toFixed(2)}" y1="${tick.y1.toFixed(2)}" x2="${tick.x2.toFixed(2)}" y2="${tick.y2.toFixed(2)}" stroke="${PDF_COLORS.ink}" stroke-width="2.5" stroke-linecap="round" />`
+        : ''
+
+    return `<svg class="score-gauge" viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">${track}${value}${tickLine}</svg>`
 }
 
-/** One score as a bar filled to the company value, with a tick at the sector average. */
-function scoreRowTemplate({ label, company, sector }: ScoreRowInput): string {
-    const bar =
-        company == null
-            ? `<div style="position:absolute;inset:0;background:${PDF_COLORS.track};border-radius:4px;"></div>`
-            : `<div style="position:absolute;top:0;bottom:0;left:0;width:${(company * 100).toFixed(1)}%;background:${PDF_COLORS.blue};border-radius:4px;"></div>`
-
-    const tick =
-        sector == null
-            ? ''
-            : `<div style="position:absolute;top:0;bottom:0;left:${(sector * 100).toFixed(1)}%;width:2px;background:${PDF_COLORS.tick};z-index:1;"></div>`
-
-    const value =
-        company == null
-            ? `<span style="color:${PDF_COLORS.muted};">N/A</span>`
-            : `<span style="font-weight:600;">${fmtNum(company)}</span>`
-
-    const track = company == null ? PDF_COLORS.background : PDF_COLORS.track
+function scoreCardTemplate({
+    label,
+    description,
+    company,
+    sector,
+    comparison,
+}: SectorScore): string {
+    const verdict = comparison
+        ? `
+            <span class="pill" style="margin-top:8px;background:${SIGNAL_BG_HEX[comparison.tone]};color:${SIGNAL_HEX[comparison.tone]};">${comparison.verdict}</span>
+            <div class="score-delta"><strong style="color:${comparison.tone === 'neutral' ? PDF_COLORS.muted : SIGNAL_HEX[comparison.tone]};">${fmtDelta(comparison.delta)}</strong> vs sector average (${sector})</div>`
+        : `<span class="pill" style="margin-top:8px;background:${SIGNAL_BG_HEX.neutral};color:${PDF_COLORS.muted};">${company === null ? 'No data' : 'No sector average'}</span>`
 
     return `
-            <div style="margin-bottom:16px;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;">
-                    <span style="font-weight:600;">${label}</span>
-                    <span>${value}<span style="color:${PDF_COLORS.muted};font-weight:400;"> vs ${fmtNum(sector)}</span></span>
-                </div>
-                <div style="position:relative;height:10px;background:${track};border-radius:4px;overflow:hidden;">
-                    ${bar}${tick}
-                </div>
-            </div>`
+        <div class="tile score-card">
+            <div class="eyebrow" style="color:${PDF_COLORS.ink};">${escapeHtml(label)}</div>
+            <div class="score-description">${escapeHtml(description)}</div>
+            <div class="score-gauge-wrap">
+                ${scoreGaugeTemplate(company, sector)}
+                <span class="display score-value" style="color:${company === null ? PDF_COLORS.faint : PDF_COLORS.ink};${company === null ? 'font-size:22px;' : ''}">${company ?? 'N/A'}</span>
+            </div>
+            ${verdict}
+        </div>`
 }
 
-/** "How It Compares": company vs sector soft scores. Empty when there are no scores. */
+const LEGEND = `
+    <div class="legend">
+        <span><span class="legend-mark" style="width:16px;height:5px;border-radius:999px;background:${PDF_COLORS.blue};"></span>This company</span>
+        <span><span class="legend-mark" style="width:2px;height:11px;background:${PDF_COLORS.ink};"></span>Sector average</span>
+        <span><span class="legend-mark" style="width:16px;border-top:2px dashed ${PDF_COLORS.faint};"></span>Data not available</span>
+    </div>`
+
+/** "How It Compares": company vs sector scores as half gauges. Empty when there are no scores. */
 export function sectorScoresTemplate(scores: StockScores | null | undefined): string {
     if (!scores) return ''
 
-    const rows = SECTOR_SCORE_ROWS.map(({ key, label }) =>
-        scoreRowTemplate({ label, company: scores.company[key], sector: scores.sector[key] })
-    ).join('')
-
     return sectionTemplate({
         title: 'How It Compares',
-        subtitle:
-            'How this company stacks up against others in the same sector (scale 0–1, higher is better)',
-        body: rows,
+        subtitle: 'How this company scores against the rest of its sector, from 0 to 100',
+        body: `
+        <div class="grid-3">${getSectorScores(scores)
+            .map((score) => scoreCardTemplate(score))
+            .join('')}</div>
+        ${LEGEND}`,
     })
 }

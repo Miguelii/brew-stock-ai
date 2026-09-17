@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
     compareWithSector,
-    fmtDelta,
     gaugePoint,
+    getScoreGaugeView,
+    getSectorScores,
     toScore100,
-} from '@/modules/report-view/report-sector-scores/utils'
+} from '@/_bff/core/helpers/sector-scores.helper'
 
 describe('toScore100', () => {
     it('scales and rounds Yahoo scores', () => {
@@ -38,14 +39,6 @@ describe('compareWithSector', () => {
     })
 })
 
-describe('fmtDelta', () => {
-    it('signs positive gaps only', () => {
-        expect(fmtDelta(45)).toBe('+45')
-        expect(fmtDelta(-33)).toBe('-33')
-        expect(fmtDelta(0)).toBe('0')
-    })
-})
-
 describe('gaugePoint', () => {
     it('maps 0, 50 and 100 onto the half circle', () => {
         const left = gaugePoint(0, 50, 60, 60)
@@ -58,5 +51,43 @@ describe('gaugePoint', () => {
         expect(top.y).toBeCloseTo(10)
         expect(right.x).toBeCloseTo(110)
         expect(right.y).toBeCloseTo(60)
+    })
+})
+
+describe('getSectorScores', () => {
+    it('builds one row per score with the sector comparison', () => {
+        const rows = getSectorScores({
+            company: { innovativeness: 0.85, hiring: null, sustainability: 0.17 },
+            sector: { innovativeness: 0.5, hiring: 0.5, sustainability: 0.5 },
+        })
+
+        expect(rows.map((r) => [r.label, r.company, r.comparison?.verdict ?? null])).toEqual([
+            ['Innovation', 85, 'Well above sector'],
+            ['Workforce Growth', null, null],
+            ['Sustainability', 17, 'Well below sector'],
+        ])
+    })
+
+    it('returns rows without scores when there is no data', () => {
+        expect(
+            getSectorScores(null).every((r) => r.company === null && r.comparison === null)
+        ).toBe(true)
+    })
+})
+
+describe('getScoreGaugeView', () => {
+    it('draws the company arc and a tick across the stroke at the sector average', () => {
+        const view = getScoreGaugeView(85, 50)
+
+        expect(view.valueDash).toBe('85 100')
+        expect(view.tick?.x1).toBeCloseTo(60)
+        expect(view.tick?.y1).toBeCloseTo(20)
+        expect(view.tick?.y2).toBeCloseTo(0)
+    })
+
+    it('skips the arc for missing or zero scores and the tick without a sector average', () => {
+        expect(getScoreGaugeView(null, 50).valueDash).toBeNull()
+        expect(getScoreGaugeView(0, 50).valueDash).toBeNull()
+        expect(getScoreGaugeView(40, null).tick).toBeNull()
     })
 })

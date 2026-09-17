@@ -17,6 +17,7 @@ export function getReportHeader({
 
     return {
         date: fmtDate(created_at),
+        isRiskAnalysis,
         reportLabel: PROMPT_TYPES[type as PropmptsEnum]?.label ?? type,
         sentimentTitle: isRiskAnalysis ? 'Risk Level' : 'Sentiment',
         sentimentLabel: label,

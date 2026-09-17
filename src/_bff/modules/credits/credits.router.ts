@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { router } from '@/_trpc/server'
+import { router } from '@/_bff/trpc/server'
 import { CREATE_CHECKOUT_SESSION_PROTECTED_CONTROLLER } from '@/_bff/modules/credits/controllers/create-checkout-session.controller'
 import { GET_CREDITS_PROTECTED_CONTROLLER } from '@/_bff/modules/credits/controllers/get-credits.controller'
 import { GET_INVOICES_PROTECTED_CONTROLLER } from '@/_bff/modules/credits/controllers/get-invoices.controller'

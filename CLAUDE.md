@@ -107,8 +107,8 @@ export const selectCredits = Effect.fn('selectCredits')(function* (
 ```typescript
 // 3) src/_bff/modules/credits/controllers/get-credits.controller.ts — thin tRPC binding
 import { Match } from 'effect'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { getCredits } from '@/_bff/modules/credits/services/get-credits.service'
 
 export const GET_CREDITS_PROTECTED_CONTROLLER = protectedProcedure
@@ -131,7 +131,7 @@ namespaces the module routers:
 ```typescript
 // 4) src/_bff/modules/credits/credits.router.ts — module composition root
 import 'server-only'
-import { router } from '@/_trpc/server'
+import { router } from '@/_bff/trpc/server'
 import { GET_CREDITS_PROTECTED_CONTROLLER } from '@/_bff/modules/credits/controllers/get-credits.controller'
 
 export const CREDITS_ROUTER = router({
@@ -139,7 +139,7 @@ export const CREDITS_ROUTER = router({
     // ...
 })
 
-// 5) src/_trpc/router/index.ts — appRouter composes module routers (namespaced)
+// 5) src/_bff/trpc/router.ts — appRouter composes module routers (namespaced)
 export const appRouter = router({
     credits: CREDITS_ROUTER,   // → trpcClient.credits.get.useQuery()
     reports: REPORTS_ROUTER,   // → trpcClient.reports.create.useMutation()
@@ -153,10 +153,10 @@ export const appRouter = router({
 - Services (`services/<name>.service.ts`) are **exported** `Effect.fn(...)` functions holding the business logic. They create the Supabase client (choosing publishable vs service-role key) and pass it into repositories.
 - Repositories (`repositories/<table>.repository.ts`) are **exported** `Effect.fn(...)` functions that receive `supabase: SupabaseClient` as their first parameter and wrap queries with the dual error check (catch + `error` field). One file per table/domain. **No cross-module imports.**
 - **Dependency direction**: controller → service → (repository | processor | helper). Cross-module imports go through `services/` or `processors/` only — never another module's controller or repository.
-- Use `protectedProcedure` (from `@/_trpc/server`) for authenticated routes — `ctx.user` is guaranteed; pass it into the service. Auth is enforced by the middleware, so **never** map `UnauthenticatedError` / `GetUserError` in the `Match`.
+- Use `protectedProcedure` (from `@/_bff/trpc/server`) for authenticated routes — `ctx.user` is guaranteed; pass it into the service. Auth is enforced by the middleware, so **never** map `UnauthenticatedError` / `GetUserError` in the `Match`.
 - Use `publicProcedure` for unauthenticated routes (auth flows, public forms).
-- `runEffect` comes from `@/_trpc/utils`; the `Match.value(error).pipe(… Match.exhaustive)` mapping lives in the controller file.
-- Register controllers in the module's `<module>.router.ts` (exporting `<MODULE>_ROUTER`), and register that router under its namespace in `src/_trpc/router/index.ts`.
+- `runEffect` comes from `@/_bff/trpc/utils`; the `Match.value(error).pipe(… Match.exhaustive)` mapping lives in the controller file.
+- Register controllers in the module's `<module>.router.ts` (exporting `<MODULE>_ROUTER`), and register that router under its namespace in `src/_bff/trpc/router.ts`.
 
 `protectedProcedure` runs `getSession()` once per request (cached) and injects `ctx.user`: it throws `401` when there is no user and `500` on infrastructure failure. Services still create their own Supabase client, so each one controls whether it uses the publishable or service-role key.
 
@@ -164,7 +164,7 @@ export const appRouter = router({
 Use the caller — no HTTP overhead:
 
 ```typescript
-import { createCaller } from '@/_trpc/server/caller'
+import { createCaller } from '@/_bff/trpc/caller'
 
 const caller = await createCaller()
 const data = await caller.reports.getById({ id })
@@ -182,7 +182,7 @@ Always assign `mutateAsync` to an explicitly typed `Promise<T>` variable before 
 
 ### Backend module layout
 All backend code lives under `src/_bff/modules/<module>/`, split by responsibility (NestJS-style):
-- `<module>.router.ts` — module composition root; exports `<MODULE>_ROUTER` composing the module's controllers. Registered under its namespace in `src/_trpc/router/index.ts`.
+- `<module>.router.ts` — module composition root; exports `<MODULE>_ROUTER` composing the module's controllers. Registered under its namespace in `src/_bff/trpc/router.ts`.
 - `controllers/<name>.controller.ts` — thin tRPC binding (zod schema + `runEffect` + `Match` error map); exports `<NAME>_<PROTECTED|PUBLIC>_CONTROLLER`. No logic, no Supabase.
 - `services/<name>.service.ts` — exported `Effect.fn` business logic; creates the Supabase client and orchestrates repositories/processors/helpers. The cross-module entry point (also used by Trigger.dev jobs).
 - `repositories/<table>.repository.ts` — exported `Effect.fn` data access; receives `supabase: SupabaseClient` as a parameter. One file per table/domain. Never imported across modules.
@@ -196,7 +196,7 @@ All backend code lives under `src/_bff/modules/<module>/`, split by responsibili
 
 Code shared with the frontend lives in `src/_bff/core/`: `constants/<theme>.constants.ts`, `helpers/<theme>.helper.ts` and `utils/<theme>.utils.ts` (see "Formatters & constants" below). Everything there is importable from client components, except the files that import `server-only` (`constants/credit-packages.constants.ts` and `db/index.ts`). `_bff` never imports from `src/lib`, `src/modules`, `src/components`, `src/hooks` or `src/app`. Not to be confused with `src/_bff/modules/core/`, the tRPC module for feedback, consent cookies and push notifications.
 
-Shared error classes live in `src/_bff/lib/errors.ts`; their `ErrorCode` values in `src/_bff/lib/error-codes.ts`. tRPC infra lives in `src/_trpc/`: `server` (procedures, router, auth middleware), `utils` (`runEffect`), `context`, `api` (`appRouter`), and `server/caller` (`createCaller`).
+Shared error classes live in `src/_bff/lib/errors.ts`; their `ErrorCode` values in `src/_bff/lib/error-codes.ts`. The tRPC transport layer lives in `src/_bff/trpc/`: `server.ts` (procedures and the auth middleware), `utils.ts` (`runEffect`), `context.ts`, `router.ts` (`appRouter`) and `caller.ts` (`createCaller`). Its client half is frontend code: `src/lib/trpc.ts` (`trpcClient`) and `src/providers/trpc-provider.tsx`.
 
 ---
 

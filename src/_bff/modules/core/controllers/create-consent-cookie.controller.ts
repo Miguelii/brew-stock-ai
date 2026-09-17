@@ -1,6 +1,6 @@
 import { Match } from 'effect'
-import { publicProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { publicProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { z } from 'zod'
 import { createConsentCookie } from '@/_bff/modules/core/services/create-consent-cookie.service'
 

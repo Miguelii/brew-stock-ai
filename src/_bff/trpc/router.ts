@@ -1,4 +1,4 @@
-import { router } from '@/_trpc/server'
+import { router } from '@/_bff/trpc/server'
 import { ADMIN_ROUTER } from '@/_bff/modules/admin/admin.router'
 import { AUTH_ROUTER } from '@/_bff/modules/auth/auth.router'
 import { CORE_ROUTER } from '@/_bff/modules/core/core.router'

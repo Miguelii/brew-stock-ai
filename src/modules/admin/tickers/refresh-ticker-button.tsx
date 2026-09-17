@@ -4,7 +4,7 @@ import { Loader2Icon, RefreshCwIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 import { toastError } from '@/lib/toast-error'
 import type { RefreshStockDataResult } from '@/_bff/modules/admin/services/refresh-stock-data.service'
 

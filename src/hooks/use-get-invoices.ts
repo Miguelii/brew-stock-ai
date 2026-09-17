@@ -1,4 +1,4 @@
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 
 export const useGetInvoices = () => {
     const { data: invoices = [], isLoading } = trpcClient.credits.getInvoices.useQuery(undefined, {

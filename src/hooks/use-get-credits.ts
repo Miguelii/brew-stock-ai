@@ -1,4 +1,4 @@
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 
 type Props = {
     enabled?: boolean

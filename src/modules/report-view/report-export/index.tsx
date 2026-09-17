@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 import { DownloadIcon, Loader2Icon } from 'lucide-react'
 import { toastError } from '@/lib/toast-error'
 

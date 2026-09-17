@@ -1,4 +1,4 @@
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 import { ReportStatus } from '@/types/ReportDTO'
 
 export const useGetReports = () => {

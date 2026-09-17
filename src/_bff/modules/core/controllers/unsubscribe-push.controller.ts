@@ -1,6 +1,6 @@
 import { Match } from 'effect'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { unsubscribePush } from '@/_bff/modules/core/services/unsubscribe-push.service'
 
 export const UNSUBSCRIBE_PUSH_PROTECTED_CONTROLLER = protectedProcedure.mutation(({ ctx }) =>

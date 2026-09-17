@@ -1,4 +1,4 @@
-import { createCaller } from '@/_trpc/server/caller'
+import { createCaller } from '@/_bff/trpc/caller'
 import type { ReportDTO } from '@/types/ReportDTO'
 import { StockPriceChartLazy } from './lazy'
 

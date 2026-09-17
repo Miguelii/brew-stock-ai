@@ -4,8 +4,8 @@ import {
     CONTACT_FORM_MIN_MESSAGE_LENGTH,
     CONTACT_FORM_MAX_MESSAGE_LENGTH,
 } from '@/_bff/core/constants/contact-form.constants'
-import { publicProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { publicProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { z } from 'zod'
 import { submitFeedback } from '@/_bff/modules/core/services/submit-feedback.service'
 

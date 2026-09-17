@@ -3,8 +3,8 @@ import {
     MAX_STOCK_INPUT_LENGTH,
     STOCK_INPUT_PATTERN,
 } from '@/_bff/core/constants/stock-input.constants'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { z } from 'zod'
 import { createReport } from '@/_bff/modules/reports/services/create-report.service'
 

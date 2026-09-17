@@ -1,6 +1,6 @@
 'use client'
 
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CoinsIcon, Loader2Icon } from 'lucide-react'

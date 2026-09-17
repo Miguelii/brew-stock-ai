@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { router } from '@/_trpc/server'
+import { router } from '@/_bff/trpc/server'
 import { CREATE_CONSENT_COOKIE_PUBLIC_CONTROLLER } from '@/_bff/modules/core/controllers/create-consent-cookie.controller'
 import { SEND_PUSH_NOTIFICATION_PROTECTED_CONTROLLER } from '@/_bff/modules/core/controllers/send-push-notification.controller'
 import { SUBMIT_FEEDBACK_PUBLIC_CONTROLLER } from '@/_bff/modules/core/controllers/submit-feedback.controller'

@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore } from 'react'
 import { CookieIcon } from 'lucide-react'
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 import { toastError } from '@/lib/toast-error'
 import Link from 'next/link'
 import { PromptCard } from '@/components/ui/prompt-card'

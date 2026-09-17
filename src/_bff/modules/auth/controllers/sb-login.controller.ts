@@ -1,7 +1,7 @@
 import { Match } from 'effect'
 import { z } from 'zod'
-import { publicProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { publicProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { sbLogin } from '@/_bff/modules/auth/services/sb-login.service'
 
 export const SB_LOGIN_PUBLIC_CONTROLLER = publicProcedure

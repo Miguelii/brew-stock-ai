@@ -1,6 +1,6 @@
 import { Match } from 'effect'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { z } from 'zod'
 import { getReportById } from '@/_bff/modules/reports/services/get-report-by-id.service'
 

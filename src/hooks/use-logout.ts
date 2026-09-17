@@ -1,6 +1,6 @@
 'use client'
 
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 import { useRouter } from 'next/navigation'
 
 export const useLogout = () => {

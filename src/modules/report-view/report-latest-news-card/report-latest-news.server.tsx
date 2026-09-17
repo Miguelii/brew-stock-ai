@@ -1,4 +1,4 @@
-import { createCaller } from '@/_trpc/server/caller'
+import { createCaller } from '@/_bff/trpc/caller'
 import type { ReportDTO } from '@/types/ReportDTO'
 import type { NewsItem } from '@/types/news'
 import { ReportLatestNewsCard } from '@/modules/report-view/report-latest-news-card'

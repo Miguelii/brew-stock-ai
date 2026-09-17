@@ -1,6 +1,6 @@
 import { Match } from 'effect'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { getCredits } from '@/_bff/modules/credits/services/get-credits.service'
 
 export const GET_CREDITS_PROTECTED_CONTROLLER = protectedProcedure.query(({ ctx }) =>

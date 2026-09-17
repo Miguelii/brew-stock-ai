@@ -4,8 +4,8 @@ import {
     MAX_STOCK_INPUT_LENGTH,
     STOCK_INPUT_PATTERN,
 } from '@/_bff/core/constants/stock-input.constants'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { refreshStockData } from '@/_bff/modules/admin/services/refresh-stock-data.service'
 
 export const REFRESH_STOCK_DATA_PROTECTED_CONTROLLER = protectedProcedure

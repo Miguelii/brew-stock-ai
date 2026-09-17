@@ -16,7 +16,7 @@ import {
 import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { GtmScript } from '@/components/scripts/gtm-script'
-import { TrpcContextProvider } from '@/_trpc/context/trpc-context.provider'
+import { TrpcContextProvider } from '@/providers/trpc-provider'
 import { MotionProvider } from '@/providers/motion-provider'
 
 const geistSans = Geist({

@@ -1,6 +1,6 @@
 'use client'
 
-import { trpcClient } from '@/_trpc/client'
+import { trpcClient } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
 import { RefreshCcwIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'

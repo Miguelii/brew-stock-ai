@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { router } from '@/_trpc/server'
+import { router } from '@/_bff/trpc/server'
 import { GET_PRICE_HISTORY_PROTECTED_CONTROLLER } from '@/_bff/modules/yahoo/controllers/get-price-history.controller'
 
 export const YAHOO_ROUTER = router({

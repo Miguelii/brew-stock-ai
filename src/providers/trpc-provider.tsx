@@ -3,7 +3,7 @@
 import { useState, type PropsWithChildren } from 'react'
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink } from '@trpc/client'
-import { trpcClient as trpc } from '@/_trpc/client'
+import { trpcClient as trpc } from '@/lib/trpc'
 import { toastError } from '@/lib/toast-error'
 
 type Props = PropsWithChildren

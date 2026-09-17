@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { router } from '@/_trpc/server'
+import { router } from '@/_bff/trpc/server'
 import { CREATE_REPORT_PROTECTED_CONTROLLER } from '@/_bff/modules/reports/controllers/create-report.controller'
 import { EXPORT_REPORT_PROTECTED_CONTROLLER } from '@/_bff/modules/reports/controllers/export-report.controller'
 import { GET_REPORT_BY_ID_PROTECTED_CONTROLLER } from '@/_bff/modules/reports/controllers/get-report-by-id.controller'

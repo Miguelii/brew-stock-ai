@@ -1,7 +1,7 @@
 import { Match } from 'effect'
 import { MAX_STOCK_INPUT_LENGTH } from '@/_bff/core/constants/stock-input.constants'
-import { protectedProcedure } from '@/_trpc/server'
-import { runEffect } from '@/_trpc/utils'
+import { protectedProcedure } from '@/_bff/trpc/server'
+import { runEffect } from '@/_bff/trpc/utils'
 import { z } from 'zod'
 import { getCachedPriceHistoryService } from '@/_bff/modules/yahoo/services/get-cached-price-history.service'
 

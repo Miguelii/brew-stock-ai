@@ -2,11 +2,16 @@ import { ServerEnv } from '@/env/server'
 import type { NewsItem } from '@/types/news'
 import { unstable_cache } from 'next/cache'
 import { toIso } from '@/_bff/core/utils/formatters.utils'
-import { LATEST_NEWS_CACHE_KEY, LATEST_NEWS_TTL } from '@/_bff/modules/finnhub/constants'
+import {
+    ANALYSIS_NEWS_COUNT,
+    LATEST_NEWS_CACHE_KEY,
+    LATEST_NEWS_TTL,
+} from '@/_bff/modules/finnhub/constants'
+import { selectCardNews } from '@/_bff/modules/finnhub/helpers/select-card-news.helper'
 
 const FETCH_TIMEOUT_MS = 30_000
 
-export const fetchLatestNewsRaw = async (ticker: string): Promise<NewsItem[]> => {
+const fetchCompanyNews = async (ticker: string): Promise<NewsItem[]> => {
     const to = new Date()
     const from = new Date()
     from.setFullYear(from.getFullYear() - 1)
@@ -21,11 +26,18 @@ export const fetchLatestNewsRaw = async (ticker: string): Promise<NewsItem[]> =>
 
     if (!Array.isArray(raw)) throw new Error(`Unexpected news response for ${ticker}`)
 
-    return (raw as NewsItem[]).slice(0, 3)
+    return raw as NewsItem[]
 }
 
+export const fetchLatestNewsRaw = async (ticker: string): Promise<NewsItem[]> =>
+    (await fetchCompanyNews(ticker)).slice(0, ANALYSIS_NEWS_COUNT)
+
 export const fetchLatestNewsCached = (ticker: string) =>
-    unstable_cache(() => fetchLatestNewsRaw(ticker), [LATEST_NEWS_CACHE_KEY, ticker], {
-        revalidate: LATEST_NEWS_TTL,
-        tags: [LATEST_NEWS_CACHE_KEY],
-    })
+    unstable_cache(
+        async () => selectCardNews(await fetchCompanyNews(ticker)),
+        [LATEST_NEWS_CACHE_KEY, ticker],
+        {
+            revalidate: LATEST_NEWS_TTL,
+            tags: [LATEST_NEWS_CACHE_KEY],
+        }
+    )

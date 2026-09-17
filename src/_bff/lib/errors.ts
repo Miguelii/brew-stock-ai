@@ -94,6 +94,13 @@ export class GetAdminFeedbackError extends Data.TaggedError(
 )<ServiceErrorFields> {}
 export class GetAdminLogsError extends Data.TaggedError('GetAdminLogsError')<ServiceErrorFields> {}
 export class IsAdminError extends Data.TaggedError('IsAdminError')<ServiceErrorFields> {}
+export class GetAdminStockDataError extends Data.TaggedError(
+    'GetAdminStockDataError'
+)<ServiceErrorFields> {}
+export class StockDataRefreshError extends Data.TaggedError('StockDataRefreshError')<{
+    ticker: string
+    error_hash: ErrorCode
+}> {}
 
 // Feedback
 export class SubmitFeedbackError extends Data.TaggedError(
@@ -113,6 +120,11 @@ export class InvalidPromptTypeError extends Data.TaggedError('InvalidPromptTypeE
 
 export class UnauthenticatedError extends Data.TaggedError('UnauthenticatedError')<{
     cause?: unknown
+    error_hash: ErrorCode
+}> {}
+
+// Signed in, but not allowed. Unlike UnauthenticatedError, controllers map it (to FORBIDDEN).
+export class ForbiddenError extends Data.TaggedError('ForbiddenError')<{
     error_hash: ErrorCode
 }> {}
 

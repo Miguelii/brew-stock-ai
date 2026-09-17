@@ -19,6 +19,10 @@ import {
     type AdminFeedback,
 } from '@/_bff/modules/admin/services/get-admin-feedback.service'
 import { getAdminLogs, type AdminLog } from '@/_bff/modules/admin/services/get-admin-logs.service'
+import {
+    getAdminStockData,
+    type AdminStockData,
+} from '@/_bff/modules/admin/services/get-admin-stock-data.service'
 import { isAdmin } from '@/_bff/modules/admin/services/is-admin.service'
 
 const EMPTY_STATS: AdminStats = {
@@ -56,4 +60,10 @@ export const fetchAdminFeedback = cache(() =>
 
 export const fetchAdminLogs = cache(() =>
     Effect.runPromise(getAdminLogs().pipe(Effect.catchAll(() => Effect.succeed([] as AdminLog[]))))
+)
+
+export const fetchAdminStockData = cache(() =>
+    Effect.runPromise(
+        getAdminStockData().pipe(Effect.catchAll(() => Effect.succeed([] as AdminStockData[])))
+    )
 )

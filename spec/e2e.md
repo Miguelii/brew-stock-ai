@@ -193,6 +193,12 @@ These intercept **browser-side** calls only. Server-side tRPC calls (from RSC vi
 | `mockCreateCheckoutSession` | `credits.createCheckoutSession` |
 | `mockGetInvoices`           | `credits.getInvoices`           |
 
+### Remote images
+
+**File:** `e2e/support/mock-images.ts`
+
+The report news card renders the featured photo with `next/image`, so the browser requests `/_next/image?url=https://...` and the Next.js process would then download the real photo. `mockRemoteImages(page)` fulfills those requests (remote `url` only, local `/assets/**` images are untouched) with a 1x1 PNG. Every spec that opens the report page (`03`, `04`, `05`) registers it.
+
 ---
 
 ## Selectors
@@ -206,7 +212,7 @@ Rules for locating elements in specs:
 - When a component renders **responsive variants** (e.g. the section nav's desktop row + mobile dropdown), give each variant a distinct testid (`nav-<id>` vs `nav-mobile-<id>`) so a single `getByTestId` never matches two elements (Playwright strict mode).
 - **Testids reused across specs (or repeated) are encapsulated in Page Objects under `e2e/pos/*.po.ts`; specs never hardcode testid strings.** Each Page Object receives `page: Page` and exposes locators (via `getByTestId`) plus small navigation/action helpers; assertions stay in the specs.
 
-Existing test ids: `email-input`, `sign-in-button`, `otp-input`, `auth-title`, `confirm-otp-button`, `use-different-email-button` (auth); `ticker-input`, `analysis-type-select`, `analysis-type-option`, `generate-report-button`, `report-created-toast` (analysis form); `report-ticker-heading`, `report-type-badge`, `report-section-<id>`, `nav-<id>` / `nav-mobile-<id>`, `sentiment-score`, `export-pdf-button` (report view); `token-package-<id>`, `buy-now-button`, `token-balance`, `payment-success-banner`, `payment-canceled-banner`, `pending-payment-banner`, `pending-payment-amount`, `pending-payment-description` (tokens).
+Existing test ids: `email-input`, `sign-in-button`, `otp-input`, `auth-title`, `confirm-otp-button`, `use-different-email-button` (auth); `ticker-input`, `analysis-type-select`, `analysis-type-option`, `generate-report-button`, `report-created-toast` (analysis form); `report-ticker-heading`, `report-type-badge`, `report-section-<id>`, `nav-<id>` / `nav-mobile-<id>`, `sentiment-score`, `export-pdf-button`, `sig-dev-headline`, `sig-dev-calendar`, `sig-dev-empty`, `latest-news-card`, `latest-news-lead`, `latest-news-lead-headline`, `latest-news-lead-image`, `latest-news-lead-cover`, `latest-news-item`, `latest-news-item-headline`, `latest-news-empty`, `expert-report-item`, `expert-report-title`, `expert-report-summary`, `expert-reports-empty` (report view); `token-package-<id>`, `buy-now-button`, `token-balance`, `payment-success-banner`, `payment-canceled-banner`, `pending-payment-banner`, `pending-payment-amount`, `pending-payment-description` (tokens).
 
 ---
 
@@ -238,6 +244,7 @@ The most comprehensive suite. The report page is fully server-rendered using dat
 
 Tests cover:
 
+- Recent news: the Benzinga photo story is featured ahead of newer Yahoo items (placeholder logo only), followed by the four most recent headlines. `MOCK_NEWS_ITEMS` uses timestamps relative to `Date.now()` so the photo story stays inside the 7-day featured window
 - Stock ticker in heading
 - Report type badge
 - Section nav labels, by id: `overview` (Summary), `market-outlook` (Market & Analyst Outlook), `key-metrics` (Key Financial Metrics), `analysis` (Full Report), `sig-dev` (Happening Now), `media-mentions` (Expert Coverage), `sector-scores` (Sector Scores)
@@ -246,8 +253,8 @@ Tests cover:
 - Key Financial Metrics: metric groups (Growth, Profitability, Valuation, Financial Health)
 - Key Financial Metrics: fundamentals blocks (Next Quarter EPS, earnings vs estimates with beat/miss, revenue by year, insider activity)
 - AI Sentiment Score gauge
-- "What's Happening Now" (significant development)
-- "What Experts Are Saying" (analyst reports)
+- "What's Happening Now" (significant development): headline and the calendar tile for the event date
+- "What Experts Are Saying" (analyst reports): one expandable row per report
 - "How It Compares" (sector scores)
 - Section nav scroll: clicking a label scrolls the corresponding section into view
 
@@ -378,7 +385,8 @@ e2e/
 │   ├── auth-state.json     # generated on each run, git-ignored
 │   └── mock-data.ts        # MOCK_REPORT, MOCK_STOCK_DATA, MOCK_NEWS_ITEMS, etc.
 ├── support/
-│   └── mock-trpc.ts        # page.route() helpers for each tRPC procedure
+│   ├── mock-trpc.ts        # page.route() helpers for each tRPC procedure
+│   └── mock-images.ts      # page.route() for remote /_next/image requests (news photos)
 ├── pos/                    # Page Objects: encapsulate data-testid locators per area
 │   ├── auth.po.ts
 │   ├── analysis-form.po.ts

@@ -121,38 +121,75 @@ export const MOCK_REPORT: ReportDTO = {
     ticker: MOCK_TICKER,
 }
 
+// Finnhub timestamps are relative to "now" so the photo story stays recent enough to be
+// featured (the selection ignores photo stories older than a week)
+const NEWS_NOW_SECONDS = Math.floor(Date.now() / 1000)
+const hoursAgo = (hours: number) => NEWS_NOW_SECONDS - hours * 60 * 60
+const YAHOO_PLACEHOLDER_IMAGE =
+    'https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png'
+
 export const MOCK_NEWS_ITEMS: NewsItem[] = [
     {
-        category: 'technology',
-        datetime: 1706745600,
+        category: 'company',
+        datetime: hoursAgo(2),
         headline: 'Apple Vision Pro launches to strong demand in US market',
         id: 1001,
-        image: 'https://example.com/img1.jpg',
-        source: 'Reuters',
+        image: YAHOO_PLACEHOLDER_IMAGE,
+        source: 'Yahoo',
         summary:
             'Apple Vision Pro headset went on sale with long queues outside Apple stores across the United States.',
-        url: 'https://reuters.com/test-1',
+        url: 'https://finance.yahoo.com/news/test-1',
     },
     {
-        category: 'technology',
-        datetime: 1706659200,
+        category: 'company',
+        datetime: hoursAgo(5),
         headline: 'Apple services revenue hits record $23.1B in Q1 2024',
         id: 1002,
-        image: 'https://example.com/img2.jpg',
-        source: 'Bloomberg',
+        image: YAHOO_PLACEHOLDER_IMAGE,
+        source: 'Yahoo',
         summary: "Apple's Services segment posted its highest-ever quarterly revenue.",
-        url: 'https://bloomberg.com/test-2',
+        url: 'https://finance.yahoo.com/news/test-2',
     },
     {
-        category: 'technology',
-        datetime: 1706572800,
+        category: 'company',
+        datetime: hoursAgo(26),
         headline: 'Warren Buffett increases Berkshire stake in Apple to 5.9%',
         id: 1003,
-        image: 'https://example.com/img3.jpg',
-        source: 'CNBC',
+        image: 'https://cdn.benzinga.com/files/images/story/2026/09/16/Apple-Store.jpg?width=2048&height=1536',
+        source: 'Benzinga',
         summary:
             "Berkshire Hathaway continued buying Apple shares in Q4, reinforcing Buffett's conviction in the tech giant.",
-        url: 'https://cnbc.com/test-3',
+        url: 'https://www.benzinga.com/news/test-3',
+    },
+    {
+        category: 'company',
+        datetime: hoursAgo(30),
+        headline: 'Analysts lift Apple price targets ahead of the iPhone cycle',
+        id: 1004,
+        image: YAHOO_PLACEHOLDER_IMAGE,
+        source: 'Yahoo',
+        summary: 'Several brokers raised their targets after checks pointed to firm demand.',
+        url: 'https://finance.yahoo.com/news/test-4',
+    },
+    {
+        category: 'company',
+        datetime: hoursAgo(40),
+        headline: 'Apple: the services flywheel keeps compounding',
+        id: 1005,
+        image: 'https://static.seekingalpha.com/assets/og_image_1200-29b2bfe1a595477db6826bd2126c63ac2091efb7ec76347a8e7f81ba17e3de6c.png',
+        source: 'SeekingAlpha',
+        summary: 'A look at how recurring revenue is reshaping the margin profile.',
+        url: 'https://seekingalpha.com/article/test-5',
+    },
+    {
+        category: 'company',
+        datetime: hoursAgo(50),
+        headline: 'Apple supplier shares slip on softer guidance',
+        id: 1006,
+        image: '',
+        source: 'Yahoo',
+        summary: 'A key component supplier trimmed its outlook for the quarter.',
+        url: 'https://finance.yahoo.com/news/test-6',
     },
 ]
 

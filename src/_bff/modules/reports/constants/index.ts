@@ -2,3 +2,5 @@
 // tag revalidation is unavailable) — keep the TTL short to bound staleness.
 export const STOCK_DATA_CACHE_KEY = 'stock-data'
 export const STOCK_DATA_CACHE_TTL = 60 * 60 // 1h in seconds (for unstable_cache)
+
+export const stockDataCacheTag = (ticker: string) => `${STOCK_DATA_CACHE_KEY}-${ticker}`

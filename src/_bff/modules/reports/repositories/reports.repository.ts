@@ -17,7 +17,11 @@ import {
 } from '@/types/ReportDTO'
 import type { SupabaseClient, User } from '@supabase/supabase-js'
 import { createDBAdminClient } from '@/_bff/core/db'
-import { STOCK_DATA_CACHE_KEY, STOCK_DATA_CACHE_TTL } from '@/_bff/modules/reports/constants'
+import {
+    STOCK_DATA_CACHE_KEY,
+    STOCK_DATA_CACHE_TTL,
+    stockDataCacheTag,
+} from '@/_bff/modules/reports/constants'
 import { unstable_cache } from 'next/cache'
 import { Logger } from '@/_bff/lib/server-logger'
 
@@ -222,7 +226,7 @@ export const selectStockDataByTickerCached = Effect.fn('selectStockDataByTickerC
                 [STOCK_DATA_CACHE_KEY, ticker],
                 {
                     revalidate: STOCK_DATA_CACHE_TTL,
-                    tags: [`${STOCK_DATA_CACHE_KEY}-${ticker}`],
+                    tags: [stockDataCacheTag(ticker)],
                 }
             )(),
         catch: (cause) => cause,

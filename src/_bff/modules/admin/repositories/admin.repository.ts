@@ -3,11 +3,17 @@ import {
     AdminStatsError,
     GetAdminFeedbackError,
     GetAdminLogsError,
+    GetAdminStockDataError,
     IsAdminError,
 } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { ReportStatus } from '@/types/ReportDTO'
+
+type AdminStockDataRow = {
+    id: string
+    last_update_at: string | null
+}
 
 export const checkIsAdmin = Effect.fn('checkIsAdmin')(function* (supabase: SupabaseClient) {
     const { data, error } = yield* Effect.tryPromise({
@@ -137,4 +143,27 @@ export const selectAdminLogs = Effect.fn('selectAdminLogs')(function* (supabase:
     }
 
     return data ?? []
+})
+
+export const selectAdminStockData = Effect.fn('selectAdminStockData')(function* (
+    supabase: SupabaseClient
+) {
+    const { data, error } = yield* Effect.tryPromise({
+        try: () =>
+            supabase
+                .from('stock_data')
+                .select('id, last_update_at')
+                .order('last_update_at', { ascending: true, nullsFirst: true }),
+        catch: (cause) =>
+            new GetAdminStockDataError({ cause, error_hash: ErrorCode.ADMIN_STOCK_DATA_FETCH }),
+    })
+
+    if (error) {
+        return yield* new GetAdminStockDataError({
+            cause: error,
+            error_hash: ErrorCode.ADMIN_STOCK_DATA_FETCH_ERR,
+        })
+    }
+
+    return (data ?? []) as AdminStockDataRow[]
 })

@@ -1,44 +1,40 @@
+import { FileTextIcon } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
 import type { StockReports } from '@/types/ReportDTO'
+import { ExpertReportItem } from '@/modules/report-view/report-media-mentions/expert-report-item'
 
 type Props = {
-    news: StockReports[]
+    reports: StockReports[]
 }
 
-export function ReportMediaMentions({ news }: Props) {
-    const parsedDate = (item: string) => item.split('T').at(0)
-
+export function ReportMediaMentions({ reports }: Props) {
     return (
-        <Card className="h-fit">
+        <Card className="h-fit gap-0 pb-0!">
             <CardHeader className="border-b-2 border-ink/8 pb-4">
                 <CardTitle className="display text-2xl">What Experts Are Saying</CardTitle>
                 <CardDescription className="text-xs text-ink/60">
                     Recent reports and research from professional investors and analysts
                 </CardDescription>
             </CardHeader>
-            <CardContent className="p-0 px-5">
-                {news.length === 0 ? (
-                    <p className="text-ink/60">
-                        Our engine couldn&apos;t find any recent analyst coverage.
-                    </p>
+
+            <CardContent>
+                {reports.length === 0 ? (
+                    <div
+                        data-testid="expert-reports-empty"
+                        className="flex flex-col items-center justify-center gap-2 py-8 text-center"
+                    >
+                        <FileTextIcon aria-hidden="true" className="size-6 text-ink/30" />
+                        <span className="text-xs text-ink/60">
+                            Our engine couldn&apos;t find any recent analyst coverage.
+                        </span>
+                    </div>
                 ) : (
                     <ul>
-                        {news.map((item, i) => (
-                            <li
-                                key={`${item.title}-${i}`}
-                                className={cn(
-                                    'not-first:py-4 first:pb-4 last:pb-0 not-last:border-b not-last:border-ink/10'
-                                )}
-                            >
-                                <p className="text-sm font-semibold text-ink leading-snug">
-                                    {item?.title}
-                                </p>
-                                <span className="text-xs text-ink mt-0.5">{item?.reportTitle}</span>
-                                <p className="text-xs text-ink/60 mt-2.5">
-                                    {item?.provider} · {parsedDate(item?.reportDate)}
-                                </p>
-                            </li>
+                        {reports.map((report, i) => (
+                            <ExpertReportItem
+                                key={`${report.provider}-${report.reportDate}-${i}`}
+                                report={report}
+                            />
                         ))}
                     </ul>
                 )}

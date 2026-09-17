@@ -10,6 +10,7 @@ import { AdminUsersSection } from '@/modules/admin/users/admin-users-section'
 import { AdminReportsSection } from '@/modules/admin/reports/admin-reports-section'
 import { AdminFeedbackSection } from '@/modules/admin/feedback/admin-feedback-section'
 import { AdminLogsSection } from '@/modules/admin/logs/admin-logs-section'
+import { AdminTickersSection } from '@/modules/admin/tickers/admin-tickers-section'
 import { SectionSkeleton } from '@/modules/admin/shared/section-skeleton'
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
@@ -49,6 +50,7 @@ export default async function SecureAdminPage() {
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="reports">Reports</TabsTrigger>
                         <TabsTrigger value="logs">Logs</TabsTrigger>
+                        <TabsTrigger value="tickers">Tickers</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="feedback">
@@ -72,6 +74,12 @@ export default async function SecureAdminPage() {
                     <TabsContent value="logs">
                         <Suspense fallback={<SectionSkeleton />}>
                             <AdminLogsSection />
+                        </Suspense>
+                    </TabsContent>
+
+                    <TabsContent value="tickers">
+                        <Suspense fallback={<SectionSkeleton />}>
+                            <AdminTickersSection />
                         </Suspense>
                     </TabsContent>
                 </Tabs>

@@ -369,6 +369,13 @@ hasPriceHistory, hasNews, hasYahooFreshData })` records cost, truncation and con
       true when Yahoo returned at least one field (`hasAnyStockData`).
 - Only fresh data is upserted back into `stock_data` (`saveFreshYahooData` → `saveYahooData`), in a
   background fiber. A failed upsert is logged and ignored.
+- Admins can refresh a stored ticker without running an analysis, from the **Tickers** tab of
+  `/config-app` (`admin.refreshStockData` → `refreshStockData` in
+  `src/_bff/modules/admin/services/refresh-stock-data.service.ts`). It runs the same
+  `getYahooDataWithFallbackService` → `saveYahooData` steps, fails instead of saving when nothing
+  came fresh from Yahoo, and then expires the report page cache for that ticker
+  (`revalidateStockDataCache`). That last step is only possible because it runs in the Next
+  runtime; the Trigger.dev pipeline still relies on the 1h `STOCK_DATA_CACHE_TTL`.
 - The `stock_data` row carries financials **and** fundamentals (column `fundamentals jsonb`).
   Missing columns read back as `null`, handled gracefully by the null-checks in
   `buildYahooContext`.

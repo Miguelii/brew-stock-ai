@@ -136,6 +136,10 @@ export enum ErrorCode {
     ADMIN_USER_CREDITS_FETCH_ERR = 'admn_ucerr',
     ADMIN_IS_ADMIN_SB_CLIENT = 'admn_iasbc',
     ADMIN_IS_ADMIN_RPC = 'admn_iarpc',
+    ADMIN_FORBIDDEN = 'admn_frbdn',
+    ADMIN_STOCK_DATA_FETCH = 'admn_sdfch',
+    ADMIN_STOCK_DATA_FETCH_ERR = 'admn_sderr',
+    ADMIN_REFRESH_STOCK_DATA_STALE = 'admn_rsdst',
 
     // Consent
     CONSENT_COOKIE_CREATE = 't1yj6r9b',

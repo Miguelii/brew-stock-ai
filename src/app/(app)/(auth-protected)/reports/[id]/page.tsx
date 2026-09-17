@@ -178,7 +178,7 @@ export default async function ReportsIdPage(props: Props) {
                                     id="media-mentions"
                                     data-testid="report-section-media-mentions"
                                 >
-                                    <ReportMediaMentions news={stockData?.reports ?? []} />
+                                    <ReportMediaMentions reports={stockData?.reports ?? []} />
                                 </section>
 
                                 <section

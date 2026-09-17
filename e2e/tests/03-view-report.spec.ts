@@ -154,6 +154,9 @@ test.describe('View report page', () => {
         const section = report.section('media-mentions')
         await expect(section).toContainText('What Experts Are Saying')
         await expect(section).toContainText('Goldman Sachs')
+
+        await expect(report.expertReportItems).toHaveCount(2)
+        await expect(report.expertReportItems.nth(1)).toContainText('Services segment accelerating')
     })
 
     test('"How It Compares" section is visible with plain labels', async ({ page }) => {

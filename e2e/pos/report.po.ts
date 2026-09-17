@@ -53,6 +53,10 @@ export class ReportPage {
         return this.page.getByTestId('latest-news-item-headline')
     }
 
+    get expertReportItems(): Locator {
+        return this.page.getByTestId('expert-report-item')
+    }
+
     nav(id: SectionId): Locator {
         return this.page.getByTestId(`nav-${id}`)
     }

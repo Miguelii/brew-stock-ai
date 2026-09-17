@@ -9,6 +9,7 @@ import {
     listUsers,
     selectAdminFeedback,
     selectAdminReports,
+    selectAdminStockData,
 } from '@/_bff/modules/admin/repositories/admin.repository'
 
 describe('countReports', () => {
@@ -121,5 +122,33 @@ describe('selectAdminFeedback', () => {
 
         const exit = await Effect.runPromiseExit(selectAdminFeedback(supabase))
         expect(failureTag(exit)).toBe('GetAdminFeedbackError')
+    })
+})
+
+describe('selectAdminStockData', () => {
+    const makeListChain = (result: { data: unknown; error: unknown }) => {
+        const order = vi.fn().mockResolvedValue(result)
+        const select = vi.fn(() => ({ order }))
+        return {
+            order,
+            select,
+            supabase: { from: () => ({ select }) } as unknown as SupabaseClient,
+        }
+    }
+
+    it('returns every stored ticker, least recently updated first', async () => {
+        const rows = [{ id: 'AAPL' }]
+        const { order, select, supabase } = makeListChain({ data: rows, error: null })
+
+        await expect(Effect.runPromise(selectAdminStockData(supabase))).resolves.toEqual(rows)
+        expect(select).toHaveBeenCalledWith('id, last_update_at')
+        expect(order).toHaveBeenCalledWith('last_update_at', { ascending: true, nullsFirst: true })
+    })
+
+    it('fails with GetAdminStockDataError when the query returns an error', async () => {
+        const { supabase } = makeListChain({ data: null, error: { message: 'boom' } })
+
+        const exit = await Effect.runPromiseExit(selectAdminStockData(supabase))
+        expect(failureTag(exit)).toBe('GetAdminStockDataError')
     })
 })

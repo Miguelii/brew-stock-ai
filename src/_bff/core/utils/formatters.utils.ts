@@ -95,3 +95,28 @@ export function formatDate(ts: number): string {
         year: 'numeric',
     })
 }
+
+/**
+ * Format an integer count with US-locale thousands separators (e.g. `12345 → "12,345"`).
+ *
+ * @param n - The count to format.
+ * @returns The localised count string, or `"N/A"` when nullish.
+ */
+export const fmtCount = (n: number | null | undefined): string =>
+    n == null ? 'N/A' : n.toLocaleString('en-US')
+
+/** Ratio as a signed percentage (e.g. `0.12 → "+12.0%"`), or `"N/A"` when nullish. */
+export const fmtSignedPct = (n: number | null | undefined): string =>
+    n == null ? 'N/A' : `${n > 0 ? '+' : ''}${fmtPct(n)}`
+
+/** Count with an explicit sign (e.g. `120000 → "+120,000"`), or `"N/A"` when nullish. */
+export const fmtSignedCount = (n: number | null | undefined): string =>
+    n == null ? 'N/A' : `${n > 0 ? '+' : ''}${fmtCount(n)}`
+
+/** Whole-number gap with an explicit plus sign (e.g. `45 → "+45"`, `-33 → "-33"`). */
+export const fmtDelta = (delta: number): string => (delta > 0 ? `+${delta}` : `${delta}`)
+
+// Cuts text to maxChars and appends "…" only when something was cut
+export function truncateText(text: string, maxChars: number): string {
+    return text.length > maxChars ? `${text.slice(0, maxChars)}…` : text
+}

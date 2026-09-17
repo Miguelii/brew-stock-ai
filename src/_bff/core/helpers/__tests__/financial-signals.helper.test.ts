@@ -3,6 +3,7 @@ import type { EarningsQuarter, StockFinancials } from '@/types/ReportDTO'
 import {
     getAnalystRatingsTotal,
     getEarningsBeat,
+    getEarningsBeatSummary,
     getInsiderSignal,
     getTargetUpsidePct,
 } from '@/_bff/core/helpers/financial-signals.helper'
@@ -68,5 +69,20 @@ describe('getAnalystRatingsTotal', () => {
                 strongSell: 0,
             })
         ).toBe(41)
+    })
+})
+
+describe('getEarningsBeatSummary', () => {
+    const result = (epsActual: number | null, epsEstimate: number | null) =>
+        ({ period: '-1q', quarter: null, epsActual, epsEstimate, surprisePercent: null }) as const
+
+    it('counts beats among the quarters that can be judged', () => {
+        expect(
+            getEarningsBeatSummary([result(2, 1), result(1, 2), result(null, 1), result(3, 3)])
+        ).toEqual({ beats: 2, graded: 3 })
+    })
+
+    it('is empty without history', () => {
+        expect(getEarningsBeatSummary([])).toEqual({ beats: 0, graded: 0 })
     })
 })

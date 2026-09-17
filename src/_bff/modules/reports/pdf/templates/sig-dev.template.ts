@@ -1,18 +1,33 @@
-import { fmtDate } from '@/_bff/core/utils/formatters.utils'
-import type { StockSigDev } from '@/types/ReportDTO'
 import { escapeHtml } from '@/_bff/modules/reports/pdf/helpers/escape-html.helper'
+import type { SigDevView } from '@/_bff/modules/reports/pdf/types'
 import { sectionTemplate } from '@/_bff/modules/reports/pdf/templates/section.template'
 
-/** "What's Happening Now": the most notable recent event. Empty when there is no headline. */
-export function sigDevTemplate(sigDev: StockSigDev | null | undefined): string {
-    if (!sigDev?.headline) return ''
+function calendarTemplate(calendar: NonNullable<SigDevView['calendar']>): string {
+    return `
+        <div class="calendar">
+            <div class="eyebrow" style="color:inherit;">${calendar.month}</div>
+            <div class="display calendar-day">${calendar.day}</div>
+            <div class="calendar-year">${calendar.year}</div>
+        </div>`
+}
 
-    const date = sigDev.date ? `<span class="sig-dev-date">${fmtDate(sigDev.date)}</span>` : ''
+/** "What's Happening Now": the most notable recent event. Empty when there is no headline. */
+export function sigDevTemplate(view: SigDevView | null): string {
+    if (!view) return ''
+
+    const age = view.age ? ` · ${view.age}` : ''
 
     return sectionTemplate({
         title: "What's Happening Now",
         subtitle: 'The most notable recent event our engine identified for this company',
-        body: `<p class="sig-dev-headline">${escapeHtml(sigDev.headline)}</p>
-        ${date}`,
+        isPaper: true,
+        body: `
+        <div class="sigdev">
+            ${view.calendar ? calendarTemplate(view.calendar) : ''}
+            <div>
+                <div class="eyebrow"><span class="dot"></span>Latest development${age}</div>
+                <div class="sigdev-headline">${escapeHtml(view.headline)}</div>
+            </div>
+        </div>`,
     })
 }

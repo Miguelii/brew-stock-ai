@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-    formatEventAge,
-    getCalendarParts,
-    getDayDiff,
-} from '@/modules/report-view/report-sig-dev/utils'
+import { formatEventAge, getCalendarParts, getDayDiff } from '@/_bff/core/utils/event-dates.utils'
 
 describe('getDayDiff', () => {
     it('counts calendar days and ignores the time of day', () => {

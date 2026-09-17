@@ -2,11 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Hills } from '@/components/scene/hills'
 import { cn } from '@/lib/utils'
 import type { StockSigDev } from '@/types/ReportDTO'
-import {
-    formatEventAge,
-    getCalendarParts,
-    getDayDiff,
-} from '@/modules/report-view/report-sig-dev/utils'
+import { formatEventAge, getCalendarParts, getDayDiff } from '@/_bff/core/utils/event-dates.utils'
 
 type Props = {
     headline?: StockSigDev['headline']

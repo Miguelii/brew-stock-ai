@@ -112,6 +112,91 @@ describe('buildPdfHtml', () => {
         expect(html).not.toContain('How It Compares')
     })
 
+    it('renders the summary next to the sentiment gauge when the analysis has a thesis', () => {
+        const html = buildPdfHtml({
+            ...baseParams,
+            ai_response:
+                '<h2>Analysis</h2><p>Body.</p><h3>Investment Thesis Summary</h3><p>Buy the dip.</p>',
+        })
+        expect(html).toContain('Summary of what our engine found:')
+        expect(html).toContain('Buy the dip.')
+        expect(html).toContain('class="overview"')
+        expect(html).toContain('Sentiment Score')
+        expect(html).toContain('>BULLISH<')
+    })
+
+    it('gives the gauge the full width when there is no thesis', () => {
+        const html = buildPdfHtml(baseParams)
+        expect(html).not.toContain('Summary of what our engine found:')
+        expect(html).toContain('class="overview overview-single"')
+    })
+
+    it('labels the gauge with risk levels for risk analyses', () => {
+        const html = buildPdfHtml({
+            ...baseParams,
+            type: PropmptsEnum.RISK_ANALYSIS,
+            sentiment: 30,
+        })
+        expect(html).toContain('Risk Score')
+        expect(html).toContain('>HIGH RISK<')
+    })
+
+    it('shows the significant development with a date tile and its age at export time', () => {
+        const stockData: StockData = {
+            id: 'AAPL',
+            reports: null,
+            scores: null,
+            sig_dev: { headline: 'Apple announces new product', date: '2024-06-10T00:00:00Z' },
+            financials: null,
+            fundamentals: null,
+        }
+        const html = buildPdfHtml({ ...baseParams, stockData }, '2024-06-15T12:00:00Z')
+        expect(html).toContain('class="calendar"')
+        expect(html).toContain('>Jun<')
+        expect(html).toContain('>10<')
+        expect(html).toContain('Latest development · 5 days ago')
+    })
+
+    it('grades each sector score against the sector average', () => {
+        const stockData: StockData = {
+            id: 'AAPL',
+            reports: null,
+            scores: {
+                company: { innovativeness: 0.9, hiring: null, sustainability: 0.2 },
+                sector: { innovativeness: 0.5, hiring: 0.5, sustainability: 0.5 },
+            },
+            sig_dev: null,
+            financials: null,
+            fundamentals: null,
+        }
+        const html = buildPdfHtml({ ...baseParams, stockData })
+        expect(html).toContain('Well above sector')
+        expect(html).toContain('+40</strong> vs sector average (50)')
+        expect(html).toContain('No data')
+        expect(html).toContain('Well below sector')
+    })
+
+    it('shows expert report summaries and cuts the long ones', () => {
+        const stockData: StockData = {
+            id: 'AAPL',
+            reports: [
+                {
+                    title: 'Q3 Results',
+                    provider: 'Reuters',
+                    reportDate: '2024-06-12',
+                    reportTitle: 'x'.repeat(1300),
+                },
+            ],
+            scores: null,
+            sig_dev: null,
+            financials: null,
+            fundamentals: null,
+        }
+        const html = buildPdfHtml({ ...baseParams, stockData })
+        expect(html).toContain(`${'x'.repeat(1200)}…`)
+        expect(html).not.toContain('x'.repeat(1201))
+    })
+
     it('includes the brand wordmark in the header and footer', () => {
         const html = buildPdfHtml(baseParams)
         const wordmark = 'Brew<span class="brand-accent">Stock</span>'
@@ -159,7 +244,7 @@ describe('buildPdfHtml escaping and sanitization', () => {
         }
         const html = buildPdfHtml({ ...baseParams, stockData })
         expect(html).not.toContain('<script>')
-        expect(html).not.toContain('<svg')
+        expect(html).not.toContain('<svg onload')
         expect(html).not.toContain('onmouseover=x>')
         expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;Q3')
     })
@@ -239,8 +324,8 @@ describe('buildFinancialsSection', () => {
 
     it('renders category grade badges and per-metric verdicts', () => {
         const html = buildPdfHtml({ ...baseParams, stockData: withFinancials(baseFinancials) })
-        expect(html).toContain('fin-cat-card')
-        expect(html).toContain('fin-grade')
+        expect(html).toContain('score-letter')
+        expect(html).toContain('subhead-title')
         // baseFinancials.trailingPE = 30.4 → "Rich" verdict; profitMargins 0.253 → "Strong margin".
         expect(html).toContain('Rich')
         expect(html).toContain('Strong margin')
@@ -398,13 +483,16 @@ describe('buildPdfHtml fundamentals section', () => {
         // Analyst recommendations stay in the Market & Analyst Outlook section.
         expect(html).toContain('Analyst recommendations (41)')
         expect(html).toContain('Strong Buy')
-        // Forward estimates & revenue trend now render as rows inside the Growth card.
+        // Forward estimates render as tiles and the revenue trend as a yearly bar chart.
         expect(html).toContain('Next Quarter EPS')
-        expect(html).toContain('Net Income 2023')
+        expect(html).toContain('+10.0% growth')
+        expect(html).toContain('Revenue and net income by year')
+        expect(html).toContain('Net $95.00B')
         expect(html).toContain('Earnings vs estimates')
-        expect(html).toContain('Beat')
+        expect(html).toContain('Beat 1 of 1')
         expect(html).toContain('Insider activity')
         expect(html).toContain('Net selling')
+        expect(html).toContain('-50,000')
     })
 
     it('omits the section entirely when both financials and fundamentals are null', () => {

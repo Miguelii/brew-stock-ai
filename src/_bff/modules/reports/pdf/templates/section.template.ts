@@ -3,18 +3,20 @@ type Props = {
     title: string
     subtitle?: string
     body: string
+    // Cream background, used for the sections the page highlights
+    isPaper?: boolean
 }
 
-/** Bordered report section. Without a subtitle, the title carries the spacing itself. */
-export function sectionTemplate({ title, subtitle, body }: Props): string {
-    const heading = subtitle
-        ? `<div class="extra-section-title">${title}</div>
-        <div class="extra-section-subtitle">${subtitle}</div>`
-        : `<div class="extra-section-title" style="margin-bottom: 14px;">${title}</div>`
+/** Report section card: display title with the page's thick heading rule. */
+export function sectionTemplate({ title, subtitle, body, isPaper = false }: Props): string {
+    const subtitleHtml = subtitle ? `<div class="section-subtitle">${subtitle}</div>` : ''
 
     return `
-    <div class="extra-section">
-        ${heading}
+    <div class="section${isPaper ? ' section-paper' : ''}">
+        <div class="section-head">
+            <div class="display section-title">${title}</div>
+            ${subtitleHtml}
+        </div>
         ${body}
     </div>`
 }

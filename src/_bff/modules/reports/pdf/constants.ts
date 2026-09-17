@@ -20,6 +20,12 @@ export const PDF_COLORS = {
     border: '#e3ddd1',
     rowDivider: '#efeae0',
     surface: '#fafafa',
+    paper: '#f7f4ee',
+    navy: '#10245c',
+    amber: '#f5b02c',
+    amberSoft: '#fff0cc',
+    amberDeep: '#8a4b08',
+    headingRule: 'rgba(23,24,28,0.08)',
 } as const
 
 // Brand wordmark: "Stock" in brand blue, same as the site's BrandName component
@@ -43,6 +49,20 @@ export const METRIC_TONE_HEX: Record<MetricTone, string> = {
     ...QUALITY_HEX,
     na: PDF_COLORS.muted,
     plain: PDF_COLORS.ink,
+}
+
+// Solid bar fills for the grade scoreboard
+export const QUALITY_FILL_HEX: Record<MetricQuality, string> = {
+    good: PDF_COLORS.positive,
+    neutral: 'rgba(23,24,28,0.4)',
+    caution: PDF_COLORS.caution,
+    concern: PDF_COLORS.negative,
+}
+
+export const SIGNAL_BG_HEX: Record<SignalTone, string> = {
+    positive: QUALITY_BG_HEX.good,
+    negative: QUALITY_BG_HEX.concern,
+    neutral: QUALITY_BG_HEX.neutral,
 }
 
 export const SIGNAL_HEX: Record<SignalTone, string> = {

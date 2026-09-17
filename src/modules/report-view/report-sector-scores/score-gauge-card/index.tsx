@@ -1,8 +1,8 @@
 import { cn } from '@/lib/utils'
 import type { SignalTone } from '@/_bff/core/helpers/financial-signals.helper'
-import type { SectorScore } from '@/modules/report-view/report-sector-scores/hooks/use-sector-scores'
+import type { SectorScore } from '@/types/SectorScore'
 import { ScoreGauge } from '@/modules/report-view/report-sector-scores/score-gauge'
-import { fmtDelta } from '@/modules/report-view/report-sector-scores/utils'
+import { fmtDelta } from '@/_bff/core/utils/formatters.utils'
 
 type Props = {
     score: SectorScore

@@ -1,8 +1,7 @@
 import { ChevronDownIcon } from 'lucide-react'
 import type { StockReports } from '@/types/ReportDTO'
-import { fmtDate } from '@/_bff/core/utils/formatters.utils'
-import { EXPERT_REPORT_SUMMARY_MAX_CHARS } from '@/modules/report-view/report-media-mentions/constants'
-import { truncateText } from '@/modules/report-view/report-media-mentions/utils'
+import { EXPERT_REPORT_SUMMARY_MAX_CHARS } from '@/_bff/core/constants/expert-reports.constants'
+import { fmtDate, truncateText } from '@/_bff/core/utils/formatters.utils'
 
 type Props = {
     report: StockReports

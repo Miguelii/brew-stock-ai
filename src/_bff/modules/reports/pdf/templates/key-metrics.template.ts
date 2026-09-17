@@ -1,100 +1,207 @@
-import { fmtNum, fmtPct } from '@/_bff/core/utils/formatters.utils'
+import {
+    fmtDate,
+    fmtLarge,
+    fmtNum,
+    fmtPct,
+    fmtSignedCount,
+} from '@/_bff/core/utils/formatters.utils'
 import type { StockFinancials, StockFundamentals } from '@/types/ReportDTO'
 import type { MetricTile } from '@/types/MetricTile'
+import type { FinancialCategory } from '@/types/FinancialCategory'
 import {
-    getGrowth,
-    getHealth,
-    getProfitability,
-    getValuation,
-} from '@/_bff/core/helpers/metric-builders.helper'
+    getFinancialCategories,
+    getForwardEstimateTiles,
+} from '@/_bff/core/helpers/financial-categories.helper'
 import {
     getMetricRowState,
     gradeCategory,
     gradeWord,
 } from '@/_bff/core/helpers/metric-quality.helper'
-import { getEarningsBeat, getInsiderSignal } from '@/_bff/core/helpers/financial-signals.helper'
+import {
+    getEarningsBeat,
+    getEarningsBeatSummary,
+    getInsiderSignal,
+} from '@/_bff/core/helpers/financial-signals.helper'
+import { getRevenueChartPoints } from '@/_bff/core/helpers/revenue-trend.helper'
 import {
     METRIC_TONE_HEX,
     PDF_COLORS,
     QUALITY_BG_HEX,
+    QUALITY_FILL_HEX,
     QUALITY_HEX,
+    SIGNAL_BG_HEX,
     SIGNAL_HEX,
 } from '@/_bff/modules/reports/pdf/constants'
 import { escapeHtml } from '@/_bff/modules/reports/pdf/helpers/escape-html.helper'
 import { sectionTemplate } from '@/_bff/modules/reports/pdf/templates/section.template'
 
-// Mirrors the on-screen ReportFinancialsCard: graded category cards, then the earnings and
-// insider blocks. Grading and signals come from the same helpers the page uses.
+type Grade = ReturnType<typeof gradeCategory>
 
-function metricRowTemplate(metric: MetricTile): string {
-    const { help, verdict, tone } = getMetricRowState(metric)
-    const color = METRIC_TONE_HEX[tone]
+// Same structure as the on-screen ReportFinancialsCard: grade scoreboard, one block of number
+// tiles per category, then earnings and insiders. Grading comes from the shared helpers.
 
-    const helpHtml = help ? `<div class="fin-metric-help">${escapeHtml(help)}</div>` : ''
-    const verdictHtml =
-        verdict == null
-            ? ''
-            : `<div class="fin-metric-verdict" style="color:${color};">${escapeHtml(verdict)}</div>`
+function gradePillTemplate(grade: Grade): string {
+    if (!grade) return ''
 
-    return `
-    <div class="fin-metric-row">
-        <div class="fin-metric-main">
-            <div class="fin-metric-label">${escapeHtml(metric.label)}</div>
-            ${helpHtml}
-        </div>
-        <div class="fin-metric-side">
-            <div class="fin-metric-value" style="color:${color};">${escapeHtml(metric.value)}</div>
-            ${verdictHtml}
-        </div>
-    </div>`
+    return `<span class="pill" style="background:${QUALITY_BG_HEX[grade.quality]};color:${QUALITY_HEX[grade.quality]};"><span class="display" style="font-size:14px;">${grade.letter}</span> ${gradeWord(grade.quality)}</span>`
 }
 
-function categoryCardTemplate(title: string, question: string, metrics: MetricTile[]): string {
-    const grade = gradeCategory(metrics)
+function scoreBoardTemplate(categories: FinancialCategory[], grades: Grade[]): string {
+    const tiles = categories
+        .map((c, i) => {
+            const grade = grades[i] ?? null
 
-    const badge = grade
-        ? `<div class="fin-grade" style="background:${QUALITY_BG_HEX[grade.quality]};color:${QUALITY_HEX[grade.quality]};">
-               <span class="fin-grade-letter">${grade.letter}</span>
-               <span class="fin-grade-word">${gradeWord(grade.quality)}</span>
-           </div>`
-        : ''
+            const score = grade
+                ? `
+            <div class="score-row">
+                <div class="bar-track"><div class="bar-fill" style="width:${grade.score.toFixed(0)}%;background:${QUALITY_FILL_HEX[grade.quality]};"></div></div>
+                <span class="small muted">${Math.round(grade.score)}</span>
+            </div>`
+                : ''
+
+            return `
+        <div class="tile">
+            <span class="eyebrow">${escapeHtml(c.title)}</span>
+            <div style="margin-top:6px;">
+                <span class="display score-letter" style="color:${grade ? QUALITY_HEX[grade.quality] : PDF_COLORS.faint};">${grade?.letter ?? 'N/A'}</span>
+                <span style="font-size:11px;font-weight:700;margin-left:4px;">${grade ? gradeWord(grade.quality) : 'No data'}</span>
+            </div>
+            ${score}
+        </div>`
+        })
+        .join('')
+
+    return `<div class="grid-4">${tiles}</div>`
+}
+
+function metricTileTemplate(metric: MetricTile, detail?: string): string {
+    const { help, verdict, tone } = getMetricRowState(metric)
+    const valueColor = tone === 'na' ? PDF_COLORS.faint : PDF_COLORS.ink
+
+    const helpHtml = help ? `<span class="tile-help">${escapeHtml(help)}</span>` : ''
+    const detailHtml = detail ? `<span class="tile-detail">${escapeHtml(detail)}</span>` : ''
+    const verdictHtml =
+        verdict == null || tone === 'na' || tone === 'plain'
+            ? ''
+            : `<span class="pill" style="background:${QUALITY_BG_HEX[tone]};color:${METRIC_TONE_HEX[tone]};">${escapeHtml(verdict)}</span>`
 
     return `
-    <div class="fin-cat-card">
-        <div class="fin-cat-head">
-            <div class="fin-cat-heading">
-                <span class="fin-cat-title">${escapeHtml(title)}</span>
-                <span class="fin-cat-question">${escapeHtml(question)}</span>
+        <div class="tile">
+            <span class="eyebrow tile-label">${escapeHtml(metric.label)}</span>
+            ${helpHtml}
+            <span class="display tile-value" style="color:${valueColor};">${escapeHtml(metric.value)}</span>
+            ${detailHtml}
+            ${verdictHtml}
+        </div>`
+}
+
+function contextStripTemplate(context: MetricTile[]): string {
+    if (context.length === 0) return ''
+
+    const items = context
+        .map(
+            ({ label, value }) =>
+                `<span><span class="muted">${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></span>`
+        )
+        .join('')
+
+    return `<div class="context-strip">${items}</div>`
+}
+
+function revenueChartTemplate(trend: StockFundamentals['revenueTrend']): string {
+    const points = getRevenueChartPoints(trend)
+
+    if (points.length === 0) return ''
+
+    const columns = points
+        .map(
+            (p) => `
+        <div class="rev-col">
+            <div class="rev-plot">
+                <div class="rev-value" style="bottom:calc(${p.barPct.toFixed(1)}% + 3px);">${fmtLarge(p.revenue)}</div>
+                <div class="rev-bar" style="height:${p.barPct.toFixed(1)}%;background:${p.isLatest ? PDF_COLORS.blue : '#bfd0f2'};"></div>
             </div>
-            ${badge}
+            <div class="eyebrow" style="color:${PDF_COLORS.ink};margin-top:5px;">${p.year}</div>
+            <div class="small" style="color:${p.incomeQuality ? QUALITY_HEX[p.incomeQuality] : PDF_COLORS.muted};">Net ${fmtLarge(p.netIncome)}</div>
+        </div>`
+        )
+        .join('')
+
+    return `
+    <div class="eyebrow" style="margin-top:14px;">Revenue and net income by year</div>
+    <div class="rev-chart">${columns}</div>`
+}
+
+function growthExtrasTemplate(fundamentals: StockFundamentals | null): string {
+    if (!fundamentals) return ''
+
+    const estimates = getForwardEstimateTiles(fundamentals.forwardEstimates)
+    const estimatesHtml =
+        estimates.length > 0
+            ? `
+    <div class="eyebrow" style="margin-top:14px;margin-bottom:8px;">Analyst estimates</div>
+    <div class="grid-auto">${estimates.map(({ metric, detail }) => metricTileTemplate(metric, detail)).join('')}</div>`
+            : ''
+
+    return estimatesHtml + revenueChartTemplate(fundamentals.revenueTrend)
+}
+
+function categoryTemplate(
+    category: FinancialCategory,
+    grade: Grade,
+    fundamentals: StockFundamentals | null
+): string {
+    const tiles =
+        category.tiles.length > 0
+            ? `<div class="grid-auto">${category.tiles.map((m) => metricTileTemplate(m)).join('')}</div>`
+            : ''
+
+    return `
+    <div class="subsection">
+        <div class="subhead">
+            <div>
+                <div class="display subhead-title">${escapeHtml(category.title)}</div>
+                <div class="small muted">${escapeHtml(category.question)}</div>
+            </div>
+            ${gradePillTemplate(grade)}
         </div>
-        <div class="fin-cat-rows">${metrics.map((metric) => metricRowTemplate(metric)).join('')}</div>
+        ${tiles}
+        ${contextStripTemplate(category.context)}
+        ${category.id === 'growth' ? growthExtrasTemplate(fundamentals) : ''}
     </div>`
 }
 
 function earningsHistoryTemplate(history: StockFundamentals['earningsHistory']): string {
     if (history.length === 0) return ''
 
-    const rows = history
-        .map((quarter) => {
-            const beat = getEarningsBeat(quarter)
+    const { beats, graded } = getEarningsBeatSummary(history)
+
+    const tiles = history
+        .map((q) => {
+            const beat = getEarningsBeat(q)
+            const tone = beat ? 'positive' : 'negative'
             const badge =
                 beat == null
                     ? ''
-                    : `<span style="font-weight:600;color:${SIGNAL_HEX[beat ? 'positive' : 'negative']};">${beat ? 'Beat' : 'Miss'} ${fmtPct(quarter.surprisePercent)}</span>`
+                    : `<span class="pill" style="background:${SIGNAL_BG_HEX[tone]};color:${SIGNAL_HEX[tone]};">${beat ? 'Beat' : 'Miss'} ${fmtPct(q.surprisePercent)}</span>`
 
             return `
-            <div class="fin-block-row fin-block-row-sep">
-                <span style="color:${PDF_COLORS.muted};">${escapeHtml(quarter.quarter ?? quarter.period)}</span>
-                <span style="color:${PDF_COLORS.ink};">Act ${fmtNum(quarter.epsActual)} / Est ${fmtNum(quarter.epsEstimate)} &nbsp; ${badge}</span>
-            </div>`
+        <div class="tile">
+            <span class="eyebrow tile-label">${escapeHtml(q.quarter ? fmtDate(q.quarter, 'short') : q.period)}</span>
+            <span class="display tile-value" style="color:${q.epsActual == null ? PDF_COLORS.faint : PDF_COLORS.ink};">${fmtNum(q.epsActual)}</span>
+            <span class="tile-detail">EPS · est. ${fmtNum(q.epsEstimate)}</span>
+            ${badge}
+        </div>`
         })
         .join('')
 
     return `
-    <div class="fin-block">
-        <div class="fin-block-title">Earnings vs estimates</div>
-        ${rows}
+    <div class="subsection">
+        <div class="subhead">
+            <div class="display subhead-title">Earnings vs estimates</div>
+            ${graded > 0 ? `<span class="small muted">Beat ${beats} of ${graded}</span>` : ''}
+        </div>
+        <div class="grid-auto">${tiles}</div>
     </div>`
 }
 
@@ -104,31 +211,50 @@ function insiderActivityTemplate(insiders: StockFundamentals['insiders']): strin
     const signal = getInsiderSignal(insiders.netShares)
 
     return `
-    <div class="fin-block">
-        <div class="fin-block-title">Insider activity</div>
-        <div class="fin-block-row">
-            <span style="color:${PDF_COLORS.muted};">${insiders.buyCount} buys / ${insiders.sellCount} sells</span>
-            <span style="font-weight:600;color:${SIGNAL_HEX[signal.tone]};">${signal.label} (${fmtNum(insiders.netShares, 0)} shares)</span>
+    <div class="subsection">
+        <div class="subhead"><div class="display subhead-title">Insider activity</div></div>
+        <div class="tile">
+            <span class="eyebrow tile-label">Net shares traded</span>
+            <span class="display tile-value" style="color:${signal.tone === 'neutral' ? PDF_COLORS.ink : SIGNAL_HEX[signal.tone]};">${fmtSignedCount(insiders.netShares)}</span>
+            <span class="pill" style="background:${SIGNAL_BG_HEX[signal.tone]};color:${SIGNAL_HEX[signal.tone]};">${signal.label}</span>
+            <span class="tile-detail" style="margin-top:10px;">Shares bought minus shares sold.</span>
         </div>
     </div>`
 }
 
-/** "Key Financial Metrics": four graded categories plus earnings and insiders. Empty without data. */
+function trackRecordTemplate(fundamentals: StockFundamentals | null): string {
+    if (!fundamentals) return ''
+
+    const earnings = earningsHistoryTemplate(fundamentals.earningsHistory)
+    const insiders = insiderActivityTemplate(fundamentals.insiders)
+
+    if (!earnings && !insiders) return ''
+
+    return `
+    <div class="track-record${earnings && insiders ? '' : ' track-record-single'}">
+        ${earnings}
+        ${insiders}
+    </div>`
+}
+
+/** "Key Financial Metrics": grade scoreboard, four categories, earnings and insiders. Empty without data. */
 export function keyMetricsTemplate(
     financials: StockFinancials | null,
     fundamentals: StockFundamentals | null
 ): string {
     if (!financials && !fundamentals) return ''
 
-    const body = `
-    <div class="fin-cat-grid">
-        ${categoryCardTemplate('Valuation', 'Cheap or expensive?', getValuation(financials))}
-        ${categoryCardTemplate('Profitability', 'Does it make good money?', getProfitability(financials))}
-        ${categoryCardTemplate('Financial Health', 'Can it cover its debts?', getHealth(financials))}
-    </div>
-    ${categoryCardTemplate('Growth', 'Is it growing?', getGrowth(financials, fundamentals))}
-    ${fundamentals ? earningsHistoryTemplate(fundamentals.earningsHistory) : ''}
-    ${fundamentals ? insiderActivityTemplate(fundamentals.insiders) : ''}`
+    const categories = getFinancialCategories(financials, fundamentals)
+    const grades = categories.map((c) => gradeCategory(c.metrics))
 
-    return sectionTemplate({ title: 'Key Financial Metrics', body })
+    const body = `
+    ${scoreBoardTemplate(categories, grades)}
+    ${categories.map((c, i) => categoryTemplate(c, grades[i] ?? null, fundamentals)).join('')}
+    ${trackRecordTemplate(fundamentals)}`
+
+    return sectionTemplate({
+        title: 'Key Financial Metrics',
+        subtitle: 'How the company scores on price, profits, balance sheet and growth',
+        body,
+    })
 }

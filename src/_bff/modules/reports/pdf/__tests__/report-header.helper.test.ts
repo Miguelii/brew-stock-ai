@@ -13,6 +13,7 @@ describe('getReportHeader', () => {
             getReportHeader({ type: PropmptsEnum.STOCK_ANALYSIS, sentiment: 72, created_at })
         ).toEqual({
             date: 'June 15, 2024',
+            isRiskAnalysis: false,
             reportLabel: 'Full Wall Street Style Stock Analysis',
             sentimentTitle: 'Sentiment',
             sentimentLabel: label,
@@ -26,6 +27,7 @@ describe('getReportHeader', () => {
         expect(
             getReportHeader({ type: PropmptsEnum.RISK_ANALYSIS, sentiment: 30, created_at })
         ).toMatchObject({
+            isRiskAnalysis: true,
             sentimentTitle: 'Risk Level',
             sentimentLabel: label,
             sentimentColor: color,

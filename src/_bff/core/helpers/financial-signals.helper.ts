@@ -2,6 +2,11 @@ import type { AnalystRatings, EarningsQuarter, StockFinancials } from '@/types/R
 
 export type SignalTone = 'positive' | 'negative' | 'neutral'
 
+type EarningsBeatSummary = {
+    beats: number
+    graded: number
+}
+
 type InsiderSignal = {
     label: 'Net buying' | 'Net selling' | 'Roughly neutral'
     tone: SignalTone
@@ -39,4 +44,11 @@ export function getEarningsBeat(quarter: EarningsQuarter): boolean | null {
 /** Number of analysts across every recommendation bucket. */
 export function getAnalystRatingsTotal(ratings: AnalystRatings): number {
     return ratings.strongBuy + ratings.buy + ratings.hold + ratings.sell + ratings.strongSell
+}
+
+/** How many quarters beat the estimate, out of the quarters that can be judged. */
+export function getEarningsBeatSummary(history: EarningsQuarter[]): EarningsBeatSummary {
+    const results = history.map((q) => getEarningsBeat(q)).filter((beat) => beat !== null)
+
+    return { beats: results.filter(Boolean).length, graded: results.length }
 }

@@ -3,7 +3,7 @@ import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { createReport } from '@/_bff/modules/reports/services/create-report.service'
 import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/_bff/modules/analysis/constants'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const {
     createDBServerClientMock,

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { ReportStatus } from '@/types/ReportDTO'
-import { failureTag, asClient } from '@/_bff/__tests__/utils'
+import { failureTag, asClient } from '@/_bff/lib/tests-utils'
 import {
     insertReport,
     markReportFailed,

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { sendToSubscriptions } from '@/_bff/modules/core/processors/send-to-subscriptions.processor'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { sendNotificationMock } = vi.hoisted(() => ({ sendNotificationMock: vi.fn() }))
 

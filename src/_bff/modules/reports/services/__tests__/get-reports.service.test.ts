@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { getReports } from '@/_bff/modules/reports/services/get-reports.service'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { createDBServerClientMock, selectUserReportsMock } = vi.hoisted(() => ({
     createDBServerClientMock: vi.fn(),

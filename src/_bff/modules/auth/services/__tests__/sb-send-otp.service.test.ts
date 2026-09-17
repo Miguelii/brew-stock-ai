@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { sbSendOtp } from '@/_bff/modules/auth/services/sb-send-otp.service'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { createDBServerClientMock } = vi.hoisted(() => ({ createDBServerClientMock: vi.fn() }))
 

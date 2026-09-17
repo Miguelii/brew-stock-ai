@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { refreshStockData } from '@/_bff/modules/admin/services/refresh-stock-data.service'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
 
 const {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { getCachedPriceHistoryService } from '@/_bff/modules/yahoo/services/get-cached-price-history.service'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { fetchHistoryCachedMock } = vi.hoisted(() => ({ fetchHistoryCachedMock: vi.fn() }))
 

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { deductCredit } from '@/_bff/modules/credits/services/deduct-credit.service'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 // The processor only reaches createDBServerClient when no client is passed;
 // every test passes one, so the env-validating module is mocked away.

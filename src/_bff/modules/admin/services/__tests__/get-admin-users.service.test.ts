@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { getAdminUsers } from '@/_bff/modules/admin/services/get-admin-users.service'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { createDBAdminClientMock, isAdminMock, listUsersMock, selectAllUserCreditsMock } =
     vi.hoisted(() => ({

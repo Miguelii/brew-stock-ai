@@ -3,7 +3,7 @@ import { Effect } from 'effect'
 import type { User } from '@supabase/supabase-js'
 import { createCheckoutSession } from '@/_bff/modules/credits/services/create-checkout-session.service'
 import { TOKEN_PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const {
     createDBServerClientMock,

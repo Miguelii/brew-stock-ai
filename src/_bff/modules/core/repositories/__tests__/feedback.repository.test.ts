@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { Effect } from 'effect'
 import { insertFeedback } from '@/_bff/modules/core/repositories/feedback.repository'
-import { failureTag, asClient } from '@/_bff/__tests__/utils'
+import { failureTag, asClient } from '@/_bff/lib/tests-utils'
 
 describe('insertFeedback', () => {
     it('inserts the feedback with the user id when present', async () => {

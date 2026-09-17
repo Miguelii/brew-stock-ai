@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { getLatestNews } from '@/_bff/modules/finnhub/services/get-latest-news-cached.service'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { fetchLatestNewsCachedMock, serverEnvMock } = vi.hoisted(() => ({
     fetchLatestNewsCachedMock: vi.fn(),

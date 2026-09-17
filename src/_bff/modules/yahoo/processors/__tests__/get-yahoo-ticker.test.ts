@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { getYahooTicker } from '@/_bff/modules/yahoo/processors/get-yahoo-ticker.processor'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { searchMock } = vi.hoisted(() => ({ searchMock: vi.fn() }))
 

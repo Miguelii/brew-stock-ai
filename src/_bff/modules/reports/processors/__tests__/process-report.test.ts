@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { processReport } from '@/_bff/modules/reports/processors/process-report.processor'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { createDBAdminClientMock, getStockAnalysisMock, sendPushMock } = vi.hoisted(() => ({
     createDBAdminClientMock: vi.fn(),

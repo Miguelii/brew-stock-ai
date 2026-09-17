@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { getAdminStats } from '@/_bff/modules/admin/services/get-admin-stats.service'
 import { ReportStatus } from '@/types/ReportDTO'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 const { createDBAdminClientMock, isAdminMock, countReportsMock, countUsersMock } = vi.hoisted(
     () => ({

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { ReportStatus } from '@/types/ReportDTO'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 import {
     countReports,
     countUsers,

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { Effect } from 'effect'
-import { failureTag, asClient } from '@/_bff/__tests__/utils'
+import { failureTag, asClient } from '@/_bff/lib/tests-utils'
 import {
     deletePushSubscription,
     selectPushSubscriptions,

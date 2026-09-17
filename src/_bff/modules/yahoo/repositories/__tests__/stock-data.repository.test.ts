@@ -6,7 +6,7 @@ import {
     upsertStockData,
 } from '@/_bff/modules/yahoo/repositories/stock-data.repository'
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
-import { failureTag } from '@/_bff/__tests__/utils'
+import { failureTag } from '@/_bff/lib/tests-utils'
 
 vi.mock('@trigger.dev/sdk', () => ({ logger: { log: vi.fn() } }))
 

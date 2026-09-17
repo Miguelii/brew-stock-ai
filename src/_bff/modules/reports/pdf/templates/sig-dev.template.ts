@@ -21,6 +21,7 @@ export function sigDevTemplate(view: SigDevView | null): string {
         title: "What's Happening Now",
         subtitle: 'The most notable recent event our engine identified for this company',
         isPaper: true,
+        isCompact: true,
         body: `
         <div class="sigdev">
             ${view.calendar ? calendarTemplate(view.calendar) : ''}

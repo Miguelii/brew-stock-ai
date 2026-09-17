@@ -19,8 +19,8 @@ export function AuthLayout({ children }: Props) {
                     </span>
                     <blockquote className="text-2xl font-medium text-background leading-snug">
                         I used to spend hours reading earnings calls and analyst reports.{' '}
-                        <BrandName /> gives me the same depth in minutes, for less than my morning
-                        coffee.
+                        <BrandName className="text-background font-semibold" /> gives me the same
+                        depth in minutes, for less than my morning coffee.
                     </blockquote>
                     <div className="mt-8 flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-accent-blue-dark flex items-center justify-center text-background text-sm font-bold shrink-0">

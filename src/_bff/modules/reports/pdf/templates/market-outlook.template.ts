@@ -118,5 +118,6 @@ export function marketOutlookTemplate(
     return sectionTemplate({
         title: 'Market &amp; Analyst Outlook',
         body: priceAndTargets + ratings,
+        isCompact: true,
     })
 }

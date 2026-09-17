@@ -23,10 +23,12 @@ function reportItemTemplate(item: StockReports): string {
 export function expertCoverageTemplate(reports: StockReports[] | null | undefined): string {
     if (!reports?.length) return ''
 
+    const [first, ...rest] = reports.map((item) => reportItemTemplate(item))
+
     return sectionTemplate({
         title: 'What Experts Are Saying',
         subtitle: 'Recent reports and research from professional investors and analysts',
-        body: `<ul class="expert-list">${reports.map((item) => reportItemTemplate(item)).join('')}
-        </ul>`,
+        lead: `<ul class="expert-list">${first}</ul>`,
+        body: rest.length > 0 ? `<ul class="expert-list">${rest.join('')}</ul>` : '',
     })
 }

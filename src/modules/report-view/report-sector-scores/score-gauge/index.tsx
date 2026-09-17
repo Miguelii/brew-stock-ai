@@ -17,8 +17,9 @@ export function ScoreGauge({ value, sector }: Props) {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={strokeWidth}
-                strokeLinecap="round"
-                strokeDasharray={value === null ? '1.5 4' : undefined}
+                // Round caps would swell short dashes into dots, so the no-data track stays square
+                strokeLinecap={value === null ? 'butt' : 'round'}
+                strokeDasharray={value === null ? '2 3' : undefined}
                 className={cn(value === null ? 'text-ink/25' : 'text-ink/8')}
             />
 

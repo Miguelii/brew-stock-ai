@@ -35,6 +35,9 @@ export const PDF_CSS = `
         .accent { color: ${PDF_COLORS.blue}; }
 
         .tile {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
             background: ${PDF_COLORS.paper};
             border: 1px solid ${PDF_COLORS.border};
             border-radius: 12px;
@@ -91,6 +94,10 @@ export const PDF_CSS = `
             padding: 16px 18px;
         }
         .section-paper { background: ${PDF_COLORS.paper}; }
+        /* Chromium ignores break-after on the heading, so the heading travels with its first block */
+        .section-lead { break-inside: avoid; }
+        .section-compact { break-inside: avoid; }
+        .keep { break-inside: avoid; }
         .section-head {
             border-bottom: 2px solid ${PDF_COLORS.headingRule};
             padding-bottom: 10px;
@@ -114,7 +121,7 @@ export const PDF_CSS = `
         .subhead-title { font-size: 15px; }
 
         /* Overview */
-        .overview { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; margin-top: 18px; }
+        .overview { break-inside: avoid; display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; margin-top: 18px; }
         .overview-single { grid-template-columns: minmax(0, 1fr); }
         .overview .section { margin-top: 0; }
         .summary-badge {
@@ -132,11 +139,12 @@ export const PDF_CSS = `
         /* Metric tiles */
         .tile-label { display: block; }
         .tile-help { display: block; font-size: 9.5px; color: ${PDF_COLORS.faint}; margin-top: 2px; line-height: 1.35; }
-        .tile-value { display: block; font-size: 26px; margin-top: 10px; }
+        /* margin-top:auto keeps values level across a row whatever the label and help length */
+        .tile-value { display: block; font-size: 26px; margin-top: auto; padding-top: 10px; }
         .tile-detail { display: block; font-size: 10px; color: ${PDF_COLORS.muted}; margin-top: 3px; }
         .tile .pill { margin-top: 8px; }
         .score-letter { font-size: 34px; }
-        .score-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+        .score-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; align-self: stretch; }
         .score-row .bar-track { flex: 1; }
         .context-strip { display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 11px; margin-top: 8px; }
         .context-strip strong { margin-left: 6px; }
@@ -190,13 +198,13 @@ export const PDF_CSS = `
         /* Expert coverage */
         .expert-list { list-style: none; }
         .expert-item { padding: 12px 0; border-bottom: 1px solid ${PDF_COLORS.rowDivider}; break-inside: avoid; }
-        .expert-item:first-child { padding-top: 0; }
-        .expert-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .section-lead .expert-item { padding-top: 0; }
+        .expert-list:last-child .expert-item:last-child { border-bottom: none; padding-bottom: 0; }
         .expert-title { font-size: 13px; font-weight: 700; margin-top: 4px; }
         .expert-summary { font-size: 11px; color: #4a4b4f; line-height: 1.6; margin-top: 5px; }
 
         /* Sector scores */
-        .score-card { text-align: center; }
+        .score-card { text-align: center; align-items: center; }
         .score-description { font-size: 9.5px; color: ${PDF_COLORS.muted}; margin-top: 3px; line-height: 1.4; }
         .score-gauge-wrap { position: relative; margin: 10px auto 0; max-width: 170px; }
         .score-gauge { width: 100%; display: block; }

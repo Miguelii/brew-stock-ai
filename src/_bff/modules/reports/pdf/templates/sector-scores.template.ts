@@ -11,7 +11,7 @@ function scoreGaugeTemplate(company: number | null, sector: number | null): stri
 
     const track =
         company === null
-            ? `<path d="${arc}" pathLength="100" fill="none" stroke="${PDF_COLORS.faint}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-dasharray="1.5 4" />`
+            ? `<path d="${arc}" pathLength="100" fill="none" stroke="${PDF_COLORS.faint}" stroke-width="${strokeWidth}" stroke-dasharray="2 3" />`
             : `<path d="${arc}" pathLength="100" fill="none" stroke="${PDF_COLORS.track}" stroke-width="${strokeWidth}" stroke-linecap="round" />`
 
     const value = valueDash
@@ -64,6 +64,7 @@ export function sectorScoresTemplate(scores: StockScores | null | undefined): st
     return sectionTemplate({
         title: 'How It Compares',
         subtitle: 'How this company scores against the rest of its sector, from 0 to 100',
+        isCompact: true,
         body: `
         <div class="grid-3">${getSectorScores(scores)
             .map((score) => scoreCardTemplate(score))

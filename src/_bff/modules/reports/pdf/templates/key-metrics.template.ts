@@ -128,8 +128,10 @@ function revenueChartTemplate(trend: StockFundamentals['revenueTrend']): string 
         .join('')
 
     return `
-    <div class="eyebrow" style="margin-top:14px;">Revenue and net income by year</div>
-    <div class="rev-chart">${columns}</div>`
+    <div class="keep">
+        <div class="eyebrow" style="margin-top:14px;">Revenue and net income by year</div>
+        <div class="rev-chart">${columns}</div>
+    </div>`
 }
 
 function growthExtrasTemplate(fundamentals: StockFundamentals | null): string {
@@ -139,8 +141,10 @@ function growthExtrasTemplate(fundamentals: StockFundamentals | null): string {
     const estimatesHtml =
         estimates.length > 0
             ? `
-    <div class="eyebrow" style="margin-top:14px;margin-bottom:8px;">Analyst estimates</div>
-    <div class="grid-auto">${estimates.map(({ metric, detail }) => metricTileTemplate(metric, detail)).join('')}</div>`
+    <div class="keep">
+        <div class="eyebrow" style="margin-top:14px;margin-bottom:8px;">Analyst estimates</div>
+        <div class="grid-auto">${estimates.map(({ metric, detail }) => metricTileTemplate(metric, detail)).join('')}</div>
+    </div>`
             : ''
 
     return estimatesHtml + revenueChartTemplate(fundamentals.revenueTrend)
@@ -158,15 +162,17 @@ function categoryTemplate(
 
     return `
     <div class="subsection">
-        <div class="subhead">
-            <div>
-                <div class="display subhead-title">${escapeHtml(category.title)}</div>
-                <div class="small muted">${escapeHtml(category.question)}</div>
+        <div class="keep">
+            <div class="subhead">
+                <div>
+                    <div class="display subhead-title">${escapeHtml(category.title)}</div>
+                    <div class="small muted">${escapeHtml(category.question)}</div>
+                </div>
+                ${gradePillTemplate(grade)}
             </div>
-            ${gradePillTemplate(grade)}
+            ${tiles}
+            ${contextStripTemplate(category.context)}
         </div>
-        ${tiles}
-        ${contextStripTemplate(category.context)}
         ${category.id === 'growth' ? growthExtrasTemplate(fundamentals) : ''}
     </div>`
 }
@@ -201,7 +207,7 @@ function earningsHistoryTemplate(history: StockFundamentals['earningsHistory']):
             <div class="display subhead-title">Earnings vs estimates</div>
             ${graded > 0 ? `<span class="small muted">Beat ${beats} of ${graded}</span>` : ''}
         </div>
-        <div class="grid-auto">${tiles}</div>
+        <div class="grid-4" style="grid-template-columns:repeat(${Math.min(history.length, 4)}, minmax(0, 1fr));">${tiles}</div>
     </div>`
 }
 
@@ -248,13 +254,13 @@ export function keyMetricsTemplate(
     const grades = categories.map((c) => gradeCategory(c.metrics))
 
     const body = `
-    ${scoreBoardTemplate(categories, grades)}
     ${categories.map((c, i) => categoryTemplate(c, grades[i] ?? null, fundamentals)).join('')}
     ${trackRecordTemplate(fundamentals)}`
 
     return sectionTemplate({
         title: 'Key Financial Metrics',
         subtitle: 'How the company scores on price, profits, balance sheet and growth',
+        lead: scoreBoardTemplate(categories, grades),
         body,
     })
 }

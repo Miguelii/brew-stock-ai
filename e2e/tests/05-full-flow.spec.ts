@@ -6,6 +6,7 @@ import {
     mockGetLatestNews,
     mockExportReport,
 } from '../support/mock-trpc'
+import { mockRemoteImages } from '../support/mock-images'
 import { MOCK_REPORT_ID } from '../fixtures/mock-data'
 import { AnalysisFormPage } from '../pos/analysis-form.po'
 import { ReportPage } from '../pos/report.po'
@@ -18,6 +19,7 @@ test.describe('Full happy path', () => {
         await mockGetReports(page, [])
         await mockGetLatestNews(page)
         await mockExportReport(page)
+        await mockRemoteImages(page)
 
         // 1. Navigate to analysis and create a report
         const analysis = new AnalysisFormPage(page)

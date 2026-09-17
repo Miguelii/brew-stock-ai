@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test'
 import { mockGetLatestNews, mockExportReport } from '../support/mock-trpc'
+import { mockRemoteImages } from '../support/mock-images'
 import { MOCK_REPORT_ID } from '../fixtures/mock-data'
 import { ReportPage } from '../pos/report.po'
 
 test.describe('Export report', () => {
     test('clicking "Export PDF" triggers a file download', async ({ page }) => {
         await mockGetLatestNews(page)
+        await mockRemoteImages(page)
         await mockExportReport(page)
 
         const report = new ReportPage(page)
@@ -22,6 +24,7 @@ test.describe('Export report', () => {
 
     test('export button shows loading state while pending', async ({ page }) => {
         await mockGetLatestNews(page)
+        await mockRemoteImages(page)
 
         // Delay the export response so we can observe the loading state
         await page.route('**/api/trpc/reports.export**', async (route) => {

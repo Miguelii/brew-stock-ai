@@ -1,4 +1,5 @@
 import { loadSystemEnvs } from '@/env/load-system-envs'
+import { NEWS_IMAGE_SOURCES } from '@/_bff/core/constants/news.constants'
 import type { NextConfig } from 'next'
 
 loadSystemEnvs()
@@ -32,6 +33,11 @@ const nextConfig: NextConfig = {
             {
                 hostname: 'lh3.googleusercontent.com',
             },
+            ...NEWS_IMAGE_SOURCES.map(({ hostname, pathnamePrefix }) => ({
+                protocol: 'https' as const,
+                hostname,
+                pathname: `${pathnamePrefix}**`,
+            })),
         ],
         minimumCacheTTL: 31536000, // 365 days
     },

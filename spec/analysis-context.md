@@ -276,6 +276,16 @@ Type `StockScores` (Yahoo `insights.companySnapshot`): company vs sector on a 0.
 never to drive it. Missing `NEXT_FINNHUB_API_KEY` fails the fetch (`LATEST_NEWS_API_KEY_MISSING`),
 which the pipeline recovers as "no news".
 
+The report page's "Recent news" card does **not** use this top 3. It reads the cached tRPC path
+(`finnhub.getLatestNews`), which runs `selectCardNews` (`finnhub/helpers/select-card-news.helper.ts`)
+over the full response: headlines are de-duplicated, the newest story with a real photo from the
+last `NEWS_LEAD_MAX_AGE_SECONDS` (7 days) is featured first, and the `NEWS_CARD_LIST_SIZE` (4) most
+recent remaining headlines follow. Images are blanked unless `getNewsImageUrl`
+(`src/_bff/core/helpers/news-image.helper.ts`) accepts them: only the https hosts and paths in
+`NEWS_IMAGE_SOURCES` (`src/_bff/core/constants/news.constants.ts`) pass, which drops the Yahoo
+Finance placeholder logo carried by most items. The same list feeds `images.remotePatterns` in
+`next.config.ts`, so photos are served through `/_next/image` and the page CSP stays unchanged.
+
 > Note: the fundamentals, technicals and news data are also surfaced in the report UI (the
 > "Key Financial Metrics" card, the "Market & Analyst Outlook" card and the exported PDF), not just
 > the prompt.
@@ -348,7 +358,7 @@ hasPriceHistory, hasNews, hasYahooFreshData })` records cost, truncation and con
 | ------------------------------ | --------------------------------------------------- | -------- | --------------------------------- | ----------------------- |
 | `stock_data` table             | Yahoo financials + fundamentals + insights snapshot | fallback | analysis pipeline                 | (none, fresh-first)     |
 | `unstable_cache` price-history | 1y daily closes (per ticker)                        | 12 h     | tRPC `yahoo.getPriceHistory` only | `GET_PRICE_HISTORY_TTL` |
-| `unstable_cache` latest-news   | Finnhub company-news (per ticker)                   | 1 day    | tRPC `finnhub.getLatestNews` only | `LATEST_NEWS_TTL`       |
+| `unstable_cache` latest-news   | Finnhub company-news card selection (per ticker)    | 1 day    | tRPC `finnhub.getLatestNews` only | `LATEST_NEWS_TTL`       |
 
 - Yahoo data is **fresh-first** (`getYahooDataWithFallbackService`): every analysis fetches live
   from Yahoo (the package has no rate limit).
@@ -441,8 +451,10 @@ src/_bff/modules/finnhub/
 │   ├── get-latest-news.service.ts          # RAW Finnhub news (analysis pipeline)
 │   └── get-latest-news-cached.service.ts   # cached news (tRPC)
 ├── processors/
-│   └── fetch-latest-news.processor.ts      # fetchLatestNewsRaw / fetchLatestNewsCached
-└── constants/index.ts                      # LATEST_NEWS_TTL, cache key
+│   └── fetch-latest-news.processor.ts      # fetchLatestNewsRaw (top 3) / fetchLatestNewsCached (card selection)
+├── helpers/
+│   └── select-card-news.helper.ts          # selectCardNews: featured photo story + latest headlines
+└── constants/index.ts                      # LATEST_NEWS_TTL, cache key, ANALYSIS_NEWS_COUNT, card sizes
 
 src/_bff/modules/reports/
 ├── jobs/process-report.job.ts              # Trigger.dev task + enqueueReportProcessing
@@ -455,6 +467,8 @@ src/_bff/modules/reports/
 └── repositories/reports.repository.ts      # reports table access
 
 src/_bff/core/constants/prompt-types.constants.ts  # PROMPT_TYPES (type, label, cost), shared with the frontend
+src/_bff/core/constants/news.constants.ts   # NEWS_IMAGE_SOURCES, shared with next.config.ts and the news card
+src/_bff/core/helpers/news-image.helper.ts  # getNewsImageUrl, shared with the news card
 src/_bff/core/helpers/report-html.helper.ts # extractInvestmentThesis, shared with the TL;DR card
 src/types/ReportDTO.ts                      # StockFinancials, StockFundamentals, StockTechnicals, ...
 src/types/news.ts                           # NewsItem

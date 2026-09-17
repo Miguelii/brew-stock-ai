@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { mockGetLatestNews } from '../support/mock-trpc'
+import { mockRemoteImages } from '../support/mock-images'
 import { MOCK_REPORT_ID } from '../fixtures/mock-data'
 import { ReportPage } from '../pos/report.po'
 
@@ -7,6 +8,36 @@ import { ReportPage } from '../pos/report.po'
 test.describe('View report page', () => {
     test.beforeEach(async ({ page }) => {
         await mockGetLatestNews(page)
+        await mockRemoteImages(page)
+    })
+
+    test('"Recent news" features the photo story and lists the latest headlines', async ({
+        page,
+    }) => {
+        const report = new ReportPage(page)
+        await report.goto(MOCK_REPORT_ID)
+
+        await expect(report.section('latest-news')).toContainText('Recent news mentioning')
+
+        // The Benzinga story is the most recent one with a real photo, so it is featured
+        // even though two Yahoo items (placeholder logo only) are newer
+        await expect(report.latestNewsLeadHeadline).toHaveText(
+            'Warren Buffett increases Berkshire stake in Apple to 5.9%'
+        )
+        await expect(report.latestNewsLeadImage).toBeVisible()
+        await expect(report.latestNewsLeadCover).toHaveCount(0)
+
+        // The rest are the most recent headlines in order, capped at four
+        await expect(report.latestNewsItems).toHaveCount(4)
+        await expect(report.latestNewsItemHeadlines.nth(0)).toContainText(
+            'Apple Vision Pro launches to strong demand in US market'
+        )
+        await expect(report.latestNewsItemHeadlines.nth(1)).toContainText(
+            'Apple services revenue hits record $23.1B in Q1 2024'
+        )
+        await expect(report.latestNewsItemHeadlines.nth(3)).toContainText(
+            'Apple: the services flywheel keeps compounding'
+        )
     })
 
     test('renders the stock ticker in the heading', async ({ page }) => {

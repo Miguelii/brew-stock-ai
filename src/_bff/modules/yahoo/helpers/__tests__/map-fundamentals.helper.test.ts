@@ -162,8 +162,41 @@ describe('mapFundamentals', () => {
                     epsGrowth: null,
                     revenueAvg: null,
                     revenueGrowth: null,
+                    analystCount: null,
+                    epsUpLast30Days: null,
+                    epsDownLast30Days: null,
+                    epsCurrent: null,
+                    eps30DaysAgo: null,
+                    eps90DaysAgo: null,
                 },
             ])
+        })
+
+        it('keeps the analyst count and how the EPS consensus was revised', () => {
+            const result = mapFundamentals(
+                summaryOf({
+                    earningsTrend: {
+                        trend: [
+                            {
+                                period: '+1q',
+                                earningsEstimate: { avg: 2.9, growth: 0.1, numberOfAnalysts: 27 },
+                                epsRevisions: { upLast30days: 3, downLast30days: 1 },
+                                epsTrend: { current: 2.9, '30daysAgo': 2.85, '90daysAgo': 2.7 },
+                            },
+                        ],
+                    },
+                }),
+                []
+            )
+
+            expect(result.forwardEstimates[0]).toMatchObject({
+                analystCount: 27,
+                epsUpLast30Days: 3,
+                epsDownLast30Days: 1,
+                epsCurrent: 2.9,
+                eps30DaysAgo: 2.85,
+                eps90DaysAgo: 2.7,
+            })
         })
     })
 

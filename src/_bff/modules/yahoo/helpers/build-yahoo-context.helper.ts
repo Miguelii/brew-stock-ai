@@ -1,39 +1,34 @@
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
-import type { StockFinancials, StockFundamentals, StockTechnicals } from '@/types/ReportDTO'
+import type { ForwardEstimate, StockFundamentals, StockTechnicals } from '@/types/ReportDTO'
 import type { NewsItem } from '@/types/news'
 import { fmtNum, fmtPct, fmtLarge, fmtPrice, formatDate } from '@/_bff/core/utils/formatters.utils'
-import { NEWS_SUMMARY_MAX_CHARS, pct1 } from './utils.helper'
+import { hasAny, NEWS_SUMMARY_MAX_CHARS, pct1 } from './utils.helper'
+import {
+    buildFinancialsSection,
+    buildPositioningSection,
+} from '@/_bff/modules/yahoo/helpers/build-financials-section.helper'
 
 /**
- * Render the "Key Financial Indicators" block (valuation, quality, growth and
- * analyst targets) as Markdown bullet lines. Dividend yield is included only
- * when present.
+ * How the EPS consensus moved: revision counts over the last 30 days and the estimate
+ * 30/90 days ago. Empty when the revisions were not captured.
  *
- * @param f - The financial snapshot.
- * @returns The Markdown section as a single string.
+ * @param e - A forward estimate row.
+ * @returns The Markdown suffix appended to the estimate line.
  */
-function buildFinancialsSection(f: StockFinancials): string {
-    const lines = [
-        '**Key Financial Indicators:**',
-        `- Price: ${fmtPrice(f.currentPrice)} | 52w Range: ${fmtPrice(f.fiftyTwoWeekLow)}–${fmtPrice(f.fiftyTwoWeekHigh)} | Beta: ${fmtNum(f.beta)}`,
-        `- Market Cap: ${fmtLarge(f.marketCap)} | Enterprise Value: ${fmtLarge(f.enterpriseValue)}`,
-        `- P/E (TTM): ${fmtNum(f.trailingPE)} | Forward P/E: ${fmtNum(f.forwardPE)} | P/B: ${fmtNum(f.priceToBook)}`,
-        `- Revenue Growth (YoY): ${fmtPct(f.revenueGrowth)} | Earnings Growth: ${fmtPct(f.earningsGrowth)}`,
-        `- Profit Margin: ${fmtPct(f.profitMargins)} | Operating Margin: ${fmtPct(f.operatingMargins)}`,
-        `- ROE: ${fmtPct(f.returnOnEquity)} | Debt-to-Equity: ${fmtNum(f.debtToEquity)}`,
-        `- Free Cash Flow: ${fmtLarge(f.freeCashflow)} | Operating Cash Flow: ${fmtLarge(f.operatingCashflow)}`,
-        `- EBITDA: ${fmtLarge(f.ebitda)} | Total Revenue: ${fmtLarge(f.totalRevenue)}`,
-    ]
+function buildRevisionSuffix(e: ForwardEstimate): string {
+    const parts: string[] = []
 
-    if (f.dividendYield != null) {
-        lines.push(`- Dividend Yield: ${fmtPct(f.dividendYield)}`)
+    if (hasAny(e.epsUpLast30Days, e.epsDownLast30Days)) {
+        parts.push(`revisions 30d: ${e.epsUpLast30Days ?? 0} up / ${e.epsDownLast30Days ?? 0} down`)
     }
 
-    lines.push(
-        `- Analyst Target: ${fmtPrice(f.targetLowPrice)} (low) / ${fmtPrice(f.targetMeanPrice)} (mean) / ${fmtPrice(f.targetHighPrice)} (high)`
-    )
+    if (hasAny(e.eps30DaysAgo, e.eps90DaysAgo)) {
+        parts.push(
+            `EPS est. trend: ${fmtNum(e.epsCurrent ?? e.epsAvg)} now vs ${fmtNum(e.eps30DaysAgo)} (30d ago) vs ${fmtNum(e.eps90DaysAgo)} (90d ago)`
+        )
+    }
 
-    return lines.join('\n')
+    return parts.length > 0 ? ` | ${parts.join(' | ')}` : ''
 }
 
 /**
@@ -68,10 +63,10 @@ function buildFundamentalsSection(f: StockFundamentals): string {
     if (f.forwardEstimates.length > 0) {
         blocks.push(
             '**Forward Estimates (analyst consensus):**',
-            ...f.forwardEstimates.map(
-                (e) =>
-                    `- ${e.period}: EPS est. ${fmtNum(e.epsAvg)} (growth ${fmtPct(e.epsGrowth)}) | Revenue est. ${fmtLarge(e.revenueAvg)} (growth ${fmtPct(e.revenueGrowth)})`
-            ),
+            ...f.forwardEstimates.map((e) => {
+                const analysts = e.analystCount != null ? ` | ${e.analystCount} analysts` : ''
+                return `- ${e.period}: EPS est. ${fmtNum(e.epsAvg)} (growth ${fmtPct(e.epsGrowth)}) | Revenue est. ${fmtLarge(e.revenueAvg)} (growth ${fmtPct(e.revenueGrowth)})${analysts}${buildRevisionSuffix(e)}`
+            }),
             ''
         )
     }
@@ -185,6 +180,9 @@ export function buildYahooContext(
 
     if (data.financials) {
         parts.push(buildFinancialsSection(data.financials), '')
+
+        const positioning = buildPositioningSection(data.financials)
+        if (positioning) parts.push(positioning, '')
     }
 
     if (data.fundamentals) {

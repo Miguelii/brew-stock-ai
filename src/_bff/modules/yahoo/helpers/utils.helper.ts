@@ -16,3 +16,7 @@ export function hasStockData<T>(value: T | null | undefined): value is NonNullab
         return Object.values(value).some((v) => v !== null && v !== undefined)
     return true
 }
+
+/** True when at least one of the values is present, used to skip all-empty prompt lines. */
+export const hasAny = (...values: (number | string | null | undefined)[]) =>
+    values.some((v) => v != null)

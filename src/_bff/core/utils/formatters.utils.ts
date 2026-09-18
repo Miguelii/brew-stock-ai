@@ -8,12 +8,26 @@
  */
 export function fmtLarge(n: number | null | undefined): string {
     if (n == null) return 'N/A'
+    const formatted = fmtLargeCount(n)
+
+    return formatted.startsWith('-') ? `-$${formatted.slice(1)}` : `$${formatted}`
+}
+
+/**
+ * Abbreviate a large count with T/B/M suffixes and no currency symbol, for things that are
+ * not money (e.g. `14594180000 → "14.59B"` shares).
+ *
+ * @param n - The count to format.
+ * @returns The abbreviated count, or `"N/A"` when nullish.
+ */
+export function fmtLargeCount(n: number | null | undefined): string {
+    if (n == null) return 'N/A'
     const abs = Math.abs(n)
     const sign = n < 0 ? '-' : ''
-    if (abs >= 1e12) return `${sign}$${(abs / 1e12).toFixed(2)}T`
-    if (abs >= 1e9) return `${sign}$${(abs / 1e9).toFixed(2)}B`
-    if (abs >= 1e6) return `${sign}$${(abs / 1e6).toFixed(2)}M`
-    return `${sign}$${abs.toFixed(2)}`
+    if (abs >= 1e12) return `${sign}${(abs / 1e12).toFixed(2)}T`
+    if (abs >= 1e9) return `${sign}${(abs / 1e9).toFixed(2)}B`
+    if (abs >= 1e6) return `${sign}${(abs / 1e6).toFixed(2)}M`
+    return `${sign}${abs.toFixed(2)}`
 }
 
 /**

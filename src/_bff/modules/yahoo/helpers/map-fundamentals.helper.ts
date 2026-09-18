@@ -61,6 +61,13 @@ const mapForwardEstimates = (summary: QuoteSummaryResult): ForwardEstimate[] =>
             epsGrowth: t.earningsEstimate?.growth ?? null,
             revenueAvg: t.revenueEstimate?.avg ?? null,
             revenueGrowth: t.revenueEstimate?.growth ?? null,
+            analystCount: t.earningsEstimate?.numberOfAnalysts ?? null,
+            // How the consensus moved: revision counts and the estimate 30/90 days ago
+            epsUpLast30Days: t.epsRevisions?.upLast30days ?? null,
+            epsDownLast30Days: t.epsRevisions?.downLast30days ?? null,
+            epsCurrent: t.epsTrend?.current ?? null,
+            eps30DaysAgo: t.epsTrend?.['30daysAgo'] ?? null,
+            eps90DaysAgo: t.epsTrend?.['90daysAgo'] ?? null,
         }))
 
 /**

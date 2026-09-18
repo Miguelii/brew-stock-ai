@@ -160,6 +160,7 @@ this exact order:
 (one-line intro: live data from Yahoo Finance, to be incorporated where relevant)
 
 **Key Financial Indicators:**            [EXISTING]   (data.financials)
+**Market Positioning & Ownership:**      [NEW]        (data.financials)
 **Earnings History ...**                 [NEW]        (data.fundamentals.earningsHistory)
 **Forward Estimates ...**                [NEW]        (data.fundamentals.forwardEstimates)
 **Revenue & Net Income Trend ...**       [NEW]        (data.fundamentals.revenueTrend)
@@ -182,7 +183,8 @@ All file paths below are relative to `src/_bff/modules/`. The "Cache" column des
 
 | Block                          | Status   | Source                         | Service / file                                                                                                  | Cache (pipeline)        |
 | ------------------------------ | -------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| Key Financial Indicators       | EXISTING | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` (`financialData`, `summaryDetail`, `defaultKeyStatistics`)       | `stock_data` (fallback) |
+| Key Financial Indicators       | EXISTING | Yahoo `quoteSummary`           | `yahoo/helpers/map-financials.helper.ts` (`financialData`, `summaryDetail`, `defaultKeyStatistics`)             | `stock_data` (fallback) |
+| Market Positioning & Ownership | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-financials.helper.ts` (`defaultKeyStatistics`)                                               | `stock_data` (fallback) |
 | Earnings History               | NEW      | Yahoo `quoteSummary`           | `yahoo/processors/get-yahoo-data.processor.ts` + `yahoo/helpers/map-fundamentals.helper.ts` (`earningsHistory`) | `stock_data` (fallback) |
 | Forward Estimates              | NEW      | Yahoo `quoteSummary`           | `yahoo/helpers/map-fundamentals.helper.ts` (`earningsTrend`)                                                    | `stock_data` (fallback) |
 | Revenue & Net Income Trend     | NEW      | Yahoo `fundamentalsTimeSeries` | `yahoo/helpers/map-fundamentals.helper.ts` (`financials`, annual)                                               | `stock_data` (fallback) |
@@ -204,18 +206,39 @@ Stock field shapes live in `src/types/ReportDTO.ts`; `NewsItem` lives in `src/ty
 
 ### Key Financial Indicators (EXISTING)
 
-Type `StockFinancials`. A current snapshot from `quoteSummary`
-(`financialData` + `summaryDetail` + `defaultKeyStatistics`). Rendered as a single bullet list.
+Type `StockFinancials`, mapped in `src/_bff/modules/yahoo/helpers/map-financials.helper.ts` from the
+same `quoteSummary` call as before (`financialData` + `summaryDetail` + `defaultKeyStatistics`).
+Rendered as a single bullet list.
 
 - **Valuation:** `currentPrice`, `marketCap`, `enterpriseValue`, `trailingPE`, `forwardPE`,
-  `priceToBook`, `beta`, `dividendYield`, `fiftyTwoWeekHigh`/`fiftyTwoWeekLow`.
+  `priceToBook`, `beta`, `dividendYield`, `fiftyTwoWeekHigh`/`fiftyTwoWeekLow`, plus `pegRatio`,
+  `priceToSales`, `enterpriseToEbitda`, `enterpriseToRevenue`, `trailingEps`, `forwardEps`,
+  `bookValue` and `payoutRatio`.
 - **Quality / health:** `profitMargins`, `operatingMargins`, `returnOnEquity`, `freeCashflow`,
-  `operatingCashflow`, `ebitda`, `totalDebt`, `debtToEquity`.
+  `operatingCashflow`, `ebitda`, `totalDebt`, `debtToEquity`, plus `grossMargins`, `ebitdaMargins`,
+  `returnOnAssets`, `currentRatio`, `quickRatio`, `totalCash`, `totalCashPerShare`,
+  `revenuePerShare` and `netIncomeToCommon`.
 - **Growth:** `revenueGrowth`, `earningsGrowth`, `totalRevenue`.
-- **Analyst targets:** `targetLowPrice` / `targetMeanPrice` / `targetHighPrice`.
+- **Analyst targets and consensus:** `targetLowPrice` / `targetMeanPrice` / `targetHighPrice`, plus
+  `recommendationKey`, `recommendationMean`, `numberOfAnalystOpinions` and `targetMedianPrice`.
 
-The system prompt instructs the model to compute derived ratios from these (implied PEG, EV/EBITDA,
-FCF yield, forward-vs-trailing P/E, price-vs-target range).
+Every field after the "plus" is **optional**: `stock_data` rows saved before the expanded mapping
+lack them, and each line is skipped when its values are all missing. They come from the response we
+already fetched, so no extra request was added.
+
+The system prompt still instructs the model to compute derived ratios (FCF yield,
+forward-vs-trailing P/E, price-vs-target range); the ratios Yahoo publishes are now given directly.
+
+### Market Positioning & Ownership (NEW)
+
+Same `StockFinancials` type and the same request, rendered as its own block and skipped entirely
+when none of its fields are present:
+
+- **Relative performance:** `fiftyTwoWeekChange` against `sp500FiftyTwoWeekChange`, with the gap in
+  percentage points, so the model sees whether the stock beat or lagged the index.
+- **Short interest:** `shortPercentOfFloat` and `shortRatio` (days to cover).
+- **Ownership:** `heldPercentInsiders`, `heldPercentInstitutions`.
+- **Share count:** `sharesOutstanding`, `floatShares`.
 
 ### Fundamentals (NEW)
 
@@ -226,7 +249,10 @@ the snapshot above. Mapped in `src/_bff/modules/yahoo/helpers/map-fundamentals.h
   `period`, `quarter`, `epsActual`, `epsEstimate`, `surprisePercent`. Rendered with a beat/miss
   verdict per quarter.
 - **`forwardEstimates: ForwardEstimate[]`** (from `earningsTrend`, periods `0q/+1q/0y/+1y`):
-  `epsAvg`, `epsGrowth`, `revenueAvg`, `revenueGrowth`.
+  `epsAvg`, `epsGrowth`, `revenueAvg`, `revenueGrowth`, plus the optional `analystCount` and the
+  **estimate revisions**: `epsUpLast30Days` / `epsDownLast30Days` (how many analysts moved) and
+  `epsCurrent` / `eps30DaysAgo` / `eps90DaysAgo` (where the consensus sat then). All from the
+  `earningsTrend` response we already fetched, and skipped on rows saved before they were captured.
 - **`revenueTrend: RevenueTrendPoint[]`** (up to 4 years, newest first): `endDate`, `totalRevenue`,
   `netIncome`. **Sourced from `fundamentalsTimeSeries` (`module: 'financials'`, `type: 'annual'`),
   NOT the `incomeStatementHistory` quoteSummary module.** Yahoo has emptied that module for most

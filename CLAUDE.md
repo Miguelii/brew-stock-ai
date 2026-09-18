@@ -462,6 +462,27 @@ export function MyComponent({ name, email }: Props) { ... }
 - Inputs that should be uppercase: add `className="uppercase"` and `onChange={e => field.onChange(e.target.value.toUpperCase())}`
 
 
+## Analysis Flow (`spec/analysis-context.md`)
+
+`spec/analysis-context.md` is the single source of truth for everything the model sees when it
+generates a report. Read it before touching any file of the analysis flow, and update it **in the
+same change** whenever that flow changes.
+
+Counts as the analysis flow: the prompts (`src/_bff/modules/analysis/prompts/`), the context
+builders (`src/_bff/modules/yahoo/helpers/build-*.helper.ts` and the news/technical builders), the
+data fetched or mapped for them (`src/_bff/modules/yahoo/`, `src/_bff/modules/finnhub/`: processors,
+mappers and helpers), the pipeline in
+`src/_bff/modules/analysis/processors/get-stock-analysis.processor.ts`, the model call and its
+post-processing, the shape saved in `stock_data` (`src/types/ReportDTO.ts`), and the caching or
+refresh paths (including the admin Tickers refresh).
+
+Keep in sync, in this order: the master table of context blocks, the block details with their exact
+field list, the assembled prompt skeleton, the model and output section, the caching table and the
+file map. Keep the `[EXISTING]` / `[NEW]` tags accurate, and state it explicitly when a new field
+only reaches reports generated after the change (`stock_data` is not backfilled).
+
+---
+
 ## Smoke (E2E) Tests
 
 Before creating or modifying any file under `e2e/` or `playwright.config.ts`, read `spec/e2e.md` to understand the mock architecture, cookie format, tRPC batch response shape, and the two-layer interception pattern (mock server for server-side calls, `page.route()` for browser-side calls).

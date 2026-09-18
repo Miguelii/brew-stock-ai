@@ -30,6 +30,40 @@ export type StockFinancials = {
     targetHighPrice: number | null
     targetLowPrice: number | null
     dividendYield: number | null
+    // Valuation
+    pegRatio?: number | null
+    enterpriseToEbitda?: number | null
+    enterpriseToRevenue?: number | null
+    priceToSales?: number | null
+    trailingEps?: number | null
+    forwardEps?: number | null
+    bookValue?: number | null
+    payoutRatio?: number | null
+    // Quality and liquidity
+    grossMargins?: number | null
+    ebitdaMargins?: number | null
+    returnOnAssets?: number | null
+    currentRatio?: number | null
+    quickRatio?: number | null
+    totalCash?: number | null
+    totalCashPerShare?: number | null
+    revenuePerShare?: number | null
+    netIncomeToCommon?: number | null
+    // Price performance against the S&P 500 over the last year
+    fiftyTwoWeekChange?: number | null
+    sp500FiftyTwoWeekChange?: number | null
+    // Positioning and ownership
+    sharesOutstanding?: number | null
+    floatShares?: number | null
+    shortPercentOfFloat?: number | null
+    shortRatio?: number | null
+    heldPercentInsiders?: number | null
+    heldPercentInstitutions?: number | null
+    // Analyst consensus
+    recommendationKey?: string | null
+    recommendationMean?: number | null
+    numberOfAnalystOpinions?: number | null
+    targetMedianPrice?: number | null
 }
 
 type PickSnapshot = {
@@ -53,6 +87,13 @@ export type ForwardEstimate = {
     epsGrowth: number | null
     revenueAvg: number | null
     revenueGrowth: number | null
+    // Optional: only on rows saved since the estimate revisions were captured
+    analystCount?: number | null
+    epsUpLast30Days?: number | null
+    epsDownLast30Days?: number | null
+    epsCurrent?: number | null
+    eps30DaysAgo?: number | null
+    eps90DaysAgo?: number | null
 }
 
 export type RevenueTrendPoint = {

@@ -201,6 +201,34 @@ describe('buildYahooContext', () => {
         expect(result).toContain('net selling')
     })
 
+    it('adds the analyst count and the estimate revisions to forward estimates', () => {
+        const fundamentals: StockFundamentals = {
+            earningsHistory: [],
+            forwardEstimates: [
+                {
+                    period: '+1q',
+                    epsAvg: 2.9,
+                    epsGrowth: 0.1,
+                    revenueAvg: 124_000_000_000,
+                    revenueGrowth: 0.08,
+                    analystCount: 27,
+                    epsUpLast30Days: 3,
+                    epsDownLast30Days: 1,
+                    epsCurrent: 2.9,
+                    eps30DaysAgo: 2.85,
+                    eps90DaysAgo: 2.7,
+                },
+            ],
+            revenueTrend: [],
+            analystRatings: null,
+            insiders: null,
+        }
+        const result = buildYahooContext({ ...baseData, fundamentals })
+
+        expect(result).toContain('| 27 analysts | revisions 30d: 3 up / 1 down')
+        expect(result).toContain('EPS est. trend: 2.90 now vs 2.85 (30d ago) vs 2.70 (90d ago)')
+    })
+
     it('includes technical snapshot when provided', () => {
         const technicals: StockTechnicals = {
             currentPrice: 150,

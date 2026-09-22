@@ -27,7 +27,7 @@ import { Logger } from '@/_bff/lib/server-logger'
 
 export const insertReport = Effect.fn('insertReport')(function* (
     supabase: SupabaseClient,
-    params: { userId: string; stock: string; type: string }
+    params: { userId: string; stock: string; type: string; isDev: boolean }
 ) {
     const { data: report, error } = yield* Effect.tryPromise({
         try: () =>
@@ -39,6 +39,7 @@ export const insertReport = Effect.fn('insertReport')(function* (
                     status: ReportStatus.GENERATING,
                     user_id: params.userId,
                     stock: params.stock,
+                    is_dev: params.isDev,
                 })
                 .select('id')
                 .single(),
@@ -266,7 +267,8 @@ export const updateReportWithAnalysis = Effect.fn('updateReportWithAnalysis')(fu
                     ai_response: params.analysis,
                     sentiment: params.sentiment ?? null,
                     ticker: params.ticker ?? null,
-                    cost: params.tokenUsdCost ?? 'N/A',
+                    // No usage (e.g. the dev mock) means no cost, never a text marker
+                    cost: typeof params.tokenUsdCost === 'number' ? params.tokenUsdCost : null,
                 })
                 .eq('id', reportId)
                 // Never overwrite a report that already FAILED (and was refunded)

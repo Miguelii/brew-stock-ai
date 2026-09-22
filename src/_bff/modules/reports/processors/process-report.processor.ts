@@ -10,7 +10,7 @@ import { selectReportForProcessing } from '@/_bff/modules/reports/repositories/r
 
 export const processReport = Effect.fn('processReport')(function* (
     reportId: string,
-    useBaseModel?: boolean
+    mockAnalysis?: boolean
 ) {
     const supabase = yield* Effect.try({
         try: () => createDBAdminClient(),
@@ -38,7 +38,7 @@ export const processReport = Effect.fn('processReport')(function* (
 
     // On failure the error propagates to the job, whose onFailure owns the
     // GENERATING → FAILED transition and the credit refund.
-    yield* getStockAnalysis(report.stock, report.type, report.id, supabase, useBaseModel)
+    yield* getStockAnalysis(report.stock, report.type, report.id, supabase, mockAnalysis)
 
     logger.log('Report completed', { reportId: report.id })
 

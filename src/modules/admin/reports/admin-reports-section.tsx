@@ -21,6 +21,10 @@ import { parseReportDate } from '@/lib/formatters'
 import { PROMPT_OPTIONS } from '@/_bff/core/constants/prompt-types.constants'
 import { ReportStatus } from '@/types/ReportDTO'
 
+type EnvBadgeProps = {
+    isDev: boolean
+}
+
 function StatusBadge({ status }: { status: ReportStatus }) {
     if (status === ReportStatus.COMPLETED) {
         return (
@@ -40,6 +44,28 @@ function StatusBadge({ status }: { status: ReportStatus }) {
     return (
         <Badge className="border border-destructive/25 bg-destructive/10 text-destructive font-semibold hover:bg-destructive/10">
             Failed
+        </Badge>
+    )
+}
+
+function EnvBadge({ isDev }: EnvBadgeProps) {
+    if (isDev) {
+        return (
+            <Badge
+                data-testid="admin-report-env-dev"
+                className="border border-accent-blue/25 bg-accent-blue-light text-accent-blue font-semibold hover:bg-accent-blue/10"
+            >
+                Dev
+            </Badge>
+        )
+    }
+    return (
+        <Badge
+            data-testid="admin-report-env-prod"
+            variant="outline"
+            className="font-semibold text-muted-foreground"
+        >
+            Prod
         </Badge>
     )
 }
@@ -86,6 +112,7 @@ export async function AdminReportsSection() {
                                 <TableHead className="pl-5">Stock</TableHead>
                                 <TableHead>Analysis Type</TableHead>
                                 <TableHead>Status</TableHead>
+                                <TableHead>Env</TableHead>
                                 <TableHead>User</TableHead>
                                 <TableHead>Cost</TableHead>
                                 <TableHead>Date</TableHead>
@@ -96,7 +123,7 @@ export async function AdminReportsSection() {
                             {reports.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={6}
+                                        colSpan={8}
                                         className="h-24 text-center text-muted-foreground"
                                     >
                                         No reports found.
@@ -114,6 +141,9 @@ export async function AdminReportsSection() {
                                         </TableCell>
                                         <TableCell className="py-3">
                                             <StatusBadge status={r.status} />
+                                        </TableCell>
+                                        <TableCell className="py-3">
+                                            <EnvBadge isDev={r.is_dev} />
                                         </TableCell>
                                         <TableCell className="py-3 text-sm text-muted-foreground">
                                             {userEmailById.get(r.user_id) ?? r.user_id}

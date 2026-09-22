@@ -11,6 +11,7 @@ import { deductCredit } from '@/_bff/modules/credits/services/deduct-credit.serv
 import { refundCredits } from '@/_bff/modules/credits/services/refund-credits.service'
 import { Logger } from '@/_bff/lib/server-logger'
 import { insertReport } from '@/_bff/modules/reports/repositories/reports.repository'
+import { getIsDev } from '@/_bff/core/utils/env.utils'
 
 export const createReport = Effect.fn('createReport')(function* (
     user: User,
@@ -39,6 +40,7 @@ export const createReport = Effect.fn('createReport')(function* (
         userId: user.id,
         stock: stockSymbol,
         type: promptType,
+        isDev: getIsDev(),
     }).pipe(
         Effect.tapError(() =>
             refundCredits(user.id, creditCost, supabase).pipe(

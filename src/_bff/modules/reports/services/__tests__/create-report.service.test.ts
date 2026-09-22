@@ -62,6 +62,7 @@ describe('createReport', () => {
             userId: 'user-1',
             stock: 'AAPL',
             type: PROMPT_TYPE,
+            isDev: false,
         })
         expect(enqueueMock).toHaveBeenCalledWith('r-1')
         expect(refundCreditsMock).not.toHaveBeenCalled()

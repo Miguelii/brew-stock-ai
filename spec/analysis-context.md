@@ -41,7 +41,7 @@ The backend is organised NestJS-style under `src/_bff/modules/<module>/`
 and **no user session**.
 
 ```
-getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient, useBaseModel?)
+getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient, mockAnalysis?)
   │
   ├─ promptTemplate = resolvePromptTemplate(promptType)     // PROMPTS_MAP[promptType],
   │                                                         //   else InvalidPromptTypeError
@@ -321,13 +321,19 @@ Finance placeholder logo carried by most items. The same list feeds `images.remo
 ## Model & output
 
 Selected in `generateAnalysis` (`get-stock-analysis.processor.ts`), constants in
-`src/_bff/modules/analysis/constants/index.ts`. `useBaseModel` is `getIsDev()` at enqueue time, so
-the free tier only runs in development.
+`src/_bff/modules/analysis/constants/index.ts`.
 
-| Tier | Model (`useBaseModel`)            | Thinking                                                                   | `maxOutputTokens`                |
-| ---- | --------------------------------- | -------------------------------------------------------------------------- | -------------------------------- |
-| Free | `FREE_MODEL` = `claude-haiku-4-5` | disabled (`providerOptions` undefined)                                     | `MAX_OUTPUT_TOKENS_FREE` = 8000  |
-| Paid | `PROD_MODEL` = `claude-sonnet-5`  | **adaptive** (`providerOptions.anthropic.thinking = { type: 'adaptive' }`) | `MAX_OUTPUT_TOKENS_PROD` = 16000 |
+| Mode                 | Model                            | Thinking                                                                   | `maxOutputTokens`                |
+| -------------------- | -------------------------------- | -------------------------------------------------------------------------- | -------------------------------- |
+| Prod                 | `PROD_MODEL` = `claude-sonnet-5` | **adaptive** (`providerOptions.anthropic.thinking = { type: 'adaptive' }`) | `MAX_OUTPUT_TOKENS_PROD` = 16000 |
+| Dev (`mockAnalysis`) | model: 'mock', no call           | n/a                                                                        | n/a                              |
+
+> **Dev mock:** `mockAnalysis` is `getIsDev()` at enqueue time. In development the whole pipeline
+> still runs (Trigger.dev, context fetch, `buildPrompt`, guard, save), but
+> `generateMockAnalysis` replaces the model call: it waits `MOCK_ANALYSIS_DELAY` (20s) and returns
+> `analysis/mocks/stock-analysis.mock.json` with `##TICKER##` replaced by the symbol, `finishReason
+'stop'` and no token usage (so `tokenUsdCost` is `'N/A'`). A test keeps the mock valid against
+> the schema and the incomplete-output guard.
 
 > **Token invariant:** with adaptive thinking there is no fixed thinking budget, but the thinking
 > tokens still count toward `max_tokens`. `MAX_OUTPUT_TOKENS_PROD` must leave comfortable room for
@@ -361,7 +367,7 @@ Applied in `analyzeAndSaveReport`, in this order:
 3. **Log**: `logger.log('Analysis completed', { reportId, tokenUsdCost, finishReason, outputTokens,
 hasPriceHistory, hasNews, hasYahooFreshData })` records cost, truncation and context-coverage
    diagnostics.
-4. **Incomplete-output guard** (prod only, skipped when `useBaseModel`):
+4. **Incomplete-output guard** (always, the dev mock included):
    `isAnalysisComplete(analysis, finishReason)` (`analysis/helpers/is-analysis-complete.helper.ts`)
    requires all of:
     - `finishReason === 'stop'`
@@ -441,7 +447,8 @@ All backend code lives under `src/_bff/modules/<module>/`, split NestJS-style
 ```
 src/_bff/modules/analysis/
 ├── processors/
-│   └── get-stock-analysis.processor.ts     # orchestration: fetch → prompt → generateText → guard → save
+│   └── get-stock-analysis.processor.ts     # orchestration: fetch → prompt → generateText (or dev mock) → guard → save
+├── mocks/stock-analysis.mock.json          # dev-mode model output (no AI call)
 ├── constants/index.ts                      # models, token budgets, stockAnalysisSchema, PROMPTS_MAP, PROMPT_COSTS_MAP
 ├── types/index.ts                          # MarketData, AnalyzeReportInput
 ├── prompts/

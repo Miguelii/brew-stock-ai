@@ -28,6 +28,8 @@ vi.mock('next/cache', () => ({
 }))
 
 describe('insertReport', () => {
+    const INSERT_PARAMS = { userId: 'user-1', stock: 'AAPL', type: 'fundamental', isDev: true }
+
     const makeInsertChain = (result: { data: unknown; error: unknown }) => {
         const single = vi.fn().mockResolvedValue(result)
         const select = vi.fn(() => ({ single }))
@@ -38,9 +40,7 @@ describe('insertReport', () => {
     it('inserts a GENERATING report for the user and returns the new id', async () => {
         const { insert, supabase } = makeInsertChain({ data: { id: 'r-1' }, error: null })
 
-        const id = await Effect.runPromise(
-            insertReport(supabase, { userId: 'user-1', stock: 'AAPL', type: 'fundamental' })
-        )
+        const id = await Effect.runPromise(insertReport(supabase, INSERT_PARAMS))
 
         expect(id).toBe('r-1')
         expect(insert).toHaveBeenCalledWith({
@@ -49,15 +49,14 @@ describe('insertReport', () => {
             status: ReportStatus.GENERATING,
             user_id: 'user-1',
             stock: 'AAPL',
+            is_dev: true,
         })
     })
 
     it('fails with CreateReportError when the insert returns an error', async () => {
         const { supabase } = makeInsertChain({ data: null, error: { message: 'boom' } })
 
-        const exit = await Effect.runPromiseExit(
-            insertReport(supabase, { userId: 'user-1', stock: 'AAPL', type: 'fundamental' })
-        )
+        const exit = await Effect.runPromiseExit(insertReport(supabase, INSERT_PARAMS))
         expect(failureTag(exit)).toBe('CreateReportError')
     })
 
@@ -65,9 +64,7 @@ describe('insertReport', () => {
         const single = vi.fn().mockRejectedValue(new Error('network down'))
         const supabase = asClient({ insert: () => ({ select: () => ({ single }) }) })
 
-        const exit = await Effect.runPromiseExit(
-            insertReport(supabase, { userId: 'user-1', stock: 'AAPL', type: 'fundamental' })
-        )
+        const exit = await Effect.runPromiseExit(insertReport(supabase, INSERT_PARAMS))
         expect(failureTag(exit)).toBe('CreateReportError')
     })
 })
@@ -315,7 +312,7 @@ describe('updateReportWithAnalysis', () => {
         expect(statusEq).toHaveBeenCalledWith('status', ReportStatus.GENERATING)
     })
 
-    it('falls back to null markers when sentiment and ticker are missing', async () => {
+    it('stores null when sentiment, ticker and cost are missing', async () => {
         const { update, supabase } = makeUpdateChain({ error: null })
 
         await Effect.runPromise(
@@ -331,7 +328,7 @@ describe('updateReportWithAnalysis', () => {
             ai_response: '<p>report</p>',
             sentiment: null,
             ticker: null,
-            cost: 'N/A',
+            cost: null,
         })
     })
 

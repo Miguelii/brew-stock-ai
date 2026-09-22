@@ -15,5 +15,5 @@ export type AnalyzeReportInput = {
     reportId: ReportDTO['id']
     marketData: MarketData
     supabaseClient: SupabaseClient
-    useBaseModel?: boolean
+    mockAnalysis?: boolean
 }

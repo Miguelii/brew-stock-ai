@@ -12,13 +12,13 @@ import type { GetYahooDataResult, YahooDataWithFallbackResult } from '@/_bff/mod
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { logger } from '@trigger.dev/sdk'
 import {
-    FREE_MODEL,
-    MAX_OUTPUT_TOKENS_FREE,
     MAX_OUTPUT_TOKENS_PROD,
+    MOCK_ANALYSIS_DELAY,
     PROD_MODEL,
     PROMPTS_MAP,
     stockAnalysisSchema,
 } from '@/_bff/modules/analysis/constants'
+import stockAnalysisMock from '@/_bff/modules/analysis/mocks/stock-analysis.mock.json'
 import { SystemPrompt } from '@/_bff/modules/analysis/prompts/system.prompt'
 import { calculateTokenCost } from '@/_bff/modules/analysis/helpers/calculate-token-cost.helper'
 import { normalizeSentiment } from '@/_bff/modules/analysis/helpers/normalize-sentiment.helper'
@@ -124,16 +124,8 @@ const buildPrompt = (promptTemplate: string, stockSymbol: string, marketData: Ma
 
 const generateAnalysis = Effect.fn('generateAnalysis')(function* (
     prompt: string,
-    stockSymbol: string,
-    useBaseModel?: boolean
+    stockSymbol: string
 ) {
-    const model = useBaseModel ? FREE_MODEL : PROD_MODEL
-
-    // Adaptive thinking is only enabled for the production model
-    const providerOptions = useBaseModel
-        ? undefined
-        : { anthropic: { thinking: { type: 'adaptive' } } }
-
     const { output, usage, finishReason } = yield* Effect.tryPromise({
         try: async () => {
             const [{ generateText, Output }, { createAnthropic }] = await Promise.all([
@@ -144,12 +136,12 @@ const generateAnalysis = Effect.fn('generateAnalysis')(function* (
             const anthropicClient = createAnthropic({ apiKey: ServerEnv.NEXT_ANTHROPIC_AI_KEY })
 
             return generateText({
-                model: anthropicClient(model),
-                providerOptions,
+                model: anthropicClient(PROD_MODEL),
+                providerOptions: { anthropic: { thinking: { type: 'adaptive' } } },
                 output: Output.object({ schema: stockAnalysisSchema }),
                 system: SystemPrompt,
                 prompt,
-                maxOutputTokens: useBaseModel ? MAX_OUTPUT_TOKENS_FREE : MAX_OUTPUT_TOKENS_PROD,
+                maxOutputTokens: MAX_OUTPUT_TOKENS_PROD,
             })
         },
         catch: (cause) => {
@@ -162,7 +154,27 @@ const generateAnalysis = Effect.fn('generateAnalysis')(function* (
         },
     })
 
-    return { model, output, usage, finishReason }
+    return { model: PROD_MODEL, output, usage, finishReason }
+})
+
+/** Dev mode stand-in for generateAnalysis: same shape, no model call, no cost. */
+const generateMockAnalysis = Effect.fn('generateMockAnalysis')(function* (stockSymbol: string) {
+    logger.log('Mock analysis: the AI model is not called', {
+        stockSymbol,
+        delay: MOCK_ANALYSIS_DELAY,
+    })
+
+    yield* Effect.sleep(MOCK_ANALYSIS_DELAY)
+
+    return {
+        model: 'mock',
+        output: {
+            analysis: stockAnalysisMock.analysis.replaceAll('##TICKER##', stockSymbol),
+            sentiment: stockAnalysisMock.sentiment,
+        },
+        usage: { inputTokens: undefined, outputTokens: undefined },
+        finishReason: 'stop' as const,
+    }
 })
 
 const analyzeAndSaveReport = Effect.fn('analyzeAndSaveReport')(function* ({
@@ -171,15 +183,13 @@ const analyzeAndSaveReport = Effect.fn('analyzeAndSaveReport')(function* ({
     reportId,
     marketData,
     supabaseClient,
-    useBaseModel,
+    mockAnalysis,
 }: AnalyzeReportInput) {
     const prompt = buildPrompt(promptTemplate, stockSymbol, marketData)
 
-    const { model, output, usage, finishReason } = yield* generateAnalysis(
-        prompt,
-        stockSymbol,
-        useBaseModel
-    )
+    const { model, output, usage, finishReason } = mockAnalysis
+        ? yield* generateMockAnalysis(stockSymbol)
+        : yield* generateAnalysis(prompt, stockSymbol)
 
     const analysis = output.analysis
 
@@ -197,11 +207,8 @@ const analyzeAndSaveReport = Effect.fn('analyzeAndSaveReport')(function* ({
         hasYahooFreshData: marketData.yahoo?.isFresh ?? false,
     })
 
-    // Never save a truncated analysis: failing lets the job mark the report FAILED and refund.
-    // Skipped for the base model, which only runs in dev, where any output is good enough.
-    const shouldRejectIncomplete = !useBaseModel && !isAnalysisComplete(analysis, finishReason)
-
-    if (shouldRejectIncomplete) {
+    // Never save a truncated analysis: failing lets the job mark the report FAILED and refund
+    if (!isAnalysisComplete(analysis, finishReason)) {
         logger.error('Incomplete analysis', {
             reportId,
             finishReason,
@@ -233,7 +240,7 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     promptType: string,
     reportId: ReportDTO['id'],
     supabaseClient: SupabaseClient,
-    useBaseModel?: boolean
+    mockAnalysis?: boolean
 ) {
     const promptTemplate = yield* resolvePromptTemplate(promptType)
 
@@ -249,6 +256,6 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
         reportId,
         marketData,
         supabaseClient,
-        useBaseModel,
+        mockAnalysis,
     }).pipe(Effect.ensuring(Fiber.join(saveYahooFiber)))
 })

@@ -41,8 +41,8 @@ const processReportBackgroundJob = task({
             })
         }
     },
-    run: (payload: { reportId: string; useBaseModel?: boolean }) =>
-        Effect.runPromise(processReport(payload.reportId, payload.useBaseModel)),
+    run: (payload: { reportId: string; mockAnalysis?: boolean }) =>
+        Effect.runPromise(processReport(payload.reportId, payload.mockAnalysis)),
 })
 
 // Never fails, so the report id is always returned to the client. When queueing
@@ -52,7 +52,7 @@ export const enqueueReportProcessing = (reportId: string) =>
         try: () =>
             tasks.trigger<typeof processReportBackgroundJob>(
                 JOB_ID,
-                { reportId, useBaseModel: getIsDev() },
+                { reportId, mockAnalysis: getIsDev() },
                 // One run per report: a duplicate trigger never pays for a second generation
                 { idempotencyKey: reportId }
             ),

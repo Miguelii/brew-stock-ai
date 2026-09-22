@@ -5,6 +5,9 @@ import { createElement, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
+import { RedirectProgress } from '@/modules/analysis/analysis-form-card/redirect-progress'
+
+const REDIRECT_DELAY_MS = 2000
 
 type Props = {
     form: UseFormReturn<FormValues>
@@ -38,9 +41,16 @@ export const useAnalysisCardHandlers = ({ form }: Props) => {
                     'span',
                     { 'data-testid': 'report-created-toast' },
                     'Your report is being generated ☕'
-                )
+                ),
+                {
+                    description: createElement(RedirectProgress, {
+                        label: 'Redirecting to your reports...',
+                        durationMs: REDIRECT_DELAY_MS,
+                    }),
+                    duration: REDIRECT_DELAY_MS,
+                }
             )
-            setTimeout(() => router.push('/reports'), 2000)
+            setTimeout(() => router.push('/reports'), REDIRECT_DELAY_MS)
         } catch (error) {
             const code = (error as { data?: { code?: string } })?.data?.code
 

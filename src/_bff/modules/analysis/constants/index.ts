@@ -29,8 +29,6 @@ export const stockAnalysisSchema = z.object({
         ),
 })
 
-export const FREE_MODEL = 'claude-haiku-4-5'
-
 export const PROD_MODEL = 'claude-sonnet-5'
 
 // Token budgets for the analysis generation.
@@ -43,5 +41,5 @@ export const PROD_MODEL = 'claude-sonnet-5'
 // Prod (Sonnet + adaptive thinking): room for the reasoning plus the full HTML answer.
 export const MAX_OUTPUT_TOKENS_PROD = 16000
 
-// Free (Haiku, no thinking): the whole budget is available for the answer.
-export const MAX_OUTPUT_TOKENS_FREE = 8000
+// Dev mode: the model is never called, the analysis comes from mocks/stock-analysis.mock.json
+export const MOCK_ANALYSIS_DELAY = '20 seconds'

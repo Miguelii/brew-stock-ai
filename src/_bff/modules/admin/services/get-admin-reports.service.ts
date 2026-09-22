@@ -17,7 +17,8 @@ export type AdminReport = {
     type: PropmptsEnum
     status: ReportStatus
     ticker: string
-    cost: string
+    cost: string | null
+    is_dev: boolean
 }
 
 export const getAdminReports = Effect.fn('getAdminReports')(function* () {

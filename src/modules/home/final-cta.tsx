@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowUpRight, BadgeEuroIcon, FileTextIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal } from '@/components/ui/motion/reveal'
 import { GiantWord } from '@/modules/home/giant-word'
 import { CtaScene } from '@/components/scene/cta-scene'
 

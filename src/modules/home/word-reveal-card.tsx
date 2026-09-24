@@ -1,4 +1,4 @@
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal } from '@/components/ui/motion/reveal'
 import { GiantWord } from '@/modules/home/giant-word'
 import { GIANT_WORDS } from '@/modules/home/constants'
 

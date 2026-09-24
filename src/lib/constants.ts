@@ -6,6 +6,8 @@ export const SW_PATH = '/sw.js'
 export const AUTH_PAGE_PATH = '/auth'
 
 export const PROTECTED_PATHS = new Set(['/reports', '/account', '/tokens', '/config-app'])
+
+export const DEFAULT_POST_AUTH_PATH = '/analysis'
 //############
 
 // #### SEO IDENTITY REUSED ####

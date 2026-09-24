@@ -12,14 +12,21 @@ import { CONSENT_COOKIE } from '@/_bff/core/constants/analytics.constants'
 // hydration and the prompt is hidden via local `dismissed` state afterwards.
 const emptySubscribe = () => () => {}
 
-const hasConsentCookie = () =>
-    document.cookie.split(';').some((c) => c.trim().startsWith(`${CONSENT_COOKIE}=`))
+/** Returns the stored decision, or `null` when the visitor has not decided yet. */
+const readConsentDecision = () => {
+    const entry = document.cookie
+        .split(';')
+        .map((c) => c.trim())
+        .find((c) => c.startsWith(`${CONSENT_COOKIE}=`))
+
+    return entry ? entry.slice(CONSENT_COOKIE.length + 1) : null
+}
 
 export function CookiePrompt() {
     const [dismissed, setDismissed] = useState(false)
 
-    // Server snapshot `true` keeps the prompt out of the SSR payload.
-    const hasConsent = useSyncExternalStore(emptySubscribe, hasConsentCookie, () => true)
+    // Server snapshot 'false' keeps the prompt out of the SSR payload.
+    const decision = useSyncExternalStore(emptySubscribe, readConsentDecision, () => 'false')
 
     const consentMutation = trpcClient.core.createConsentCookie.useMutation({
         onError: (error) =>
@@ -39,10 +46,11 @@ export function CookiePrompt() {
         consentMutation.mutate({ allowAnalytics: allow })
     }
 
-    if (hasConsent || dismissed) return null
+    if (decision !== null || dismissed) return null
 
     return (
         <PromptCard
+            testId="cookie-prompt"
             icon={
                 <CookieIcon
                     aria-hidden="true"
@@ -52,7 +60,8 @@ export function CookiePrompt() {
             title="We use cookies"
             description={
                 <>
-                    We use strictly necessary cookies to manage your session. See our{' '}
+                    Strictly necessary cookies keep you signed in. Accept to also allow analytics
+                    cookies, which help us see how the site is used. See our{' '}
                     <Link
                         href="/privacy"
                         prefetch={false}
@@ -66,10 +75,12 @@ export function CookiePrompt() {
             isPending={consentMutation.isPending}
             primaryAction={{
                 label: 'Accept',
+                testId: 'cookie-prompt-accept',
                 onClick: () => handler(true),
             }}
             secondaryAction={{
                 label: 'Decline',
+                testId: 'cookie-prompt-decline',
                 onClick: () => handler(false),
             }}
         />

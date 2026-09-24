@@ -10,7 +10,7 @@ Casual retail investors evaluating a stock before buying. They want a quick, rel
 
 ## Product Purpose
 
-BrewStock generates institutional-grade stock analysis reports in under 30 seconds for 50 cents each. It replaces hours of manual research with a single AI-powered workflow: enter a ticker, pick a report type, get a detailed breakdown. Success means the user reads the report, feels informed, and either acts on their conviction or saves the analysis for later.
+BrewStock generates institutional-grade stock analysis reports in about two minutes, for less than the price of a coffee. It replaces hours of manual research with a single AI-powered workflow: enter a ticker, pick a report type, get a detailed breakdown. Success means the user reads the report, feels informed, and either acts on their conviction or saves the analysis for later.
 
 ## Brand Personality
 

@@ -17,7 +17,7 @@ const verifyOtp = vi.fn()
 
 describe('sbVerifyOtp', () => {
     beforeEach(() => {
-        verifyOtp.mockReset().mockResolvedValue({ error: null })
+        verifyOtp.mockReset().mockResolvedValue({ data: { user: null }, error: null })
         createDBServerClientMock.mockReset().mockResolvedValue({ auth: { verifyOtp } })
         loggerMock.mockReset()
     })
@@ -25,12 +25,44 @@ describe('sbVerifyOtp', () => {
     it('verifies the email OTP token', async () => {
         const result = await Effect.runPromise(sbVerifyOtp('user@example.com', '123456'))
 
-        expect(result).toEqual({ status: 200 })
+        expect(result).toEqual({ status: 200, isNewUser: false })
         expect(verifyOtp).toHaveBeenCalledWith({
             email: 'user@example.com',
             token: '123456',
             type: 'email',
         })
+    })
+
+    it('flags a sign-in that created the account as a new user', async () => {
+        verifyOtp.mockResolvedValue({
+            data: {
+                user: {
+                    created_at: '2026-09-23T10:00:00.000Z',
+                    last_sign_in_at: '2026-09-23T10:00:01.000Z',
+                },
+            },
+            error: null,
+        })
+
+        const result = await Effect.runPromise(sbVerifyOtp('user@example.com', '123456'))
+
+        expect(result).toEqual({ status: 200, isNewUser: true })
+    })
+
+    it('does not flag a returning sign-in as a new user', async () => {
+        verifyOtp.mockResolvedValue({
+            data: {
+                user: {
+                    created_at: '2026-09-01T10:00:00.000Z',
+                    last_sign_in_at: '2026-09-23T10:00:00.000Z',
+                },
+            },
+            error: null,
+        })
+
+        const result = await Effect.runPromise(sbVerifyOtp('user@example.com', '123456'))
+
+        expect(result).toEqual({ status: 200, isNewUser: false })
     })
 
     it('logs and fails with VerifyOtpError when the token is rejected', async () => {

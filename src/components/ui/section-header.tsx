@@ -1,4 +1,4 @@
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal } from '@/components/ui/motion/reveal'
 import { cn } from '@/lib/utils'
 
 type Props = {

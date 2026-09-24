@@ -6,6 +6,12 @@ import { ClientEnv } from '@/env/client'
 import { CreateSbClientError, OAuthCallbackError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { AUTH_PAGE_PATH } from '@/lib/constants'
+import {
+    ANALYTICS_EVENTS,
+    AUTH_EVENT_PARAMS,
+    AUTH_METHODS,
+} from '@/_bff/core/constants/analytics.constants'
+import { isNewUser } from '@/_bff/modules/auth/helpers/is-new-user.helper'
 
 const siteUrl = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
@@ -18,7 +24,7 @@ const handleOAuthCallback = Effect.fn('handleOAuthCallback')(function* (code: st
             new CreateSbClientError({ cause, error_hash: ErrorCode.OAUTH_CALLBACK_SB_CLIENT }),
     })
 
-    const { error } = yield* Effect.tryPromise({
+    const { data, error } = yield* Effect.tryPromise({
         try: () => supabase.auth.exchangeCodeForSession(code),
         catch: (cause) =>
             new OAuthCallbackError({ cause, error_hash: ErrorCode.OAUTH_CALLBACK_EXCHANGE }),
@@ -30,6 +36,8 @@ const handleOAuthCallback = Effect.fn('handleOAuthCallback')(function* (code: st
             error_hash: ErrorCode.OAUTH_CALLBACK_SESSION,
         })
     }
+
+    return isNewUser(data?.user)
 })
 
 export async function GET(request: NextRequest) {
@@ -48,6 +56,12 @@ export async function GET(request: NextRequest) {
     }
 
     const redirectUrl = safeRedirectUrl(next, siteUrl)
+
+    redirectUrl.searchParams.set(
+        AUTH_EVENT_PARAMS.EVENT,
+        exit.value ? ANALYTICS_EVENTS.SIGN_UP : ANALYTICS_EVENTS.LOGIN
+    )
+    redirectUrl.searchParams.set(AUTH_EVENT_PARAMS.METHOD, AUTH_METHODS.GOOGLE)
 
     return NextResponse.redirect(redirectUrl)
 }

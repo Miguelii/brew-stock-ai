@@ -1,4 +1,4 @@
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal } from '@/components/ui/motion/reveal'
 import { cn } from '@/lib/utils'
 import { SectionHeader } from '@/components/ui/section-header'
 import { ANALYSIS_TYPES } from '@/lib/analysis-content'

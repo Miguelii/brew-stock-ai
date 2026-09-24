@@ -10,6 +10,8 @@ import { TokenPromo } from '@/modules/tokens/token-packages/token-promo'
 import { useTransition } from 'react'
 import type { TokenPackage } from '@/types/TokenPackage'
 import { getPackageIcon } from './get-package-icon'
+import { trackEvent } from '@/lib/analytics'
+import { ANALYTICS_EVENTS } from '@/_bff/core/constants/analytics.constants'
 
 type Props = {
     showFree?: boolean
@@ -145,11 +147,18 @@ export function TokenPackages({
                                         className="mt-auto w-full"
                                         variant={pkg.highlight ? 'default' : 'outline'}
                                         disabled={checkout.isPending}
-                                        onClick={() =>
+                                        onClick={() => {
+                                            trackEvent(ANALYTICS_EVENTS.BEGIN_CHECKOUT, {
+                                                packageId: pkg.id,
+                                                credits: pkg.credits,
+                                                value: pkg.amount / 100,
+                                                currency: 'EUR',
+                                            })
+
                                             checkout.mutate({
                                                 packageId: pkg.id as 'starter' | 'pro' | 'expert',
                                             })
-                                        }
+                                        }}
                                     >
                                         {pending || isLoading ? (
                                             <>

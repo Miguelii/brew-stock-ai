@@ -1,7 +1,7 @@
 'use client'
 
 import { m } from 'motion/react'
-import { EASE } from '@/components/motion/constants'
+import { EASE } from '@/components/ui/motion/constants'
 import { cn } from '@/lib/utils'
 
 type Props = {

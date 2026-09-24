@@ -13,6 +13,10 @@ const META_URL = `${SITE_URL}/auth`
 export const metadata: Metadata = {
     title: META_TITLE,
     description: META_DESCRIPTION,
+    robots: {
+        index: false,
+        follow: false,
+    },
     alternates: {
         canonical: META_URL,
     },

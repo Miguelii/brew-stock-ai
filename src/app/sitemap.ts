@@ -35,8 +35,6 @@ const latestArticleDate = latestIsoDay(
     EDUCATION_HUB_ARTICLES.map((a) => a.updatedAt ?? a.publishedAt)
 )
 
-const latestChangelogDate = latestIsoDay(CHANGELOG_ENTRIES.map((e) => e.publishedAt))
-
 export default function sitemap(): MetadataRoute.Sitemap {
     return [
         {
@@ -55,12 +53,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
             lastModified: latestArticleDate,
             changeFrequency: 'weekly',
             priority: 0.9,
-        },
-        {
-            url: `${siteUrl}/changelog`,
-            lastModified: latestChangelogDate,
-            changeFrequency: 'weekly',
-            priority: 0.6,
         },
         {
             url: `${siteUrl}/pricing`,

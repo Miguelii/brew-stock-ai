@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import * as m from 'motion/react-m'
 import { ClientEnv } from '@/env/client'
-import { BreadcrumbSchema, FAQSchema } from '@/components/structured-data'
-import { FAQ_GROUPS } from '@/modules/faq/faq-content'
+import { BreadcrumbSchema } from '@/components/structured-data'
 import { FaqList } from '@/modules/faq/faq-list'
 
 export const dynamic = 'force-static'
@@ -31,10 +30,6 @@ export const metadata: Metadata = {
     },
 }
 
-const ALL_QUESTIONS = FAQ_GROUPS.flatMap((group) =>
-    group.items.map(({ question, answer }) => ({ question, answer }))
-)
-
 export default function FaqPage() {
     return (
         <>
@@ -44,7 +39,6 @@ export default function FaqPage() {
                     { name: META_TITLE, url: META_URL },
                 ]}
             />
-            <FAQSchema questions={ALL_QUESTIONS} />
 
             <main id="main" className="main-container">
                 <m.div

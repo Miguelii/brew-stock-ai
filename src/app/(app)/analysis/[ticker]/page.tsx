@@ -5,9 +5,11 @@ import { TICKER_PAGES, resolveTickerPage } from '@/lib/ticker-pages'
 import { AnalysisHero } from '@/modules/analysis/analysis-hero'
 import { TickerFaq } from '@/modules/analysis/ticker-faq'
 import { TickerContentSections } from '@/modules/analysis/ticker-content-sections'
-import { BreadcrumbSchema, FAQSchema, FinancialProductSchema } from '@/components/structured-data'
+import { BreadcrumbSchema, FinancialProductSchema } from '@/components/structured-data'
 import { ClientEnv } from '@/env/client'
+import { truncateText } from '@/_bff/core/utils/formatters.utils'
 import { getAnalysisPageData } from '@/lib/get-analysis-page-data.helper'
+import { AnalysisTypesGrid } from '@/modules/analysis/analysis-types-grid'
 
 type Props = PageProps<'/analysis/[ticker]'>
 
@@ -17,6 +19,8 @@ export function generateStaticParams() {
 
 const SITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
+const META_DESCRIPTION_MAX_CHARS = 160
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { ticker } = await params
     const page = resolveTickerPage(ticker)
@@ -25,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const pageUrl = `${SITE_URL}/analysis/${page.slug}`
 
     const META_TITLE = `${page.name} (${page.ticker}) Stock Analysis`
-    const META_DESCRIPTION = `AI-powered stock analysis for ${page.name} (${page.ticker}). Get institutional-grade financial insights, market sentiment, and technical indicators for less than a coffee.`
+    const META_DESCRIPTION = truncateText(page.description, META_DESCRIPTION_MAX_CHARS)
 
     return {
         title: META_TITLE,
@@ -86,7 +90,6 @@ export default async function TickerPage({ params }: Props) {
                     { name: `${page.name} (${page.ticker})`, url: pageUrl },
                 ]}
             />
-            <FAQSchema questions={faqQuestions} />
             <FinancialProductSchema
                 ticker={page.ticker}
                 name={page.name}
@@ -103,8 +106,10 @@ export default async function TickerPage({ params }: Props) {
                     />
                 </AnalysisHero>
 
+                <AnalysisTypesGrid />
+
                 <section data-tone="paper" className="bg-tone text-tone-ink">
-                    <div className="section-shell section-pad flex flex-col gap-12 lg:gap-16">
+                    <div className="section-shell section-pad flex flex-col gap-12 lg:gap-16 pt-0">
                         <TickerContentSections page={page} />
 
                         <TickerFaq

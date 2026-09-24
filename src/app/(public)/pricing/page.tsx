@@ -3,7 +3,7 @@ import * as m from 'motion/react-m'
 import { TokenPackages } from '@/modules/tokens/token-packages'
 import { Separator } from '@/components/ui/separator'
 import { ClientEnv } from '@/env/client'
-import { BreadcrumbSchema, FAQSchema } from '@/components/structured-data'
+import { BreadcrumbSchema, CreditPackagesSchema } from '@/components/structured-data'
 import { PRICING_FAQ } from '@/modules/faq/faq-content'
 import { PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
 import { BrandText } from '@/components/brand-name'
@@ -42,6 +42,7 @@ export default function PricingPage() {
                     { name: META_TITLE, url: META_URL },
                 ]}
             />
+            <CreditPackagesSchema />
 
             <main id="main" className="flex-1 main-container">
                 <m.div
@@ -99,7 +100,6 @@ export default function PricingPage() {
                     viewport={{ once: true, margin: '-8%' }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 >
-                    <FAQSchema questions={[...PRICING_FAQ]} />
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-8">
                         Pricing FAQ
                     </h2>

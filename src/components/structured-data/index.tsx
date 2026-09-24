@@ -16,7 +16,7 @@ const OFFER_CURRENCY = 'EUR'
 const TRIAL_CREDITS = PACKAGES.find((pkg) => pkg.id === 'free')?.credits
 
 // One Offer per real price point, derived from the checkout packages so promos stay in sync
-const APP_OFFERS = [
+const CREDIT_OFFERS = [
     ...(TRIAL_CREDITS
         ? [
               {
@@ -101,7 +101,6 @@ export function WebApplicationSchema() {
             'AI-powered stock analysis tool that delivers institutional-grade financial insights, market sentiment, and technical indicators for any equity.',
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Web',
-        offers: APP_OFFERS,
         featureList: [
             'AI-powered fundamental analysis',
             'Market sentiment scoring',
@@ -118,6 +117,32 @@ export function WebApplicationSchema() {
             id="web-application-schema"
             type="application/ld+json"
             dangerouslySetInnerHTML={jsonLdHtml(appSchema)}
+        />
+    )
+}
+
+/** Rendered on /pricing only: the offers describe that page, not the whole site. */
+export function CreditPackagesSchema() {
+    const productSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: 'BrewStock analysis credits',
+        description:
+            'Pay-as-you-go credits for AI-powered stock analysis reports. No subscription, credits do not expire.',
+        url: PRICING_URL,
+        brand: {
+            '@type': 'Organization',
+            '@id': ORGANIZATION_SCHEMA_ID,
+            name: SITE_AUTHOR_NAME,
+        },
+        offers: CREDIT_OFFERS,
+    }
+
+    return (
+        <script
+            id="credit-packages-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={jsonLdHtml(productSchema)}
         />
     )
 }
@@ -174,31 +199,6 @@ export function ArticleSchema({
             id="article-schema"
             type="application/ld+json"
             dangerouslySetInnerHTML={jsonLdHtml(articleSchema)}
-        />
-    )
-}
-
-export function FAQSchema({
-    questions,
-}: Readonly<{ questions: Array<{ question: string; answer: string }> }>) {
-    const faqSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: questions.map(({ question, answer }) => ({
-            '@type': 'Question',
-            name: question,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: answer,
-            },
-        })),
-    }
-
-    return (
-        <script
-            id="faq-schema"
-            type="application/ld+json"
-            dangerouslySetInnerHTML={jsonLdHtml(faqSchema)}
         />
     )
 }

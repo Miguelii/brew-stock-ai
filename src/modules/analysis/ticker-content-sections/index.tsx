@@ -1,9 +1,12 @@
 import * as m from 'motion/react-m'
+import Link from 'next/link'
 import type { TickerPage } from '@/types/TickerPage'
 import type { PropsWithChildren } from 'react'
+import { EDUCATION_HUB_ARTICLE_MAP } from '@/modules/education-hub/education-hub-articles'
+import { cn } from '@/lib/utils'
 
 type SectionProps = PropsWithChildren<{
-    title: string
+    title?: string
     /** Stagger index, so sections fade in one after the other on scroll. */
     index: number
 }>
@@ -20,7 +23,7 @@ function Section({ title, index, children }: SectionProps) {
             viewport={{ once: true, margin: '-8%' }}
             transition={{ duration: 0.6, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
         >
-            <h2 className="text-2xl font-bold tracking-tight mb-4">{title}</h2>
+            {title && <h2 className="text-2xl font-bold tracking-tight mb-4">{title}</h2>}
             {children}
         </m.section>
     )
@@ -36,9 +39,19 @@ export function TickerContentSections({ page }: Props) {
     const { content } = page
     const narrativeParagraphs = content.investmentNarrative.split('\n\n')
 
+    // Slugs are hand-picked per company; drop any that no longer resolve so a
+    // renamed article cannot leave a dead link on a landing page.
+    const relatedArticles = (content.relatedArticleSlugs ?? [])
+        .map((slug) => EDUCATION_HUB_ARTICLE_MAP.get(slug))
+        .filter((article) => article !== undefined)
+
     return (
         <div className="flex flex-col gap-12 lg:gap-16 max-w-3xl">
-            <Section title={`How ${page.name} makes money`} index={0}>
+            <Section index={0}>
+                <h2
+                    className={cn('display display-section max-w-[18ch] mb-4')}
+                >{`How ${page.name} makes money`}</h2>
+
                 <p className="text-primary-muted leading-relaxed">{content.businessModel}</p>
             </Section>
 
@@ -94,6 +107,28 @@ export function TickerContentSections({ page }: Props) {
                     investor could buy instead.
                 </p>
             </Section>
+
+            {relatedArticles.length > 0 ? (
+                <Section title="Further reading" index={6}>
+                    <ul className="flex flex-col gap-4">
+                        {relatedArticles.map((article) => (
+                            <li key={article.slug}>
+                                <Link
+                                    href={`/education-hub/${article.slug}`}
+                                    className="group flex flex-col gap-1"
+                                >
+                                    <span className="font-medium text-ink underline decoration-accent-blue/40 underline-offset-4 transition group-hover:decoration-accent-blue">
+                                        {article.title}
+                                    </span>
+                                    <span className="text-sm text-primary-muted leading-relaxed">
+                                        {article.description}
+                                    </span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </Section>
+            ) : null}
         </div>
     )
 }

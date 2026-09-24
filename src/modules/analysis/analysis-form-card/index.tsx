@@ -95,7 +95,7 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker, isMaintenance
 
     return (
         <Card className="w-full gap-0 border border-ink/10 bg-card py-0">
-            <CardContent className="p-7">
+            <CardContent className="p-5 sm:p-7">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                         <FormField
@@ -135,40 +135,74 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker, isMaintenance
                         <FormField
                             control={form.control}
                             name="promptType"
-                            render={({ field }) => (
-                                <FormItem className="w-full sm:min-w-[10%]">
-                                    <FormLabel className="eyebrow text-ink/50">
-                                        Analysis Type
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger
-                                                data-testid="analysis-type-select"
-                                                aria-label="Analysis Type"
-                                                className="h-12! w-full rounded-full border-border bg-paper px-4 text-ink"
+                            render={({ field }) => {
+                                const selectedPrompt = PROMPT_OPTIONS.find(
+                                    (o) => o.type === field.value
+                                )
+
+                                return (
+                                    <FormItem className="w-full sm:min-w-[10%]">
+                                        <div className="flex items-center justify-between gap-2">
+                                            <FormLabel className="eyebrow text-ink/50">
+                                                Analysis Type
+                                            </FormLabel>
+                                            {selectedPrompt ? (
+                                                <span
+                                                    data-testid="analysis-type-cost"
+                                                    className="flex shrink-0 items-center gap-1 rounded-full bg-blue/10 px-2 py-0.5 font-mono text-[11px] font-medium text-blue"
+                                                >
+                                                    <CoinsIcon
+                                                        aria-hidden="true"
+                                                        className="size-3"
+                                                    />
+                                                    <span>
+                                                        {selectedPrompt.cost}{' '}
+                                                        {pluralizeCredits(selectedPrompt.cost)}
+                                                    </span>
+                                                </span>
+                                            ) : null}
+                                        </div>
+                                        <FormControl>
+                                            <Select
+                                                value={field.value}
+                                                onValueChange={field.onChange}
                                             >
-                                                <BarChart2Icon
-                                                    aria-hidden="true"
-                                                    className={cn(
-                                                        'size-4 shrink-0',
-                                                        field.value ? 'text-ink' : 'text-ink/40'
-                                                    )}
-                                                />
-                                                <SelectValue>
-                                                    {(() => {
-                                                        const selected = PROMPT_OPTIONS.find(
-                                                            (o) => o.type === field.value
-                                                        )
-                                                        if (!selected)
-                                                            return (
-                                                                <span className="text-ink/40">
-                                                                    Select type
-                                                                </span>
-                                                            )
-                                                        return (
-                                                            <span className="flex items-center gap-2">
-                                                                <span className="truncate">
-                                                                    {selected.label}
+                                                <SelectTrigger
+                                                    data-testid="analysis-type-select"
+                                                    aria-label="Analysis Type"
+                                                    className="h-12! w-full rounded-full border-border bg-paper px-4 text-ink"
+                                                >
+                                                    <BarChart2Icon
+                                                        aria-hidden="true"
+                                                        className={cn(
+                                                            'size-4 shrink-0',
+                                                            field.value ? 'text-ink' : 'text-ink/40'
+                                                        )}
+                                                    />
+                                                    <SelectValue>
+                                                        <span
+                                                            className={cn(
+                                                                'min-w-0 truncate',
+                                                                selectedPrompt
+                                                                    ? undefined
+                                                                    : 'text-ink/40'
+                                                            )}
+                                                        >
+                                                            {selectedPrompt?.label ?? 'Select type'}
+                                                        </span>
+                                                    </SelectValue>
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-[var(--radius-surface-inner)]">
+                                                    {PROMPT_OPTIONS.map((option) => (
+                                                        <SelectItem
+                                                            key={option.type}
+                                                            data-testid="analysis-type-option"
+                                                            value={option.type}
+                                                            className="rounded-[var(--radius-surface-inner)] px-3"
+                                                        >
+                                                            <span className="flex w-full items-center justify-between gap-3">
+                                                                <span className="min-w-0">
+                                                                    {option.label}
                                                                 </span>
                                                                 <span className="flex shrink-0 items-center gap-1 rounded-full bg-blue/10 px-2 py-0.5 font-mono text-[11px] font-medium text-blue">
                                                                     <CoinsIcon
@@ -176,46 +210,22 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker, isMaintenance
                                                                         className="size-3"
                                                                     />
                                                                     <span>
-                                                                        {selected.cost}{' '}
+                                                                        {option.cost}{' '}
                                                                         {pluralizeCredits(
-                                                                            selected.cost
+                                                                            option.cost
                                                                         )}
                                                                     </span>
                                                                 </span>
                                                             </span>
-                                                        )
-                                                    })()}
-                                                </SelectValue>
-                                            </SelectTrigger>
-                                            <SelectContent className="rounded-[var(--radius-surface-inner)]">
-                                                {PROMPT_OPTIONS.map((option) => (
-                                                    <SelectItem
-                                                        key={option.type}
-                                                        data-testid="analysis-type-option"
-                                                        value={option.type}
-                                                        className="rounded-full px-3"
-                                                    >
-                                                        <span className="flex items-center justify-between gap-4 w-full">
-                                                            <span>{option.label}</span>
-                                                            <span className="flex shrink-0 items-center gap-1 rounded-full bg-blue/10 px-2 py-0.5 font-mono text-[11px] font-medium text-blue">
-                                                                <CoinsIcon
-                                                                    aria-hidden="true"
-                                                                    className="size-3"
-                                                                />
-                                                                <span>
-                                                                    {option.cost}{' '}
-                                                                    {pluralizeCredits(option.cost)}
-                                                                </span>
-                                                            </span>
-                                                        </span>
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )
+                            }}
                         />
 
                         <Button

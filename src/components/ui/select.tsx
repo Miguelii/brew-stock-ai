@@ -22,7 +22,7 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
     return (
         <SelectPrimitive.Value
             data-slot="select-value"
-            className={cn('flex flex-1 text-left', className)}
+            className={cn('flex min-w-0 flex-1 text-left', className)}
             {...props}
         />
     )
@@ -64,11 +64,17 @@ function SelectContent({
     align = 'start',
     alignOffset = 0,
     alignItemWithTrigger = false,
+    collisionPadding = 8,
     ...props
 }: SelectPrimitive.Popup.Props &
     Pick<
         SelectPrimitive.Positioner.Props,
-        'align' | 'alignOffset' | 'side' | 'sideOffset' | 'alignItemWithTrigger'
+        | 'align'
+        | 'alignOffset'
+        | 'side'
+        | 'sideOffset'
+        | 'alignItemWithTrigger'
+        | 'collisionPadding'
     >) {
     return (
         <SelectPrimitive.Portal>
@@ -78,12 +84,13 @@ function SelectContent({
                 align={align}
                 alignOffset={alignOffset}
                 alignItemWithTrigger={alignItemWithTrigger}
-                className="isolate z-50"
+                collisionPadding={collisionPadding}
+                className="isolate z-50 w-max max-w-(--available-width)"
             >
                 <SelectPrimitive.Popup
                     data-slot="select-content"
                     className={cn(
-                        'bg-card p-2 relative isolate z-50 max-h-(--available-height) min-w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-border text-card-foreground shadow-lg duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+                        'bg-card p-2 relative isolate z-50 max-h-(--available-height) max-w-(--available-width) min-w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-border text-card-foreground shadow-lg duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
                         className
                     )}
                     {...props}
@@ -117,7 +124,7 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
             )}
             {...props}
         >
-            <SelectPrimitive.ItemText className="flex flex-1 shrink-0 gap-2 whitespace-nowrap">
+            <SelectPrimitive.ItemText className="flex min-w-0 flex-1 gap-2">
                 {children}
             </SelectPrimitive.ItemText>
             {/* <SelectPrimitive.ItemIndicator

@@ -47,7 +47,7 @@ export function AnalysisHero({ children, companyName }: Props) {
                     </div>
                 </div>
 
-                <div className="w-full">{children}</div>
+                <div className="w-full min-w-0">{children}</div>
             </div>
         </section>
     )

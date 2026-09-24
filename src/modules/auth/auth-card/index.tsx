@@ -20,7 +20,12 @@ import { toastError } from '@/lib/toast-error'
 import { AuthErrorHandler } from '@/modules/auth/auth-card/auth-error-handler'
 import { SB_OTP_TOKEN_LENGTH } from '@/_bff/core/constants/auth-otp.constants'
 import { ENABLE_OTP_LOGIN, SIGN_IN_GOOGLE_API_PATH } from '@/modules/auth/auth-card/constants'
-import { cn } from '@/lib/utils'
+import { cn, safeReturnTo } from '@/lib/utils'
+import {
+    ANALYTICS_EVENTS,
+    AUTH_EVENT_PARAMS,
+    AUTH_METHODS,
+} from '@/_bff/core/constants/analytics.constants'
 import { Loader2Icon } from 'lucide-react'
 import { LastUsedBadge } from '@/modules/auth/auth-card/last-used-badge'
 
@@ -44,7 +49,7 @@ export function AuthCard({ returnTo }: Props) {
 
     const onOAuthClick = () => {
         const url = returnTo
-            ? `${SIGN_IN_GOOGLE_API_PATH}?returnTo=${encodeURIComponent(returnTo)}`
+            ? `${SIGN_IN_GOOGLE_API_PATH}?returnTo=${encodeURIComponent(safeReturnTo(returnTo))}`
             : SIGN_IN_GOOGLE_API_PATH
 
         setTimeout(() => {
@@ -69,9 +74,19 @@ export function AuthCard({ returnTo }: Props) {
     const onOtpConfirm = async () => {
         startTransition(async () => {
             try {
-                await verifyOtp.mutateAsync({ email, token: otp })
+                const result = await verifyOtp.mutateAsync({ email, token: otp })
                 saveLastUsed('email')
-                window.location.href = returnTo ?? '/analysis'
+
+                // The event rides on the URL instead of firing here: this is a full
+                // page navigation, and a beacon queued just before unload can be lost.
+                const target = new URL(safeReturnTo(returnTo), window.location.origin)
+                target.searchParams.set(
+                    AUTH_EVENT_PARAMS.EVENT,
+                    result.isNewUser ? ANALYTICS_EVENTS.SIGN_UP : ANALYTICS_EVENTS.LOGIN
+                )
+                target.searchParams.set(AUTH_EVENT_PARAMS.METHOD, AUTH_METHODS.OTP)
+
+                window.location.href = `${target.pathname}${target.search}`
             } catch (error) {
                 toastError('Invalid code.', error, 'Please try again later.')
                 setOtp('')
@@ -89,9 +104,11 @@ export function AuthCard({ returnTo }: Props) {
             <AuthErrorHandler />
             <div>
                 <h1 data-testid="auth-title" className="text-3xl font-semibold tracking-tight">
-                    Welcome back
+                    Sign in to BrewStock
                 </h1>
-                <p className="mt-1.5 text-sm text-muted-foreground">Sign in to your account</p>
+                <p data-testid="auth-subtitle" className="mt-1.5 text-sm text-muted-foreground">
+                    New here? Your first analysis is free, no card required.
+                </p>
             </div>
 
             {step === 'email' ? (

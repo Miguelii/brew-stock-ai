@@ -31,4 +31,26 @@ test.describe('Create report flow', () => {
         await page.waitForURL('**/reports', { timeout: 10_000 })
         expect(page.url()).toContain('/reports')
     })
+
+    test('reports the conversion to analytics', async ({ page }) => {
+        const analysis = new AnalysisFormPage(page)
+        await analysis.goto()
+
+        await analysis.fillAndSubmit('AAPL')
+        await expect(analysis.createdToast).toBeVisible({ timeout: 8000 })
+
+        // The gtag bootstrap defines `dataLayer` and the queueing shim, so the event
+        // is observable here without gtag.js having loaded.
+        const event = await page.evaluate(() =>
+            (window.dataLayer ?? [])
+                .map((entry) => Array.from(entry as IArguments))
+                .find((entry) => entry[0] === 'event' && entry[1] === 'report_created')
+        )
+
+        expect(event).toBeTruthy()
+        expect(event?.[2]).toMatchObject({
+            promptType: expect.any(String),
+            cost: expect.any(Number),
+        })
+    })
 })

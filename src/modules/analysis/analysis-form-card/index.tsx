@@ -176,7 +176,10 @@ export function AnalysisFormCard({ isAuthenticated, defaultTicker, isMaintenance
                                                                         className="size-3"
                                                                     />
                                                                     <span>
-                                                                        {selected.cost} credits
+                                                                        {selected.cost}{' '}
+                                                                        {pluralizeCredits(
+                                                                            selected.cost
+                                                                        )}
                                                                     </span>
                                                                 </span>
                                                             </span>

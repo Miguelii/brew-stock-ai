@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { type NextRequest, NextResponse } from 'next/server'
-import { AUTH_PAGE_PATH, PROTECTED_PATHS } from '@/lib/constants'
+import { AUTH_PAGE_PATH, DEFAULT_POST_AUTH_PATH, PROTECTED_PATHS } from '@/lib/constants'
 import { createDBServerClient } from '@/_bff/core/db'
 
 /**
@@ -71,13 +71,14 @@ export async function sbProxy(request: NextRequest) {
  * stays on the same origin, preventing open-redirect attacks via
  * protocol-relative paths such as `//evil.com`.
  *
- * Falls back to `/analysis` when the resolved origin differs from the site origin.
+ * Falls back to `DEFAULT_POST_AUTH_PATH` when the resolved origin differs from the
+ * site origin.
  */
 export function safeRedirectUrl(next: string, siteUrl: string): URL {
     const resolved = new URL(next, siteUrl)
     const base = new URL(siteUrl)
     if (resolved.origin !== base.origin) {
-        return new URL('/analysis', siteUrl)
+        return new URL(DEFAULT_POST_AUTH_PATH, siteUrl)
     }
     return resolved
 }

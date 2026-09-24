@@ -2,7 +2,7 @@
 
 import { m } from 'motion/react'
 import type { ReactNode } from 'react'
-import { EASE } from '@/components/motion/constants'
+import { EASE } from '@/components/ui/motion/constants'
 
 type Props = {
     children: ReactNode

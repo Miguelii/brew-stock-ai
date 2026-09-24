@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRightIcon, ClockIcon } from 'lucide-react'
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal } from '@/components/ui/motion/reveal'
 import {
     EDUCATION_HUB_ARTICLES,
     EDUCATION_HUB_THEME_LABELS,

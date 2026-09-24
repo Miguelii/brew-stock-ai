@@ -11,6 +11,10 @@ export class AuthPage {
         return this.page.getByTestId('auth-title')
     }
 
+    get subtitle(): Locator {
+        return this.page.getByTestId('auth-subtitle')
+    }
+
     get emailInput(): Locator {
         return this.page.getByTestId('email-input')
     }

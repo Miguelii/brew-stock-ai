@@ -6,6 +6,9 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
 import { RedirectProgress } from '@/modules/analysis/analysis-form-card/redirect-progress'
+import { trackEvent } from '@/lib/analytics'
+import { ANALYTICS_EVENTS } from '@/_bff/core/constants/analytics.constants'
+import { PROMPT_OPTIONS } from '@/_bff/core/constants/prompt-types.constants'
 
 const REDIRECT_DELAY_MS = 2000
 
@@ -35,6 +38,12 @@ export const useAnalysisCardHandlers = ({ form }: Props) => {
     const onSubmit = async (values: FormValues) => {
         try {
             await createReport.mutateAsync(values)
+
+            trackEvent(ANALYTICS_EVENTS.REPORT_CREATED, {
+                promptType: values.promptType,
+                cost: PROMPT_OPTIONS.find((o) => o.type === values.promptType)?.cost,
+            })
+
             resetForm()
             toast.success(
                 createElement(

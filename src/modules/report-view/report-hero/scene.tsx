@@ -1,6 +1,6 @@
 'use client'
 
-import { Parallax } from '@/components/motion/parallax'
+import { Parallax } from '@/components/ui/motion/parallax'
 import { Hills } from '@/components/scene/hills'
 
 /**

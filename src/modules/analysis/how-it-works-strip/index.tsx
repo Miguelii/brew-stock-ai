@@ -1,4 +1,4 @@
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal } from '@/components/ui/motion/reveal'
 import { STEPS } from '@/lib/analysis-content'
 
 export function HowItWorksStrip() {

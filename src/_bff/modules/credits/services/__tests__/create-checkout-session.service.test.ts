@@ -83,7 +83,8 @@ describe('createCheckoutSession', () => {
                 customer: 'cus_existing',
                 mode: 'payment',
                 metadata: { userId: 'user-1', credits: String(PKG.credits) },
-                success_url: 'https://test.local/tokens?success=true',
+                success_url:
+                    'https://test.local/tokens?success=true&value=0.5&credits=5&session_id={CHECKOUT_SESSION_ID}',
                 cancel_url: 'https://test.local/tokens?canceled=true',
             })
         )

@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { ClientEnv } from '@/env/client'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
 import { CookiePrompt } from '@/modules/cookie-prompt'
+import { QueryParamEvents } from '@/components/query-param-events'
 import {
     OrganizationSchema,
     WebApplicationSchema,
@@ -15,7 +16,7 @@ import {
 } from '@/components/structured-data'
 import { SITE_AUTHOR_NAME, SITE_AUTHOR_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { GtmScript } from '@/components/scripts/gtm-script'
+import { GtmScript } from '@/components/gtm-script'
 import { TrpcContextProvider } from '@/providers/trpc-provider'
 import { MotionProvider } from '@/providers/motion-provider'
 
@@ -143,6 +144,7 @@ export default function RootLayout({ children }: Props) {
                         <OrganizationSchema />
                         <Toaster />
                         <CookiePrompt />
+                        <QueryParamEvents />
                         <div className="flex-1">{children}</div>
                         <Footer />
                     </MotionProvider>

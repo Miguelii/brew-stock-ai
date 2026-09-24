@@ -10,7 +10,8 @@ test.describe('Auth flow', () => {
         const auth = new AuthPage(page)
         await auth.goto()
 
-        await expect(auth.title).toHaveText('Welcome back')
+        await expect(auth.title).toHaveText('Sign in to BrewStock')
+        await expect(auth.subtitle).toContainText('first analysis is free')
         await expect(auth.emailInput).toBeVisible()
         await expect(auth.signInButton).toBeVisible()
     })

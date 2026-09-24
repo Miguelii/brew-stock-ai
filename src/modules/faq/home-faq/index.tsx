@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRightIcon, ChevronDownIcon } from 'lucide-react'
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal } from '@/components/ui/motion/reveal'
 import { FAQ_GROUPS, type FaqItem } from '@/modules/faq/faq-content'
 import { SectionHeader } from '@/components/ui/section-header'
 import { BrandText } from '@/components/brand-name'

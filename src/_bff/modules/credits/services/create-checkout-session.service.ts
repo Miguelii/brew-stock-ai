@@ -10,6 +10,7 @@ import type { User } from '@supabase/supabase-js'
 import { ClientEnv } from '@/env/client'
 import { Logger } from '@/_bff/lib/server-logger'
 import { TOKEN_PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
+import { buildCheckoutSuccessUrl } from '@/_bff/modules/credits/helpers/build-checkout-success-url.helper'
 
 export type TokenPackageId = (typeof TOKEN_PACKAGES)[number]['id']
 
@@ -126,7 +127,7 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
                         price_data: {
                             currency: 'eur',
                             product_data: {
-                                name: `${pkg.credits} Analysis Credits — ${pkg.label}`,
+                                name: `${pkg.credits} Analysis Credits (${pkg.label})`,
                             },
                             unit_amount: pkg.amount,
                         },
@@ -143,7 +144,7 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
                         credits: String(pkg.credits),
                     },
                 },
-                success_url: `${baseUrl}/tokens?success=true`,
+                success_url: buildCheckoutSuccessUrl(baseUrl, pkg),
                 cancel_url: `${baseUrl}/tokens?canceled=true`,
             }),
         catch: (cause) =>

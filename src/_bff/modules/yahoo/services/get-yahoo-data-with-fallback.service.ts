@@ -22,7 +22,7 @@ export const getYahooDataWithFallbackService: (
     function* (ticker, supabaseClient) {
         // Always try to get Yahoo fresh data
         const freshData = (yield* getYahooData(ticker).pipe(
-            Effect.orElse(() => Effect.succeed(null))
+            Effect.catch(() => Effect.succeed(null))
         )) as GetYahooDataResult | null
 
         // If success and hasAllStockData -> return

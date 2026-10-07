@@ -63,6 +63,8 @@ export const myService = Effect.fn('myService')(function* (param: string) {
 })
 ```
 
+The project is on **Effect v4**. Translate v3 snippets from older docs or the `effect-ts` skill before using them: `Effect.catchAll` / `Effect.orElse` → `Effect.catch`, `Effect.catchAllCause` → `Effect.catchCause`, `Effect.fork` → `Effect.forkChild`, `Effect.zipRight` → `Effect.andThen`, `Either` / `Effect.either` → `Result` / `Effect.result`, and `Cause` is a flat `cause.reasons` array (`Cause.findErrorOption`, `Cause.isDieReason`). Full guide: `https://github.com/Effect-TS/effect/blob/main/MIGRATION.md`
+
 ### Rules
 - Use `Effect.fn('serviceName')` for automatic telemetry
 - All errors must extend `Data.TaggedError` and live in `src/_bff/lib/errors.ts`

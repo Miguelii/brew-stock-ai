@@ -45,7 +45,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                 error_hash: ErrorCode.YAHOO_INSIGHTS_FETCH,
             })
         },
-    }).pipe(Effect.orElse(() => Effect.succeed(null)))
+    }).pipe(Effect.catch(() => Effect.succeed(null)))
 
     // Fetch financial indicators via quoteSummary — non-fatal
     const financialsEffect = Effect.tryPromise({
@@ -63,7 +63,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
         },
     }).pipe(
         Effect.map(mapFinancials),
-        Effect.orElse(() => Effect.succeed(null))
+        Effect.catch(() => Effect.succeed(null))
     )
 
     // Expanded fundamentals — fetched independently of the core `financials`
@@ -95,7 +95,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                 error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
             })
         },
-    }).pipe(Effect.orElse(() => Effect.succeed(null)))
+    }).pipe(Effect.catch(() => Effect.succeed(null)))
 
     const revenueTrendEffect = Effect.tryPromise({
         try: () =>
@@ -117,7 +117,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
         },
     }).pipe(
         Effect.map(mapRevenueTrend),
-        Effect.orElse(() => Effect.succeed([] as RevenueTrendPoint[]))
+        Effect.catch(() => Effect.succeed([] as RevenueTrendPoint[]))
     )
 
     // All four Yahoo calls are independent — run them in parallel.

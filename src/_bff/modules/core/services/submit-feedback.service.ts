@@ -18,7 +18,7 @@ export const submitFeedback = Effect.fn('submitFeedback')(function* (
             new CreateSbClientError({ cause, error_hash: ErrorCode.FEEDBACK_SUBMIT_SB_CLIENT }),
     })
 
-    const user = yield* getSession(supabase).pipe(Effect.catchAll(() => Effect.succeed(null)))
+    const user = yield* getSession(supabase).pipe(Effect.catch(() => Effect.succeed(null)))
 
     yield* insertFeedback(supabase, { name, email, message, userId: user?.id })
 })

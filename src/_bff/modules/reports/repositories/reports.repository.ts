@@ -244,7 +244,7 @@ export const selectStockDataByTickerCached = Effect.fn('selectStockDataByTickerC
                 })
             )
         ),
-        Effect.orElse(() => Effect.succeed(null))
+        Effect.catch(() => Effect.succeed(null))
     )
 })
 

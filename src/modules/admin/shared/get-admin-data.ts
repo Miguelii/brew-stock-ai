@@ -33,37 +33,35 @@ const EMPTY_STATS: AdminStats = {
 }
 
 export const fetchIsAdmin = cache(() =>
-    Effect.runPromise(isAdmin().pipe(Effect.catchAll(() => Effect.succeed(false))))
+    Effect.runPromise(isAdmin().pipe(Effect.catch(() => Effect.succeed(false))))
 )
 
 export const fetchAdminStats = cache(() =>
-    Effect.runPromise(getAdminStats().pipe(Effect.catchAll(() => Effect.succeed(EMPTY_STATS))))
+    Effect.runPromise(getAdminStats().pipe(Effect.catch(() => Effect.succeed(EMPTY_STATS))))
 )
 
 export const fetchAdminUsers = cache(() =>
-    Effect.runPromise(
-        getAdminUsers().pipe(Effect.catchAll(() => Effect.succeed([] as AdminUser[])))
-    )
+    Effect.runPromise(getAdminUsers().pipe(Effect.catch(() => Effect.succeed([] as AdminUser[]))))
 )
 
 export const fetchAdminReports = cache(() =>
     Effect.runPromise(
-        getAdminReports().pipe(Effect.catchAll(() => Effect.succeed([] as AdminReport[])))
+        getAdminReports().pipe(Effect.catch(() => Effect.succeed([] as AdminReport[])))
     )
 )
 
 export const fetchAdminFeedback = cache(() =>
     Effect.runPromise(
-        getAdminFeedback().pipe(Effect.catchAll(() => Effect.succeed([] as AdminFeedback[])))
+        getAdminFeedback().pipe(Effect.catch(() => Effect.succeed([] as AdminFeedback[])))
     )
 )
 
 export const fetchAdminLogs = cache(() =>
-    Effect.runPromise(getAdminLogs().pipe(Effect.catchAll(() => Effect.succeed([] as AdminLog[]))))
+    Effect.runPromise(getAdminLogs().pipe(Effect.catch(() => Effect.succeed([] as AdminLog[]))))
 )
 
 export const fetchAdminStockData = cache(() =>
     Effect.runPromise(
-        getAdminStockData().pipe(Effect.catchAll(() => Effect.succeed([] as AdminStockData[])))
+        getAdminStockData().pipe(Effect.catch(() => Effect.succeed([] as AdminStockData[])))
     )
 )

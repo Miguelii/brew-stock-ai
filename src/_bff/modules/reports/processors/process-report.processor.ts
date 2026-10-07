@@ -47,7 +47,7 @@ export const processReport = Effect.fn('processReport')(function* (
         report.user_id,
         `${report.stock} analysis ready`,
         'Your report has been generated. Tap to view it.'
-    ).pipe(Effect.catchAllCause(() => Effect.void))
+    ).pipe(Effect.catchCause(() => Effect.void))
 
     return { reportId: report.id }
 })

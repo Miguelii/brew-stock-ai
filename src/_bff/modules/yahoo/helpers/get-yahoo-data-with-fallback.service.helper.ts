@@ -59,6 +59,6 @@ export const selectDbRow = Effect.fn('selectDbRow')(function* (
 ) {
     return yield* selectStockData(supabaseClient, ticker).pipe(
         Effect.map((res) => (res.data ?? null) as StockDataRow | null),
-        Effect.orElse(() => Effect.succeed(null))
+        Effect.catch(() => Effect.succeed(null))
     )
 })

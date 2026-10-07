@@ -1,6 +1,6 @@
 'use client'
 
-import { type PropsWithChildren, type ReactNode, useRef, useState } from 'react'
+import { type PropsWithChildren, useRef, useState } from 'react'
 import { type MotionValue, m, useMotionValue, useScroll, useTransform } from 'motion/react'
 import { cn } from '@/lib/utils'
 import {
@@ -160,7 +160,7 @@ export const Lid = ({
                 <Image
                     src={src as string}
                     alt="aceternity logo"
-                    className="absolute inset-0 h-full w-full rounded-lg object-cover aspect-square object-[40%_center]"
+                    className="absolute inset-0 h-full w-full rounded-lg object-fill aspect-square object-[40%_center]"
                     width={600}
                     height={600}
                     unoptimized

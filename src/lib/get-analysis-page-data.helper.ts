@@ -22,10 +22,10 @@ export const getAnalysisPageData = cache(
                 {
                     isAuthenticated: Effect.tryPromise(() => getCachedClaims()).pipe(
                         Effect.map((claims) => claims !== null),
-                        Effect.catchAll(() => Effect.succeed(false))
+                        Effect.catch(() => Effect.succeed(false))
                     ),
                     isMaintenance: Effect.tryPromise(() => isAppMaintenanceFlag()).pipe(
-                        Effect.catchAll(() => Effect.succeed(false))
+                        Effect.catch(() => Effect.succeed(false))
                     ),
                 },
                 { concurrency: 'unbounded' }

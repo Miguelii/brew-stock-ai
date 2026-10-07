@@ -21,7 +21,7 @@ const processReportBackgroundJob = task({
 
         const refunded = await Effect.runPromise(
             markReportFailedAndRefund(payload.reportId).pipe(
-                Effect.catchAll((err) =>
+                Effect.catch((err) =>
                     Effect.sync(() => {
                         logger.error('markReportFailedAndRefund failed', {
                             reportId: payload.reportId,
@@ -59,7 +59,7 @@ export const enqueueReportProcessing = (reportId: string) =>
         catch: (cause) => cause,
     }).pipe(
         Effect.asVoid,
-        Effect.catchAll((error) =>
+        Effect.catch((error) =>
             Effect.sync(() =>
                 Logger({
                     level: 'error',
@@ -69,9 +69,9 @@ export const enqueueReportProcessing = (reportId: string) =>
                     metadata: { reportId },
                 })
             ).pipe(
-                Effect.zipRight(markReportFailedAndRefund(reportId)),
+                Effect.andThen(markReportFailedAndRefund(reportId)),
                 Effect.asVoid,
-                Effect.catchAll((refundError) =>
+                Effect.catch((refundError) =>
                     Effect.sync(() =>
                         Logger({
                             level: 'error',

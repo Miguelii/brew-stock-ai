@@ -84,7 +84,7 @@ export const getInvoices = Effect.fn('getInvoices')(function* (user: User) {
         catch: (cause) =>
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_FETCH }),
     }).pipe(
-        Effect.catchAll((error) => {
+        Effect.catch((error) => {
             const message: string = (error.cause as any)?.message ?? ''
             const isDevModeConflict =
                 message.includes(

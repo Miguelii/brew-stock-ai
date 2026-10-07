@@ -20,7 +20,7 @@ export function ReportMacbookScroll() {
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-primary-foreground mb-8 text-center">
                     This is what your report looks like.
                 </h2>
-                <MacbookScroll src="/assets/report-preview-v1.1.png" showGradient={false} />
+                <MacbookScroll src="/assets/report-preview-v2.png" showGradient={false} />
             </m.div>
         </section>
     )

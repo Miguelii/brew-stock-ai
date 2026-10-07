@@ -44,7 +44,7 @@ export const createReport = Effect.fn('createReport')(function* (
     }).pipe(
         Effect.tapError(() =>
             refundCredits(user.id, creditCost, supabase).pipe(
-                Effect.catchAll((error) =>
+                Effect.catch((error) =>
                     Effect.sync(() =>
                         Logger({
                             level: 'error',

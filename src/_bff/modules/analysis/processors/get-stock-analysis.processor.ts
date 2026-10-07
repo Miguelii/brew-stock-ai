@@ -47,7 +47,7 @@ const logAndRecover =
     <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A | B, never, R> =>
         effect.pipe(
             Effect.tapError((error) => Effect.sync(() => logger.error(label, { ticker, error }))),
-            Effect.orElse(() => Effect.succeed(fallback))
+            Effect.catch(() => Effect.succeed(fallback))
         )
 
 const resolvePromptTemplate = Effect.fn('resolvePromptTemplate')(function* (promptType: string) {
@@ -247,7 +247,9 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
     const marketData = yield* fetchMarketData(stockSymbol, supabaseClient)
 
     // Persist fresh Yahoo data in the background while the model generates
-    const saveYahooFiber = yield* Effect.fork(saveFreshYahooData(marketData.yahoo, supabaseClient))
+    const saveYahooFiber = yield* Effect.forkChild(
+        saveFreshYahooData(marketData.yahoo, supabaseClient)
+    )
 
     // Join the save even when the analysis fails, so the child fiber is never interrupted mid-write
     return yield* analyzeAndSaveReport({

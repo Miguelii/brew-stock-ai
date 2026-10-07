@@ -4,7 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 // Extracts the tagged failure of an Exit, or null when the effect succeeded.
 export const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
     if (!Exit.isFailure(exit)) return null
-    const failure = Cause.failureOption(exit.cause)
+    const failure = Cause.findErrorOption(exit.cause)
     return Option.isSome(failure) ? (failure.value as { _tag: string })._tag : null
 }
 

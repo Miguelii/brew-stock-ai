@@ -60,8 +60,12 @@ export const signedPct1 = (n: number | null | undefined): string =>
  * @param d - The date to format.
  * @returns The ISO day string, or `null` when the date is absent.
  */
-export const toIso = (d: Date | null | undefined): string | null =>
-    d ? new Date(d).toISOString().split('T')[0] : null
+export const toIso = (d: Date | null | undefined): string | null => {
+    if (!d) return null
+    const date = new Date(d)
+    // toISOString() throws a RangeError on an invalid date
+    return Number.isNaN(date.getTime()) ? null : date.toISOString().split('T')[0]
+}
 
 /**
  * Format a plain number to a fixed number of decimals.

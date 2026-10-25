@@ -47,12 +47,16 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
         },
     }).pipe(Effect.catch(() => Effect.succeed(null)))
 
-    // Fetch financial indicators via quoteSummary — non-fatal
+    // Fetch financial indicators via quoteSummary (non-fatal). The mapper runs inside `try`
+    // so a throw there is a typed failure (recovered below), not a defect that would make
+    // `Effect.all` interrupt the sibling calls.
     const financialsEffect = Effect.tryPromise({
-        try: () =>
-            yahooClient.quoteSummary(ticker, {
-                modules: ['financialData', 'summaryDetail', 'defaultKeyStatistics'],
-            }),
+        try: async () =>
+            mapFinancials(
+                await yahooClient.quoteSummary(ticker, {
+                    modules: ['financialData', 'summaryDetail', 'defaultKeyStatistics'],
+                })
+            ),
         catch: (cause) => {
             logger.error('getYahooData financials quoteSummary error', { ticker, error: cause })
             return new YahooQuoteSummaryError({
@@ -61,10 +65,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                 error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
             })
         },
-    }).pipe(
-        Effect.map(mapFinancials),
-        Effect.catch(() => Effect.succeed(null))
-    )
+    }).pipe(Effect.catch(() => Effect.succeed(null)))
 
     // Expanded fundamentals — fetched independently of the core `financials`
     // above so a failure here never compromises it. Earnings/estimates/ratings/
@@ -98,12 +99,14 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
     }).pipe(Effect.catch(() => Effect.succeed(null)))
 
     const revenueTrendEffect = Effect.tryPromise({
-        try: () =>
-            yahooClient.fundamentalsTimeSeries(ticker, {
-                period1: fundamentalsPeriod1,
-                type: 'annual',
-                module: 'financials',
-            }),
+        try: async () =>
+            mapRevenueTrend(
+                await yahooClient.fundamentalsTimeSeries(ticker, {
+                    period1: fundamentalsPeriod1,
+                    type: 'annual',
+                    module: 'financials',
+                })
+            ),
         catch: (cause) => {
             logger.error('getYahooData revenueTrend fundamentalsTimeSeries error', {
                 ticker,
@@ -115,10 +118,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                 error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
             })
         },
-    }).pipe(
-        Effect.map(mapRevenueTrend),
-        Effect.catch(() => Effect.succeed([] as RevenueTrendPoint[]))
-    )
+    }).pipe(Effect.catch(() => Effect.succeed([] as RevenueTrendPoint[])))
 
     // All four Yahoo calls are independent — run them in parallel.
     const [insights, financials, fundamentalsSummary, revenueTrend] = yield* Effect.all(

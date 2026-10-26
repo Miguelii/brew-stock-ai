@@ -25,5 +25,6 @@ export const getAdminFeedback = Effect.fn('getAdminFeedback')(function* () {
 
     const feedback = yield* selectAdminFeedback(supabase)
 
+    // SAFETY: selectAdminFeedback selects exactly the AdminFeedback columns
     return feedback as AdminFeedback[]
 })

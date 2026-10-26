@@ -87,12 +87,12 @@ describe('calculateTokenCost', () => {
     describe('returns a number (not N/A) for valid models with valid tokens', () => {
         it('result is of type number for haiku with valid tokens', () => {
             const result = calculateTokenCost('claude-haiku-4-5', 1000, 1000)
-            expect(typeof result).toBe('number')
+            expect(result).toBeCloseTo(0.006)
         })
 
         it('result is of type number for sonnet with valid tokens', () => {
             const result = calculateTokenCost('claude-sonnet-5', 1000, 1000)
-            expect(typeof result).toBe('number')
+            expect(result).toBeCloseTo(0.012)
         })
 
         it('result is never negative for positive inputs', () => {

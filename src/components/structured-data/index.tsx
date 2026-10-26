@@ -1,6 +1,10 @@
 import { ClientEnv } from '@/env/client'
 import { SITE_AUTHOR_NAME } from '@/lib/constants'
 import { PACKAGES, TOKEN_PACKAGES } from '@/_bff/core/constants/credit-packages.constants'
+import type { JsonValue } from '@/types/Json'
+
+// A schema.org JSON-LD document, serialised into a `<script type="application/ld+json">`
+type JsonLdSchema = { [key: string]: JsonValue }
 
 const WEBSITE_URL = ClientEnv.NEXT_PUBLIC_WEBSITE_URL
 
@@ -41,7 +45,7 @@ const CREDIT_OFFERS = [
 
 // JSON.stringify does not HTML-escape; a `</script>` or `<` in the data would
 // break out of the script tag, so escape the three dangerous characters.
-function jsonLdHtml(schema: object): { __html: string } {
+function jsonLdHtml(schema: JsonLdSchema) {
     return {
         __html: JSON.stringify(schema)
             .replaceAll('<', String.raw`\u003c`)

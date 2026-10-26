@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { ServerEnv } from '@/env/server'
 import type { NewsItem } from '@/types/news'
 import { unstable_cache } from 'next/cache'
@@ -10,6 +11,17 @@ import {
 import { selectCardNews } from '@/_bff/modules/finnhub/helpers/select-card-news.helper'
 
 const FETCH_TIMEOUT_MS = 30_000
+
+const NewsItemSchema = z.object({
+    category: z.string(),
+    datetime: z.number(),
+    headline: z.string(),
+    id: z.number(),
+    image: z.string(),
+    source: z.string(),
+    summary: z.string(),
+    url: z.string(),
+}) satisfies z.ZodType<NewsItem>
 
 const fetchCompanyNews = async (ticker: string): Promise<NewsItem[]> => {
     const to = new Date()
@@ -26,7 +38,11 @@ const fetchCompanyNews = async (ticker: string): Promise<NewsItem[]> => {
 
     if (!Array.isArray(raw)) throw new Error(`Unexpected news response for ${ticker}`)
 
-    return raw as NewsItem[]
+    // A malformed item is dropped instead of failing the whole feed
+    return raw.flatMap((item) => {
+        const parsed = NewsItemSchema.safeParse(item)
+        return parsed.success ? [parsed.data] : []
+    })
 }
 
 export const fetchLatestNewsRaw = async (ticker: string): Promise<NewsItem[]> =>

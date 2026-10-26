@@ -5,6 +5,17 @@ import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { GetYahooDataResult } from '@/_bff/modules/yahoo/types'
 import { hasStockData } from '@/_bff/modules/yahoo/helpers/utils.helper'
 
+// Columns written to `stock_data`: empty sections are omitted so they never overwrite stored data
+type StockDataUpsert = {
+    id: string | null
+    last_update_at: string
+    reports?: GetYahooDataResult['reports']
+    scores?: GetYahooDataResult['scores']
+    sig_dev?: GetYahooDataResult['sigDev']
+    financials?: GetYahooDataResult['financials']
+    fundamentals?: GetYahooDataResult['fundamentals']
+}
+
 // Returns the raw Supabase response, the fallback processor decides how to use it
 export function selectStockData(supabase: SupabaseClient, ticker: string) {
     return Effect.tryPromise({
@@ -19,7 +30,7 @@ export const upsertStockData = Effect.fn('upsertStockData')(function* (
     ticker: string | null,
     data: GetYahooDataResult
 ) {
-    const payload: Record<string, unknown> = {
+    const payload: StockDataUpsert = {
         id: ticker,
         last_update_at: new Date().toISOString(),
     }

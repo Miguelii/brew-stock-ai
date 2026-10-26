@@ -1,5 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse, type Server } from 'node:http'
 import { MOCK_NEWS_ITEMS, MOCK_REPORT, MOCK_STOCK_DATA } from './fixtures/mock-data'
+import type { JsonSerializable } from '@/types/Json'
 
 const MOCK_USER = {
     id: 'pw-test-user-id',
@@ -11,7 +12,7 @@ const MOCK_USER = {
     updated_at: '2024-01-01T00:00:00Z',
 }
 
-function respond(res: ServerResponse, data: unknown, status = 200) {
+function respond(res: ServerResponse, data: JsonSerializable, status = 200) {
     res.writeHead(status, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify(data))
 }

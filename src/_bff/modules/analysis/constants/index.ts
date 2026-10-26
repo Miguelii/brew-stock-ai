@@ -8,13 +8,13 @@ import {
 } from '@/_bff/modules/analysis/prompts/analysis.prompt'
 import { PROMPT_TYPES } from '@/_bff/core/constants/prompt-types.constants'
 
-export const PROMPTS_MAP: Record<string, string> = {
+export const PROMPTS_MAP = {
     [PROMPT_TYPES.STOCK_ANALYSIS.type]: WallStreetStyleStockAnalysisPrompt,
     [PROMPT_TYPES.DEEP_FINANCIAL_BREAKDOWN.type]: DeepFinancialBreakdownPrompt,
     [PROMPT_TYPES.MOAT_ANALYSIS.type]: MoatAnalysisPrompt,
     [PROMPT_TYPES.RISK_ANALYSIS.type]: RiskAnalysisPrompt,
     [PROMPT_TYPES.GROWTH_POTENTIAL_ANALYSIS.type]: GrowthPotentialAnalysisPrompt,
-}
+} satisfies Record<string, string>
 
 export const PROMPT_COSTS_MAP: Record<string, number> = Object.fromEntries(
     Object.values(PROMPT_TYPES).map(({ type, cost }) => [type, cost])

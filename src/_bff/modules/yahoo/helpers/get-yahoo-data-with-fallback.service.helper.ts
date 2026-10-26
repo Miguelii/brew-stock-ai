@@ -58,6 +58,7 @@ export const selectDbRow = Effect.fn('selectDbRow')(function* (
     supabaseClient: SupabaseClient
 ) {
     return yield* selectStockData(supabaseClient, ticker).pipe(
+        // SAFETY: stock_data rows are only written by upsertStockData, whose columns StockDataRow mirrors
         Effect.map((res) => (res.data ?? null) as StockDataRow | null),
         Effect.catch(() => Effect.succeed(null))
     )

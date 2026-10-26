@@ -23,6 +23,7 @@ import { SystemPrompt } from '@/_bff/modules/analysis/prompts/system.prompt'
 import { calculateTokenCost } from '@/_bff/modules/analysis/helpers/calculate-token-cost.helper'
 import { normalizeSentiment } from '@/_bff/modules/analysis/helpers/normalize-sentiment.helper'
 import { isAnalysisComplete } from '@/_bff/modules/analysis/helpers/is-analysis-complete.helper'
+import { hasOwnKey } from '@/_bff/core/utils/lookup.utils'
 import { hasAnyStockData } from '@/_bff/modules/yahoo/helpers/get-yahoo-data-with-fallback.service.helper'
 import { getYahooTicker } from '@/_bff/modules/yahoo/processors/get-yahoo-ticker.processor'
 import { saveYahooData } from '@/_bff/modules/yahoo/processors/save-yahoo-data.processor'
@@ -51,16 +52,14 @@ const logAndRecover =
         )
 
 const resolvePromptTemplate = Effect.fn('resolvePromptTemplate')(function* (promptType: string) {
-    const promptTemplate = PROMPTS_MAP[promptType]
-
-    if (!promptTemplate) {
+    if (!hasOwnKey(PROMPTS_MAP, promptType)) {
         return yield* new InvalidPromptTypeError({
             promptType,
             error_hash: ErrorCode.ANALYSIS_INVALID_PROMPT,
         })
     }
 
-    return promptTemplate
+    return PROMPTS_MAP[promptType]
 })
 
 /**

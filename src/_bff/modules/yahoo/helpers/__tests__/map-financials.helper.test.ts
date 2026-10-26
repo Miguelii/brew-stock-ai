@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import type { QuoteSummaryResult } from 'yahoo-finance2/modules/quoteSummary-iface'
 import { mapFinancials } from '@/_bff/modules/yahoo/helpers/map-financials.helper'
+import type { DeepPartial } from '@/_bff/lib/tests-utils'
 
 // The upstream yahoo-finance2 types are huge; fixtures only carry the fields the mapper reads.
-const summaryOf = (modules: Record<string, unknown>): QuoteSummaryResult =>
+const summaryOf = (modules: DeepPartial<QuoteSummaryResult>): QuoteSummaryResult =>
     modules as unknown as QuoteSummaryResult
 
 describe('mapFinancials', () => {

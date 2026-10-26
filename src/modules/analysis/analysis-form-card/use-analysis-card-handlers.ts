@@ -1,6 +1,7 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { FormValues } from '@/modules/analysis/analysis-form-card/use-analysis-form'
 import { trpcClient } from '@/lib/trpc'
+import { getTrpcErrorCode } from '@/lib/trpc-error-code'
 import { createElement, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -61,7 +62,7 @@ export const useAnalysisCardHandlers = ({ form }: Props) => {
             )
             setTimeout(() => router.push('/reports'), REDIRECT_DELAY_MS)
         } catch (error) {
-            const code = (error as { data?: { code?: string } })?.data?.code
+            const code = getTrpcErrorCode(error)
 
             if (code === 'PAYMENT_REQUIRED') {
                 toastError(

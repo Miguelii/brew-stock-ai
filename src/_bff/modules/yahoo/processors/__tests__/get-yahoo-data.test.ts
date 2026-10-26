@@ -20,7 +20,7 @@ vi.mock('yahoo-finance2', () => ({
         quoteSummary = quoteSummaryMock
         fundamentalsTimeSeries = fundamentalsTimeSeriesMock
 
-        constructor(options: unknown) {
+        constructor(options: ConstructorParameters<typeof import('yahoo-finance2').default>[0]) {
             constructorMock(options)
         }
     },
@@ -36,13 +36,13 @@ const INSIGHTS = {
             title: 'Upgrade to Buy',
             headHtml: 'ignored',
             provider: 'Argus',
-            reportDate: '2026-10-10',
+            reportDate: new Date('2026-10-10'),
             reportTitle: 'AAPL: upgrade',
         },
         {
             headHtml: 'Head only report',
             provider: 'Morningstar',
-            reportDate: '2026-10-05',
+            reportDate: new Date('2026-10-05'),
             reportTitle: 'AAPL: fair value',
         },
     ],
@@ -92,10 +92,7 @@ const EXPECTED_SCORES = {
 const EXPECTED_REVENUE_TREND = [{ endDate: '2025-12-31', totalRevenue: 400, netIncome: 90 }]
 
 // Both quoteSummary calls go through the same client method, told apart by their modules.
-const mockQuoteSummary = (
-    financials: () => Promise<unknown>,
-    fundamentals: () => Promise<unknown>
-) =>
+const mockQuoteSummary = <F, G>(financials: () => Promise<F>, fundamentals: () => Promise<G>) =>
     quoteSummaryMock.mockImplementation((_ticker: string, { modules }: { modules: string[] }) =>
         modules.includes('financialData') ? financials() : fundamentals()
     )
@@ -156,18 +153,21 @@ describe('getYahooData', () => {
         it('maps insights, financials and fundamentals', async () => {
             const result = await run()
 
-            expect(result.sigDev).toEqual(INSIGHTS.sigDevs[0])
+            expect(result.sigDev).toEqual({
+                ...INSIGHTS.sigDevs[0],
+                date: '2026-10-01T00:00:00.000Z',
+            })
             expect(result.reports).toEqual([
                 {
                     title: 'Upgrade to Buy',
                     provider: 'Argus',
-                    reportDate: '2026-10-10',
+                    reportDate: '2026-10-10T00:00:00.000Z',
                     reportTitle: 'AAPL: upgrade',
                 },
                 {
                     title: 'Head only report',
                     provider: 'Morningstar',
-                    reportDate: '2026-10-05',
+                    reportDate: '2026-10-05T00:00:00.000Z',
                     reportTitle: 'AAPL: fair value',
                 },
             ])

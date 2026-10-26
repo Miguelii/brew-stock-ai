@@ -63,13 +63,21 @@ export const EDUCATION_HUB_ARTICLES: EducationHubArticle[] = [
 
 export const EDUCATION_HUB_ARTICLE_MAP = new Map(EDUCATION_HUB_ARTICLES.map((a) => [a.slug, a]))
 
-export const EDUCATION_HUB_THEMES: { value: ArticleTheme; label: string }[] = [
-    { value: 'stock-analysis', label: 'Stock Analysis' },
-    { value: 'investing-strategy', label: 'Investing Strategy' },
-    { value: 'personal-finance', label: 'Personal Finance' },
-    { value: 'dividends-income', label: 'Dividends & Income' },
+export const EDUCATION_HUB_THEME_LABELS: Record<ArticleTheme, string> = {
+    'stock-analysis': 'Stock Analysis',
+    'investing-strategy': 'Investing Strategy',
+    'personal-finance': 'Personal Finance',
+    'dividends-income': 'Dividends & Income',
+}
+
+const THEME_ORDER: ArticleTheme[] = [
+    'stock-analysis',
+    'investing-strategy',
+    'personal-finance',
+    'dividends-income',
 ]
 
-export const EDUCATION_HUB_THEME_LABELS: Record<ArticleTheme, string> = Object.fromEntries(
-    EDUCATION_HUB_THEMES.map((t) => [t.value, t.label])
-) as Record<ArticleTheme, string>
+export const EDUCATION_HUB_THEMES = THEME_ORDER.map((value) => ({
+    value,
+    label: EDUCATION_HUB_THEME_LABELS[value],
+}))

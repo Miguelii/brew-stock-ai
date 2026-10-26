@@ -107,6 +107,12 @@ function buildFundamentalsSection(f: StockFundamentals): string {
     return blocks.join('\n')
 }
 
+const TREND_LABELS: Record<StockTechnicals['trend'], string> = {
+    'golden-cross': 'SMA50 above SMA200 (bullish regime)',
+    'death-cross': 'SMA50 below SMA200 (bearish regime)',
+    neutral: 'no clear SMA regime',
+}
+
 /**
  * Render the technical snapshot (moving averages, trend regime, RSI, 52-week
  * position, trailing returns and volatility) as Markdown. Framed explicitly as
@@ -116,12 +122,7 @@ function buildFundamentalsSection(f: StockFundamentals): string {
  * @returns The Markdown section as a single string.
  */
 function buildTechnicalsSection(t: StockTechnicals): string {
-    const trendLabel =
-        t.trend === 'golden-cross'
-            ? 'SMA50 above SMA200 (bullish regime)'
-            : t.trend === 'death-cross'
-              ? 'SMA50 below SMA200 (bearish regime)'
-              : 'no clear SMA regime'
+    const trendLabel = TREND_LABELS[t.trend]
 
     return [
         '**Technical Snapshot (1-year daily, secondary timing signal):**',

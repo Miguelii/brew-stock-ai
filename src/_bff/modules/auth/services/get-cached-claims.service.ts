@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { cache } from 'react'
+import { z } from 'zod'
 import { createDBServerClient } from '@/_bff/core/db'
 
 export type SessionClaims = {
@@ -9,6 +10,17 @@ export type SessionClaims = {
     avatarUrl: string | null
     fullName: string | null
 }
+
+// JWT claims are user-editable metadata: a missing or malformed field reads as null
+const optionalClaim = z.string().nullable().catch(null)
+
+const ClaimsSchema = z.object({
+    sub: z.string().min(1),
+    email: optionalClaim,
+    user_metadata: z
+        .object({ avatar_url: optionalClaim, full_name: optionalClaim })
+        .catch({ avatar_url: null, full_name: null }),
+})
 
 /**
  * Current user's identity for rendering UI (navigation, avatar, auth-aware CTAs).
@@ -24,17 +36,15 @@ export const getCachedClaims = cache(async (): Promise<SessionClaims | null> => 
     try {
         const supabase = await createDBServerClient()
         const { data } = await supabase.auth.getClaims()
-        const claims = data?.claims
+        const claims = ClaimsSchema.safeParse(data?.claims)
 
-        if (!claims?.sub) return null
-
-        const metadata = claims.user_metadata
+        if (!claims.success) return null
 
         return {
-            userId: claims.sub,
-            email: typeof claims.email === 'string' ? claims.email : null,
-            avatarUrl: typeof metadata?.avatar_url === 'string' ? metadata.avatar_url : null,
-            fullName: typeof metadata?.full_name === 'string' ? metadata.full_name : null,
+            userId: claims.data.sub,
+            email: claims.data.email,
+            avatarUrl: claims.data.user_metadata.avatar_url,
+            fullName: claims.data.user_metadata.full_name,
         }
     } catch {
         return null

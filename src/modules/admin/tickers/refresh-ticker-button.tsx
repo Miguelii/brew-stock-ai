@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { trpcClient } from '@/lib/trpc'
+import { getTrpcErrorCode } from '@/lib/trpc-error-code'
 import { toastError } from '@/lib/toast-error'
 import type { RefreshStockDataResult } from '@/_bff/modules/admin/services/refresh-stock-data.service'
 
@@ -28,7 +29,7 @@ export function RefreshTickerButton({ ticker }: Props) {
             })
             router.refresh()
         } catch (error) {
-            const code = (error as { data?: { code?: string } })?.data?.code
+            const code = getTrpcErrorCode(error)
 
             if (code === 'BAD_GATEWAY') {
                 toastError(

@@ -3,15 +3,12 @@ import { protectedProcedure } from '@/_bff/trpc/server'
 import { runEffect } from '@/_bff/trpc/utils'
 import { z } from 'zod'
 import { subscribePush } from '@/_bff/modules/core/services/subscribe-push.service'
+import { PUSH_SUBSCRIPTION_SCHEMA } from '@/_bff/core/constants/push-subscription.constants'
 
 export const SUBSCRIBE_PUSH_PROTECTED_CONTROLLER = protectedProcedure
     .input(
         z.object({
-            subscription: z.object({
-                endpoint: z.string(),
-                expirationTime: z.number().nullable(),
-                keys: z.object({ p256dh: z.string(), auth: z.string() }),
-            }),
+            subscription: PUSH_SUBSCRIPTION_SCHEMA,
         })
     )
     .mutation(({ input, ctx }) =>

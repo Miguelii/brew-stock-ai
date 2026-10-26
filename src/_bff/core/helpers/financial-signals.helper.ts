@@ -48,7 +48,10 @@ export function getAnalystRatingsTotal(ratings: AnalystRatings): number {
 
 /** How many quarters beat the estimate, out of the quarters that can be judged. */
 export function getEarningsBeatSummary(history: EarningsQuarter[]): EarningsBeatSummary {
-    const results = history.map((q) => getEarningsBeat(q)).filter((beat) => beat !== null)
+    const results = history.flatMap((q) => {
+        const beat = getEarningsBeat(q)
+        return beat === null ? [] : [beat]
+    })
 
     return { beats: results.filter(Boolean).length, graded: results.length }
 }

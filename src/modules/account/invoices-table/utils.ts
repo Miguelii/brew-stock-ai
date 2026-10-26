@@ -1,4 +1,6 @@
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
+import { hasOwnKey } from '@/_bff/core/utils/lookup.utils'
+
+const PAYMENT_METHOD_LABELS = {
     card: 'Card',
     multibanco: 'Multibanco',
     sepa_debit: 'SEPA Debit',
@@ -7,7 +9,7 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
     bancontact: 'Bancontact',
     klarna: 'Klarna',
     link: 'Link',
-}
+} satisfies Record<string, string>
 
 /**
  * Map a payment-method key to its human-friendly label.
@@ -17,5 +19,5 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
  */
 export function formatPaymentMethod(method: string | undefined): string {
     if (!method) return '—'
-    return PAYMENT_METHOD_LABELS[method] ?? method
+    return hasOwnKey(PAYMENT_METHOD_LABELS, method) ? PAYMENT_METHOD_LABELS[method] : method
 }

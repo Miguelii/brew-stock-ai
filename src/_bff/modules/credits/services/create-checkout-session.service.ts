@@ -151,5 +151,13 @@ export const createCheckoutSession = Effect.fn('createCheckoutSession')(function
             new CreateCheckoutSessionError({ cause, error_hash: ErrorCode.CHECKOUT_STRIPE_CREATE }),
     })
 
-    return session.url as string
+    // Hosted checkout always has a URL; null only happens for embedded UI modes
+    if (!session.url) {
+        return yield* new CreateCheckoutSessionError({
+            cause: `Checkout session ${session.id} has no URL`,
+            error_hash: ErrorCode.CHECKOUT_STRIPE_NO_URL,
+        })
+    }
+
+    return session.url
 })

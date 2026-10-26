@@ -17,6 +17,7 @@ export const selectCredits = Effect.fn('selectCredits')(function* (
         return yield* new GetCreditsError({ cause: error, error_hash: ErrorCode.TOKENS_GET_FETCH })
     }
 
+    // SAFETY: user_credits.credits is an integer column
     return (data?.credits ?? 0) as number
 })
 
@@ -35,5 +36,6 @@ export const selectStripeCustomerId = Effect.fn('selectStripeCustomerId')(functi
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_CREDITS_FETCH }),
     })
 
+    // SAFETY: user_credits.stripe_customer_id is a nullable text column
     return (data?.stripe_customer_id ?? null) as string | null
 })

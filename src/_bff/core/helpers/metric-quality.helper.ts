@@ -251,9 +251,15 @@ const letterQuality = (letter: string): MetricQuality => {
     return 'concern'
 }
 
+const GRADE_WORDS: Record<MetricQuality, string> = {
+    good: 'Strong',
+    neutral: 'Weak',
+    caution: 'Fair',
+    concern: 'Weak',
+}
+
 /** Plain-language word for a category grade (used under the letter). */
-export const gradeWord = (quality: MetricQuality): string =>
-    quality === 'good' ? 'Strong' : quality === 'caution' ? 'Fair' : 'Weak'
+export const gradeWord = (quality: MetricQuality): string => GRADE_WORDS[quality]
 
 /**
  * Grade a category from its metrics: averages the per-metric quality points over the

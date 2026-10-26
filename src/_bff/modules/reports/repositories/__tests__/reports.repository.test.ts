@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
 import { ReportStatus } from '@/types/ReportDTO'
 import { failureTag, asClient } from '@/_bff/lib/tests-utils'
+import type { JsonSerializable } from '@/types/Json'
 import {
     insertReport,
     markReportFailed,
@@ -24,7 +25,7 @@ vi.mock('@/_bff/core/db', () => ({
 vi.mock('@/_bff/lib/server-logger', () => ({ Logger: loggerMock }))
 // unstable_cache needs the Next.js incremental cache runtime, absent in vitest — pass through
 vi.mock('next/cache', () => ({
-    unstable_cache: (fn: (...args: unknown[]) => unknown) => fn,
+    unstable_cache: <T>(fn: T) => fn,
 }))
 
 describe('insertReport', () => {
@@ -182,7 +183,7 @@ describe('selectReportForProcessing', () => {
 })
 
 describe('selectStockDataByTickerCached', () => {
-    const makeStockChain = (maybeSingle: () => Promise<unknown>) =>
+    const makeStockChain = (maybeSingle: () => Promise<JsonSerializable>) =>
         asClient({ select: () => ({ eq: () => ({ maybeSingle }) }) })
 
     beforeEach(() => {

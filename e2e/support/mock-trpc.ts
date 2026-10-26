@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test'
 import type { Invoice } from '@/types/Invoice'
+import type { JsonSerializable } from '@/types/Json'
 import {
     MOCK_CREDITS,
     MOCK_EXPORT_PDF,
@@ -10,7 +11,7 @@ import {
 } from '../fixtures/mock-data'
 
 // tRPC v11 with httpBatchLink wraps all responses as an array
-function batchResponse(data: unknown) {
+function batchResponse(data: JsonSerializable) {
     return JSON.stringify([{ result: { data } }])
 }
 
@@ -21,7 +22,7 @@ export async function mockGetCredits(page: Page, credits = MOCK_CREDITS) {
     )
 }
 
-export async function mockGetReports(page: Page, reports: unknown[] = []) {
+export async function mockGetReports(page: Page, reports: JsonSerializable[] = []) {
     await page.route('**/api/trpc/reports.getAll**', (route) =>
         route.fulfill({ contentType: 'application/json', body: batchResponse(reports) })
     )

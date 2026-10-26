@@ -45,7 +45,7 @@ export default async function AuthPage({ searchParams }: Props) {
                 ]}
             />
             <AuthLayout>
-                <AuthCard returnTo={typeof returnTo === 'string' ? returnTo : undefined} />
+                <AuthCard returnTo={Array.isArray(returnTo) ? undefined : returnTo} />
             </AuthLayout>
         </>
     )

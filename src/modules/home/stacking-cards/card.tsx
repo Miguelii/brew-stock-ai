@@ -2,7 +2,6 @@
 
 import { m, useMotionTemplate, useTransform, type MotionValue } from 'motion/react'
 import type { LucideIcon } from 'lucide-react'
-import type { CSSProperties } from 'react'
 
 type Props = {
     icon: LucideIcon
@@ -52,12 +51,10 @@ export function StackCard({
         <m.article
             data-tone={tone}
             data-stack-card
-            style={
-                {
-                    '--stack-transform': transform,
-                    '--stack-top': `${index * 18}px`,
-                } as CSSProperties
-            }
+            style={{
+                '--stack-transform': transform,
+                '--stack-top': `${index * 18}px`,
+            }}
             className="surface flex flex-col gap-5 bg-tone p-8 text-tone-ink lg:absolute lg:inset-x-0 lg:top-[var(--stack-top)] lg:min-h-[400px] lg:p-10 lg:[transform:var(--stack-transform)]"
         >
             <span className="eyebrow opacity-80">

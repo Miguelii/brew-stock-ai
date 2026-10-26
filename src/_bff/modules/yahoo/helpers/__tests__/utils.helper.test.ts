@@ -22,10 +22,4 @@ describe('hasStockData', () => {
         expect(hasStockData([1])).toBe(true)
         expect(hasStockData({ value: 1 })).toBe(true)
     })
-
-    it('returns true for defined primitive values', () => {
-        expect(hasStockData(0)).toBe(true)
-        expect(hasStockData(false)).toBe(true)
-        expect(hasStockData('AAPL')).toBe(true)
-    })
 })

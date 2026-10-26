@@ -14,7 +14,7 @@ export const insertFeedback = Effect.fn('insertFeedback')(function* (
                 email: params.email,
                 message: params.message,
                 created_at: 'now()',
-                ...(params.userId ? { user_id: params.userId } : {}),
+                user_id: params.userId || undefined,
             }),
         catch: (cause) =>
             new SubmitFeedbackError({ cause, error_hash: ErrorCode.FEEDBACK_SUBMIT_INSERT }),

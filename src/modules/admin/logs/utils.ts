@@ -1,3 +1,5 @@
+import type { JsonValue } from '@/types/Json'
+
 /**
  * Normalise an ISO timestamp into a compact `YYYY-MM-DD HH:mm:ss` string with
  * seconds precision — handy for scanning logs.
@@ -14,5 +16,5 @@ export const formatLogTimestamp = (iso: string | null | undefined): string =>
  * @param value - The value to serialise.
  * @returns The 2-space-indented JSON string, or `'—'` when the value is nullish.
  */
-export const formatJson = (value: unknown): string =>
+export const formatJson = (value: JsonValue | undefined): string =>
     value == null ? '—' : JSON.stringify(value, null, 2)

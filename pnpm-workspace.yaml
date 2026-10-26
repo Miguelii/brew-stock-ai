@@ -32,3 +32,5 @@ minimumReleaseAgeExclude:
     - '@vercel/functions@3.9.7'
     - '@vercel/flags-core@1.8.1'
     - '@vercel/oidc@3.8.7'
+    - '@tanstack/query-core@5.105.0'
+    - '@tanstack/react-query@5.105.0'

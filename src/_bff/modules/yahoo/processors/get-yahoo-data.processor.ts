@@ -118,7 +118,7 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
                 error_hash: ErrorCode.YAHOO_QUOTE_SUMMARY,
             })
         },
-    }).pipe(Effect.catch(() => Effect.succeed([] as RevenueTrendPoint[])))
+    }).pipe(Effect.catch(() => Effect.succeed<RevenueTrendPoint[]>([])))
 
     // All four Yahoo calls are independent — run them in parallel.
     const [insights, financials, fundamentalsSummary, revenueTrend] = yield* Effect.all(
@@ -127,18 +127,19 @@ export const getYahooData = Effect.fn('getYahooData')(function* (ticker: string)
     )
 
     // Recent significant development
-    const sigDev: StockSigDev | null = (insights?.sigDevs?.at(0) as unknown as StockSigDev) ?? null
+    const latestSigDev = insights?.sigDevs?.at(0)
+    const sigDev: StockSigDev | null = latestSigDev
+        ? { headline: latestSigDev.headline, date: latestSigDev.date.toISOString() }
+        : null
 
     // Get the 3 latests reports
     const reports: StockReports[] =
-        insights?.reports?.map((item) => {
-            return {
-                title: item.title ?? item.headHtml,
-                provider: item.provider,
-                reportDate: item.reportDate,
-                reportTitle: item.reportTitle,
-            } as unknown as StockReports
-        }) ?? []
+        insights?.reports?.map((item) => ({
+            title: item.title ?? item.headHtml,
+            provider: item.provider,
+            reportDate: item.reportDate.toISOString(),
+            reportTitle: item.reportTitle,
+        })) ?? []
 
     let scores: StockScores | null = null
 

@@ -57,6 +57,9 @@ export function TokenPackages({
 
                     if (!showFree && pkg.id === 'free') return null
 
+                    // The free trial is granted on sign-up, it can never be checked out
+                    const purchasableId = pkg.id === 'free' ? null : pkg.id
+
                     return (
                         <Card
                             key={pkg.id}
@@ -141,7 +144,7 @@ export function TokenPackages({
 
                                 <p className="text-sm text-muted-foreground">{pkg.description}</p>
 
-                                {showBuyButton && (
+                                {showBuyButton && purchasableId && (
                                     <Button
                                         data-testid="buy-now-button"
                                         className="mt-auto w-full"
@@ -156,7 +159,7 @@ export function TokenPackages({
                                             })
 
                                             checkout.mutate({
-                                                packageId: pkg.id as 'starter' | 'pro' | 'expert',
+                                                packageId: purchasableId,
                                             })
                                         }}
                                     >

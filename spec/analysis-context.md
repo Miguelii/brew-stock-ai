@@ -282,12 +282,15 @@ price series skips the block entirely.
 ### Recent Significant Development (EXISTING)
 
 Type `StockSigDev` (Yahoo `insights.sigDevs[0]`): `headline` + `date`. The single most notable
-recent event. Confirmatory weight only.
+recent event. Confirmatory weight only. `date` is an ISO 8601 timestamp string on both the fresh
+and the `stock_data` paths (fresh data used to print the raw JS `Date`); only those two fields are
+kept, extra Yahoo fields are no longer stored.
 
 ### Analyst Coverage (EXISTING)
 
 Type `StockReports[]` (Yahoo `insights.reports`, up to 3): `title`/`reportTitle`, `provider`,
 `reportDate`. Surfaced as titles; the prompt treats these as secondary, confirmatory signals.
+`reportDate` is an ISO 8601 timestamp string on both the fresh and the `stock_data` paths.
 
 ### Company vs Sector Scores (EXISTING)
 

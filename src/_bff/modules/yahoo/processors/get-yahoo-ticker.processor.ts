@@ -26,12 +26,13 @@ export const getYahooTicker = Effect.fn('getYahooTicker')(function* (stockSymbol
             }),
     })
 
-    const filterByType = (type: string) =>
-        result.quotes
-            .filter((q) => 'quoteType' in q && q.quoteType === type && q.isYahooFinance === true)
-            .map((q) => q.symbol as string)
+    // Non-Yahoo results (external links) carry no trading symbol
+    const yahooQuotes = result.quotes.filter((q) => q.isYahooFinance === true)
 
-    const allSymbols = result.quotes.map((q) => q.symbol as string)
+    const filterByType = (type: string) =>
+        yahooQuotes.filter((q) => q.quoteType === type).map((q) => q.symbol)
+
+    const allSymbols = yahooQuotes.map((q) => q.symbol)
 
     const ticker =
         filterByType('EQUITY').at(0) ?? filterByType('ETF').at(0) ?? allSymbols.at(0) ?? stockSymbol

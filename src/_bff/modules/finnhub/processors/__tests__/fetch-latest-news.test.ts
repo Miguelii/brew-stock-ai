@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import type { JsonSerializable } from '@/types/Json'
+import type { NewsItem } from '@/types/news'
 import {
     fetchLatestNewsCached,
     fetchLatestNewsRaw,
@@ -11,12 +13,23 @@ vi.mock('@/env/server', () => ({
     },
 }))
 vi.mock('next/cache', () => ({
-    unstable_cache: vi.fn((fn: () => unknown) => fn),
+    unstable_cache: vi.fn(<T>(fn: T) => fn),
 }))
 
 const fetchMock = vi.fn()
 
-const jsonResponse = (body: unknown, init: { ok?: boolean; status?: number } = {}) =>
+const newsItem = (id: number): NewsItem => ({
+    category: 'company',
+    datetime: 1_780_000_000 - id,
+    headline: `Headline ${id}`,
+    id,
+    image: '',
+    source: 'Yahoo',
+    summary: '',
+    url: `https://news.test/${id}`,
+})
+
+const jsonResponse = (body: JsonSerializable, init: { ok?: boolean; status?: number } = {}) =>
     Promise.resolve({
         ok: init.ok ?? true,
         status: init.status ?? 200,
@@ -47,18 +60,24 @@ describe('fetchLatestNewsRaw', () => {
     })
 
     it('returns only the 3 most recent items of a larger response', async () => {
-        const items = Array.from({ length: 10 }, (_, i) => ({ id: i }))
+        const items = Array.from({ length: 10 }, (_, i) => newsItem(i))
         fetchMock.mockReturnValue(jsonResponse(items))
 
         const result = await fetchLatestNewsRaw('AAPL')
-        expect(result).toEqual([{ id: 0 }, { id: 1 }, { id: 2 }])
+        expect(result).toEqual([newsItem(0), newsItem(1), newsItem(2)])
     })
 
     it('returns the full array when it has 3 items or fewer', async () => {
-        const items = [{ id: 0 }, { id: 1 }]
+        const items = [newsItem(0), newsItem(1)]
         fetchMock.mockReturnValue(jsonResponse(items))
 
         await expect(fetchLatestNewsRaw('AAPL')).resolves.toEqual(items)
+    })
+
+    it('drops malformed items instead of failing the feed', async () => {
+        fetchMock.mockReturnValue(jsonResponse([{ id: 0 }, newsItem(1)]))
+
+        await expect(fetchLatestNewsRaw('AAPL')).resolves.toEqual([newsItem(1)])
     })
 
     it('throws when the response is not an array', async () => {

@@ -1,6 +1,15 @@
 import { Cause, Exit, Option } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+// Fixture shape for large upstream types: every field optional, Dates kept whole
+export type DeepPartial<T> = T extends Date
+    ? T
+    : T extends (infer U)[]
+      ? DeepPartial<U>[]
+      : T extends object
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : T
+
 // Extracts the tagged failure of an Exit, or null when the effect succeeded.
 export const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
     if (!Exit.isFailure(exit)) return null
@@ -9,5 +18,5 @@ export const failureTag = <E>(exit: Exit.Exit<unknown, E>): string | null => {
 }
 
 // Wraps a per-table query chain mock into a minimal SupabaseClient.
-export const asClient = (from: Record<string, unknown>): SupabaseClient =>
+export const asClient = <Chain>(from: Chain): SupabaseClient =>
     ({ from: () => from }) as unknown as SupabaseClient

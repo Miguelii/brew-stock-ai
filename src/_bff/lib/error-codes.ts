@@ -88,6 +88,7 @@ export enum ErrorCode {
     CHECKOUT_UNAUTH = 'd8hx1v6t',
     CHECKOUT_STRIPE_INIT = 'k4nj9r3w',
     CHECKOUT_STRIPE_CREATE = 'g6yb2f5p',
+    CHECKOUT_STRIPE_NO_URL = 'hbrpoig8',
     CHECKOUT_CREDITS_FETCH = 'h2nw5k8v',
     CHECKOUT_CUSTOMER_CREATE = 'j4xt9m3c',
     CHECKOUT_CUSTOMER_SAVE = 'k7pf1r6b',

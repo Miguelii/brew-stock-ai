@@ -49,7 +49,7 @@ export default async function globalSetup() {
     const server = await startMockSupabase()
 
     if (server) {
-        ;(globalThis as unknown as Record<string, unknown>).__MOCK_SERVER__ = server
+        globalThis.__MOCK_SERVER__ = server
 
         // Close the server immediately on SIGINT (Ctrl+C) or SIGTERM without
         // waiting for keep-alive connections to drain on their own.

@@ -6,13 +6,22 @@ import {
 import type { QuoteSummaryResult } from 'yahoo-finance2/modules/quoteSummary-iface'
 import type { FundamentalsTimeSeriesResult } from 'yahoo-finance2/modules/fundamentalsTimeSeries'
 import type { RevenueTrendPoint } from '@/types/ReportDTO'
+import type { DeepPartial } from '@/_bff/lib/tests-utils'
+
+type TimeSeriesFixture = DeepPartial<FundamentalsTimeSeriesResult>
+
+type SummaryFixture = DeepPartial<QuoteSummaryResult>
+
+type InsiderTransactionFixture = NonNullable<
+    NonNullable<SummaryFixture['insiderTransactions']>['transactions']
+>[number]
 
 // The upstream yahoo-finance2 types are huge; fixtures only carry the fields
 // the mappers read, so they are built loose and cast at the call site.
-const timeSeriesRow = (row: Record<string, unknown>): FundamentalsTimeSeriesResult =>
+const timeSeriesRow = (row: TimeSeriesFixture): FundamentalsTimeSeriesResult =>
     row as unknown as FundamentalsTimeSeriesResult
 
-const summaryOf = (modules: Record<string, unknown>): QuoteSummaryResult =>
+const summaryOf = (modules: SummaryFixture): QuoteSummaryResult =>
     modules as unknown as QuoteSummaryResult
 
 describe('mapRevenueTrend', () => {
@@ -51,8 +60,12 @@ describe('mapRevenueTrend', () => {
     })
 
     it('falls back through the net-income field chain', () => {
-        const base = { TYPE: 'FINANCIALS', date: new Date('2024-12-31'), totalRevenue: 100 }
-        const pick = (row: Record<string, unknown>) => mapRevenueTrend([timeSeriesRow(row)])[0]
+        const base = {
+            TYPE: 'FINANCIALS' as const,
+            date: new Date('2024-12-31'),
+            totalRevenue: 100,
+        }
+        const pick = (row: TimeSeriesFixture) => mapRevenueTrend([timeSeriesRow(row)])[0]
 
         expect(
             pick({
@@ -224,7 +237,7 @@ describe('mapFundamentals', () => {
     })
 
     describe('insiders', () => {
-        const withTransactions = (transactions: Record<string, unknown>[]) =>
+        const withTransactions = (transactions: InsiderTransactionFixture[]) =>
             mapFundamentals(summaryOf({ insiderTransactions: { transactions } }), []).insiders
 
         it('returns null when there are no transactions', () => {

@@ -7,9 +7,11 @@ const { sendNotificationMock } = vi.hoisted(() => ({ sendNotificationMock: vi.fn
 
 vi.mock('web-push', () => ({ default: { sendNotification: sendNotificationMock } }))
 
-const ROWS = [
-    { subscription: { endpoint: 'https://push.example/a' } as PushSubscriptionJSON },
-    { subscription: { endpoint: 'https://push.example/b' } as PushSubscriptionJSON },
+const KEYS = { p256dh: 'p256dh-key', auth: 'auth-key' }
+
+const ROWS: { subscription: PushSubscriptionJSON }[] = [
+    { subscription: { endpoint: 'https://push.example/a', keys: KEYS } },
+    { subscription: { endpoint: 'https://push.example/b', keys: KEYS } },
 ]
 
 describe('sendToSubscriptions', () => {
@@ -31,6 +33,14 @@ describe('sendToSubscriptions', () => {
                 icon: '/web-app-manifest-192x192.png',
             })
         )
+    })
+
+    it('fails with SendPushNotificationError when a stored subscription has no keys', async () => {
+        const rows = [{ subscription: { endpoint: 'https://push.example/c' } }]
+
+        const exit = await Effect.runPromiseExit(sendToSubscriptions(rows, 'Title', 'Body'))
+        expect(failureTag(exit)).toBe('SendPushNotificationError')
+        expect(sendNotificationMock).not.toHaveBeenCalled()
     })
 
     it('fails with SendPushNotificationError when a dispatch rejects', async () => {

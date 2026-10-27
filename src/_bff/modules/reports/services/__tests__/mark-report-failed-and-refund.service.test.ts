@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
+import { MarkReportFailedError } from '@/_bff/lib/errors'
+import { ErrorCode } from '@/_bff/lib/error-codes'
 import { markReportFailedAndRefund } from '@/_bff/modules/reports/services/mark-report-failed-and-refund.service'
 import { failureTag } from '@/_bff/lib/tests-utils'
 
@@ -57,7 +59,14 @@ describe('markReportFailedAndRefund', () => {
     })
 
     it('propagates repository failures', async () => {
-        markReportFailedMock.mockReturnValue(Effect.fail({ _tag: 'MarkReportFailedError' }))
+        markReportFailedMock.mockReturnValue(
+            Effect.fail(
+                new MarkReportFailedError({
+                    cause: null,
+                    error_hash: ErrorCode.PROCESS_REPORT_MARK_FAILED,
+                })
+            )
+        )
 
         const exit = await Effect.runPromiseExit(markReportFailedAndRefund('r-1'))
         expect(failureTag(exit)).toBe('MarkReportFailedError')

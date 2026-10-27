@@ -5,7 +5,7 @@ declare global {
     var gtag: (
         command: 'config' | 'set' | 'event' | 'consent',
         targetId: string,
-        config?: Record<string, unknown>
+        config?: { [key: string]: string | number | boolean | undefined }
     ) => void
     var adsbygoogle: unknown[]
 }

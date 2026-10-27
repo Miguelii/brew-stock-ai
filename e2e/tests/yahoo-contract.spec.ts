@@ -2,14 +2,9 @@
  * Live contract test for yahoo-finance2.
  */
 import { test, expect } from '@playwright/test'
+import type YahooFinance from 'yahoo-finance2'
 
-type YahooClient = {
-    search: (symbol: string, options: Record<string, unknown>) => Promise<any>
-    insights: (symbol: string, options: Record<string, unknown>) => Promise<any>
-    quoteSummary: (symbol: string, options: Record<string, unknown>) => Promise<any>
-    fundamentalsTimeSeries: (symbol: string, options: Record<string, unknown>) => Promise<any>
-    chart: (symbol: string, options: Record<string, unknown>) => Promise<any>
-}
+type YahooClient = InstanceType<typeof YahooFinance>
 
 // Forward-looking earningsTrend periods the app surfaces (mirror of the mapper).
 const FORWARD_PERIODS = new Set(['0q', '+1q', '0y', '+1y'])
@@ -22,7 +17,7 @@ test.describe('Yahoo Finance live contract', () => {
         const { default: YahooFinance } = await import('yahoo-finance2')
         yf = new YahooFinance({
             suppressNotices: ['yahooSurvey', 'ripHistorical'],
-        }) as unknown as YahooClient
+        })
     })
 
     test('search resolves the canonical ticker', async () => {
@@ -32,11 +27,11 @@ test.describe('Yahoo Finance live contract', () => {
         expect(result.quotes.length).toBeGreaterThan(0)
 
         const equity = result.quotes.find(
-            (q: any) => 'quoteType' in q && q.quoteType === 'EQUITY' && q.isYahooFinance === true
+            (q) => 'quoteType' in q && q.quoteType === 'EQUITY' && q.isYahooFinance === true
         )
         expect(equity).toBeDefined()
-        expect(typeof equity.symbol).toBe('string')
-        expect(equity.symbol).toBe('AAPL')
+        expect(equity?.symbol).toEqual(expect.any(String))
+        expect(equity?.symbol).toBe('AAPL')
     })
 
     test('insights returns snapshot scores, reports and sig-devs', async () => {
@@ -46,14 +41,14 @@ test.describe('Yahoo Finance live contract', () => {
         for (const bucket of ['company', 'sector'] as const) {
             const snapshot = insights.companySnapshot?.[bucket]
             expect(snapshot).toBeDefined()
-            expect(typeof snapshot.innovativeness).toBe('number')
-            expect(typeof snapshot.hiring).toBe('number')
-            expect(typeof snapshot.sustainability).toBe('number')
+            expect(snapshot?.innovativeness).toEqual(expect.any(Number))
+            expect(snapshot?.hiring).toEqual(expect.any(Number))
+            expect(snapshot?.sustainability).toEqual(expect.any(Number))
         }
 
         // Reports and sig-devs are volatile: assert the shape only when present.
         expect(Array.isArray(insights.reports)).toBe(true)
-        const report = insights.reports[0]
+        const report = insights.reports?.[0]
         if (report) {
             expect('title' in report || 'headHtml' in report).toBe(true)
             expect(report).toHaveProperty('provider')
@@ -82,9 +77,9 @@ test.describe('Yahoo Finance live contract', () => {
         expect(ks).toBeDefined()
 
         // Type anchors: confirm each module actually returned data.
-        expect(typeof fd.currentPrice).toBe('number')
-        expect(typeof sd.marketCap).toBe('number')
-        expect(typeof ks.enterpriseValue).toBe('number')
+        expect(fd?.currentPrice).toEqual(expect.any(Number))
+        expect(sd?.marketCap).toEqual(expect.any(Number))
+        expect(ks?.enterpriseValue).toEqual(expect.any(Number))
 
         // Every field path the app consumes must still exist.
         const financialDataKeys = [
@@ -133,20 +128,20 @@ test.describe('Yahoo Finance live contract', () => {
         // Earnings history — actual vs estimate rows.
         const history = summary.earningsHistory?.history
         expect(Array.isArray(history)).toBe(true)
-        expect(history.length).toBeGreaterThan(0)
+        expect(history?.length).toBeGreaterThan(0)
         for (const key of ['period', 'quarter', 'epsActual', 'epsEstimate', 'surprisePercent']) {
-            expect(history[0]).toHaveProperty(key)
+            expect(history?.[0]).toHaveProperty(key)
         }
 
         // Forward estimates — at least one of the periods we surface.
         const trend = summary.earningsTrend?.trend
         expect(Array.isArray(trend)).toBe(true)
-        const forward = trend.find((t: any) => FORWARD_PERIODS.has(t.period))
+        const forward = trend?.find((t) => FORWARD_PERIODS.has(t.period))
         expect(forward).toBeDefined()
-        expect(forward.earningsEstimate).toHaveProperty('avg')
-        expect(forward.earningsEstimate).toHaveProperty('growth')
-        expect(forward.revenueEstimate).toHaveProperty('avg')
-        expect(forward.revenueEstimate).toHaveProperty('growth')
+        expect(forward?.earningsEstimate).toHaveProperty('avg')
+        expect(forward?.earningsEstimate).toHaveProperty('growth')
+        expect(forward?.revenueEstimate).toHaveProperty('avg')
+        expect(forward?.revenueEstimate).toHaveProperty('growth')
 
         // Analyst recommendation distribution.
         const rec = summary.recommendationTrend?.trend?.[0]
@@ -158,7 +153,7 @@ test.describe('Yahoo Finance live contract', () => {
         // Insider transactions are volatile: assert the shape only when present.
         const transactions = summary.insiderTransactions?.transactions
         expect(Array.isArray(transactions)).toBe(true)
-        const tx = transactions[0]
+        const tx = transactions?.[0]
         if (tx) {
             expect(tx).toHaveProperty('transactionText')
             expect(tx).toHaveProperty('shares')
@@ -178,17 +173,17 @@ test.describe('Yahoo Finance live contract', () => {
         expect(Array.isArray(series)).toBe(true)
         expect(series.length).toBeGreaterThan(0)
 
-        const financialsRows = series.filter((s: any) => s.TYPE === 'FINANCIALS')
+        const financialsRows = series.filter((s) => s.TYPE === 'FINANCIALS')
         expect(financialsRows.length).toBeGreaterThan(0)
         expect(financialsRows[0]).toHaveProperty('date')
 
         // totalRevenue / netIncome are per-row optional (the mapper falls back to
         // null), so require that at least one FINANCIALS row still carries each.
-        const hasRevenue = financialsRows.some((s: any) => typeof s.totalRevenue === 'number')
+        const hasRevenue = financialsRows.some((s) => s.totalRevenue !== undefined)
         expect(hasRevenue).toBe(true)
 
         const hasNetIncome = financialsRows.some(
-            (s: any) =>
+            (s) =>
                 s.netIncomeCommonStockholders != null ||
                 s.netIncomeContinuousOperations != null ||
                 s.netIncomeIncludingNoncontrollingInterests != null
@@ -205,9 +200,9 @@ test.describe('Yahoo Finance live contract', () => {
         expect(Array.isArray(result.quotes)).toBe(true)
         expect(result.quotes.length).toBeGreaterThan(0)
 
-        const point = result.quotes.find((r: any) => r.close != null)
+        const point = result.quotes.find((r) => r.close != null)
         expect(point).toBeDefined()
-        expect(typeof point.close).toBe('number')
-        expect(point.date).toBeInstanceOf(Date)
+        expect(point?.close).toEqual(expect.any(Number))
+        expect(point?.date).toBeInstanceOf(Date)
     })
 })

@@ -1,7 +1,7 @@
 'use client'
 
 import { m, useMotionTemplate, useScroll, useTransform } from 'motion/react'
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 type Props = {
     children: ReactNode
@@ -54,7 +54,7 @@ export function HorizontalTrack({ children }: Props) {
             ref={outerRef}
             data-scroll-scene
             className="relative lg:h-[calc(100svh+var(--track-distance))]"
-            style={{ '--track-distance': `${distance}px` } as CSSProperties}
+            style={{ '--track-distance': `${distance}px` }}
         >
             {/* Full-height sticky so the track sits centred in the viewport while pinned. */}
             <div
@@ -65,7 +65,7 @@ export function HorizontalTrack({ children }: Props) {
                 <m.div
                     ref={trackRef}
                     data-scroll-track
-                    style={{ '--track-x': trackX } as CSSProperties}
+                    style={{ '--track-x': trackX }}
                     className="-mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-5 px-5 pb-4 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:h-[min(44vh,380px)] lg:w-max lg:snap-none lg:overflow-x-visible lg:px-0 lg:pb-0 lg:[transform:var(--track-x)]"
                 >
                     {children}

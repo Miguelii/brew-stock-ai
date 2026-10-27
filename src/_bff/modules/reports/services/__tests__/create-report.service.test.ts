@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
+import { CreateReportError, InsufficientCreditsError, RefundCreditsError } from '@/_bff/lib/errors'
+import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { User } from '@supabase/supabase-js'
 import { createReport } from '@/_bff/modules/reports/services/create-report.service'
 import { PROMPT_COSTS_MAP, PROMPTS_MAP } from '@/_bff/modules/analysis/constants'
@@ -39,6 +41,10 @@ vi.mock('@/_bff/modules/reports/jobs/process-report.job', () => ({
 const USER = { id: 'user-1' } as User
 const PROMPT_TYPE = Object.keys(PROMPTS_MAP)[0]!
 const SUPABASE = { from: vi.fn() }
+const CREATE_REPORT_ERROR = new CreateReportError({
+    cause: null,
+    error_hash: ErrorCode.REPORT_CREATE_INSERT_ERR,
+})
 
 describe('createReport', () => {
     beforeEach(() => {
@@ -69,7 +75,7 @@ describe('createReport', () => {
     })
 
     it('refunds the deducted credits and propagates the error when the insert fails', async () => {
-        insertReportMock.mockReturnValue(Effect.fail({ _tag: 'CreateReportError' }))
+        insertReportMock.mockReturnValue(Effect.fail(CREATE_REPORT_ERROR))
 
         const exit = await Effect.runPromiseExit(createReport(USER, 'AAPL', PROMPT_TYPE))
 
@@ -83,8 +89,12 @@ describe('createReport', () => {
     })
 
     it('still propagates the insert error when the refund also fails', async () => {
-        insertReportMock.mockReturnValue(Effect.fail({ _tag: 'CreateReportError' }))
-        refundCreditsMock.mockReturnValue(Effect.fail({ _tag: 'RefundCreditsError' }))
+        insertReportMock.mockReturnValue(Effect.fail(CREATE_REPORT_ERROR))
+        refundCreditsMock.mockReturnValue(
+            Effect.fail(
+                new RefundCreditsError({ cause: null, error_hash: ErrorCode.TOKENS_REFUND_RPC_ERR })
+            )
+        )
 
         const exit = await Effect.runPromiseExit(createReport(USER, 'AAPL', PROMPT_TYPE))
 
@@ -101,7 +111,9 @@ describe('createReport', () => {
     })
 
     it('propagates a credit failure and never inserts the report', async () => {
-        deductCreditMock.mockReturnValue(Effect.fail({ _tag: 'InsufficientCreditsError' }))
+        deductCreditMock.mockReturnValue(
+            Effect.fail(new InsufficientCreditsError({ error_hash: ErrorCode.TOKENS_INSUFFICIENT }))
+        )
 
         const exit = await Effect.runPromiseExit(createReport(USER, 'AAPL', PROMPT_TYPE))
 

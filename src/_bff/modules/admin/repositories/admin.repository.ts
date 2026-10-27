@@ -25,7 +25,7 @@ export const checkIsAdmin = Effect.fn('checkIsAdmin')(function* (supabase: Supab
         return yield* new IsAdminError({ cause: error, error_hash: ErrorCode.ADMIN_IS_ADMIN_RPC })
     }
 
-    return (data ?? false) as boolean
+    return data === true
 })
 
 export const countReports = Effect.fn('countReports')(function* (
@@ -49,7 +49,7 @@ export const countUsers = Effect.fn('countUsers')(function* (supabase: SupabaseC
         catch: (cause) => new AdminStatsError({ cause, error_hash: ErrorCode.ADMIN_STATS_FETCH }),
     })
 
-    return 'total' in (users.data ?? {}) ? (users.data as { total: number }).total : 0
+    return 'total' in users.data ? users.data.total : 0
 })
 
 export const listUsers = Effect.fn('listUsers')(function* (supabase: SupabaseClient) {
@@ -77,6 +77,7 @@ export const selectAllUserCredits = Effect.fn('selectAllUserCredits')(function* 
         })
     }
 
+    // SAFETY: user_credits.user_id is a uuid and credits an integer column
     return (data ?? []) as { user_id: string; credits: number }[]
 })
 
@@ -165,5 +166,6 @@ export const selectAdminStockData = Effect.fn('selectAdminStockData')(function* 
         })
     }
 
+    // SAFETY: the select list is exactly the AdminStockDataRow columns
     return (data ?? []) as AdminStockDataRow[]
 })

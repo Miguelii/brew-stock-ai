@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getYahooData } from '@/_bff/modules/yahoo/processors/get-yahoo-data.processor'
-import type { GetYahooDataResult, YahooDataWithFallbackResult } from '@/_bff/modules/yahoo/types'
+import type { YahooDataWithFallbackResult } from '@/_bff/modules/yahoo/types'
 import {
     hasAllStockData,
     hasAnyStockData,
@@ -21,9 +21,7 @@ export const getYahooDataWithFallbackService: (
 ) => Effect.Effect<YahooDataWithFallbackResult> = Effect.fn('getYahooDataWithFallbackService')(
     function* (ticker, supabaseClient) {
         // Always try to get Yahoo fresh data
-        const freshData = (yield* getYahooData(ticker).pipe(
-            Effect.catch(() => Effect.succeed(null))
-        )) as GetYahooDataResult | null
+        const freshData = yield* getYahooData(ticker).pipe(Effect.catch(() => Effect.succeed(null)))
 
         // If success and hasAllStockData -> return
         if (freshData && hasAllStockData(freshData)) {

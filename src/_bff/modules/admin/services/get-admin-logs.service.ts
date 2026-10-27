@@ -6,6 +6,7 @@ import { UnauthenticatedError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import { isAdmin } from '@/_bff/modules/admin/services/is-admin.service'
 import { selectAdminLogs } from '@/_bff/modules/admin/repositories/admin.repository'
+import type { JsonValue } from '@/types/Json'
 
 export type LogLevel = 'log' | 'info' | 'warn' | 'error'
 
@@ -15,7 +16,7 @@ export type AdminLog = {
     level: LogLevel
     prefix: string | null
     message: string | null
-    metadata: Record<string, unknown> | null
+    metadata: { [key: string]: JsonValue } | null
     user_id: string | null
 }
 
@@ -28,5 +29,6 @@ export const getAdminLogs = Effect.fn('getAdminLogs')(function* () {
 
     const logs = yield* selectAdminLogs(supabase)
 
+    // SAFETY: selectAdminLogs selects exactly the AdminLog columns; metadata is written by Logger as JSON
     return logs as AdminLog[]
 })

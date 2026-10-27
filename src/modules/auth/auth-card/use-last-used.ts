@@ -14,17 +14,19 @@ function subscribe(callback: () => void) {
     }
 }
 
+// localStorage is user-editable: anything but a known method reads as no preference
+const readLastUsed = (): LastUsed | null => {
+    const stored = localStorage.getItem(LAST_USED_KEY)
+    return stored === 'google' || stored === 'email' ? stored : null
+}
+
 const saveLastUsed = (method: LastUsed) => {
     localStorage.setItem(LAST_USED_KEY, method)
     window.dispatchEvent(new Event(LAST_USED_EVENT))
 }
 
 export const useLastUsed = () => {
-    const lastUsed = useSyncExternalStore(
-        subscribe,
-        () => localStorage.getItem(LAST_USED_KEY) as LastUsed | null,
-        () => null
-    )
+    const lastUsed = useSyncExternalStore(subscribe, readLastUsed, () => null)
 
     return { lastUsed, saveLastUsed }
 }

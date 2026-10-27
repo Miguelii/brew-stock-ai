@@ -32,5 +32,6 @@ export const refundCredits = Effect.fn('refundCredits')(function* (
         })
     }
 
+    // SAFETY: add_credits RETURNS INTEGER
     return data as number
 })

@@ -1,8 +1,8 @@
 import { createElement, Fragment } from 'react'
 import { toast } from 'sonner'
 
-export function toastError(message: string, error?: unknown, description?: string): void {
-    const hash = error instanceof Error ? error.message : undefined
+export function toastError(message: string, cause?: unknown, description?: string): void {
+    const hash = cause instanceof Error ? cause.message : undefined
 
     if (!description && !hash) {
         toast.error(message)

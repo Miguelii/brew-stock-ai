@@ -144,6 +144,9 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
     devDependencies:
+      '@oxlint/plugins':
+        specifier: 1.72.0
+        version: 1.72.0
       '@playwright/test':
         specifier: ^1.60.0
         version: 1.61.1
@@ -883,12 +886,14 @@ packages:
   '@opentelemetry/sdk-trace-base@2.7.1':
     resolution: {integrity: sha512-NAYIlsF8MPUsKqJMiDQJTMPOmlbawC1Iz/omMLygZ1C9am8fTKYjTaI+OZM+WTY3t3Glo0wnOg/6/pac6RGPPw==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.7.1':
     resolution: {integrity: sha512-pCpQxU68lV+I9s9svqMyVu5iHdDDUnqUpSxqwyCU8A9ejEsSnMPCbearwsUO4yk08ZJzAIUCFuReMdVQvHrdvg==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -1412,6 +1417,10 @@ packages:
 
   '@oxlint/plugins@1.68.0':
     resolution: {integrity: sha512-titLmukUt/h8ho7Svlf0xSBjoy2ccZKrXjpXpZCj+v6V4CJccC2KyP45BLSCMx8YIpifMyiDyUptM4+5sruKbQ==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  '@oxlint/plugins@1.72.0':
+    resolution: {integrity: sha512-TF6+ruuIwUpT64deU2JvoDs78m1QjYuMB7IP9AZ2p05fkUesumy+3aqKERE5sYd1C8CmL+yt0swwfXlR3/YluQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
   '@playwright/test@1.61.1':
@@ -5884,6 +5893,8 @@ snapshots:
     optional: true
 
   '@oxlint/plugins@1.68.0': {}
+
+  '@oxlint/plugins@1.72.0': {}
 
   '@playwright/test@1.61.1':
     dependencies:

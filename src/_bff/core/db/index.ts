@@ -1,7 +1,7 @@
 import 'server-only'
 
 import type { GetAllCookies, SetAllCookies } from '@supabase/ssr/dist/main/types'
-import { cookies, headers } from 'next/headers'
+import { cookies } from 'next/headers'
 import { ServerEnv } from '@/env/server'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
@@ -24,7 +24,8 @@ export const createDBAdminClient = () => {
  * Always create a new client per request (required for Fluid compute).
  * @param hooks - Optional callbacks that run after the default cookie handlers.
  * @param hooks.onGetAll - Runs after reading all cookies from the cookie store.
- * @param hooks.onSetAll - Runs after writing cookies to the cookie store, receives the cookies that were set.
+ * @param hooks.onSetAll - Runs after writing cookies to the cookie store, receives the cookies that were set
+ *   and the no-cache headers the response must carry alongside them.
  */
 export async function createDBServerClient(
     useSecretKey?: boolean,
@@ -33,7 +34,7 @@ export async function createDBServerClient(
         onSetAll?: SetAllCookies
     }
 ) {
-    const [cookieStore, headersStore] = await Promise.all([cookies(), headers()])
+    const cookieStore = await cookies()
 
     return createServerClient(
         ServerEnv.NEXT_SUPABASE_URL,
@@ -47,16 +48,12 @@ export async function createDBServerClient(
                     hooks?.onGetAll?.()
                     return result
                 },
-                setAll(cookiesToSet) {
+                setAll(cookiesToSet, responseHeaders) {
                     try {
                         cookiesToSet.forEach(({ name, value, options }) =>
                             cookieStore.set(name, value, options)
                         )
-                        //
-                        hooks?.onSetAll?.(
-                            cookiesToSet,
-                            headersStore as unknown as Record<string, string>
-                        )
+                        hooks?.onSetAll?.(cookiesToSet, responseHeaders)
                     } catch {
                         // The `setAll` method was called from a Server Component.
                         // This can be ignored if you have middleware refreshing

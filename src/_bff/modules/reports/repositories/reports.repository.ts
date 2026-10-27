@@ -54,6 +54,7 @@ export const insertReport = Effect.fn('insertReport')(function* (
         })
     }
 
+    // SAFETY: reports.id is a uuid column, returned by select('id').single() after a successful insert
     return report.id as string
 })
 
@@ -79,6 +80,7 @@ export const selectUserReports = Effect.fn('selectUserReports')(function* (
         })
     }
 
+    // SAFETY: the select list is exactly the ReportListItem columns
     return reports as ReportListItem[]
 })
 
@@ -104,6 +106,7 @@ export const selectReportById = Effect.fn('selectReportById')(function* (
         })
     }
 
+    // SAFETY: select('*') on reports returns the full row that ReportDTO mirrors
     return report as ReportDTO
 })
 
@@ -157,6 +160,7 @@ export const selectReportForProcessing = Effect.fn('selectReportForProcessing')(
         })
     }
 
+    // SAFETY: the select list is exactly the picked ReportDTO columns
     return report as Pick<ReportDTO, 'id' | 'stock' | 'type' | 'user_id' | 'status'>
 })
 
@@ -189,6 +193,7 @@ export const markReportFailed = Effect.fn('markReportFailed')(function* (
         })
     }
 
+    // SAFETY: the select list is exactly the picked ReportDTO columns, maybeSingle() yields null when absent
     return data as Pick<ReportDTO, 'user_id' | 'type'> | null
 })
 
@@ -207,7 +212,8 @@ const selectStockDataByTickerRaw = async (ticker: string): Promise<StockData | n
         throw new Error(`Failed to fetch stock data for ${ticker}: ${error.message}`)
     }
 
-    return (data as StockData) ?? null
+    // SAFETY: stock_data rows are only written by upsertStockData, whose columns StockData mirrors
+    return (data ?? null) as StockData | null
 }
 
 // Best-effort — resolves to null instead of failing so report views never break on stock data.
@@ -268,7 +274,7 @@ export const updateReportWithAnalysis = Effect.fn('updateReportWithAnalysis')(fu
                     sentiment: params.sentiment ?? null,
                     ticker: params.ticker ?? null,
                     // No usage (e.g. the dev mock) means no cost, never a text marker
-                    cost: typeof params.tokenUsdCost === 'number' ? params.tokenUsdCost : null,
+                    cost: params.tokenUsdCost === 'N/A' ? null : params.tokenUsdCost,
                 })
                 .eq('id', reportId)
                 // Never overwrite a report that already FAILED (and was refunded)

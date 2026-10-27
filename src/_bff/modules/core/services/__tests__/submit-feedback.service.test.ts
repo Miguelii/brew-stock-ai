@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
+import { GetUserError } from '@/_bff/lib/errors'
+import { ErrorCode } from '@/_bff/lib/error-codes'
 import { submitFeedback } from '@/_bff/modules/core/services/submit-feedback.service'
 
 const { createDBServerClientMock, getSessionMock, insertFeedbackMock } = vi.hoisted(() => ({
@@ -52,7 +54,11 @@ describe('submitFeedback', () => {
     })
 
     it('still submits when the session lookup fails', async () => {
-        getSessionMock.mockReturnValue(Effect.fail({ _tag: 'GetUserError' }))
+        getSessionMock.mockReturnValue(
+            Effect.fail(
+                new GetUserError({ cause: null, error_hash: ErrorCode.AUTH_SESSION_GET_USER })
+            )
+        )
 
         await Effect.runPromise(submitFeedback('Jane', 'jane@example.com', 'Great product'))
 

@@ -1,9 +1,11 @@
-const ESTIMATE_PERIOD_LABELS: Record<string, string> = {
+import { hasOwnKey } from '@/_bff/core/utils/lookup.utils'
+
+const ESTIMATE_PERIOD_LABELS = {
     '0q': 'Current Quarter',
     '+1q': 'Next Quarter',
     '0y': 'Current Year',
     '+1y': 'Next Year',
-}
+} satisfies Record<string, string>
 
 /**
  * Map a Yahoo earnings-trend period code to a human-friendly label.
@@ -12,7 +14,7 @@ const ESTIMATE_PERIOD_LABELS: Record<string, string> = {
  * @returns The friendly label, or the raw code when unknown.
  */
 export const fmtEstimatePeriod = (period: string): string =>
-    ESTIMATE_PERIOD_LABELS[period] ?? period
+    hasOwnKey(ESTIMATE_PERIOD_LABELS, period) ? ESTIMATE_PERIOD_LABELS[period] : period
 
 /**
  * Format a multiple with a trailing `x` (e.g. `12.5 → "12.5x"`).

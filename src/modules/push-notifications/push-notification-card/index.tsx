@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { toastError } from '@/lib/toast-error'
 import { ClientEnv } from '@/env/client'
 import { trpcClient } from '@/lib/trpc'
+import { PUSH_SUBSCRIPTION_SCHEMA } from '@/_bff/core/constants/push-subscription.constants'
 import { PUSH_DISMISS_TTL_DAYS, PUSH_DISMISSED_KEY } from '@/modules/push-notifications/constants'
 import { PromptCard } from '@/components/ui/prompt-card'
 import { urlBase64ToUint8Array } from './push-notification-card.helpers'
@@ -51,11 +52,7 @@ export function PushNotificationCard() {
                     ),
                 })
                 await subscribeMutation.mutateAsync({
-                    subscription: sub.toJSON() as {
-                        endpoint: string
-                        expirationTime: number | null
-                        keys: { p256dh: string; auth: string }
-                    },
+                    subscription: PUSH_SUBSCRIPTION_SCHEMA.parse(sub.toJSON()),
                 })
                 setOpen(false)
                 toast.success('Notifications enabled.')

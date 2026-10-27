@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Effect } from 'effect'
+import { AiGenerationError } from '@/_bff/lib/errors'
+import { ErrorCode } from '@/_bff/lib/error-codes'
 import { processReport } from '@/_bff/modules/reports/processors/process-report.processor'
 import { failureTag } from '@/_bff/lib/tests-utils'
 
@@ -92,10 +94,18 @@ describe('processReport', () => {
     it('propagates the analysis error without touching the report status', async () => {
         const { client, update } = makeSupabase({ data: REPORT, error: null })
         createDBAdminClientMock.mockReturnValue(client)
-        getStockAnalysisMock.mockReturnValue(Effect.fail({ _tag: 'StockAnalysisError' }))
+        getStockAnalysisMock.mockReturnValue(
+            Effect.fail(
+                new AiGenerationError({
+                    cause: null,
+                    error_hash: ErrorCode.ANALYSIS_AI_GENERATION,
+                    symbol: 'AAPL',
+                })
+            )
+        )
 
         const exit = await Effect.runPromiseExit(processReport('report-1'))
-        expect(failureTag(exit)).toBe('StockAnalysisError')
+        expect(failureTag(exit)).toBe('AiGenerationError')
         // The FAILED transition (and credit refund) is owned by the job's onFailure.
         expect(update).not.toHaveBeenCalled()
         expect(sendPushMock).not.toHaveBeenCalled()

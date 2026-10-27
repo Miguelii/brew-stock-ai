@@ -30,5 +30,6 @@ export const getAdminReports = Effect.fn('getAdminReports')(function* () {
 
     const reports = yield* selectAdminReports(supabase)
 
+    // SAFETY: selectAdminReports selects exactly the AdminReport columns
     return reports as AdminReport[]
 })

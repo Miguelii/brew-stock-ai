@@ -35,5 +35,6 @@ export const deductCredit = Effect.fn('deductCredit')(function* (
         return yield* new InsufficientCreditsError({ error_hash: ErrorCode.TOKENS_INSUFFICIENT })
     }
 
+    // SAFETY: deduct_credit RETURNS INTEGER and NULL was rejected above
     return data as number
 })

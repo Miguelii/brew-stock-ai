@@ -85,7 +85,7 @@ export const getInvoices = Effect.fn('getInvoices')(function* (user: User) {
             new GetInvoicesError({ cause, error_hash: ErrorCode.INVOICES_STRIPE_FETCH }),
     }).pipe(
         Effect.catch((error) => {
-            const message: string = (error.cause as any)?.message ?? ''
+            const message = error.cause instanceof Error ? error.cause.message : ''
             const isDevModeConflict =
                 message.includes(
                     'a similar object exists in live mode, but a test mode key was used to make this request.'
@@ -94,7 +94,7 @@ export const getInvoices = Effect.fn('getInvoices')(function* (user: User) {
                     'a similar object exists in test mode, but a live mode key was used to make this request.'
                 )
             return isDevModeConflict
-                ? Effect.succeed([] as Stripe.Checkout.Session[])
+                ? Effect.succeed<Stripe.Checkout.Session[]>([])
                 : Effect.fail(error)
         })
     )

@@ -3,6 +3,7 @@ import { PROMPT_TYPES } from '@/_bff/core/constants/prompt-types.constants'
 import { PropmptsEnum } from '@/types/PropmptsEnum'
 import { getRiskLevelInfo, getSentimentInfo } from '@/_bff/core/helpers/sentiment.helper'
 import type { BuildPdfHtmlParams, ReportHeaderView } from '@/_bff/modules/reports/pdf/types'
+import { hasOwnKey } from '@/_bff/core/utils/lookup.utils'
 
 /** Header values: report type label, formatted date, and the sentiment (or risk level for risk reports). */
 export function getReportHeader({
@@ -18,7 +19,7 @@ export function getReportHeader({
     return {
         date: fmtDate(created_at),
         isRiskAnalysis,
-        reportLabel: PROMPT_TYPES[type as PropmptsEnum]?.label ?? type,
+        reportLabel: hasOwnKey(PROMPT_TYPES, type) ? PROMPT_TYPES[type].label : type,
         sentimentTitle: isRiskAnalysis ? 'Risk Level' : 'Sentiment',
         sentimentLabel: label,
         sentimentColor: color,

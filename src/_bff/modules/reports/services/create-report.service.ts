@@ -12,13 +12,14 @@ import { refundCredits } from '@/_bff/modules/credits/services/refund-credits.se
 import { Logger } from '@/_bff/lib/server-logger'
 import { insertReport } from '@/_bff/modules/reports/repositories/reports.repository'
 import { getIsDev } from '@/_bff/core/utils/env.utils'
+import { hasOwnKey } from '@/_bff/core/utils/lookup.utils'
 
 export const createReport = Effect.fn('createReport')(function* (
     user: User,
     stockSymbol: string,
     promptType: string
 ) {
-    if (!PROMPTS_MAP[promptType]) {
+    if (!hasOwnKey(PROMPTS_MAP, promptType)) {
         return yield* new InvalidPromptTypeError({
             promptType,
             error_hash: ErrorCode.REPORT_CREATE_INVALID_PROMPT,

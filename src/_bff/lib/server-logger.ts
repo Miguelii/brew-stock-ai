@@ -2,45 +2,68 @@ import 'server-only'
 
 import { after } from 'next/server'
 import { createDBAdminClient } from '@/_bff/core/db'
+import { z } from 'zod'
 import { getIsDev } from '@/_bff/core/utils/env.utils'
 
 type LogLevel = 'log' | 'warn' | 'error' | 'info'
+
+// JSON-safe value printed to the console and persisted to `logs.metadata` (jsonb)
+type LogValue =
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | LogValue[]
+    | { [key: string]: LogValue }
+
+type LogMetadata = { [key: string]: LogValue }
+
+type LogDetails = {
+    timestamp: string
+    userId?: string
+    error?: LogValue
+    metadata?: LogMetadata
+}
 
 type Props = {
     level: LogLevel
     prefix: string
     error?: unknown
     message?: string
-    metadata?: Record<string, unknown>
+    metadata?: LogMetadata
     userId?: string
 }
 
-function serializeError(error: unknown): unknown {
-    if (error == null) return error
+// Decodes whatever was thrown or failed into a JSON-safe value
+function serializeError(cause: unknown): LogValue {
+    if (cause == null) return cause
 
-    // Effect TaggedError — has _tag, skip the Effect fiber stack
-    if (typeof error === 'object' && '_tag' in error) {
-        const e = error as Record<string, unknown>
-        const { stack: _, ...fields } = e
+    // Effect TaggedError: has _tag, skip the Effect fiber stack
+    if (cause instanceof Error && '_tag' in cause) {
+        const { stack: _, ...fields } = cause
         return {
-            ...fields,
+            ...Object.fromEntries(
+                Object.entries(fields).map(([key, value]) => [key, serializeError(value)])
+            ),
             // cause is non-enumerable on Data.TaggedError so it won't appear
-            // in the spread — access it directly via property lookup instead
-            cause: serializeError(e.cause),
+            // in the spread, access it directly via property lookup instead
+            cause: serializeError(cause.cause),
         }
     }
 
-    // Standard Error — trim stack to first 4 lines
-    if (error instanceof Error) {
+    // Standard Error: trim stack to first 4 lines
+    if (cause instanceof Error) {
         return {
-            name: error.name,
-            message: error.message || String(error),
-            cause: error.cause ? serializeError(error.cause) : undefined,
-            stack: error.stack?.split('\n').slice(0, 4).join('\n'),
+            name: cause.name,
+            message: cause.message || String(cause),
+            cause: cause.cause ? serializeError(cause.cause) : undefined,
+            stack: cause.stack?.split('\n').slice(0, 4).join('\n'),
         }
     }
 
-    return error
+    const json = z.json().safeParse(cause)
+    return json.success ? json.data : String(cause)
 }
 
 export function Logger(props: Props): void {
@@ -51,7 +74,7 @@ export function Logger(props: Props): void {
     const parsedPrefix = isDev ? `[DEV] ${prefix}` : prefix
 
     const header = message ? `[${parsedPrefix}] ${message}` : `[${parsedPrefix}]`
-    const details: Record<string, unknown> = { timestamp: new Date().toISOString() }
+    const details: LogDetails = { timestamp: new Date().toISOString() }
 
     if (userId !== undefined) details.userId = userId
 
@@ -80,9 +103,10 @@ export function Logger(props: Props): void {
 async function persistLog(props: Props): Promise<void> {
     const supabase = createDBAdminClient()
 
-    const combinedMetadata: Record<string, unknown> = { ...props.metadata }
-
-    if (props.error !== undefined) combinedMetadata.error = serializeError(props.error)
+    const combinedMetadata =
+        props.error === undefined
+            ? { ...props.metadata }
+            : { ...props.metadata, error: serializeError(props.error) }
 
     const hasMetadata = Object.keys(combinedMetadata).length > 0
 

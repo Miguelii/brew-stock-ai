@@ -35,7 +35,7 @@ export const getAdminUsers = Effect.fn('getAdminUsers')(function* () {
         email: u.email ?? '—',
         created_at: u.created_at,
         last_sign_in_at: u.last_sign_in_at ?? null,
-        provider: (u.app_metadata?.provider as string | undefined) ?? null,
+        provider: u.app_metadata?.provider ?? null,
         credits: creditsByUserId.get(u.id) ?? 0,
     })) satisfies AdminUser[]
 })

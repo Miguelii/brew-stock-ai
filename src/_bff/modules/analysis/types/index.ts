@@ -17,3 +17,12 @@ export type AnalyzeReportInput = {
     supabaseClient: SupabaseClient
     mockAnalysis?: boolean
 }
+
+/** A failed data source; the source is then treated as missing, never fatal. */
+type SourceFailure = {
+    label: string
+    ticker: string
+    error: unknown
+}
+
+export type OnSourceError = (failure: SourceFailure) => void

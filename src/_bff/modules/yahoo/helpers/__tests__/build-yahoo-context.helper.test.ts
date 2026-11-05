@@ -43,7 +43,8 @@ describe('buildYahooContext', () => {
     it('returns header even with empty data', () => {
         const result = buildYahooContext(baseData)
         expect(result).toContain('## Current Market Context')
-        expect(result).toContain('Live data from Yahoo Finance')
+        expect(result).toContain('Live market data')
+        expect(result).not.toMatch(/yahoo|finnhub/iu)
     })
 
     it('includes financials section when provided', () => {
@@ -280,7 +281,8 @@ describe('buildYahooContext', () => {
         ]
         const result = buildYahooContext(baseData, null, news)
         expect(result).toContain('**Recent News')
-        expect(result).toContain('Company beats earnings [Reuters]')
+        expect(result).toContain('Company beats earnings')
+        expect(result).not.toContain('Reuters')
         expect(result).toContain('strong quarterly results')
     })
 })

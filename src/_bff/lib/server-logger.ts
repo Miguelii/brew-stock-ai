@@ -8,7 +8,7 @@ import { getIsDev } from '@/_bff/core/utils/env.utils'
 type LogLevel = 'log' | 'warn' | 'error' | 'info'
 
 // JSON-safe value printed to the console and persisted to `logs.metadata` (jsonb)
-type LogValue =
+export type LogValue =
     | string
     | number
     | boolean

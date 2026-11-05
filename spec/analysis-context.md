@@ -25,8 +25,9 @@ not from chaining calls.
     - [Company vs Sector Scores (EXISTING)](#company-vs-sector-scores-existing)
     - [Recent News (NEW)](#recent-news-new)
 5. [Model & output](#model--output)
-6. [Caching & resilience](#caching--resilience)
-7. [File map](#file-map)
+6. [MCP surface](#mcp-surface)
+7. [Caching & resilience](#caching--resilience)
+8. [File map](#file-map)
 
 ---
 
@@ -40,13 +41,19 @@ The backend is organised NestJS-style under `src/_bff/modules/<module>/`
 `src/_bff/modules/reports/processors/process-report.processor.ts`), with an admin Supabase client
 and **no user session**.
 
+The prompt resolution and the data steps are shared with the [MCP surface](#mcp-surface):
+`resolvePromptTemplate` lives in `analysis/processors/resolve-prompt-template.processor.ts`, and
+`fetchMarketData`, `saveFreshYahooData` and `buildMarketContext` live in
+`analysis/processors/fetch-market-data.processor.ts`. Both data steps take an `onSourceError`
+callback: the pipeline passes one that logs with the Trigger.dev `logger`.
+
 ```
 getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient, mockAnalysis?)
   │
   ├─ promptTemplate = resolvePromptTemplate(promptType)     // PROMPTS_MAP[promptType],
   │                                                         //   else InvalidPromptTypeError
   │
-  ├─ marketData = fetchMarketData(stockSymbol, supabaseClient)
+  ├─ marketData = fetchMarketData(stockSymbol, supabaseClient, onSourceError)
   │    ├─ ticker        = getYahooTicker(stockSymbol)        // NON-FATAL → null
   │    ├─ tickerForData = ticker ?? stockSymbol
   │    └─ Effect.all (parallel, concurrency: 'unbounded')
@@ -71,17 +78,19 @@ getStockAnalysis(stockSymbol, promptType, reportId, supabaseClient, mockAnalysis
        └─ saveAnalysisToReport(reportId, analysis, ticker, tokenUsdCost, sentiment, supabaseClient)
 
 buildPrompt:
+  prompt     = promptTemplate.replaceAll("##TICKER##", stockSymbol) + buildMarketContext(marketData)
+
+buildMarketContext:                                         // shared with the MCP brief
   technicals = priceHistory?.length ? computeTechnicalIndicators(priceHistory) : null
   hasContext = (yahoo && hasAnyStockData(yahoo.data)) || technicals || news?.length
   context    = hasContext ? "\n\n" + buildYahooContext(yahoo?.data ?? EMPTY_YAHOO_DATA, technicals, news)
                           : ""
-  prompt     = promptTemplate.replaceAll("##TICKER##", stockSymbol) + context
 ```
 
 Key properties:
 
 - **Every data source is non-fatal.** Ticker resolution, price history and news are wrapped in
-  `logAndRecover` (logs the error, resolves to `null`); `getYahooDataWithFallbackService` never
+  `recoverWith` (reports the error through `onSourceError`, resolves to `null`); `getYahooDataWithFallbackService` never
   fails (it resolves to `null` when Yahoo and `stock_data` both have nothing). The analysis still
   runs on whatever context survives, and with no context at all the prompt is sent bare.
 - **Ticker first, then everything in parallel.** `getYahooTicker` resolves the canonical symbol
@@ -114,7 +123,13 @@ The model receives three things:
 
 Defines the persona (senior equity research analyst), the writing rules (interpret don't describe,
 anchor every claim in numbers, never fabricate, stay balanced), the **required JSON output shape**,
-and, critically, the **hierarchy of signals**:
+and, critically, the **hierarchy of signals**.
+
+`SystemPrompt` is composed of three exported parts, concatenated in this order so the final string
+is unchanged: `AnalystMethodPrompt` (persona, method, writing style), `JsonOutputFormatPrompt`
+(the app-only JSON + HTML contract) and `ProvidedDataPrompt` (how to weight each context block).
+The MCP brief reuses the first and last parts with `MarkdownOutputFormatPrompt` in the middle. The
+signal hierarchy:
 
 > Business quality, durable cash generation, and valuation drive the thesis. Earnings/estimates and
 > analyst ratings are primary fundamentals; **technicals are a secondary timing signal**; **news and
@@ -157,7 +172,7 @@ this exact order:
 
 ```
 ## Current Market Context
-(one-line intro: live data from Yahoo Finance, to be incorporated where relevant)
+(one-line intro: live market data, to be incorporated where relevant; never names the provider)
 
 **Key Financial Indicators:**            [EXISTING]   (data.financials)
 **Market Positioning & Ownership:**      [NEW]        (data.financials)
@@ -301,8 +316,9 @@ Type `StockScores` (Yahoo `insights.companySnapshot`): company vs sector on a 0.
 
 `NewsItem[]` from Finnhub `company-news` (top 3). Each item: `headline`, `source`, `datetime`
 (unix seconds), `summary` (truncated to `NEWS_SUMMARY_MAX_CHARS` = 200 chars in the prompt), plus
-`category`/`image`/`url`. Framed as a confirmatory signal: used to confirm or challenge the thesis,
-never to drive it. Missing `NEXT_FINNHUB_API_KEY` fails the fetch (`LATEST_NEWS_API_KEY_MISSING`),
+`category`/`image`/`url`. Each line renders as `- headline (date) — summary`: the `source`
+(publisher) is deliberately left out, so the prompt never reveals where the data comes from.
+Framed as a confirmatory signal: used to confirm or challenge the thesis, never to drive it. Missing `NEXT_FINNHUB_API_KEY` fails the fetch (`LATEST_NEWS_API_KEY_MISSING`),
 which the pipeline recovers as "no news".
 
 The report page's "Recent news" card does **not** use this top 3. It reads the cached tRPC path
@@ -387,11 +403,63 @@ hasPriceHistory, hasNews, hasYahooFreshData })` records cost, truncation and con
 
 ---
 
+## MCP surface
+
+The same method and context are exposed to external models (Claude Code, for now) through an MCP
+server at `POST /api/mcp` (`src/app/api/mcp/route.ts` → `src/_bff/modules/mcp/mcp.handler.ts`,
+built on `mcp-handler` v2). **This path never calls the AI model**: the caller's own model writes
+the analysis, on the caller's tokens. Nothing is saved to `reports`.
+
+- **Auth:** `withMcpAuth` with a single shared bearer token, `NEXT_MCP_TOKEN` (optional env var,
+  at least 32 chars). No token configured means every request gets `401`.
+- **Tools:**
+    - `list_analysis_types`: the five `PROMPT_TYPES` (type + label, no credit cost).
+    - `get_analysis_brief(ticker, analysisType = STOCK_ANALYSIS)` → `getAnalysisBrief`
+      (`analysis/services/get-analysis-brief.service.ts`).
+
+```
+getAnalysisBrief(stockSymbol, promptType)
+  ├─ promptTemplate = resolvePromptTemplate(promptType)
+  ├─ marketData     = fetchMarketData(stockSymbol, adminClient, onSourceError)   // same as the pipeline
+  ├─ fork saveFreshYahooData(yahoo)                         // same upsert rule, joined before returning
+  └─ buildAnalysisBrief({ stockSymbol, promptTemplate, context: buildMarketContext(marketData),
+                          resolvedTicker, isFresh, retrievedAt })
+```
+
+The brief (`analysis/helpers/build-analysis-brief.helper.ts`) is one Markdown text:
+
+```
+# Analysis brief: <SYMBOL>
+(one line: write the analysis yourself, following this brief)
+---
+AnalystMethodPrompt + MarkdownOutputFormatPrompt + ProvidedDataPrompt
+---
+## Request          (the per-type prompt with ##TICKER## replaced)
+## Data notes       (retrieval time; resolved ticker when it differs; stored-snapshot warning when
+                     Yahoo data is not fresh; "no market data" warning when the context is empty)
+## Current Market Context   (identical to the pipeline block, omitted when empty)
+```
+
+The brief, the tool descriptions and the plugin never name the data providers (Yahoo, Finnhub): the
+data notes say "was resolved to the ticker" and "the live market data source was unreachable", and
+a test in `build-analysis-brief.helper.test.ts` guards it.
+
+`MarkdownOutputFormatPrompt` asks for Markdown headings, the closing `### Investment Thesis Summary`
+and a final `**Sentiment: <score>/100 (<label>)**` line on the same 0 to 100 scale as the JSON
+`sentiment`. `onSourceError` here logs through `Logger` (`src/_bff/lib/server-logger.ts`).
+
+The skill `plugins/brewstock/skills/analysis/SKILL.md` (Claude Code plugin `brewstock`, listed in
+the `brewstockai` marketplace at `.claude-plugin/marketplace.json`, which also bundles the MCP
+server config) tells Claude when to call the tools and how to follow the brief; it holds no prompt
+text, so prompt changes ship with a deploy.
+
+---
+
 ## Caching & resilience
 
 | Store                          | Scope                                               | TTL      | Used by                           | Source constant         |
 | ------------------------------ | --------------------------------------------------- | -------- | --------------------------------- | ----------------------- |
-| `stock_data` table             | Yahoo financials + fundamentals + insights snapshot | fallback | analysis pipeline                 | (none, fresh-first)     |
+| `stock_data` table             | Yahoo financials + fundamentals + insights snapshot | fallback | analysis pipeline, MCP brief      | (none, fresh-first)     |
 | `unstable_cache` price-history | 1y daily closes (per ticker)                        | 12 h     | tRPC `yahoo.getPriceHistory` only | `GET_PRICE_HISTORY_TTL` |
 | `unstable_cache` latest-news   | Finnhub company-news card selection (per ticker)    | 1 day    | tRPC `finnhub.getLatestNews` only | `LATEST_NEWS_TTL`       |
 
@@ -450,17 +518,32 @@ All backend code lives under `src/_bff/modules/<module>/`, split NestJS-style
 ```
 src/_bff/modules/analysis/
 ├── processors/
-│   └── get-stock-analysis.processor.ts     # orchestration: fetch → prompt → generateText (or dev mock) → guard → save
+│   ├── get-stock-analysis.processor.ts     # orchestration: fetch → prompt → generateText (or dev mock) → guard → save
+│   ├── fetch-market-data.processor.ts      # fetchMarketData, saveFreshYahooData, buildMarketContext (shared with the MCP)
+│   └── resolve-prompt-template.processor.ts # promptType → PROMPTS_MAP entry, else InvalidPromptTypeError
+├── services/
+│   ├── get-analysis-brief.service.ts       # MCP: market data + brief, no model call
+│   └── list-analysis-types.service.ts      # MCP: PROMPT_TYPES without costs
 ├── mocks/stock-analysis.mock.json          # dev-mode model output (no AI call)
 ├── constants/index.ts                      # models, token budgets, stockAnalysisSchema, PROMPTS_MAP, PROMPT_COSTS_MAP
-├── types/index.ts                          # MarketData, AnalyzeReportInput
+├── types/index.ts                          # MarketData, AnalyzeReportInput, OnSourceError
 ├── prompts/
-│   ├── system.prompt.ts                    # SystemPrompt (persona, rules, HTML rules, signal hierarchy)
+│   ├── system.prompt.ts                    # SystemPrompt = AnalystMethod + JsonOutputFormat + ProvidedData; MarkdownOutputFormatPrompt (MCP)
 │   └── analysis.prompt.ts                  # the 5 per-type prompt strings
 └── helpers/
     ├── calculate-token-cost.helper.ts      # per-call USD cost
     ├── normalize-sentiment.helper.ts       # round + clamp sentiment to 0–100
-    └── is-analysis-complete.helper.ts      # incomplete-output guard
+    ├── is-analysis-complete.helper.ts      # incomplete-output guard
+    └── build-analysis-brief.helper.ts      # MCP brief text (method + request + data notes + context)
+
+src/_bff/modules/mcp/
+├── mcp.handler.ts                          # MCP_HANDLER: createMcpHandler + withMcpAuth (mounted at src/app/api/mcp/route.ts)
+├── tools/
+│   ├── get-analysis-brief.tool.ts          # get_analysis_brief → getAnalysisBrief
+│   └── list-analysis-types.tool.ts         # list_analysis_types → listAnalysisTypes
+└── helpers/
+    ├── run-tool-effect.helper.ts           # Effect → CallToolResult (isError on failure)
+    └── verify-mcp-token.helper.ts          # constant-time bearer check against NEXT_MCP_TOKEN
 
 src/_bff/modules/yahoo/
 ├── yahoo.router.ts                         # YAHOO_ROUTER (price-history controller)

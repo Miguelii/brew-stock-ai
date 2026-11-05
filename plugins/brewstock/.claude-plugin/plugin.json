@@ -1,0 +1,26 @@
+{
+    "name": "brewstock",
+    "version": "1.0.0",
+    "description": "Equity research analyses backed by live market data from the BrewStock MCP server.",
+    "author": {
+        "name": "BrewStock AI",
+        "url": "https://brewstockai.com"
+    },
+    "homepage": "https://brewstockai.com",
+    "keywords": ["stocks", "equity-research", "finance", "valuation", "mcp"],
+    "userConfig": {
+        "mcp_token": {
+            "type": "string",
+            "title": "BrewStock MCP token",
+            "description": "Bearer token for the BrewStock MCP server.",
+            "sensitive": true,
+            "required": true
+        },
+        "mcp_url": {
+            "type": "string",
+            "title": "BrewStock MCP URL",
+            "description": "MCP endpoint. Change it only to point at a local or preview deployment.",
+            "default": "https://brewstockai.com/api/mcp"
+        }
+    }
+}

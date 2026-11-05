@@ -10,11 +10,7 @@ import { LIST_ANALYSIS_TYPES_TOOL } from '@/_bff/modules/mcp/tools/list-analysis
 
 type AuthRejectReason = 'missing_header' | 'not_bearer' | 'server_token_missing' | 'token_mismatch'
 
-type RpcCall = {
-    rpcMethod: string | null
-    toolName: string | null
-    toolArgs: LogValue
-}
+const LOGGED_TOOL = 'get_analysis_brief'
 
 const mcpHandler = createMcpHandler(
     (server) => {
@@ -66,23 +62,18 @@ const rpcMessageSchema = z.object({
 // A JSON-RPC body can be a single message or a batch
 const rpcBodySchema = z.union([z.array(rpcMessageSchema), rpcMessageSchema])
 
-const readRpcCalls = async (req: Request): Promise<RpcCall[]> => {
+// Protocol chatter (initialize, tools/list, server/discover) is not worth a log row
+const readLoggedToolArgs = async (req: Request): Promise<LogValue[]> => {
     if (req.method !== 'POST') return []
 
     const parsed = rpcBodySchema.safeParse(await req.json().catch(() => null))
-    if (!parsed.success) return [{ rpcMethod: null, toolName: null, toolArgs: null }]
+    if (!parsed.success) return []
 
     const messages = Array.isArray(parsed.data) ? parsed.data : [parsed.data]
 
-    return messages.map(({ method, params }) => {
-        const isToolCall = method === 'tools/call'
-
-        return {
-            rpcMethod: method ?? null,
-            toolName: isToolCall ? (params?.name ?? null) : null,
-            toolArgs: isToolCall ? (params?.arguments ?? null) : null,
-        }
-    })
+    return messages
+        .filter(({ method, params }) => method === 'tools/call' && params?.name === LOGGED_TOOL)
+        .map(({ params }) => params?.arguments ?? null)
 }
 
 // Single shared token for now: every authorized caller is the owner
@@ -101,22 +92,23 @@ const authedMcpHandler = withMcpAuth(
 
 export const MCP_HANDLER = async (req: Request) => {
     const startedAt = Date.now()
-    const calls = await readRpcCalls(req.clone())
+    const loggedCalls = await readLoggedToolArgs(req.clone())
 
     const response = await authedMcpHandler(req)
 
-    Logger({
-        level: 'info',
-        prefix: 'mcp',
-        message: calls.map((call) => call.toolName ?? call.rpcMethod).join(', ') || req.method,
-        metadata: {
-            httpMethod: req.method,
-            status: response.status,
-            durationMs: Date.now() - startedAt,
-            userAgent: req.headers.get('user-agent'),
-            calls,
-        },
-    })
+    if (loggedCalls.length > 0) {
+        Logger({
+            level: 'info',
+            prefix: 'mcp',
+            message: LOGGED_TOOL,
+            metadata: {
+                status: response.status,
+                durationMs: Date.now() - startedAt,
+                userAgent: req.headers.get('user-agent'),
+                args: loggedCalls,
+            },
+        })
+    }
 
     return response
 }

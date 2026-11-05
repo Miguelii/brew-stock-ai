@@ -13,6 +13,7 @@ export const ServerEnv = createEnv({
         STRIPE_WEBHOOK_SECRET: z.string().optional(),
         NEXT_FINNHUB_API_KEY: z.string(),
         NEXT_FINNHUB_BASE_URL: z.string().default('https://finnhub.io/api/v1'),
+        NEXT_MCP_TOKEN: z.string().min(32).optional(),
     },
     runtimeEnv: {
         NEXT_SUPABASE_URL: process.env.NEXT_SUPABASE_URL,
@@ -25,5 +26,6 @@ export const ServerEnv = createEnv({
         STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
         NEXT_FINNHUB_API_KEY: process.env.NEXT_FINNHUB_API_KEY,
         NEXT_FINNHUB_BASE_URL: process.env.NEXT_FINNHUB_BASE_URL,
+        NEXT_MCP_TOKEN: process.env.NEXT_MCP_TOKEN,
     },
 })

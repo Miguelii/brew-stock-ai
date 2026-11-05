@@ -196,6 +196,7 @@ All backend code lives under `src/_bff/modules/<module>/`, split by responsibili
 - `controllers/<name>.controller.ts`, `services/<name>.service.ts`, `repositories/<table>.repository.ts`: see the tRPC rules above. Services are also the cross-module entry point (used by Trigger.dev jobs)
 - `processors/<name>.processor.ts`: multi-step pipeline steps reused by services and Trigger.dev jobs (exported)
 - `jobs/<name>.job.ts`: Trigger.dev tasks owned by this module (each `jobs/` dir must be listed in `trigger.config.ts` `dirs`)
+- MCP (`src/_bff/modules/mcp/`): `tools/<name>.tool.ts` are the MCP counterpart of controllers (one exported `<NAME>_TOOL` registrar each: zod input + `runToolEffect` + exhaustive `Match`), composed in `mcp.handler.ts` and mounted at `src/app/api/mcp/route.ts`. The MCP never calls the AI model, it only returns data and prompts (see `spec/analysis-context.md`)
 - `helpers/<name>.helper.ts`: pure helpers (fetchers, builders, mappers)
 - `constants/index.ts`, `types/index.ts`: module constants and types
 - `<feature>/`: a sub-feature that outgrew a single file gets its own folder (e.g. `analysis/prompts/`, `reports/pdf/`). `reports/pdf/` is the reference: `index.ts` is the entry point and only composes, `templates/<name>.template.ts` hold HTML only (they interpolate values, never compute them), `helpers/<name>.helper.ts` hold the pure logic, plus the folder's own `constants.ts`, `types.ts` and `styles.ts`

@@ -1,21 +1,15 @@
 // oxlint-disable import/max-dependencies
 import { Effect, Fiber } from 'effect'
 import { ServerEnv } from '@/env/server'
-import { AiGenerationError, InvalidPromptTypeError } from '@/_bff/lib/errors'
+import { AiGenerationError } from '@/_bff/lib/errors'
 import { ErrorCode } from '@/_bff/lib/error-codes'
 import type { ReportDTO } from '@/types/ReportDTO'
-import { getYahooDataWithFallbackService } from '@/_bff/modules/yahoo/services/get-yahoo-data-with-fallback.service'
-import { getLatestNewsService } from '@/_bff/modules/finnhub/services/get-latest-news.service'
-import { computeTechnicalIndicators } from '@/_bff/modules/yahoo/helpers/compute-technical-indicators.helper'
-import { buildYahooContext } from '@/_bff/modules/yahoo/helpers/build-yahoo-context.helper'
-import type { GetYahooDataResult, YahooDataWithFallbackResult } from '@/_bff/modules/yahoo/types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { logger } from '@trigger.dev/sdk'
 import {
     MAX_OUTPUT_TOKENS_PROD,
     MOCK_ANALYSIS_DELAY,
     PROD_MODEL,
-    PROMPTS_MAP,
     stockAnalysisSchema,
 } from '@/_bff/modules/analysis/constants'
 import stockAnalysisMock from '@/_bff/modules/analysis/mocks/stock-analysis.mock.json'
@@ -23,103 +17,22 @@ import { SystemPrompt } from '@/_bff/modules/analysis/prompts/system.prompt'
 import { calculateTokenCost } from '@/_bff/modules/analysis/helpers/calculate-token-cost.helper'
 import { normalizeSentiment } from '@/_bff/modules/analysis/helpers/normalize-sentiment.helper'
 import { isAnalysisComplete } from '@/_bff/modules/analysis/helpers/is-analysis-complete.helper'
-import { hasOwnKey } from '@/_bff/core/utils/lookup.utils'
-import { hasAnyStockData } from '@/_bff/modules/yahoo/helpers/get-yahoo-data-with-fallback.service.helper'
-import { getYahooTicker } from '@/_bff/modules/yahoo/processors/get-yahoo-ticker.processor'
-import { saveYahooData } from '@/_bff/modules/yahoo/processors/save-yahoo-data.processor'
 import { saveAnalysisToReport } from '@/_bff/modules/reports/processors/save-analysis-to-report.processor'
-import { getPriceHistoryService } from '@/_bff/modules/yahoo/services/get-price-history.service'
-import type { AnalyzeReportInput, MarketData } from '@/_bff/modules/analysis/types'
+import {
+    buildMarketContext,
+    fetchMarketData,
+    saveFreshYahooData,
+} from '@/_bff/modules/analysis/processors/fetch-market-data.processor'
+import { resolvePromptTemplate } from '@/_bff/modules/analysis/processors/resolve-prompt-template.processor'
+import type { AnalyzeReportInput, MarketData, OnSourceError } from '@/_bff/modules/analysis/types'
 
-const EMPTY_YAHOO_DATA: GetYahooDataResult = {
-    scores: null,
-    reports: [],
-    sigDev: null,
-    financials: null,
-    fundamentals: null,
-}
-
-/**
- * Pipeable: log the failure and replace it with a fallback value, for steps
- * whose failure must never abort the analysis.
- */
-const logAndRecover =
-    <B>(label: string, ticker: string, fallback: B) =>
-    <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A | B, never, R> =>
-        effect.pipe(
-            Effect.tapError((error) => Effect.sync(() => logger.error(label, { ticker, error }))),
-            Effect.catch(() => Effect.succeed(fallback))
-        )
-
-const resolvePromptTemplate = Effect.fn('resolvePromptTemplate')(function* (promptType: string) {
-    if (!hasOwnKey(PROMPTS_MAP, promptType)) {
-        return yield* new InvalidPromptTypeError({
-            promptType,
-            error_hash: ErrorCode.ANALYSIS_INVALID_PROMPT,
-        })
-    }
-
-    return PROMPTS_MAP[promptType]
-})
-
-/**
- * Resolve the Yahoo ticker, then fetch Yahoo data, price history and news in
- * parallel. Every source is optional: a failure yields `null` instead of
- * aborting the analysis.
- */
-const fetchMarketData = Effect.fn('fetchMarketData')(function* (
-    stockSymbol: string,
-    supabaseClient: SupabaseClient
-) {
-    const ticker = yield* getYahooTicker(stockSymbol).pipe(
-        logAndRecover('getYahooTicker failed', stockSymbol, null)
-    )
-
-    const tickerForData = ticker ?? stockSymbol
-
-    const [yahoo, priceHistory, news] = yield* Effect.all(
-        [
-            ticker ? getYahooDataWithFallbackService(ticker, supabaseClient) : Effect.succeed(null),
-            getPriceHistoryService(tickerForData).pipe(
-                logAndRecover('getPriceHistory failed', tickerForData, null)
-            ),
-            getLatestNewsService(tickerForData).pipe(
-                logAndRecover('getLatestNewsService failed', tickerForData, null)
-            ),
-        ],
-        { concurrency: 'unbounded' }
-    )
-
-    return { yahoo, priceHistory, news } satisfies MarketData
-})
-
-/** Persist Yahoo data only when it came fresh from Yahoo. Never fails. */
-const saveFreshYahooData = Effect.fn('saveFreshYahooData')(function* (
-    yahoo: YahooDataWithFallbackResult,
-    supabaseClient: SupabaseClient
-) {
-    if (!yahoo?.isFresh) return
-
-    yield* saveYahooData(yahoo.ticker, yahoo.data, supabaseClient).pipe(
-        logAndRecover('saveYahooData failed', yahoo.ticker, null)
-    )
-})
+/** Report a failed data source in the Trigger.dev run logs. */
+const logSourceError: OnSourceError = ({ label, ticker, error }) =>
+    logger.error(label, { ticker, error })
 
 /** Fill the prompt template with the ticker and append the market context, when there is any. */
-const buildPrompt = (promptTemplate: string, stockSymbol: string, marketData: MarketData) => {
-    const { yahoo, priceHistory, news } = marketData
-
-    const technicals =
-        priceHistory && priceHistory.length > 0 ? computeTechnicalIndicators(priceHistory) : null
-
-    const hasContext = Boolean((yahoo && hasAnyStockData(yahoo.data)) || technicals || news?.length)
-
-    const context = hasContext
-        ? `\n\n${buildYahooContext(yahoo?.data ?? EMPTY_YAHOO_DATA, technicals, news)}`
-        : ''
-
-    return promptTemplate.replaceAll('##TICKER##', stockSymbol) + context
-}
+const buildPrompt = (promptTemplate: string, stockSymbol: string, marketData: MarketData) =>
+    promptTemplate.replaceAll('##TICKER##', stockSymbol) + buildMarketContext(marketData)
 
 const generateAnalysis = Effect.fn('generateAnalysis')(function* (
     prompt: string,
@@ -243,11 +156,11 @@ export const getStockAnalysis = Effect.fn('getStockAnalysis')(function* (
 ) {
     const promptTemplate = yield* resolvePromptTemplate(promptType)
 
-    const marketData = yield* fetchMarketData(stockSymbol, supabaseClient)
+    const marketData = yield* fetchMarketData(stockSymbol, supabaseClient, logSourceError)
 
     // Persist fresh Yahoo data in the background while the model generates
     const saveYahooFiber = yield* Effect.forkChild(
-        saveFreshYahooData(marketData.yahoo, supabaseClient)
+        saveFreshYahooData(marketData.yahoo, supabaseClient, logSourceError)
     )
 
     // Join the save even when the analysis fails, so the child fiber is never interrupted mid-write

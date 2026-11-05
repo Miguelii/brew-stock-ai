@@ -1,0 +1,16 @@
+{
+    "name": "brewstockai",
+    "description": "BrewStock AI plugins for Claude Code.",
+    "owner": {
+        "name": "BrewStock AI",
+        "url": "https://brewstockai.com"
+    },
+    "plugins": [
+        {
+            "name": "brewstock",
+            "source": "./plugins/brewstock",
+            "description": "Equity research analyses backed by live market data from the BrewStock MCP server.",
+            "category": "finance"
+        }
+    ]
+}

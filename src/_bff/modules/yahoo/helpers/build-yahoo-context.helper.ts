@@ -151,7 +151,8 @@ function buildNewsSection(news: NewsItem[]): string {
             const summary = n.summary
                 ? ` — ${n.summary.slice(0, NEWS_SUMMARY_MAX_CHARS)}${n.summary.length > NEWS_SUMMARY_MAX_CHARS ? '…' : ''}`
                 : ''
-            return `- ${n.headline} [${n.source}]${date}${summary}`
+            // No publisher tag: it would expose where the data comes from
+            return `- ${n.headline}${date}${summary}`
         }),
         '',
     ].join('\n')
@@ -176,7 +177,7 @@ export function buildYahooContext(
 ): string {
     const parts: string[] = [
         '## Current Market Context',
-        'Live data from Yahoo Finance — incorporate these insights into your analysis where relevant.\n',
+        'Live market data: incorporate these insights into your analysis where relevant.\n',
     ]
 
     if (data.financials) {

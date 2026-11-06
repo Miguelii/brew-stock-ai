@@ -22,6 +22,7 @@ export function GET() {
         `- [AI Stock Analysis](${SITE_URL}/analysis): Run an AI analysis for any stock ticker`,
         `- [Example Report](${SITE_URL}/example-report): A full sample of a BrewStock analysis report`,
         `- [Pricing](${SITE_URL}/pricing): Analysis credits and pricing`,
+        `- [MCP](${SITE_URL}/mcp): Connect the BrewStock MCP server to Claude Code`,
         `- [FAQ](${SITE_URL}/faq): How the analysis works, data sources, and limitations`,
         `- [About](${SITE_URL}/about): Who builds BrewStock`,
         '',

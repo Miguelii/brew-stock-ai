@@ -5,6 +5,7 @@ export const FOOTER_LINKS = [
             { label: 'Analysis', href: '/analysis' },
             { label: 'Pricing', href: '/pricing' },
             { label: 'Reports', href: '/example-report' },
+            { label: 'MCP', href: '/mcp' },
             { label: 'Change Log', href: '/changelog' },
         ],
     },

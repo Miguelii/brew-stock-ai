@@ -1,5 +1,4 @@
 import 'server-only'
-import { createHash } from 'node:crypto'
 import { createMcpHandler, withMcpAuth } from 'mcp-handler'
 import { z } from 'zod'
 import { ServerEnv } from '@/env/server'
@@ -20,35 +19,32 @@ const mcpHandler = createMcpHandler(
     { serverInfo: { name: 'brewstock', version: '1.0.0' } }
 )
 
-const fingerprint = (value: string | undefined) =>
-    value ? createHash('sha256').update(value).digest('hex').slice(0, 8) : null
+// Vercel's edge sets these headers and overwrites any the client sends
+const getClientOrigin = (req: Request) => ({
+    ip:
+        req.headers.get('x-real-ip') ??
+        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+        null,
+    country: req.headers.get('x-vercel-ip-country'),
+})
 
 const logAuthRejection = (req: Request, bearerToken: string | undefined) => {
     const authHeader = req.headers.get('authorization')
-    const expectedToken = ServerEnv.NEXT_MCP_TOKEN
 
     let reason: AuthRejectReason = 'token_mismatch'
     if (!authHeader) reason = 'missing_header'
     else if (!bearerToken) reason = 'not_bearer'
-    else if (!expectedToken) reason = 'server_token_missing'
+    else if (!ServerEnv.NEXT_MCP_TOKEN) reason = 'server_token_missing'
 
-    // Lengths and fingerprints only: Logger persists metadata to the logs table
     Logger({
         level: 'warn',
         prefix: 'mcpAuth',
-        message: 'auth rejected',
+        message: `auth rejected: ${reason}`,
         metadata: {
-            reason,
-            method: req.method,
-            path: new URL(req.url).pathname,
+            // Raw header when it is not a Bearer one, so the caller's mistake is visible
+            token: bearerToken ?? authHeader,
+            ...getClientOrigin(req),
             userAgent: req.headers.get('user-agent'),
-            headerLength: authHeader?.length ?? 0,
-            headerScheme: authHeader?.split(' ')[0] ?? null,
-            receivedTokenLength: bearerToken?.length ?? 0,
-            receivedTokenFingerprint: fingerprint(bearerToken),
-            receivedTokenHasQuotes: bearerToken ? /^["']|["']$/u.test(bearerToken) : false,
-            expectedTokenLength: expectedToken?.length ?? 0,
-            expectedTokenFingerprint: fingerprint(expectedToken),
         },
     })
 }
@@ -104,6 +100,7 @@ export const MCP_HANDLER = async (req: Request) => {
             metadata: {
                 status: response.status,
                 durationMs: Date.now() - startedAt,
+                ...getClientOrigin(req),
                 userAgent: req.headers.get('user-agent'),
                 args: loggedCalls,
             },
